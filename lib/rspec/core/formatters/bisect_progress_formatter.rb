@@ -54,10 +54,7 @@ module RSpec
         end
 
         def bisect_failed(notification)
-          output.puts
-          output.puts ConsoleCodes.wrap("Spec run failed!", :failure)
-          output.puts
-          output.puts ConsoleCodes.wrap(notification.run_output, :failure)
+          output.puts "\nBisect failed! #{notification.failure_explanation}"
         end
       end
     end

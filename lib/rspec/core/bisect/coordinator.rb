@@ -36,8 +36,8 @@ module RSpec
 
             reporter.publish(:bisect_repro_command, :repro => repro)
           end
-        rescue Server::DidNotGetRunResults => e
-          reporter.publish(:bisect_failed, :run_output => e.run_output)
+        rescue BisectFailedError => e
+          reporter.publish(:bisect_failed, :failure_explanation => e.message)
         end
 
       private

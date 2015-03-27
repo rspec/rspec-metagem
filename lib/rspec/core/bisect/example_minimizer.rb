@@ -59,6 +59,8 @@ module RSpec
           results = runner.run(ids + failed_example_ids)
           notify(:individual_run_complete)
 
+          abort_if_ordering_inconsistent(results)
+
           (results.failed_example_ids == failed_example_ids).tap do |same|
             if same
               debug 2, "Running with #{ids}, got same failures"
@@ -103,6 +105,15 @@ module RSpec
         def track_duration
           start = ::RSpec::Core::Time.now
           [yield, ::RSpec::Core::Time.now - start]
+        end
+
+        def abort_if_ordering_inconsistent(results)
+          expected_order = all_example_ids & results.all_example_ids
+          return if expected_order == results.all_example_ids
+
+          raise BisectFailedError, "\n\nThe example ordering is inconsistent. " \
+                "`--bisect` relies upon consistent ordering (e.g. by passing " \
+                "`--seed` if you're using random ordering) to work properly."
         end
 
         def notify(*args)

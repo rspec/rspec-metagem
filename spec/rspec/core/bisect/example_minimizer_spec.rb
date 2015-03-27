@@ -11,7 +11,8 @@ module RSpec::Core
       end
 
       def original_results
-        RunResults.new(all_ids, always_failures | dependent_failures.keys)
+        failures = always_failures | dependent_failures.keys
+        RunResults.new(all_ids, failures.sort)
       end
 
       def run(ids)
@@ -20,7 +21,7 @@ module RSpec::Core
           failures << failing_example if ids.include?(depends_upon)
         end
 
-        RunResults.new(ids, failures)
+        RunResults.new(ids.sort, failures.sort)
       end
     end
 

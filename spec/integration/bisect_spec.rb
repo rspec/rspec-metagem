@@ -4,7 +4,7 @@ module RSpec::Core
 
     def bisect(cli_args)
       RSpec.configuration.output_stream = formatter_output
-      parser = Parser.new(cli_args)
+      parser = Parser.new(cli_args + ["--bisect"])
       expect(parser).to receive(:exit)
 
       expect {
@@ -15,7 +15,7 @@ module RSpec::Core
     end
 
     it 'finds the minimum rerun command and exits' do
-      output = bisect(%w[spec/rspec/core/resources/order_dependent_specs.rb --order defined --bisect])
+      output = bisect(%w[spec/rspec/core/resources/order_dependent_specs.rb --order defined])
 
       expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
         |Bisect started using options: "spec/rspec/core/resources/order_dependent_specs.rb --order defined"
@@ -36,8 +36,15 @@ module RSpec::Core
 
     context "when a load-time problem occurs while running the suite" do
       it 'surfaces the stdout and stderr output to the user' do
-        output = bisect(%w[spec/rspec/core/resources/fail_on_load_spec.rb_ --bisect])
-        expect(output).to include("Spec run failed", "undefined method `contex'", "About to call misspelled method")
+        output = bisect(%w[spec/rspec/core/resources/fail_on_load_spec.rb_])
+        expect(output).to include("Bisect failed!", "undefined method `contex'", "About to call misspelled method")
+      end
+    end
+
+    context "when the spec ordering is inconsistent" do
+      it 'stops bisecting and surfaces the problem to the user' do
+        output = bisect(%W[spec/rspec/core/resources/inconsistently_ordered_specs.rb])
+        expect(output).to include("Bisect failed!", "The example ordering is inconsistent")
       end
     end
   end
