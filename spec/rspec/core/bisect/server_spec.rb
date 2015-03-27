@@ -33,8 +33,8 @@ module RSpec::Core
         expect {
           server.capture_run_results { "the output" }
         }.to raise_error(an_object_having_attributes(
-          :class      => Bisect::Server::DidNotGetRunResults,
-          :run_output => "the output"
+          :class   => Bisect::BisectFailedError,
+          :message => a_string_including("Failed to get results", "the output")
         ))
       end
     end

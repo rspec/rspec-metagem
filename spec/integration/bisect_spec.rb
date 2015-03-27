@@ -2,10 +2,10 @@ module RSpec::Core
   RSpec.describe "Bisect", :slow, :simulate_shell_allowing_unquoted_ids do
     include FormatterSupport
 
-    def bisect(cli_args)
+    def bisect(cli_args, expected_status)
       RSpec.configuration.output_stream = formatter_output
       parser = Parser.new(cli_args + ["--bisect"])
-      expect(parser).to receive(:exit)
+      expect(parser).to receive(:exit).with(expected_status)
 
       expect {
         parser.parse
@@ -15,7 +15,7 @@ module RSpec::Core
     end
 
     it 'finds the minimum rerun command and exits' do
-      output = bisect(%w[spec/rspec/core/resources/order_dependent_specs.rb --order defined])
+      output = bisect(%w[spec/rspec/core/resources/order_dependent_specs.rb --order defined], 0)
 
       expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
         |Bisect started using options: "spec/rspec/core/resources/order_dependent_specs.rb --order defined"
@@ -36,14 +36,14 @@ module RSpec::Core
 
     context "when a load-time problem occurs while running the suite" do
       it 'surfaces the stdout and stderr output to the user' do
-        output = bisect(%w[spec/rspec/core/resources/fail_on_load_spec.rb_])
+        output = bisect(%w[spec/rspec/core/resources/fail_on_load_spec.rb_], 1)
         expect(output).to include("Bisect failed!", "undefined method `contex'", "About to call misspelled method")
       end
     end
 
     context "when the spec ordering is inconsistent" do
       it 'stops bisecting and surfaces the problem to the user' do
-        output = bisect(%W[spec/rspec/core/resources/inconsistently_ordered_specs.rb])
+        output = bisect(%W[spec/rspec/core/resources/inconsistently_ordered_specs.rb], 1)
         expect(output).to include("Bisect failed!", "The example ordering is inconsistent")
       end
     end

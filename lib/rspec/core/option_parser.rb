@@ -65,8 +65,8 @@ module RSpec::Core
         parser.on('--bisect', 'Repeatedly runs the suite in order to isolates the failures to the ',
                   '  smallest reproducible case.') do
           RSpec::Support.require_rspec_core "bisect/coordinator"
-          Bisect::Coordinator.bisect_with(original_args, RSpec.configuration)
-          exit
+          success = Bisect::Coordinator.bisect_with(original_args, RSpec.configuration)
+          exit(success ? 0 : 1)
         end
 
         parser.on('--[no-]fail-fast', 'Abort the run on first failure.') do |value|
