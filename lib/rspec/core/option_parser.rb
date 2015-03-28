@@ -64,9 +64,7 @@ module RSpec::Core
 
         parser.on('--bisect', 'Repeatedly runs the suite in order to isolates the failures to the ',
                   '  smallest reproducible case.') do
-          RSpec::Support.require_rspec_core "bisect/coordinator"
-          success = Bisect::Coordinator.bisect_with(original_args, RSpec.configuration)
-          exit(success ? 0 : 1)
+          bisect_and_exit
         end
 
         parser.on('--[no-]fail-fast', 'Abort the run on first failure.') do |value|
@@ -92,9 +90,7 @@ module RSpec::Core
         end
 
         parser.on('--init', 'Initialize your project with RSpec.') do |_cmd|
-          RSpec::Support.require_rspec_core "project_initializer"
-          ProjectInitializer.new.run
-          exit
+          initialize_project_and_exit
         end
 
         parser.separator("\n  **** Output ****\n\n")
@@ -227,8 +223,7 @@ FILTERING
         parser.separator("\n  **** Utility ****\n\n")
 
         parser.on('-v', '--version', 'Display the version.') do
-          puts RSpec::Core::Version::STRING
-          exit
+          print_version_and_exit
         end
 
         # These options would otherwise be confusing to users, so we forcibly
@@ -240,9 +235,7 @@ FILTERING
         invalid_options = %w[-d --I]
 
         parser.on_tail('-h', '--help', "You're looking at it.") do
-          # Removing the blank invalid options from the output.
-          puts parser.to_s.gsub(/^\s+(#{invalid_options.join('|')})\s*$\n/, '')
-          exit
+          print_help_and_exit(parser, invalid_options)
         end
 
         # This prevents usage of the invalid_options.
@@ -267,6 +260,29 @@ FILTERING
     def configure_only_failures(options)
       options[:only_failures] = true
       add_tag_filter(options, :inclusion_filter, :last_run_status, 'failed')
+    end
+
+    def initialize_project_and_exit
+      RSpec::Support.require_rspec_core "project_initializer"
+      ProjectInitializer.new.run
+      exit
+    end
+
+    def bisect_and_exit
+      RSpec::Support.require_rspec_core "bisect/coordinator"
+      success = Bisect::Coordinator.bisect_with(original_args, RSpec.configuration)
+      exit(success ? 0 : 1)
+    end
+
+    def print_version_and_exit
+      puts RSpec::Core::Version::STRING
+      exit
+    end
+
+    def print_help_and_exit(parser, invalid_options)
+      # Removing the blank invalid options from the output.
+      puts parser.to_s.gsub(/^\s+(#{invalid_options.join('|')})\s*$\n/, '')
+      exit
     end
   end
 end
