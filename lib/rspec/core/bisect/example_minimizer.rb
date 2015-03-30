@@ -46,7 +46,7 @@ module RSpec
             @failed_example_ids = original_results.failed_example_ids
           end
 
-          notify(:original_bisect_run_complete, :failures => failed_example_ids.size,
+          notify(:bisect_original_run_complete, :failures => failed_example_ids.size,
                                                 :non_failures => non_failing_example_ids.size,
                                                 :duration => duration)
         end
@@ -57,7 +57,7 @@ module RSpec
 
         def get_same_failures?(ids)
           results = runner.run(ids + failed_example_ids)
-          notify(:individual_run_complete)
+          notify(:bisect_individual_run_complete)
 
           abort_if_ordering_inconsistent(results)
 

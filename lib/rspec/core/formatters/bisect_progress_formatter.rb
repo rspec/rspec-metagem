@@ -6,8 +6,9 @@ module RSpec
       # @private
       # Produces progress output while bisecting.
       class BisectProgressFormatter < BaseTextFormatter
-        Formatters.register self, :bisect_starting, :original_bisect_run_complete,
-                            :bisect_round_started, :individual_run_complete,
+        # We've named all events with a `bisect_` prefix to prevent naming collisions.
+        Formatters.register self, :bisect_starting, :bisect_original_run_complete,
+                            :bisect_round_started, :bisect_individual_run_complete,
                             :bisect_round_finished, :bisect_complete, :bisect_repro_command,
                             :bisect_failed
 
@@ -17,7 +18,7 @@ module RSpec
           output.print "Running suite to find failures..."
         end
 
-        def original_bisect_run_complete(notification)
+        def bisect_original_run_complete(notification)
           failures     = Helpers.pluralize(notification.failures, "failed example")
           non_failures = Helpers.pluralize(notification.non_failures, "non-failing example")
 
@@ -38,7 +39,7 @@ module RSpec
           output.print " (#{Helpers.format_duration(notification.duration)})"
         end
 
-        def individual_run_complete(_)
+        def bisect_individual_run_complete(_)
           output.print '.'
         end
 
