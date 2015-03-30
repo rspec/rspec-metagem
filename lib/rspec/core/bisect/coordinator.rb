@@ -25,7 +25,7 @@ module RSpec
         end
 
         def bisect
-          @configuration.add_formatter Formatters::BisectProgressFormatter
+          @configuration.add_formatter bisect_formatter
 
           reporter.close_after do
             repro = Server.run do |server|
@@ -47,6 +47,10 @@ module RSpec
 
         def reporter
           @configuration.reporter
+        end
+
+        def bisect_formatter
+          ENV['DEBUG_RSPEC_BISECT'] ? Formatters::BisectDebugFormatter : Formatters::BisectProgressFormatter
         end
       end
     end

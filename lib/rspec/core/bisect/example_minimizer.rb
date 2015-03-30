@@ -17,9 +17,7 @@ module RSpec
         def find_minimal_repro
           prep
 
-          remaining_ids = all_example_ids - failed_example_ids
-          debug 0, "Initial failed_example_ids: #{failed_example_ids}"
-          debug 0, "Initial remaining_ids: #{remaining_ids}"
+          remaining_ids = non_failing_example_ids
 
           each_bisect_round(lambda { remaining_ids }) do |subsets|
             ids_to_ignore = subsets.find do |ids|
@@ -29,7 +27,7 @@ module RSpec
             next :done unless ids_to_ignore
 
             remaining_ids -= ids_to_ignore
-            debug 1, "Removed #{ids_to_ignore}; remaining_ids: #{remaining_ids}"
+            notify(:bisect_ignoring_ids, :ids_to_ignore => ids_to_ignore, :remaining_ids => remaining_ids)
           end
 
           remaining_ids + failed_example_ids
@@ -46,8 +44,8 @@ module RSpec
             @failed_example_ids = original_results.failed_example_ids
           end
 
-          notify(:bisect_original_run_complete, :failures => failed_example_ids.size,
-                                                :non_failures => non_failing_example_ids.size,
+          notify(:bisect_original_run_complete, :failed_example_ids => failed_example_ids,
+                                                :non_failing_example_ids => non_failing_example_ids,
                                                 :duration => duration)
         end
 
@@ -56,22 +54,14 @@ module RSpec
         end
 
         def get_same_failures?(ids)
-          results = runner.run(ids + failed_example_ids)
-          notify(:bisect_individual_run_complete)
+          ids_to_run = ids + failed_example_ids
+          notify(:bisect_individual_run_start, :command => runner.repro_command_from(ids_to_run))
+
+          results, duration = track_duration { runner.run(ids_to_run) }
+          notify(:bisect_individual_run_complete, :duration => duration, :results => results)
 
           abort_if_ordering_inconsistent(results)
-
-          (results.failed_example_ids == failed_example_ids).tap do |same|
-            if same
-              debug 2, "Running with #{ids}, got same failures"
-            else
-              debug 2, "Running with #{ids}, got different failures: #{results.failed_example_ids}"
-            end
-          end
-        end
-
-        def debug(level, msg)
-          puts "#{'  ' * level}Minimizer: #{msg}" if ENV['DEBUG_RSPEC_BISECT']
+          results.failed_example_ids == failed_example_ids
         end
 
         INFINITY = (1.0 / 0) # 1.8.7 doesn't define Float::INFINITY so we define our own...

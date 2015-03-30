@@ -37,7 +37,7 @@ module RSpec
           parts = []
 
           parts << "rspec"
-          parts.concat organize_locations(locations)
+          parts.concat Formatters::Helpers.organize_ids(locations)
           parts.concat original_cli_args_without_locations
 
           parts.join(" ")
@@ -104,20 +104,6 @@ module RSpec
             end
 
             opts
-          end
-        end
-
-        def organize_locations(locations)
-          grouped = locations.inject(Hash.new { |h, k| h[k] = [] }) do |hash, location|
-            file, id = location.split(Configuration::ON_SQUARE_BRACKETS)
-            hash[file] << id
-            hash
-          end
-
-          grouped.sort_by(&:first).map do |file, ids|
-            ids = ids.sort_by { |id| id.split(':').map(&:to_i) }
-            id  = Metadata.id_from(:rerun_file_path => file, :scoped_id => ids.join(','))
-            conditionally_quote(id)
           end
         end
 

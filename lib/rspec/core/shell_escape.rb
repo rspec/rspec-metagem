@@ -3,6 +3,8 @@ module RSpec
     # @private
     # Deals with the fact that `shellwords` only works on POSIX systems.
     module ShellEscape
+      module_function
+
       def quote(argument)
         "'#{argument.gsub("'", "\\\\'")}'"
       end
@@ -33,18 +35,14 @@ module RSpec
       end
 
       def shell_allows_unquoted_ids?
-        return @shell_allows_unquoted_ids if defined?(@shell_allows_unquoted_ids)
-
-        @shell_allows_unquoted_ids = SHELLS_ALLOWING_UNQUOTED_IDS.include?(
-          # Note: ENV['SHELL'] isn't necessarily the shell the user is currently running.
-          # According to http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html:
-          # "This variable shall represent a pathname of the user's preferred command language interpreter."
-          #
-          # It's the best we can easily do, though. We err on the side of safety (quoting
-          # the id when not actually needed) so it's not a big deal if the user is actually
-          # using a different shell.
-          ENV['SHELL'].to_s.split('/').last
-        )
+        # Note: ENV['SHELL'] isn't necessarily the shell the user is currently running.
+        # According to http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html:
+        # "This variable shall represent a pathname of the user's preferred command language interpreter."
+        #
+        # It's the best we can easily do, though. We err on the side of safety (quoting
+        # the id when not actually needed) so it's not a big deal if the user is actually
+        # using a different shell.
+        SHELLS_ALLOWING_UNQUOTED_IDS.include?(ENV['SHELL'].to_s.split('/').last)
       end
     end
   end

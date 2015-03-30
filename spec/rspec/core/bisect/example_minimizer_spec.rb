@@ -23,6 +23,10 @@ module RSpec::Core
 
         RunResults.new(ids.sort, failures.sort)
       end
+
+      def repro_command_from(locations)
+        ""
+      end
     end
 
     it 'repeatedly runs various subsets of the suite, removing examples that have no effect on the failing examples' do
