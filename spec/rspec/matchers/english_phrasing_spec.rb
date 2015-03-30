@@ -32,8 +32,8 @@ module RSpec
 
         context "given an Enumerable" do
           before do
-            allow(described_class).to(
-              receive(:item_description).and_return("Banana")
+            allow(RSpec::Support::ObjectInspector).to(
+              receive(:inspect).and_return("Banana")
             )
           end
 
@@ -47,8 +47,8 @@ module RSpec
             let(:list) { [double] }
             it "returns description, and a leading space" do
               expect(described_class.list(list)).to eq(" Banana")
-              expect(described_class).to(
-                have_received(:item_description).once
+              expect(RSpec::Support::ObjectInspector).to(
+                have_received(:inspect).once
               )
             end
           end
@@ -57,8 +57,8 @@ module RSpec
             let(:list) { [double, double] }
             it "returns descriptions, and a leading space" do
               expect(described_class.list(list)).to eq(" Banana and Banana")
-              expect(described_class).to(
-                have_received(:item_description).twice
+              expect(RSpec::Support::ObjectInspector).to(
+                have_received(:inspect).twice
               )
             end
           end
@@ -69,8 +69,8 @@ module RSpec
               expect(
                 described_class.list(list)
               ).to eq(" Banana, Banana, and Banana")
-              expect(described_class).to(
-                have_received(:item_description).exactly(3).times
+              expect(RSpec::Support::ObjectInspector).to(
+                have_received(:inspect).exactly(3).times
               )
             end
           end

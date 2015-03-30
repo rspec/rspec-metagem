@@ -9,10 +9,10 @@ module RSpec
         # @return [String]
         def failure_message
           if Array === actual
-            message  = "expected collection contained:  #{RSpec::Support::ObjectInspector.inspect(safe_sort(surface_descriptions_in expected))}\n"
-            message += "actual collection contained:    #{RSpec::Support::ObjectInspector.inspect(safe_sort(actual))}\n"
-            message += "the missing elements were:      #{RSpec::Support::ObjectInspector.inspect(safe_sort(surface_descriptions_in missing_items))}\n" unless missing_items.empty?
-            message += "the extra elements were:        #{RSpec::Support::ObjectInspector.inspect(safe_sort(extra_items))}\n" unless extra_items.empty?
+            message  = "expected collection contained:  #{description_of(safe_sort(surface_descriptions_in expected))}\n"
+            message += "actual collection contained:    #{description_of(safe_sort(actual))}\n"
+            message += "the missing elements were:      #{description_of(safe_sort(surface_descriptions_in missing_items))}\n" unless missing_items.empty?
+            message += "the extra elements were:        #{description_of(safe_sort(extra_items))}\n" unless extra_items.empty?
             message
           else
             "expected a collection that can be converted to an array with " \

@@ -74,7 +74,7 @@ module RSpec
         # @api private
         # @return [String]
         def description
-          "#{@operator} #{@expected.inspect}"
+          "#{@operator} #{RSpec::Support::ObjectInspector.inspect(@expected)}"
         end
 
       private

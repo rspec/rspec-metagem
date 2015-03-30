@@ -45,7 +45,7 @@ module RSpec
         # @api private
         # @return [String]
         def failure_message
-          "expected #{@actual.inspect} to respond to #{@failing_method_names.map { |name| name.inspect }.join(', ')}#{with_arity}"
+          "expected #{actual_formatted} to respond to #{@failing_method_names.map { |name| description_of(name) }.join(', ')}#{with_arity}"
         end
 
         # @api private
@@ -82,8 +82,7 @@ module RSpec
         end
 
         def pp_names
-          # Ruby 1.9 returns the same thing for array.to_s as array.inspect, so just use array.inspect here
-          @names.length == 1 ? "##{@names.first}" : @names.inspect
+          @names.length == 1 ? "##{@names.first}" : description_of(@names)
         end
       end
     end

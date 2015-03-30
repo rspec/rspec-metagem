@@ -53,13 +53,7 @@ module RSpec
     private
 
       def self.diff_label_for(matcher)
-        "Diff for (#{truncated(description_for(matcher))}):"
-      end
-
-      def self.description_for(matcher)
-        matcher.description
-      rescue NoMethodError
-        matcher.inspect
+        "Diff for (#{truncated(RSpec::Support::ObjectInspector.inspect(matcher))}):"
       end
 
       def self.truncated(description)

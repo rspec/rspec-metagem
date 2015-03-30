@@ -97,5 +97,15 @@ RSpec.shared_examples "an RSpec matcher" do |options|
       }.to fail
     end
   end
+
+  it 'uses the `ObjectInspector` for `failure_message`' do
+    allow(RSpec::Support::ObjectInspector).to receive(:inspect).and_return("detailed inspect")
+    matcher.matches?(invalid_value)
+    message = matcher.failure_message
+
+    # Undo our stub so it doesn't affect the `include` matcher below.
+    allow(RSpec::Support::ObjectInspector).to receive(:inspect).and_call_original
+    expect(message).to include("detailed inspect")
+  end unless options[:failure_message_uses_no_inspect]
 end
 

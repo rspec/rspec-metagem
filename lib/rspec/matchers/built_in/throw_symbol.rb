@@ -114,7 +114,7 @@ module RSpec
         end
 
         def throw_description(symbol, arg)
-          symbol_description = symbol.is_a?(String) ? symbol : symbol.inspect
+          symbol_description = symbol.is_a?(String) ? symbol : description_of(symbol)
 
           arg_description = if arg
                               " with #{description_of arg}"
