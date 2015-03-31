@@ -25,6 +25,20 @@ module RSpec::Core
 
         runner.run(%w[ spec/1_spec.rb[1:1] spec/1_spec.rb[1:2] ])
       end
+
+      it 'ensures environment variables are propagated to the spawned process', :slow do
+        output = nil
+        allow(server).to receive(:capture_run_results) do |&block|
+          output = block.call
+          Formatters::BisectFormatter::RunResults.new([], [])
+        end
+
+        with_env_vars 'MY_ENV_VAR' => 'secret' do
+          runner.run(%w[ spec/rspec/core/resources/echo_env_var.rb ])
+        end
+
+        expect(output).to include("MY_ENV_VAR=secret")
+      end
     end
 
     describe "#command_for" do
