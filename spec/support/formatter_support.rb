@@ -31,7 +31,10 @@ module FormatterSupport
   end
 
   def normalize_durations(output)
-    output.gsub(/\d+(?:\.\d+)?(s| seconds)/, "n.nnnn\\1")
+    output.gsub(/(?:\d+ minutes? )?\d+(?:\.\d+)?(s| seconds?)/) do |dur|
+      suffix = $1 == "s" ? "s" : " seconds"
+      "n.nnnn#{suffix}"
+    end
   end
 
   if RUBY_VERSION.to_f < 1.9
