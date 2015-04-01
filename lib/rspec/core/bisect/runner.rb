@@ -97,10 +97,8 @@ module RSpec
             end
 
             parsed_original_cli_options.fetch(:formatters) { [] }.each do |(name, out)|
-              opts -= %W[ --format #{name} ]
-              opts -= %W[ --out #{out} ]
-              opts -= %W[ -f #{name} ]
-              opts -= %W[ -o #{out} ]
+              opts -= %W[ --format #{name} -f -f#{name} ]
+              opts -= %W[ --out #{out} -o -o#{out} ]
             end
 
             opts

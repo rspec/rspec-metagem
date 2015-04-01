@@ -108,8 +108,13 @@ module RSpec::Core
         expect_formatters_to_be_excluded
       end
 
-      it 'excludes any -f and matching -o options passed in the original args' do
+      it 'excludes any -f <value> and matching -o <value> options passed in the original args' do
         original_cli_args.concat %w[ -f progress -f html -o specs.html ]
+        expect_formatters_to_be_excluded
+      end
+
+      it 'excludes any -f<value> and matching -o<value> options passed in the original args' do
+        original_cli_args.concat %w[ -fprogress -fhtml -ospecs.html ]
         expect_formatters_to_be_excluded
       end
 
