@@ -30,13 +30,31 @@ module RSpec::Core
       end
     end
 
-    it 'repeatedly runs various subsets of the suite, removing examples that have no effect on the failing examples' do
-      minimizer = Bisect::ExampleMinimizer.new(FakeRunner.new(
+    let(:fake_runner) do
+      FakeRunner.new(
         %w[ ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ex_7 ex_8 ],
         %w[ ex_2 ],
         { "ex_5" => "ex_4" }
-      ), RSpec::Core::NullReporter)
+      )
+    end
 
+    it 'repeatedly runs various subsets of the suite, removing examples that have no effect on the failing examples' do
+      minimizer = Bisect::ExampleMinimizer.new(fake_runner, RSpec::Core::NullReporter)
+      minimizer.find_minimal_repro
+      expect(minimizer.repro_command_for_currently_needed_ids).to eq("rspec ex_2 ex_4 ex_5")
+    end
+
+    it 'ignores flapping examples that did not fail on the initial full run but fail on fail runs' do
+      def fake_runner.run(ids)
+        super.tap do |results|
+          @run_count ||= 0
+          if (@run_count += 1) > 1
+            results.failed_example_ids << "ex_8"
+          end
+        end
+      end
+
+      minimizer = Bisect::ExampleMinimizer.new(fake_runner, RSpec::Core::NullReporter)
       minimizer.find_minimal_repro
       expect(minimizer.repro_command_for_currently_needed_ids).to eq("rspec ex_2 ex_4 ex_5")
     end

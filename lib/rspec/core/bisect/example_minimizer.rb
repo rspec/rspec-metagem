@@ -22,7 +22,7 @@ module RSpec
 
           each_bisect_round do |subsets|
             ids_to_ignore = subsets.find do |ids|
-              get_same_failures?(remaining_ids - ids)
+              get_expected_failures_for?(remaining_ids - ids)
             end
 
             next :done unless ids_to_ignore
@@ -68,7 +68,7 @@ module RSpec
           @non_failing_example_ids ||= all_example_ids - failed_example_ids
         end
 
-        def get_same_failures?(ids)
+        def get_expected_failures_for?(ids)
           ids_to_run = ids + failed_example_ids
           notify(:bisect_individual_run_start, :command => runner.repro_command_from(ids_to_run))
 
@@ -76,7 +76,7 @@ module RSpec
           notify(:bisect_individual_run_complete, :duration => duration, :results => results)
 
           abort_if_ordering_inconsistent(results)
-          results.failed_example_ids == failed_example_ids
+          (failed_example_ids & results.failed_example_ids) == failed_example_ids
         end
 
         INFINITY = (1.0 / 0) # 1.8.7 doesn't define Float::INFINITY so we define our own...
