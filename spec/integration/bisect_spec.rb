@@ -4,6 +4,10 @@ module RSpec::Core
   RSpec.describe "Bisect", :slow, :simulate_shell_allowing_unquoted_ids do
     include FormatterSupport
 
+    before do
+      skip "These specs do not consistently pass or fail on AppVeyor on Ruby 2.1+"
+    end if ENV['APPVEYOR'] && RUBY_VERSION.to_f > 2.0
+
     def bisect(cli_args, expected_status=nil)
       RSpec.configuration.output_stream = formatter_output
       parser = Parser.new(cli_args + ["--bisect"])

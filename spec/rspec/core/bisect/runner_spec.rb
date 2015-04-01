@@ -27,6 +27,10 @@ module RSpec::Core
       end
 
       it 'ensures environment variables are propagated to the spawned process', :slow do
+        if ENV['APPVEYOR'] && RUBY_VERSION.to_f > 2.0
+          skip "These specs do not consistently pass or fail on AppVeyor on Ruby 2.1+"
+        end
+
         output = nil
         allow(server).to receive(:capture_run_results) do |&block|
           output = block.call
