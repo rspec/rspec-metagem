@@ -31,6 +31,9 @@ Enhancements:
   include the example group name (Myron Marson, #1911)
 * Make `let` and `subject` threadsafe. (Josh Cheek, #1858)
 * Add version information into the JSON formatter. (Mark Swinson, #1883)
+* Add `--bisect` CLI option, which will repeatedly run your suite in
+  order to isolate the failures to the smallest reproducible case.
+  (Myron Marston, #1917)
 
 Bug Fixes:
 
