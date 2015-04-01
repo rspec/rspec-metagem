@@ -4,8 +4,8 @@ Behaviour Driven Development for Ruby
 
 # Description
 
-rspec is a meta-gem, which depends on the rspec-core, rspec-expectations
-and rspec-mocks gems. Each of these can be installed separately and actived in
+rspec is a meta-gem, which depends on the [rspec-core](https://github.com/rspec/rspec-core), [rspec-expectations](https://github.com/rspec/rspec-expectations)
+and [rspec-mocks](https://github.com/rspec/rspec-mocks) gems. Each of these can be installed separately and actived in
 isolation with the `gem` command. Among other benefits, this allows you to use
 rspec-expectations, for example, in Test::Unit::TestCase if you happen to
 prefer that style.
@@ -42,6 +42,6 @@ components of rspec that you're not using.
 
 ## Also see
 
-* [http://github.com/rspec/rspec-core](http://github.com/rspec/rspec-core)
-* [http://github.com/rspec/rspec-expectations](http://github.com/rspec/rspec-expectations)
-* [http://github.com/rspec/rspec-mocks](http://github.com/rspec/rspec-mocks)
+* <http://github.com/rspec/rspec-core>
+* <http://github.com/rspec/rspec-expectations>
+* <http://github.com/rspec/rspec-mocks>
