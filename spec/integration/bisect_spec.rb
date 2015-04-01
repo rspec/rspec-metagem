@@ -22,7 +22,7 @@ module RSpec::Core
       expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
         |Bisect started using options: "spec/rspec/core/resources/order_dependent_specs.rb --order defined"
         |Running suite to find failures... (n.nnnn seconds)
-        |Starting bisect with 1 failed example and 21 non-failing examples.
+        |Starting bisect with 1 failing example and 21 non-failing examples.
         |
         |Round 1: searching for 11 non-failing examples (of 21) to ignore: .. (n.nnnn seconds)
         |Round 2: searching for 6 non-failing examples (of 11) to ignore: . (n.nnnn seconds)
@@ -138,7 +138,7 @@ module RSpec::Core
         expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
           |Bisect started using options: "spec/rspec/core/resources/order_dependent_specs.rb --order defined"
           |Running suite to find failures... (n.nnnn seconds)
-          |Starting bisect with 1 failed example and 21 non-failing examples.
+          |Starting bisect with 1 failing example and 21 non-failing examples.
           |
           |Round 1: searching for 11 non-failing examples (of 21) to ignore: .. (n.nnnn seconds)
           |Round 2: searching for 6 non-failing examples (of 11) to ignore: .

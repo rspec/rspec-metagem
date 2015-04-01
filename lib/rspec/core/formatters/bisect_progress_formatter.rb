@@ -19,7 +19,7 @@ module RSpec
         end
 
         def bisect_original_run_complete(notification)
-          failures     = Helpers.pluralize(notification.failed_example_ids.size, "failed example")
+          failures     = Helpers.pluralize(notification.failed_example_ids.size, "failing example")
           non_failures = Helpers.pluralize(notification.non_failing_example_ids.size, "non-failing example")
 
           output.puts " (#{Helpers.format_duration(notification.duration)})"
