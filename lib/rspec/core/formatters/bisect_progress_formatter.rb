@@ -10,7 +10,7 @@ module RSpec
         Formatters.register self, :bisect_starting, :bisect_original_run_complete,
                             :bisect_round_started, :bisect_individual_run_complete,
                             :bisect_round_finished, :bisect_complete, :bisect_repro_command,
-                            :bisect_failed
+                            :bisect_failed, :bisect_aborted
 
         def bisect_starting(notification)
           options = notification.original_cli_args.join(' ')
@@ -57,6 +57,11 @@ module RSpec
 
         def bisect_failed(notification)
           output.puts "\nBisect failed! #{notification.failure_explanation}"
+        end
+
+        def bisect_aborted(notification)
+          output.puts "\n\nBisect aborted!"
+          output.puts "\nThe most minimal reproduction command discovered so far is:\n  #{notification.repro}"
         end
       end
 

@@ -8,6 +8,7 @@ module RSpec
       # repeatedly running different subsets of the suite.
       class ExampleMinimizer
         attr_reader :runner, :reporter, :all_example_ids, :failed_example_ids
+        attr_accessor :remaining_ids
 
         def initialize(runner, reporter)
           @runner   = runner
@@ -17,20 +18,29 @@ module RSpec
         def find_minimal_repro
           prep
 
-          remaining_ids = non_failing_example_ids
+          self.remaining_ids = non_failing_example_ids
 
-          each_bisect_round(lambda { remaining_ids }) do |subsets|
+          each_bisect_round do |subsets|
             ids_to_ignore = subsets.find do |ids|
               get_same_failures?(remaining_ids - ids)
             end
 
             next :done unless ids_to_ignore
 
-            remaining_ids -= ids_to_ignore
+            self.remaining_ids -= ids_to_ignore
             notify(:bisect_ignoring_ids, :ids_to_ignore => ids_to_ignore, :remaining_ids => remaining_ids)
           end
 
+          currently_needed_ids
+        end
+
+        def currently_needed_ids
           remaining_ids + failed_example_ids
+        end
+
+        def repro_command_for_currently_needed_ids
+          return runner.repro_command_from(currently_needed_ids) if remaining_ids
+          "(Not yet enough information to provide any repro command)"
         end
 
       private
@@ -66,19 +76,19 @@ module RSpec
 
         INFINITY = (1.0 / 0) # 1.8.7 doesn't define Float::INFINITY so we define our own...
 
-        def each_bisect_round(get_remaining_ids, &block)
+        def each_bisect_round(&block)
           last_round, duration = track_duration do
             1.upto(INFINITY) do |round|
-              break if :done == bisect_round(round, get_remaining_ids.call, &block)
+              break if :done == bisect_round(round, &block)
             end
           end
 
           notify(:bisect_complete, :round => last_round, :duration => duration,
                                    :original_non_failing_count => non_failing_example_ids.size,
-                                   :remaining_count => get_remaining_ids.call.size)
+                                   :remaining_count => remaining_ids.size)
         end
 
-        def bisect_round(round, remaining_ids)
+        def bisect_round(round)
           value, duration = track_duration do
             subsets = SubsetEnumerator.new(remaining_ids)
             notify(:bisect_round_started, :round => round,
@@ -88,7 +98,7 @@ module RSpec
             yield subsets
           end
 
-          notify(:bisect_round_finished, :duration => duration)
+          notify(:bisect_round_finished, :duration => duration, :round => round)
           value
         end
 

@@ -25,7 +25,7 @@ module RSpec::Core
       end
 
       def repro_command_from(locations)
-        ""
+        "rspec #{locations.sort.join(' ')}"
       end
     end
 
@@ -36,8 +36,15 @@ module RSpec::Core
         { "ex_5" => "ex_4" }
       ), RSpec::Core::NullReporter)
 
-      ids = minimizer.find_minimal_repro
-      expect(ids).to match_array(%w[ ex_2 ex_4 ex_5 ])
+      minimizer.find_minimal_repro
+      expect(minimizer.repro_command_for_currently_needed_ids).to eq("rspec ex_2 ex_4 ex_5")
+    end
+
+    context "when the `repro_command_for_currently_needed_ids` is queried before it has sufficient information" do
+      it 'returns an explanation that will be printed when the bisect run is aborted immediately' do
+        minimizer = Bisect::ExampleMinimizer.new(FakeRunner.new([], [], {}), RSpec::Core::NullReporter)
+        expect(minimizer.repro_command_for_currently_needed_ids).to include("Not yet enough information")
+      end
     end
   end
 end

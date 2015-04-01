@@ -1,11 +1,13 @@
+RSpec::Support.require_rspec_core "formatters/bisect_progress_formatter"
+
 module RSpec::Core
   RSpec.describe "Bisect", :slow, :simulate_shell_allowing_unquoted_ids do
     include FormatterSupport
 
-    def bisect(cli_args, expected_status)
+    def bisect(cli_args, expected_status=nil)
       RSpec.configuration.output_stream = formatter_output
       parser = Parser.new(cli_args + ["--bisect"])
-      expect(parser).to receive(:exit).with(expected_status)
+      expect(parser).to receive(:exit).with(expected_status) if expected_status
 
       expect {
         parser.parse
@@ -97,6 +99,55 @@ module RSpec::Core
       it 'stops bisecting and surfaces the problem to the user' do
         output = bisect(%W[spec/rspec/core/resources/inconsistently_ordered_specs.rb], 1)
         expect(output).to include("Bisect failed!", "The example ordering is inconsistent")
+      end
+    end
+
+    context "when the user aborts the bisect with ctrl-c" do
+      before do
+        formatter_subclass = Class.new(Formatters::BisectProgressFormatter) do
+          Formatters.register self, :bisect_round_finished
+
+          def bisect_round_finished(notification)
+            if notification.round == 2
+              Process.kill("INT", Process.pid)
+              # Process.kill is not a synchronous call, so to ensure the output
+              # below aborts at a deterministic place, we need to block here.
+              # The sleep will be interrupted by the signal once the OS sends it.
+              # For the most part, this is only needed on JRuby, but we saw
+              # the asynchronous behavior on an MRI 2.0 travis build as well.
+              sleep 5
+            else
+              super
+            end
+          end
+        end
+
+        stub_const(Formatters::BisectProgressFormatter.name, formatter_subclass)
+      end
+
+      it "prints the most minimal repro command it has found so far" do
+        expect {
+          bisect(%w[spec/rspec/core/resources/order_dependent_specs.rb --order defined])
+        }.to raise_error(an_object_having_attributes(
+          :class  => SystemExit,
+          :status => 1
+        ))
+
+        output = normalize_durations(formatter_output.string)
+
+        expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
+          |Bisect started using options: "spec/rspec/core/resources/order_dependent_specs.rb --order defined"
+          |Running suite to find failures... (n.nnnn seconds)
+          |Starting bisect with 1 failed example and 21 non-failing examples.
+          |
+          |Round 1: searching for 11 non-failing examples (of 21) to ignore: .. (n.nnnn seconds)
+          |Round 2: searching for 6 non-failing examples (of 11) to ignore: .
+          |
+          |Bisect aborted!
+          |
+          |The most minimal reproduction command discovered so far is:
+          |  rspec ./spec/rspec/core/resources/order_dependent_specs.rb[7:1,8:1,9:1,10:1,11:1,22:1] --order defined
+        EOS
       end
     end
   end

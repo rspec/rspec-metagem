@@ -31,7 +31,10 @@ module RSpec
             repro = Server.run do |server|
               runner    = Runner.new(server, @original_cli_args)
               minimizer = ExampleMinimizer.new(runner, reporter)
-              runner.repro_command_from(minimizer.find_minimal_repro)
+
+              gracefully_abort_on_sigint(minimizer)
+              minimizer.find_minimal_repro
+              minimizer.repro_command_for_currently_needed_ids
             end
 
             reporter.publish(:bisect_repro_command, :repro => repro)
@@ -51,6 +54,14 @@ module RSpec
 
         def bisect_formatter
           ENV['DEBUG_RSPEC_BISECT'] ? Formatters::BisectDebugFormatter : Formatters::BisectProgressFormatter
+        end
+
+        def gracefully_abort_on_sigint(minimizer)
+          trap('INT') do
+            repro = minimizer.repro_command_for_currently_needed_ids
+            reporter.publish(:bisect_aborted, :repro => repro)
+            exit(1)
+          end
         end
       end
     end
