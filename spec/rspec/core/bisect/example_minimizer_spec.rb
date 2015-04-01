@@ -1,5 +1,6 @@
 require 'rspec/core/bisect/example_minimizer'
 require 'rspec/core/formatters/bisect_formatter'
+require 'rspec/core/bisect/server'
 
 module RSpec::Core
   RSpec.describe Bisect::ExampleMinimizer do
@@ -38,6 +39,16 @@ module RSpec::Core
 
       minimizer.find_minimal_repro
       expect(minimizer.repro_command_for_currently_needed_ids).to eq("rspec ex_2 ex_4 ex_5")
+    end
+
+    it 'aborts early when no examples fail' do
+      minimizer = Bisect::ExampleMinimizer.new(FakeRunner.new(
+        %w[ ex_1 ex_2 ], [],  {}
+      ), RSpec::Core::NullReporter)
+
+      expect {
+        minimizer.find_minimal_repro
+      }.to raise_error(RSpec::Core::Bisect::BisectFailedError, /No failures found/i)
     end
 
     context "when the `repro_command_for_currently_needed_ids` is queried before it has sufficient information" do

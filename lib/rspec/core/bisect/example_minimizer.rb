@@ -54,9 +54,14 @@ module RSpec
             @failed_example_ids = original_results.failed_example_ids
           end
 
-          notify(:bisect_original_run_complete, :failed_example_ids => failed_example_ids,
-                                                :non_failing_example_ids => non_failing_example_ids,
-                                                :duration => duration)
+          if @failed_example_ids.empty?
+            raise BisectFailedError, "\n\nNo failures found. Bisect only works " \
+                  "in the presence of one or more failing examples."
+          else
+            notify(:bisect_original_run_complete, :failed_example_ids => failed_example_ids,
+                                                  :non_failing_example_ids => non_failing_example_ids,
+                                                  :duration => duration)
+          end
         end
 
         def non_failing_example_ids
