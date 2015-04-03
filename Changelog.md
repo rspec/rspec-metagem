@@ -4,8 +4,10 @@ Enhancements:
 
 * Expose `RSpec::Matchers::EnglishPhrasing` to make it easier to write
   nice failure messages in custom matchers. (Jared Beck, #736)
-* Make RSpecs fail matchers (for checking examples fail) publically available
-  for use by extension/plugin authors. (Charlie Rudolph, #729)
+* Add `RSpec::Matchers::FailMatchers`, a mixin which provides
+  `fail`, `fail_with` and `fail_including` matchers for use in
+  specifying that an expectation fails for use by
+  extension/plugin authors. (Charlie Rudolph, #729)
 * Avoid loading `tempfile` (and its dependencies) unless
   it is absolutely needed. (Myron Marston, #735)
 * Improve failure output when attempting to use `be_true` or `be_false`.
