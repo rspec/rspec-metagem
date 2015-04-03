@@ -211,6 +211,18 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
     end
   end
 
+  describe '--threadsafe', :threadsafe => true do
+    it 'sets :threadsafe => true' do
+      expect(parse_options('--threadsafe')).to include(:threadsafe => true)
+    end
+  end
+
+  describe '--no-threadsafe', :threadsafe => true do
+    it 'sets :threadsafe => false' do
+      expect(parse_options('--no-threadsafe')).to include(:threadsafe => false)
+    end
+  end
+
   describe "-I" do
     example "adds to :libs" do
       expect(parse_options('-I', 'a_dir')).to include(:libs => ['a_dir'])

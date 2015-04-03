@@ -2093,6 +2093,20 @@ module RSpec::Core
       include_examples "warning of deprecated `:example_group` during filtering configuration", :before, :each
     end
 
+    describe '#threadsafe', :threadsafe => true do
+      it 'defaults to false' do
+        expect(config.threadsafe).to eq true
+      end
+
+      it 'can be configured to true or false' do
+        config.threadsafe = true
+        expect(config.threadsafe).to eq true
+
+        config.threadsafe = false
+        expect(config.threadsafe).to eq false
+      end
+    end
+
     # assigns files_or_directories_to_run and triggers post-processing
     # via `files_to_run`.
     def assign_files_or_directories_to_run(*value)

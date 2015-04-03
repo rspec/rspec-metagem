@@ -308,6 +308,11 @@ module RSpec
       # Record the start time of the spec suite to measure load time.
       add_setting :start_time
 
+      # @macro add_setting
+      # Use threadsafe options where available.
+      # Currently this will place a mutex around memoized values such as let blocks.
+      add_setting :threadsafe
+
       # @private
       add_setting :tty
       # @private
@@ -361,6 +366,7 @@ module RSpec
         @requires = []
         @libs = []
         @derived_metadata_blocks = FilterableItemRepository::QueryOptimized.new(:any?)
+        @threadsafe = true
       end
 
       # @private

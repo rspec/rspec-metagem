@@ -1,3 +1,5 @@
+require 'rspec/core/reentrant_mutex'
+
 module RSpec
   module Core
     # This module is included in {ExampleGroup}, making the methods
@@ -53,11 +55,9 @@ module RSpec
       # @see #should_not
       # @see #is_expected
       def subject
-        __memoized.fetch(:subject) do
-          __memoized[:subject] = begin
-            described = described_class || self.class.metadata.fetch(:description_args).first
-            Class === described ? described.new : described
-          end
+        __memoized.fetch_or_store(:subject) do
+          described = described_class || self.class.metadata.fetch(:description_args).first
+          Class === described ? described.new : described
         end
       end
 
@@ -119,33 +119,85 @@ module RSpec
         expect(subject)
       end
 
+      # @private
+      # should just be placed in private section,
+      # but Ruby issues warnings on private attributes.
+      # and expanding it to the equivalent method upsets Rubocop,
+      # b/c it should obviously be a reader
+      attr_reader :__memoized
+      private :__memoized
+
     private
 
       # @private
-      def __memoized
-        @__memoized ||= {}
+      def initialize(*)
+        __init_memoized
+        super
+      end
+
+      # @private
+      def __init_memoized
+        @__memoized = if RSpec.configuration.threadsafe?
+                        ThreadsafeMemoized.new
+                      else
+                        NonThreadSafeMemoized.new
+                      end
+      end
+
+      # @private
+      class ThreadsafeMemoized
+        def initialize
+          @memoized = {}
+          @mutex = ReentrantMutex.new
+        end
+
+        def fetch_or_store(key)
+          @memoized.fetch(key) do # only first access pays for synchronization
+            @mutex.synchronize do
+              @memoized.fetch(key) { @memoized[key] = yield }
+            end
+          end
+        end
+      end
+
+      # @private
+      class NonThreadSafeMemoized
+        def initialize
+          @memoized = {}
+        end
+
+        def fetch_or_store(key)
+          @memoized.fetch(key) { @memoized[key] = yield }
+        end
       end
 
       # Used internally to customize the behavior of the
       # memoized hash when used in a `before(:context)` hook.
       #
       # @private
-      class ContextHookMemoizedHash
+      class ContextHookMemoized
         def self.isolate_for_context_hook(example_group_instance)
-          hash = self
+          exploding_memoized = self
 
           example_group_instance.instance_exec do
-            @__memoized = hash
+            @__memoized = exploding_memoized
 
             begin
               yield
             ensure
-              @__memoized = nil
+              # This is doing a reset instead of just isolating for context hook.
+              # Really, this should set the old @__memoized back into place.
+              #
+              # Caller is the before and after context hooks
+              # which are both called from self.run
+              # I didn't look at why it made tests fail, maybe an object was getting reused in RSpec tests,
+              # if so, then that probably already works, and its the tests that are wrong.
+              __init_memoized
             end
           end
         end
 
-        def self.fetch(key, &_block)
+        def self.fetch_or_store(key, &_block)
           description = if key == :subject
                           "subject"
                         else
@@ -206,9 +258,10 @@ EOS
         #   maybe 3 declarations) in any given example group, but that can
         #   quickly degrade with overuse. YMMV.
         #
-        # @note `let` uses an `||=` conditional that has the potential to
-        #   behave in surprising ways in examples that spawn separate threads,
-        #   though we have yet to see this in practice. You've been warned.
+        # @note `let` can be configured to be threadsafe or not.
+        #   If it is threadsafe, it will take longer to access the value.
+        #   If it is not threadsafe, it may behave in surprising ways in examples
+        #   that spawn separate threads. Specify this on `RSpec.configure`
         #
         # @note Because `let` is designed to create state that is reset between
         #   each example, and `before(:context)` is designed to setup state that
@@ -237,9 +290,9 @@ EOS
           # Apply the memoization. The method has been defined in an ancestor
           # module so we can use `super` here to get the value.
           if block.arity == 1
-            define_method(name) { __memoized.fetch(name) { |k| __memoized[k] = super(RSpec.current_example, &nil) } }
+            define_method(name) { __memoized.fetch_or_store(name) { super(RSpec.current_example, &nil) } }
           else
-            define_method(name) { __memoized.fetch(name) { |k| __memoized[k] = super(&nil) } }
+            define_method(name) { __memoized.fetch_or_store(name) { super(&nil) } }
           end
         end
 
@@ -311,6 +364,11 @@ EOS
         # name.
         #
         # When given a `name`, calling `super` in the block is not supported.
+        #
+        # @note `subject` can be configured to be threadsafe or not.
+        #   If it is threadsafe, it will take longer to access the value.
+        #   If it is not threadsafe, it may behave in surprising ways in examples
+        #   that spawn separate threads. Specify this on `RSpec.configure`
         #
         # @param name [String,Symbol] used to define an accessor with an
         #   intention revealing name
