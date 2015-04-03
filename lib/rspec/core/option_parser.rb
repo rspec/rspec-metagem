@@ -115,10 +115,6 @@ module RSpec::Core
           options[:color] = o
         end
 
-        parser.on('--[no-]threadsafe', 'Turn on threadsafety where available') do |o|
-          options[:threadsafe] = o
-        end
-
         parser.on('-p', '--[no-]profile [COUNT]',
                   'Enable profiling of examples and list the slowest examples (default: 10).') do |argument|
           options[:profile_examples] = if argument.nil?
