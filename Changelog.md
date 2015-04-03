@@ -29,6 +29,7 @@ Enhancements:
   relative to each other. (Myron Marston, #1908)
 * Set example group constant earlier so errors when evaluating the context
   include the example group name (Myron Marson, #1911)
+* Make `let` and `subject` threadsafe. (Josh Cheek, #1858)
 
 Bug Fixes:
 
