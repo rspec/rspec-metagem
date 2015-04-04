@@ -18,7 +18,6 @@ module RSpec
           hash[group] = begin
             examples = group.examples.dup
             examples = filter_manager.prune(examples)
-            examples.uniq!
             examples
           end
         end
