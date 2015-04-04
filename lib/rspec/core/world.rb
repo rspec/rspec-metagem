@@ -15,11 +15,7 @@ module RSpec
         @example_groups = []
         @example_group_counts_by_spec_file = Hash.new(0)
         @filtered_examples = Hash.new do |hash, group|
-          hash[group] = begin
-            examples = group.examples.dup
-            examples = filter_manager.prune(examples)
-            examples
-          end
+          hash[group] = filter_manager.prune(group.examples)
         end
       end
 
