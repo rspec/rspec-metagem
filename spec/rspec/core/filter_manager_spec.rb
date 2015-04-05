@@ -8,6 +8,17 @@ module RSpec::Core
     let(:inclusions) { filter_manager.inclusions }
     let(:exclusions) { filter_manager.exclusions }
 
+    def prune(examples)
+      # We want to enforce that our FilterManager, like a good citizen,
+      # leaves the input array unmodified. There are a lot of code paths
+      # through the filter manager, so rather than write one
+      # `it 'does not mutate the input'` example that would not cover
+      # all code paths, we're freezing the input here in order to
+      # enforce that for ALL examples in this file that call `prune`,
+      # the input array is not mutated.
+      filter_manager.prune(examples.freeze)
+    end
+
     %w[include inclusions exclude exclusions].each_slice(2) do |name, type|
       describe "##{name}" do
         subject(:rules) { send(type).rules }
@@ -114,7 +125,7 @@ module RSpec::Core
           add_filter(:line_number => line, :scoped_id => "1:1")
           filter_manager.exclude_with_low_priority :slow => true
 
-          expect(filter_manager.prune([included, excluded])).to eq([included])
+          expect(prune([included, excluded])).to eq([included])
         end
 
         it "prefers #{type} on entire group to exclusion filter on a nested example" do
@@ -127,7 +138,7 @@ module RSpec::Core
           add_filter(:line_number => line, :scoped_id => "1")
           filter_manager.exclude_with_low_priority :slow => true
 
-          expect(filter_manager.prune([included, excluded])).to eq([included])
+          expect(prune([included, excluded])).to eq([included])
         end
 
         it "still applies inclusion filters to examples from files with no #{type} filters" do
@@ -143,7 +154,7 @@ module RSpec::Core
           add_filter(:line_number => line, :scoped_id => "1:1")
           filter_manager.include_with_low_priority :foo => true
 
-          expect(filter_manager.prune([
+          expect(prune([
             included_via_loc_or_id, excluded_via_loc_or_id,
             included_via_tag, excluded_via_tag
           ]).map(&:description)).to eq([included_via_loc_or_id, included_via_tag].map(&:description))
@@ -178,7 +189,7 @@ module RSpec::Core
           filter_manager.add_ids(__FILE__, ["1:1", "1:3"])
           filter_manager.add_location(__FILE__, [line_1, line_2])
 
-          expect(filter_manager.prune([
+          expect(prune([
             matches_id, matches_line_number, matches_both, matches_neither
           ])).to eq([matches_id, matches_line_number, matches_both])
         end
@@ -198,7 +209,7 @@ module RSpec::Core
           expect {
             filter_manager.add_location(__FILE__, [line])
           }.to change {
-            filter_manager.prune([this_file_example, other_file_example]).map(&:description)
+            prune([this_file_example, other_file_example]).map(&:description)
           }.from([]).to([this_file_example.description])
         end
       end
@@ -209,21 +220,21 @@ module RSpec::Core
         excluded = group.example("exclude") {}
         filter_manager.include(:full_description => /include/)
         filter_manager.exclude_with_low_priority :slow => true
-        expect(filter_manager.prune([included, excluded])).to eq([included])
+        expect(prune([included, excluded])).to eq([included])
       end
 
       it "includes objects with tags matching inclusions" do
         included = example_with({:foo => :bar})
         excluded = example_with
         filter_manager.include :foo => :bar
-        expect(filter_manager.prune([included, excluded])).to eq([included])
+        expect(prune([included, excluded])).to eq([included])
       end
 
       it "excludes objects with tags matching exclusions" do
         included = example_with
         excluded = example_with({:foo => :bar})
         filter_manager.exclude :foo => :bar
-        expect(filter_manager.prune([included, excluded])).to eq([included])
+        expect(prune([included, excluded])).to eq([included])
       end
 
       it "prefers exclusion when matches previously set inclusion" do
@@ -231,7 +242,7 @@ module RSpec::Core
         excluded = example_with({:foo => :bar})
         filter_manager.include :foo => :bar
         filter_manager.exclude :foo => :bar
-        expect(filter_manager.prune([included, excluded])).to eq([included])
+        expect(prune([included, excluded])).to eq([included])
       end
 
       it "prefers inclusion when matches previously set exclusion" do
@@ -239,7 +250,7 @@ module RSpec::Core
         excluded = example_with
         filter_manager.exclude :foo => :bar
         filter_manager.include :foo => :bar
-        expect(filter_manager.prune([included, excluded])).to eq([included])
+        expect(prune([included, excluded])).to eq([included])
       end
 
       it "prefers previously set inclusion when exclusion matches but has lower priority" do
@@ -247,7 +258,7 @@ module RSpec::Core
         excluded = example_with
         filter_manager.include :foo => :bar
         filter_manager.exclude_with_low_priority :foo => :bar
-        expect(filter_manager.prune([included, excluded])).to eq([included])
+        expect(prune([included, excluded])).to eq([included])
       end
 
       it "prefers previously set exclusion when inclusion matches but has lower priority" do
@@ -255,7 +266,7 @@ module RSpec::Core
         excluded = example_with({:foo => :bar})
         filter_manager.exclude :foo => :bar
         filter_manager.include_with_low_priority :foo => :bar
-        expect(filter_manager.prune([included, excluded])).to eq([included])
+        expect(prune([included, excluded])).to eq([included])
       end
 
       context "with multiple inclusion filters" do
@@ -267,7 +278,7 @@ module RSpec::Core
           ]
 
           filter_manager.include :foo => true, :bar => true
-          expect(filter_manager.prune(examples)).to contain_exactly(included_1, included_2)
+          expect(prune(examples)).to contain_exactly(included_1, included_2)
         end
       end
 
@@ -280,7 +291,7 @@ module RSpec::Core
           end
 
           filter_manager.add_ids(Metadata.relative_path(__FILE__), %w[ 1:2 ])
-          expect(filter_manager.prune([ex_1, ex_2])).to eq([ex_2])
+          expect(prune([ex_1, ex_2])).to eq([ex_2])
         end
 
         it 'can work with absolute file paths' do
@@ -291,7 +302,7 @@ module RSpec::Core
           end
 
           filter_manager.add_ids(File.expand_path(__FILE__), %w[ 1:2 ])
-          expect(filter_manager.prune([ex_1, ex_2])).to eq([ex_2])
+          expect(prune([ex_1, ex_2])).to eq([ex_2])
         end
 
         it "can work with relative paths that lack the leading `.`" do
@@ -304,7 +315,7 @@ module RSpec::Core
           end
 
           filter_manager.add_ids(path, %w[ 1:2 ])
-          expect(filter_manager.prune([ex_1, ex_2])).to eq([ex_2])
+          expect(prune([ex_1, ex_2])).to eq([ex_2])
         end
 
         it 'can select groups' do
@@ -316,7 +327,7 @@ module RSpec::Core
           end
 
           filter_manager.add_ids(Metadata.relative_path(__FILE__), %w[ 2 ])
-          expect(filter_manager.prune([ex_1, ex_2, ex_3])).to eq([ex_2, ex_3])
+          expect(prune([ex_1, ex_2, ex_3])).to eq([ex_2, ex_3])
         end
 
         it 'uses the rerun file path when applying the id filter' do
@@ -334,7 +345,7 @@ module RSpec::Core
           RSpec.describe { include_examples "shared" }
 
           filter_manager.add_ids(__FILE__, %w[ 1:1 ])
-          expect(filter_manager.prune([ex_1, ex_2]).map(&:description)).to eq([ex_1].map(&:description))
+          expect(prune([ex_1, ex_2]).map(&:description)).to eq([ex_1].map(&:description))
         end
       end
     end
@@ -404,7 +415,7 @@ module RSpec::Core
       end
 
       def exclude?(example)
-        filter_manager.prune([example]).empty?
+        prune([example]).empty?
       end
 
       describe "the default :if filter" do

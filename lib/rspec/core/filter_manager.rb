@@ -32,6 +32,13 @@ module RSpec
       end
 
       def prune(examples)
+        # Semantically, this is unnecessary (the filtering below will return the empty
+        # array unmodified), but for perf reasons it's worth exiting early here. Users
+        # commonly have top-level examples groups that do not have any direct examples
+        # and instead have nested groups with examples. In that kind of situation,
+        # `examples` will be empty.
+        return examples if examples.empty?
+
         examples = prune_conditionally_filtered_examples(examples)
 
         if inclusions.standalone?
