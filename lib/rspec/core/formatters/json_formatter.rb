@@ -12,7 +12,10 @@ module RSpec
 
         def initialize(output)
           super
-          @output_hash = {}
+          @output_hash = {
+            :type => 'rspec-json',
+            :version => RSpec::Core::Version::STRING
+          }
         end
 
         def message(notification)
