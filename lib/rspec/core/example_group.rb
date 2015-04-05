@@ -517,6 +517,7 @@ module RSpec
           result_for_this_group && results_for_descendants
         rescue Pending::SkipDeclaredInExample => ex
           for_filtered_examples(reporter) { |example| example.skip_with_exception(reporter, ex) }
+          true
         rescue Exception => ex
           RSpec.world.wants_to_quit = true if fail_fast?
           for_filtered_examples(reporter) { |example| example.fail_with_exception(reporter, ex) }
