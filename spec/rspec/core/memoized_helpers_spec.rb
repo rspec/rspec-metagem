@@ -369,19 +369,6 @@ module RSpec::Core
     describe 'threadsafety', :threadsafe => true do
       before(:all) { eq 1 } # explanation: https://github.com/rspec/rspec-core/pull/1858/files#r25411166
 
-      class RaiseOnFailuresReporter < RSpec::Core::NullReporter
-        def self.example_failed(example)
-          raise example.exception
-        end
-      end
-
-      def describe_successfully(&describe_body)
-        example_group    = RSpec.describe(&describe_body)
-        ran_successfully = example_group.run RaiseOnFailuresReporter
-        expect(ran_successfully).to eq true
-      end
-
-
       context 'when not threadsafe' do
         # would be nice to not set this on the global
         before { RSpec.configuration.threadsafe = false }
