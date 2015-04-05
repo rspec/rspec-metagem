@@ -486,23 +486,21 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     context "in the example" do
       it "sets the example to pending" do
-        group = RSpec.describe do
+        group = describe_successfully do
           example { pending; fail }
         end
-        group.run
         expect_pending_result(group.examples.first)
       end
 
       it "allows post-example processing in around hooks (see https://github.com/rspec/rspec-core/issues/322)" do
         blah = nil
-        group = RSpec.describe do
+        describe_successfully do
           around do |example|
             example.run
             blah = :success
           end
-          example { pending }
+          example { pending; fail }
         end
-        group.run
         expect(blah).to be(:success)
       end
 
@@ -523,22 +521,20 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     context "in before(:each)" do
       it "sets each example to pending" do
-        group = RSpec.describe do
+        group = describe_successfully do
           before(:each) { pending }
           example { fail }
           example { fail }
         end
-        group.run
         expect_pending_result(group.examples.first)
         expect_pending_result(group.examples.last)
       end
 
       it 'sets example to pending when failure occurs in before(:each)' do
-        group = RSpec.describe do
+        group = describe_successfully do
           before(:each) { pending; fail }
           example {}
         end
-        group.run
         expect_pending_result(group.examples.first)
       end
     end
@@ -574,32 +570,29 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     context "in around(:each)" do
       it "sets the example to pending" do
-        group = RSpec.describe do
+        group = describe_successfully do
           around(:each) { pending }
           example { fail }
         end
-        group.run
         expect_pending_result(group.examples.first)
       end
 
       it 'sets example to pending when failure occurs in around(:each)' do
-        group = RSpec.describe do
+        group = describe_successfully do
           around(:each) { pending; fail }
           example {}
         end
-        group.run
         expect_pending_result(group.examples.first)
       end
     end
 
     context "in after(:each)" do
       it "sets each example to pending" do
-        group = RSpec.describe do
+        group = describe_successfully do
           after(:each) { pending; fail }
           example { }
           example { }
         end
-        group.run
         expect_pending_result(group.examples.first)
         expect_pending_result(group.examples.last)
       end
@@ -610,32 +603,29 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
   describe "#skip" do
     context "in the example" do
       it "sets the example to skipped" do
-        group = RSpec.describe do
+        group = describe_successfully do
           example { skip }
         end
-        group.run
         expect(group.examples.first).to be_skipped
       end
 
       it "allows post-example processing in around hooks (see https://github.com/rspec/rspec-core/issues/322)" do
         blah = nil
-        group = RSpec.describe do
+        describe_successfully do
           around do |example|
             example.run
             blah = :success
           end
           example { skip }
         end
-        group.run
         expect(blah).to be(:success)
       end
 
       context "with a message" do
         it "sets the example to skipped with the provided message" do
-          group = RSpec.describe do
+          group = describe_successfully do
             example { skip "lorem ipsum" }
           end
-          group.run
           expect(group.examples.first).to be_skipped_with("lorem ipsum")
         end
       end
@@ -643,12 +633,11 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     context "in before(:each)" do
       it "sets each example to skipped" do
-        group = RSpec.describe do
+        group = describe_successfully do
           before(:each) { skip }
           example {}
           example {}
         end
-        group.run
         expect(group.examples.first).to be_skipped
         expect(group.examples.last).to be_skipped
       end
@@ -656,12 +645,11 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     context "in before(:all)" do
       it "sets each example to skipped" do
-        group = RSpec.describe do
+        group = describe_successfully do
           before(:all) { skip("not done"); fail }
           example {}
           example {}
         end
-        group.run
         expect(group.examples.first).to be_skipped_with("not done")
         expect(group.examples.last).to be_skipped_with("not done")
       end
@@ -669,11 +657,10 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     context "in around(:each)" do
       it "sets the example to skipped" do
-        group = RSpec.describe do
+        group = describe_successfully do
           around(:each) { skip }
           example {}
         end
-        group.run
         expect(group.examples.first).to be_skipped
       end
     end
@@ -696,12 +683,12 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     RSpec.configuration.order = :random
 
-    RSpec.describe do
+    describe_successfully do
       # The bug was only triggered when the examples
       # were in nested contexts; see https://github.com/rspec/rspec-core/pull/837
       context { example { values << rand } }
       context { example { values << rand } }
-    end.run
+    end
 
     expect(values.uniq.count).to eq(2)
   end

@@ -517,9 +517,11 @@ module RSpec
           result_for_this_group && results_for_descendants
         rescue Pending::SkipDeclaredInExample => ex
           for_filtered_examples(reporter) { |example| example.skip_with_exception(reporter, ex) }
+          true
         rescue Exception => ex
           RSpec.world.wants_to_quit = true if fail_fast?
           for_filtered_examples(reporter) { |example| example.fail_with_exception(reporter, ex) }
+          false
         ensure
           run_after_context_hooks(new('after(:context) hook')) if should_run_context_hooks
           reporter.example_group_finished(self)

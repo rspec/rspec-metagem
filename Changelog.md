@@ -43,6 +43,9 @@ Bug Fixes:
   the `its-it` gem). (Alex Kwiatkowski, Ryan Ong, #1907)
 * Make `let` work properly when defined in a shared context that is applied
   to an individual example via metadata. (Myron Marston, #1912)
+* Fix `before(:context) { skip }` so that it does not wrongly cause the
+  spec suite to exit with a non-zero status when no examples failed.
+  (Myron Marston, #1926)
 
 ### 3.2.2 / 2015-03-11
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.2.1...v3.2.2)
