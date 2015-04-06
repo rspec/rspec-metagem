@@ -1,5 +1,5 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.2.2...master)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.2.3...master)
 
 Enhancements:
 
@@ -39,11 +39,17 @@ Bug Fixes:
   Windows. (Myron Marston, #1887)
 * Fix `RSpec::Core::RakeTask#failure_message` so that it gets printed
   when the task failed. (Myron Marston, #1905)
+* Make `let` work properly when defined in a shared context that is applied
+  to an individual example via metadata. (Myron Marston, #1912)
+
+### 3.2.3 / 2015-04-06
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.2.2...v3.2.3)
+
+Bug Fixes:
+
 * Fix how the DSL methods are defined so that RSpec is compatible with
   gems that define methods of the same name on `Kernel` (such as
   the `its-it` gem). (Alex Kwiatkowski, Ryan Ong, #1907)
-* Make `let` work properly when defined in a shared context that is applied
-  to an individual example via metadata. (Myron Marston, #1912)
 * Fix `before(:context) { skip }` so that it does not wrongly cause the
   spec suite to exit with a non-zero status when no examples failed.
   (Myron Marston, #1926)
