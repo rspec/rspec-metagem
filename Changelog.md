@@ -1,4 +1,5 @@
-### Development
+### 3.3 Development
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.2.1...master)
 
 Enhancements:
 
@@ -20,6 +21,12 @@ Bug Fixes:
 
 * Make `contain_exactly` / `match_array` work with strict test doubles
   that have not defined `<=>`. (Myron Marston, #758)
+
+### 3.2.1 / 2015-04-06
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.2.0...v3.2.1)
+
+Bug Fixes:
+
 * Prevent `Range`s from being enumerated when generating matcher
   descriptions. (Jon Rowe, #755)
 * Ensure exception messages are compared as strings in the `raise_error`
