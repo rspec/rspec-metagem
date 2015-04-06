@@ -30,6 +30,7 @@ Enhancements:
 * Set example group constant earlier so errors when evaluating the context
   include the example group name (Myron Marson, #1911)
 * Make `let` and `subject` threadsafe. (Josh Cheek, #1858)
+* Add version information into the JSON formatter. (Mark Swinson, #1883)
 
 Bug Fixes:
 
