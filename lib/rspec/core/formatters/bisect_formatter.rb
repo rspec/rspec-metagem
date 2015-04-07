@@ -17,7 +17,7 @@ module RSpec
 
         def initialize(_output)
           port                = RSpec.configuration.drb_port
-          drb_uri             = "druby://127.0.0.1:#{port}"
+          drb_uri             = "druby://localhost:#{port}"
           @all_example_ids    = []
           @failed_example_ids = []
           @bisect_server      = DRbObject.new_with_uri(drb_uri)
