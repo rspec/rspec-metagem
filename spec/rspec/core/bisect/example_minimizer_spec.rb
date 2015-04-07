@@ -44,7 +44,7 @@ module RSpec::Core
       expect(minimizer.repro_command_for_currently_needed_ids).to eq("rspec ex_2 ex_4 ex_5")
     end
 
-    it 'ignores flapping examples that did not fail on the initial full run but fail on fail runs' do
+    it 'ignores flapping examples that did not fail on the initial full run but fail on later runs' do
       def fake_runner.run(ids)
         super.tap do |results|
           @run_count ||= 0

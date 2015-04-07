@@ -2,7 +2,7 @@ Feature: Bisect
 
   RSpec's `--order random` and `--seed` options help surface flickering examples that only fail when one or more other examples are executed first. It can be very difficult to isolate the exact combination of examples that triggers the failure. The `--bisect` flag helps solve that problem.
 
-  Pass the `--bisect` option (in addition to `--seed` any other options) and RSpec will repeatedly run subsets of your suite in order to isolate the minimal set of examples that reproduce the failure.
+  Pass the `--bisect` option (in addition to `--seed` and any other options) and RSpec will repeatedly run subsets of your suite in order to isolate the minimal set of examples that reproduce the failure.
 
   Scenario: Use `--bisect` flag to create a minimal repro case for the ordering dependency
     Given a file named "lib/calculator.rb" with:
