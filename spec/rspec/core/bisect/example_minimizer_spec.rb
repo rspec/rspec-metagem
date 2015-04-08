@@ -1,37 +1,12 @@
 require 'rspec/core/bisect/example_minimizer'
 require 'rspec/core/formatters/bisect_formatter'
 require 'rspec/core/bisect/server'
+require 'support/fake_bisect_runner'
 
 module RSpec::Core
   RSpec.describe Bisect::ExampleMinimizer do
-    RunResults = Formatters::BisectFormatter::RunResults
-
-    FakeRunner = Struct.new(:all_ids, :always_failures, :dependent_failures) do
-      def original_cli_args
-        []
-      end
-
-      def original_results
-        failures = always_failures | dependent_failures.keys
-        RunResults.new(all_ids, failures.sort)
-      end
-
-      def run(ids)
-        failures = ids & always_failures
-        dependent_failures.each do |failing_example, depends_upon|
-          failures << failing_example if ids.include?(depends_upon)
-        end
-
-        RunResults.new(ids.sort, failures.sort)
-      end
-
-      def repro_command_from(locations)
-        "rspec #{locations.sort.join(' ')}"
-      end
-    end
-
     let(:fake_runner) do
-      FakeRunner.new(
+      FakeBisectRunner.new(
         %w[ ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ex_7 ex_8 ],
         %w[ ex_2 ],
         { "ex_5" => "ex_4" }
@@ -60,7 +35,7 @@ module RSpec::Core
     end
 
     it 'aborts early when no examples fail' do
-      minimizer = Bisect::ExampleMinimizer.new(FakeRunner.new(
+      minimizer = Bisect::ExampleMinimizer.new(FakeBisectRunner.new(
         %w[ ex_1 ex_2 ], [],  {}
       ), RSpec::Core::NullReporter)
 
@@ -71,7 +46,7 @@ module RSpec::Core
 
     context "when the `repro_command_for_currently_needed_ids` is queried before it has sufficient information" do
       it 'returns an explanation that will be printed when the bisect run is aborted immediately' do
-        minimizer = Bisect::ExampleMinimizer.new(FakeRunner.new([], [], {}), RSpec::Core::NullReporter)
+        minimizer = Bisect::ExampleMinimizer.new(FakeBisectRunner.new([], [], {}), RSpec::Core::NullReporter)
         expect(minimizer.repro_command_for_currently_needed_ids).to include("Not yet enough information")
       end
     end

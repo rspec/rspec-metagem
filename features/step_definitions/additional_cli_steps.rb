@@ -1,5 +1,7 @@
 require 'rspec/core'  # to fix annoying "undefined method `configuration' for RSpec:Module (NoMethodError)"
 
+require './spec/support/formatter_support'
+
 Then /^the output should contain all of these:$/ do |table|
   table.raw.flatten.each do |string|
     assert_partial_output(string, all_output)
@@ -164,3 +166,25 @@ Given(/^files "(.*?)" through "(.*?)" with an unrelated passing spec in each fil
     EOS
   end
 end
+
+Then(/^bisect should (succeed|fail) with output like:$/) do |succeed, expected_output|
+  last_process = only_processes.last
+  expect(last_exit_status).to eq(succeed == "succeed" ? 0 : 1)
+
+  expected = normalize_durations(expected_output)
+  actual   = normalize_durations(last_process.stdout)
+
+  expect(actual.sub(/\n+\Z/, '')).to eq(expected)
+end
+
+When(/^I run `([^`]+)` with `([^=]+)=([^`]+)` set$/) do |cmd, env_key, env_value|
+  set_env(env_key, env_value)
+  step "I run `#{cmd}`"
+end
+
+When(/^I run `([^`]+)` and abort in the middle with ctrl\-c$/) do |cmd|
+  set_env('RUBYOPT', ENV['RUBYOPT'] + " -r#{File.expand_path("../../support/send_sigint_during_bisect.rb", __FILE__)}")
+  step "I run `#{cmd}`"
+end
+
+World(FormatterSupport)
