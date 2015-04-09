@@ -74,7 +74,6 @@ RSpec.describe RSpec::Core::DRbRunner, :isolated_directory => true, :isolated_ho
 
     before(:all) do
       @drb_port = '8990'
-      @drb_example_file_counter = 0
       DRb::start_service("druby://127.0.0.1:#{@drb_port}", SimpleDRbSpecServer)
     end
 

@@ -1,3 +1,5 @@
+RSpec::Support.require_rspec_core "shell_escape"
+
 module RSpec
   module Core
     module Formatters
@@ -82,6 +84,22 @@ module RSpec
         # @return [String] pluralized word
         def self.pluralize(count, string)
           "#{count} #{string}#{'s' unless count.to_f == 1}"
+        end
+
+        # @api private
+        # Given a list of example ids, organizes them into a compact, ordered list.
+        def self.organize_ids(ids)
+          grouped = ids.inject(Hash.new { |h, k| h[k] = [] }) do |hash, id|
+            file, id = id.split(Configuration::ON_SQUARE_BRACKETS)
+            hash[file] << id
+            hash
+          end
+
+          grouped.sort_by(&:first).map do |file, grouped_ids|
+            grouped_ids = grouped_ids.sort_by { |id| id.split(':').map(&:to_i) }
+            id = Metadata.id_from(:rerun_file_path => file, :scoped_id => grouped_ids.join(','))
+            ShellEscape.conditionally_quote(id)
+          end
         end
       end
     end

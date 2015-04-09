@@ -5,11 +5,18 @@ module RSpec::Core
   # @private
   class Parser
     def self.parse(args)
-      new.parse(args)
+      new(args).parse
     end
 
-    def parse(args)
-      return {} if args.empty?
+    attr_reader :original_args
+
+    def initialize(original_args)
+      @original_args = original_args
+    end
+
+    def parse
+      return { :files_or_directories_to_run => [] } if original_args.empty?
+      args = original_args.dup
 
       options = args.delete('--tty') ? { :tty => true } : {}
       begin
@@ -18,6 +25,7 @@ module RSpec::Core
         abort "#{e.message}\n\nPlease use --help for a listing of valid options"
       end
 
+      options[:files_or_directories_to_run] = args
       options
     end
 
@@ -54,6 +62,11 @@ module RSpec::Core
           options[:order] = "rand:#{seed}"
         end
 
+        parser.on('--bisect [verbose]', 'Repeatedly runs the suite in order to isolate the failures to the ',
+                  '  smallest reproducible case.') do |argument|
+          bisect_and_exit(argument)
+        end
+
         parser.on('--[no-]fail-fast', 'Abort the run on first failure.') do |value|
           set_fail_fast(options, value)
         end
@@ -77,9 +90,7 @@ module RSpec::Core
         end
 
         parser.on('--init', 'Initialize your project with RSpec.') do |_cmd|
-          RSpec::Support.require_rspec_core "project_initializer"
-          ProjectInitializer.new.run
-          exit
+          initialize_project_and_exit
         end
 
         parser.separator("\n  **** Output ****\n\n")
@@ -212,8 +223,7 @@ FILTERING
         parser.separator("\n  **** Utility ****\n\n")
 
         parser.on('-v', '--version', 'Display the version.') do
-          puts RSpec::Core::Version::STRING
-          exit
+          print_version_and_exit
         end
 
         # These options would otherwise be confusing to users, so we forcibly
@@ -225,9 +235,7 @@ FILTERING
         invalid_options = %w[-d --I]
 
         parser.on_tail('-h', '--help', "You're looking at it.") do
-          # Removing the blank invalid options from the output.
-          puts parser.to_s.gsub(/^\s+(#{invalid_options.join('|')})\s*$\n/, '')
-          exit
+          print_help_and_exit(parser, invalid_options)
         end
 
         # This prevents usage of the invalid_options.
@@ -252,6 +260,40 @@ FILTERING
     def configure_only_failures(options)
       options[:only_failures] = true
       add_tag_filter(options, :inclusion_filter, :last_run_status, 'failed')
+    end
+
+    def initialize_project_and_exit
+      RSpec::Support.require_rspec_core "project_initializer"
+      ProjectInitializer.new.run
+      exit
+    end
+
+    def bisect_and_exit(argument)
+      RSpec::Support.require_rspec_core "bisect/coordinator"
+
+      success = Bisect::Coordinator.bisect_with(
+        original_args,
+        RSpec.configuration,
+        bisect_formatter_for(argument)
+      )
+
+      exit(success ? 0 : 1)
+    end
+
+    def bisect_formatter_for(argument)
+      return Formatters::BisectDebugFormatter if argument == "verbose"
+      Formatters::BisectProgressFormatter
+    end
+
+    def print_version_and_exit
+      puts RSpec::Core::Version::STRING
+      exit
+    end
+
+    def print_help_and_exit(parser, invalid_options)
+      # Removing the blank invalid options from the output.
+      puts parser.to_s.gsub(/^\s+(#{invalid_options.join('|')})\s*$\n/, '')
+      exit
     end
   end
 end

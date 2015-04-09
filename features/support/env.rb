@@ -1,6 +1,9 @@
 require 'aruba/cucumber'
 
 Before do
+  # Force ids to be printed unquoted for consistency
+  set_env('SHELL', '/usr/bin/bash')
+
   if RUBY_PLATFORM =~ /java/ || defined?(Rubinius)
     @aruba_timeout_seconds = 60
   else

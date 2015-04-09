@@ -16,9 +16,17 @@ module RSpec
         merge(array)
       end
 
+      def empty?
+        @values.empty?
+      end
+
       def <<(key)
         @values[key] = true
         self
+      end
+
+      def delete(key)
+        @values.delete(key)
       end
 
       def each(&block)

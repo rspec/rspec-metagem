@@ -90,6 +90,15 @@ RSpec.configure do |c|
   c.raise_errors_for_deprecations!
   c.color = true
   c.include CommonHelpers
+
+  c.expect_with :rspec do |expectations|
+    expectations.include_chain_clauses_in_custom_matcher_descriptions = true
+  end
+
+  c.around(:example, :simulate_shell_allowing_unquoted_ids) do |ex|
+    with_env_vars('SHELL' => '/usr/local/bin/bash', &ex)
+  end
+
   c.filter_run_excluding :ruby => lambda {|version|
     case version.to_s
     when "!jruby"

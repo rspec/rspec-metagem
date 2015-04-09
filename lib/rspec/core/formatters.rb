@@ -71,6 +71,7 @@ module RSpec::Core::Formatters
   autoload :ProgressFormatter,      'rspec/core/formatters/progress_formatter'
   autoload :ProfileFormatter,       'rspec/core/formatters/profile_formatter'
   autoload :JsonFormatter,          'rspec/core/formatters/json_formatter'
+  autoload :BisectFormatter,        'rspec/core/formatters/bisect_formatter'
 
   # Register the formatter class
   # @param formatter_class [Class] formatter class to register
@@ -186,6 +187,8 @@ module RSpec::Core::Formatters
         ProgressFormatter
       when 'j', 'json'
         JsonFormatter
+      when 'bisect'
+        BisectFormatter
       end
     end
 

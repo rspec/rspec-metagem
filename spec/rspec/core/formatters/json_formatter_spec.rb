@@ -14,8 +14,8 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
   include FormatterSupport
 
   it "can be loaded via `--format json`" do
-    formatter_output = run_example_specs_with_formatter("json", false)
-    parsed = JSON.parse(formatter_output)
+    output = run_example_specs_with_formatter("json", false)
+    parsed = JSON.parse(output)
     expect(parsed.keys).to include("examples", "summary", "summary_line")
   end
 
@@ -82,7 +82,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
       :summary_line => "3 examples, 1 failure, 1 pending"
     }
     expect(formatter.output_hash).to eq expected
-    expect(output.string).to eq expected.to_json
+    expect(formatter_output.string).to eq expected.to_json
   end
 
   describe "#stop" do
@@ -94,9 +94,9 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
 
   describe "#close" do
     it "outputs the results as a JSON string" do
-      expect(output.string).to eq ""
+      expect(formatter_output.string).to eq ""
       send_notification :close, null_notification
-      expect(output.string).to eq({
+      expect(formatter_output.string).to eq({
         :version => RSpec::Core::Version::STRING
       }.to_json)
     end

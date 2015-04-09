@@ -382,6 +382,16 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
       end
     end
 
+    it 'ignores file or dir names put in one of the option files or in SPEC_OPTS, since those are for persistent options' do
+      File.open("./.rspec", "w") { |f| f << "path/to/spec_1.rb" }
+      File.open("./.rspec-local", "w") { |f| f << "path/to/spec_2.rb" }
+      File.open(File.expand_path("~/.rspec"), "w") {|f| f << "path/to/spec_3.rb"}
+      with_env_vars 'SPEC_OPTS' => "path/to/spec_4.rb" do
+        options = parse_options()
+        expect(options[:files_or_directories_to_run]).to eq([])
+      end
+    end
+
     it "prefers SPEC_OPTS over CLI" do
       with_env_vars 'SPEC_OPTS' => "--format spec_opts" do
         expect(parse_options("--format", "cli")[:formatters]).to eq([['spec_opts']])

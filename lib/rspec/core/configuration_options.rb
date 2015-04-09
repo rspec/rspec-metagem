@@ -119,11 +119,12 @@ module RSpec
       end
 
       def env_options
-        ENV["SPEC_OPTS"] ? Parser.parse(Shellwords.split(ENV["SPEC_OPTS"])) : {}
+        return {} unless ENV['SPEC_OPTS']
+        parse_args_ignoring_files_or_dirs_to_run(Shellwords.split(ENV["SPEC_OPTS"]))
       end
 
       def command_line_options
-        @command_line_options ||= Parser.parse(@args).merge :files_or_directories_to_run => @args
+        @command_line_options ||= Parser.parse(@args)
       end
 
       def custom_options
@@ -143,7 +144,13 @@ module RSpec
       end
 
       def options_from(path)
-        Parser.parse(args_from_options_file(path))
+        parse_args_ignoring_files_or_dirs_to_run(args_from_options_file(path))
+      end
+
+      def parse_args_ignoring_files_or_dirs_to_run(args)
+        options = Parser.parse(args)
+        options.delete(:files_or_directories_to_run)
+        options
       end
 
       def args_from_options_file(path)

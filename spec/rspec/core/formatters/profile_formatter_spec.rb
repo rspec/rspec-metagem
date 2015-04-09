@@ -15,24 +15,24 @@ RSpec.describe RSpec::Core::Formatters::ProfileFormatter do
 
     shared_examples_for "profiles examples" do
       it "names the example" do
-        expect(output.string).to match(/group example/m)
+        expect(formatter_output.string).to match(/group example/m)
       end
 
       it "prints the time" do
-        expect(output.string).to match(/0(\.\d+)? seconds/)
+        expect(formatter_output.string).to match(/0(\.\d+)? seconds/)
       end
 
       it "prints the path" do
         filename = __FILE__.split(File::SEPARATOR).last
-        expect(output.string).to match(/#{filename}\:#{example_line_number}/)
+        expect(formatter_output.string).to match(/#{filename}\:#{example_line_number}/)
       end
 
       it "prints the percentage taken from the total runtime" do
-        expect(output.string).to match(/, 100.0% of total time\):/)
+        expect(formatter_output.string).to match(/, 100.0% of total time\):/)
       end
 
       it "doesn't profile a single example group" do
-        expect(output.string).not_to match(/slowest example groups/)
+        expect(formatter_output.string).not_to match(/slowest example groups/)
       end
     end
 
@@ -71,15 +71,15 @@ RSpec.describe RSpec::Core::Formatters::ProfileFormatter do
       end
 
       it "prints the slowest example groups" do
-        expect(output.string).to match(/slowest example groups/)
+        expect(formatter_output.string).to match(/slowest example groups/)
       end
 
       it "prints the time" do
-        expect(output.string).to match(/0(\.\d+)? seconds/)
+        expect(formatter_output.string).to match(/0(\.\d+)? seconds/)
       end
 
       it "ranks the example groups by average time" do
-        expect(output.string).to match(/slow group(.*)fast group/m)
+        expect(formatter_output.string).to match(/slow group(.*)fast group/m)
       end
     end
 
