@@ -62,9 +62,9 @@ module RSpec::Core
           options[:order] = "rand:#{seed}"
         end
 
-        parser.on('--bisect', 'Repeatedly runs the suite in order to isolate the failures to the ',
-                  '  smallest reproducible case.') do
-          bisect_and_exit
+        parser.on('--bisect [verbose]', 'Repeatedly runs the suite in order to isolate the failures to the ',
+                  '  smallest reproducible case.') do |argument|
+          bisect_and_exit(argument)
         end
 
         parser.on('--[no-]fail-fast', 'Abort the run on first failure.') do |value|
@@ -268,10 +268,21 @@ FILTERING
       exit
     end
 
-    def bisect_and_exit
+    def bisect_and_exit(argument)
       RSpec::Support.require_rspec_core "bisect/coordinator"
-      success = Bisect::Coordinator.bisect_with(original_args, RSpec.configuration)
+
+      success = Bisect::Coordinator.bisect_with(
+        original_args,
+        RSpec.configuration,
+        bisect_formatter_for(argument)
+      )
+
       exit(success ? 0 : 1)
+    end
+
+    def bisect_formatter_for(argument)
+      return Formatters::BisectDebugFormatter if argument == "verbose"
+      Formatters::BisectProgressFormatter
     end
 
     def print_version_and_exit

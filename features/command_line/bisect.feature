@@ -6,7 +6,7 @@ Feature: Bisect
 
   At any point during the bisect run, you can hit ctrl-c to abort and it will provide you with the most minimal reproduction command it has discovered so far.
 
-  To get more detailed output (particularly useful if you want to report a bug with bisect), you can set the `DEBUG_RSPEC_BISECT` environment variable.
+  To get more detailed output (particularly useful if you want to report a bug with bisect), use `--bisect=verbose`.
 
   Background:
     Given a file named "lib/calculator.rb" with:
@@ -88,8 +88,8 @@ Feature: Bisect
     When I run `rspec ./spec/calculator_10_spec.rb[1:1] ./spec/calculator_1_spec.rb[1:1] ./spec/calculator_3_spec.rb[1:1] --seed 1234`
     Then the output should contain "3 examples, 1 failure"
 
-  Scenario: Use DEBUG_RSPEC_BISECT=1 to enable verbose debug mode for more detail
-    When I run `rspec --seed 1234 --bisect` with `DEBUG_RSPEC_BISECT=1` set
+  Scenario: Use `--bisect=verbose` to enable verbose debug mode for more detail
+    When I run `rspec --seed 1234 --bisect=verbose`
     Then bisect should succeed with output like:
       """
       Bisect started using options: "--seed 1234"

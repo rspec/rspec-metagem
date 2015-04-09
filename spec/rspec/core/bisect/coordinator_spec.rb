@@ -14,12 +14,12 @@ module RSpec::Core
       )
     end
 
-    def find_minimal_repro(output)
+    def find_minimal_repro(output, formatter=Formatters::BisectProgressFormatter)
       allow(Bisect::Server).to receive(:run).and_yield(instance_double(Bisect::Server))
       allow(Bisect::Runner).to receive(:new).and_return(fake_runner)
 
       RSpec.configuration.output_stream = output
-      Bisect::Coordinator.bisect_with([], RSpec.configuration)
+      Bisect::Coordinator.bisect_with([], RSpec.configuration, formatter)
     ensure
       RSpec.reset # so that RSpec.configuration.output_stream isn't closed
     end
@@ -47,7 +47,7 @@ module RSpec::Core
 
     it 'can use the bisect debug formatter to get detailed progress' do
       output = StringIO.new
-      with_env_vars('DEBUG_RSPEC_BISECT' => '1') { find_minimal_repro(output) }
+      find_minimal_repro(output, Formatters::BisectDebugFormatter)
       output = normalize_durations(output.string)
 
       expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
@@ -95,8 +95,8 @@ module RSpec::Core
     end
 
     context "when the user aborst the bisect with ctrl-c" do
-      before do
-        formatter_subclass = Class.new(Formatters::BisectProgressFormatter) do
+      let(:aborting_formatter) do
+        Class.new(Formatters::BisectProgressFormatter) do
           Formatters.register self
 
           def bisect_round_finished(notification)
@@ -111,14 +111,12 @@ module RSpec::Core
             sleep 5
           end
         end
-
-        stub_const(Formatters::BisectProgressFormatter.name, formatter_subclass)
       end
 
       it "prints the most minimal repro command it has found so far" do
         output = StringIO.new
         expect {
-          find_minimal_repro(output)
+          find_minimal_repro(output, aborting_formatter)
         }.to raise_error(an_object_having_attributes(
           :class  => SystemExit,
           :status => 1

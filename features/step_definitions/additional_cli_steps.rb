@@ -177,11 +177,6 @@ Then(/^bisect should (succeed|fail) with output like:$/) do |succeed, expected_o
   expect(actual.sub(/\n+\Z/, '')).to eq(expected)
 end
 
-When(/^I run `([^`]+)` with `([^=]+)=([^`]+)` set$/) do |cmd, env_key, env_value|
-  set_env(env_key, env_value)
-  step "I run `#{cmd}`"
-end
-
 When(/^I run `([^`]+)` and abort in the middle with ctrl\-c$/) do |cmd|
   set_env('RUBYOPT', ENV['RUBYOPT'] + " -r#{File.expand_path("../../support/send_sigint_during_bisect.rb", __FILE__)}")
   step "I run `#{cmd}`"

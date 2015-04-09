@@ -12,7 +12,7 @@ module RSpec
 
         def initialize(server, original_cli_args)
           @server            = server
-          @original_cli_args = original_cli_args - ["--bisect"]
+          @original_cli_args = original_cli_args.reject { |arg| arg.start_with?("--bisect") }
         end
 
         def run(locations)

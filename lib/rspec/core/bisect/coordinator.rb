@@ -15,17 +15,18 @@ module RSpec
       #   - Formatters::BisectProgressFormatter: provides progress updates
       #     to the user.
       class Coordinator
-        def self.bisect_with(original_cli_args, configuration)
-          new(original_cli_args, configuration).bisect
+        def self.bisect_with(original_cli_args, configuration, formatter)
+          new(original_cli_args, configuration, formatter).bisect
         end
 
-        def initialize(original_cli_args, configuration)
+        def initialize(original_cli_args, configuration, formatter)
           @original_cli_args = original_cli_args
           @configuration     = configuration
+          @formatter         = formatter
         end
 
         def bisect
-          @configuration.add_formatter bisect_formatter
+          @configuration.add_formatter @formatter
 
           reporter.close_after do
             repro = Server.run do |server|
@@ -50,10 +51,6 @@ module RSpec
 
         def reporter
           @configuration.reporter
-        end
-
-        def bisect_formatter
-          ENV['DEBUG_RSPEC_BISECT'] ? Formatters::BisectDebugFormatter : Formatters::BisectProgressFormatter
         end
 
         def gracefully_abort_on_sigint(minimizer)

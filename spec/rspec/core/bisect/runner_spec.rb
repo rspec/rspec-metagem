@@ -70,10 +70,12 @@ module RSpec::Core
         expect(cmd.scan("--drb-port").count).to eq(1)
       end
 
-      it 'ignores the `--bisect` option since that would infinitely recurse' do
-        original_cli_args << "--bisect"
-        cmd = command_for([])
-        expect(cmd).to exclude("--bisect")
+      %w[ --bisect --bisect=verbose --bisect=blah ].each do |value|
+        it "ignores a `#{value}` option since that would infinitely recurse" do
+          original_cli_args << value
+          cmd = command_for([])
+          expect(cmd).to exclude(value)
+        end
       end
 
       it 'uses the bisect formatter' do
