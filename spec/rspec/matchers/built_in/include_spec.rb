@@ -51,6 +51,12 @@ RSpec.describe "#include matcher" do
           expect("abc\ndef").to include("g", "h")
         }.to fail_matching("expected \"abc\\ndef\" to include \"g\" and \"h\"\nDiff")
       end
+
+      it "does not diff when lines match but are not an exact match" do
+        expect {
+          expect(" foo\nbar\nbazz").to include("foo", "bar", "gaz")
+        }.to fail_with(a_string_not_matching(/Diff/i))
+      end
     end
 
     context "for an array target" do
@@ -578,4 +584,3 @@ RSpec.describe "#include matcher" do
     raise_error(RSpec::Expectations::ExpectationNotMetError, /#{Regexp.escape(message)}/)
   end
 end
-

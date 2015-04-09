@@ -46,7 +46,7 @@ module RSpec
         # @api private
         # @return [Boolean]
         def diffable?
-          true
+          !diff_would_wrongly_highlight_matched_item?
         end
 
       private
@@ -99,6 +99,15 @@ module RSpec
           return false unless actual.respond_to?(:any?)
 
           actual.any? { |value| values_match?(expected_item, value) }
+        end
+
+        def diff_would_wrongly_highlight_matched_item?
+          return false unless actual.is_a?(String) && expected.is_a?(Array)
+
+          lines = actual.split("\n")
+          expected.any? do |str|
+            actual.include?(str) && lines.none? { |line| line == str }
+          end
         end
       end
     end
