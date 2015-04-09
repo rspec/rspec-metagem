@@ -62,7 +62,7 @@ module RSpec::Core
           options[:order] = "rand:#{seed}"
         end
 
-        parser.on('--bisect [verbose]', 'Repeatedly runs the suite in order to isolate the failures to the ',
+        parser.on('--bisect[=verbose]', 'Repeatedly runs the suite in order to isolate the failures to the ',
                   '  smallest reproducible case.') do |argument|
           bisect_and_exit(argument)
         end
