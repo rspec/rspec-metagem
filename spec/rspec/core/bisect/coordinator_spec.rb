@@ -14,18 +14,21 @@ module RSpec::Core
       )
     end
 
-    def find_minimal_repro
+    def find_minimal_repro(output)
       allow(Bisect::Server).to receive(:run).and_yield(instance_double(Bisect::Server))
       allow(Bisect::Runner).to receive(:new).and_return(fake_runner)
 
-      formatter_output = RSpec.configuration.output_stream = StringIO.new
+      RSpec.configuration.output_stream = output
       Bisect::Coordinator.bisect_with([], RSpec.configuration)
-
-      normalize_durations(formatter_output.string)
+    ensure
+      RSpec.reset # so that RSpec.configuration.output_stream isn't closed
     end
 
-    it 'notifies the bisect progress formatter of progress' do
-      output = find_minimal_repro
+    it 'notifies the bisect progress formatter of progress and closes the output' do
+      tempfile = Tempfile.new("bisect")
+      output_file = File.open(tempfile.path, "w")
+      expect { find_minimal_repro(output_file) }.to change(output_file, :closed?).from(false).to(true)
+      output = normalize_durations(File.read(tempfile.path)).chomp
 
       expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
         |Bisect started using options: ""
@@ -43,7 +46,9 @@ module RSpec::Core
     end
 
     it 'can use the bisect debug formatter to get detailed progress' do
-      output = with_env_vars('DEBUG_RSPEC_BISECT' => '1') { find_minimal_repro }
+      output = StringIO.new
+      with_env_vars('DEBUG_RSPEC_BISECT' => '1') { find_minimal_repro(output) }
+      output = normalize_durations(output.string)
 
       expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
         |Bisect started using options: ""
@@ -111,14 +116,15 @@ module RSpec::Core
       end
 
       it "prints the most minimal repro command it has found so far" do
+        output = StringIO.new
         expect {
-          find_minimal_repro
+          find_minimal_repro(output)
         }.to raise_error(an_object_having_attributes(
           :class  => SystemExit,
           :status => 1
         ))
 
-        output = normalize_durations(RSpec.configuration.output_stream.string)
+        output = normalize_durations(output.string)
 
         expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
           |Bisect started using options: ""
