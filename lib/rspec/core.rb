@@ -81,12 +81,9 @@ module RSpec
   # @see RSpec.configure
   # @see Core::Configuration
   def self.configuration
-    @configuration ||= begin
-                         config = RSpec::Core::Configuration.new
-                         config.expose_dsl_globally = true
-                         config
-                       end
+    @configuration ||= RSpec::Core::Configuration.new
   end
+  configuration.expose_dsl_globally = true
 
   # Yields the global configuration to a block.
   # @yield [Configuration] global configuration

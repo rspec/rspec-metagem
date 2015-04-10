@@ -36,6 +36,19 @@ Feature: Global namespace DSL
    When I run `rspec`
    Then the output should contain "1 example, 0 failures"
 
+  @allow-should-syntax
+  Scenario: By default rspec/autorun allows the DSL to be used globally
+    Given a file named "spec/example_spec.rb" with:
+      """ruby
+      require 'rspec/autorun'
+      describe "specs here" do
+        it "passes" do
+        end
+      end
+      """
+   When I run `ruby spec/example_spec.rb`
+   Then the output should contain "1 example, 0 failures"
+
   Scenario: When exposing globally is disabled the top level DSL no longer works
     Given a file named "spec/example_spec.rb" with:
       """ruby
