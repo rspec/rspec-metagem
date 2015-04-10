@@ -24,10 +24,11 @@ Feature: Global namespace DSL
 
   For backwards compatibility it defaults to `true`.
 
+  @allow-should-syntax
   Scenario: By default RSpec allows the DSL to be used globally
     Given a file named "spec/example_spec.rb" with:
       """ruby
-      RSpec.describe "specs here" do
+      describe "specs here" do
         it "passes" do
         end
       end
