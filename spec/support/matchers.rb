@@ -40,3 +40,4 @@ RSpec.configure do |config|
 end
 
 RSpec::Matchers.define_negated_matcher :a_string_excluding, :a_string_including
+RSpec::Matchers.define_negated_matcher :a_string_not_matching, :match
