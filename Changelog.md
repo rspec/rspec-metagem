@@ -21,6 +21,9 @@ Bug Fixes:
 
 * Make `contain_exactly` / `match_array` work with strict test doubles
   that have not defined `<=>`. (Myron Marston, #758)
+* Fix `include` matcher so that it omits the diff when it would
+  confusingly highlight items that are actually included but are not
+  an exact match in a line-by-line diff. (Tim Wade, #763)
 
 ### 3.2.1 / 2015-04-06
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.2.0...v3.2.1)
