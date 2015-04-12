@@ -26,7 +26,7 @@ module RSpec::Matchers::BuiltIn
       it "re-raises any error other than one of those specified" do
         expect do
           matcher.match_unless_raises(ArgumentError){ raise "foo" }
-        end.to raise_error
+        end.to raise_error "foo"
       end
 
       it "stores the rescued exception for use in messages" do

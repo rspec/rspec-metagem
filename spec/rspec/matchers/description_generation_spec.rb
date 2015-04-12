@@ -136,7 +136,7 @@ RSpec.describe "Matchers should be able to generate their own descriptions" do
   end
 
   example "expect(...).to raise_error" do
-    expect { raise }.to raise_error
+    expect { raise 'foo' }.to raise_error Exception
     expect(RSpec::Matchers.generated_description).to eq "should raise Exception"
   end
 
