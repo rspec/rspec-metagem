@@ -81,6 +81,16 @@ module RSpec
         end
 
         # @private
+        def expected_formatted
+          RSpec::Support::ObjectInspector.inspect(@expected)
+        end
+
+        # @private
+        def actual_formatted
+          RSpec::Support::ObjectInspector.inspect(@actual)
+        end
+
+        # @private
         def self.matcher_name
           @matcher_name ||= underscore(name.split("::").last)
         end
@@ -141,7 +151,7 @@ module RSpec
           # you often only need to override `description`.
           # @return [String]
           def failure_message
-            "expected #{actual.inspect} to #{description}"
+            "expected #{description_of @actual} to #{description}"
           end
 
           # @api private
@@ -150,7 +160,7 @@ module RSpec
           # you often only need to override `description`.
           # @return [String]
           def failure_message_when_negated
-            "expected #{actual.inspect} not to #{description}"
+            "expected #{description_of @actual} not to #{description}"
           end
 
           # @private

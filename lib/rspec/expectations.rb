@@ -1,6 +1,7 @@
 require 'rspec/support'
 RSpec::Support.require_rspec_support "caller_filter"
 RSpec::Support.require_rspec_support "warnings"
+RSpec::Support.require_rspec_support "object_inspector"
 
 require 'rspec/matchers'
 

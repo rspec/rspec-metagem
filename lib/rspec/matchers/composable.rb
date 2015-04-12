@@ -80,8 +80,7 @@ module RSpec
       #
       # @!visibility public
       def description_of(object)
-        return object.description if Matchers.is_a_describable_matcher?(object)
-        object.inspect
+        RSpec::Support::ObjectInspector.inspect(object)
       end
 
       # Transforms the given data structue (typically a hash or array)
@@ -102,12 +101,12 @@ module RSpec
         elsif Hash === item
           Hash[surface_descriptions_in(item.to_a)]
         elsif Struct === item
-          item.inspect
+          RSpec::Support::ObjectInspector.inspect(item)
         elsif should_enumerate?(item)
           begin
             item.map { |subitem| surface_descriptions_in(subitem) }
           rescue IOError # STDOUT is enumerable but `map` raises an error
-            item.inspect
+            RSpec::Support::ObjectInspector.inspect(item)
           end
         else
           item

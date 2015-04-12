@@ -16,6 +16,9 @@ Enhancements:
 * Define `RSpec::Matchers#respond_to_missing?` so that
   `RSpec::Matchers#respond_to?` and `RSpec::Matchers#method` handle
   dynamic predicate matchers. (Andrei Botalov, #751)
+* Use custom Time/DateTime/BigDecimal formatting for all matchers
+  so they are consistently represented in failure messages.
+  (Gavin Miller, #740)
 
 Bug Fixes:
 

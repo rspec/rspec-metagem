@@ -3,7 +3,7 @@ RSpec.shared_examples "output_to_stream" do |stream_name, matcher_method, helper
   extend helper_module
 
   it_behaves_like("an RSpec matcher", :valid_value => lambda { print_to_stream('foo') }, :invalid_value => lambda {}) do
-    let(:matcher) { output.send(matcher_method) }
+    let(:matcher) { output(/fo/).send(matcher_method) }
   end
 
   define_method :matcher do |*args|

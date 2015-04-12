@@ -19,17 +19,20 @@ module RSpec
 
       let(:wrapped_value) { described_class.from("expected value") }
 
-      let(:matcher_1) { instance_double(BuiltIn::BaseMatcher, :description => "matcher 1 description", :expected => "expected 1") }
-      let(:matcher_2) { instance_double(BuiltIn::BaseMatcher, :description => "matcher 2 description", :expected => "expected 2") }
-      let(:matcher_3) { instance_double(BuiltIn::BaseMatcher, :description => "matcher 3 description", :expected => "expected 3") }
+      def create_matcher(stubs)
+        instance_double(BuiltIn::BaseMatcher, stubs.merge(
+          :matches? => true,
+          :failure_message => ""
+        ))
+      end
+
+      let(:matcher_1) { create_matcher(:description => "matcher 1 description", :expected => "expected 1") }
+      let(:matcher_2) { create_matcher(:description => "matcher 2 description", :expected => "expected 2") }
+      let(:matcher_3) { create_matcher(:description => "matcher 3 description", :expected => "expected 3") }
 
       let(:long_description) { "a very very long description for my custom smart matcher, which can be used for everything" }
       let(:truncated_description) { "a very very long descriptio..." }
-      let(:matcher_with_long_description) { instance_double(BuiltIn::BaseMatcher, :description => long_description, :expected => "expected value") }
-
-      let(:matcher_without_description_defined) { double("custom matcher", :expected => "expected value", :inspect => "#<CustomMatcher:0xf0c8561a55>") }
-
-      before { allow(matcher_without_description_defined).to receive(:description).and_raise(NoMethodError) }
+      let(:matcher_with_long_description) { create_matcher(:description => long_description, :expected => "expected value") }
 
       describe ".from" do
         it "wraps provided value in ExpectedsForMultipleDiffs" do
@@ -96,19 +99,7 @@ module RSpec
             |Diff for (#{truncated_description}):["actual value", "expected value"]
           EOS
         end
-
-        it "handles custom matchers without description defined" do
-          wrapped_value = described_class.for_many_matchers([matcher_without_description_defined])
-
-          expect(wrapped_value.message_with_diff(
-            message, differ, actual
-          )).to eq(dedent <<-EOS)
-            |a message
-            |Diff for (#{matcher_without_description_defined.inspect}):["actual value", "expected value"]
-          EOS
-        end
       end
-
     end
   end
 end

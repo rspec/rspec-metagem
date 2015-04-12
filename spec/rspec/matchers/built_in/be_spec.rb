@@ -112,7 +112,7 @@ RSpec.describe "expect(...).to be_predicate" do
   end
 
   it "fails on error other than NameError (with the present tense predicate)" do
-    actual = Object.new
+    actual = double
     expect(actual).to receive(:foos?).and_raise("aaaah")
     expect {
       expect(actual).to be_foo

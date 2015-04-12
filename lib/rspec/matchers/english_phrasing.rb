@@ -24,8 +24,8 @@ module RSpec
       #     list([]) #=> ""
       #
       def self.list(obj)
-        return " #{obj.inspect}" if !obj || Struct === obj
-        items = Array(obj).map { |w| item_description(w) }
+        return " #{RSpec::Support::ObjectInspector.inspect(obj)}" if !obj || Struct === obj
+        items = Array(obj).map { |w| RSpec::Support::ObjectInspector.inspect(w) }
         case items.length
         when 0
           ""
@@ -37,21 +37,6 @@ module RSpec
           " #{items[0...-1].join(', ')}, and #{items[-1]}"
         end
       end
-
-      def self.is_matcher_with_description?(object)
-        RSpec::Matchers.is_a_matcher?(object) &&
-          object.respond_to?(:description)
-      end
-      private_class_method :is_matcher_with_description?
-
-      def self.item_description(obj)
-        if is_matcher_with_description?(obj)
-          obj.description
-        else
-          obj.inspect
-        end
-      end
-      private_class_method :item_description
     end
   end
 end

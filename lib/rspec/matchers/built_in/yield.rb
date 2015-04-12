@@ -247,7 +247,7 @@ module RSpec
         def positive_failure_reason
           return "was not a block" unless @probe.has_block?
           return "did not yield" if @probe.num_yields.zero?
-          "yielded with arguments: #{@probe.single_yield_args.inspect}"
+          "yielded with arguments: #{description_of @probe.single_yield_args}"
         end
 
         def negative_failure_reason
@@ -317,7 +317,7 @@ module RSpec
           elsif all_args_match?
             "yielded with expected arguments" \
               "\nexpected not: #{surface_descriptions_in(@expected).inspect}" +
-              "\n         got: #{@actual.inspect}"
+              "\n         got: #{actual_formatted}"
           else
             "did"
           end
@@ -332,7 +332,7 @@ module RSpec
           unless (match = all_args_match?)
             @positive_args_failure = "yielded with unexpected arguments" \
               "\nexpected: #{surface_descriptions_in(@expected).inspect}" +
-              "\n     got: #{@actual.inspect}"
+              "\n     got: #{actual_formatted}"
           end
 
           match
@@ -400,7 +400,7 @@ module RSpec
 
           "yielded with unexpected arguments" \
           "\nexpected: #{surface_descriptions_in(@expected).inspect}" \
-          "\n     got: #{@actual.inspect}"
+          "\n     got: #{actual_formatted}"
         end
 
         def negative_failure_reason
@@ -408,7 +408,7 @@ module RSpec
 
           "yielded with expected arguments" \
           "\nexpected not: #{surface_descriptions_in(@expected).inspect}" \
-          "\n         got: #{@actual.inspect}"
+          "\n         got: #{actual_formatted}"
         end
       end
     end

@@ -36,7 +36,8 @@ RSpec.describe "yield_control matcher" do
 
   it_behaves_like "an RSpec matcher",
       :valid_value => lambda { |b| _yield_with_no_args(&b) },
-      :invalid_value => lambda { |b| _dont_yield(&b) } do
+      :invalid_value => lambda { |b| _dont_yield(&b) },
+      :failure_message_uses_no_inspect => true do
     let(:matcher) { yield_control }
   end
 
@@ -204,7 +205,7 @@ RSpec.describe "yield_with_no_args matcher" do
 
   it_behaves_like "an RSpec matcher",
       :valid_value => lambda { |b| _yield_with_no_args(&b) },
-      :invalid_value => lambda { |b| _dont_yield(&b) } do
+      :invalid_value => lambda { |b| _yield_with_args(1, &b) } do
     let(:matcher) { yield_with_no_args }
   end
 
@@ -287,8 +288,8 @@ RSpec.describe "yield_with_args matcher" do
 
   it_behaves_like "an RSpec matcher",
       :valid_value => lambda { |b| _yield_with_args(1, &b) },
-      :invalid_value => lambda { |b| _dont_yield(&b) } do
-    let(:matcher) { yield_with_args }
+      :invalid_value => lambda { |b| _yield_with_args(2, &b) } do
+    let(:matcher) { yield_with_args(1) }
   end
 
   it 'has a description' do

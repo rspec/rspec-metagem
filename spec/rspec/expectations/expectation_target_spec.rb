@@ -116,8 +116,16 @@ module RSpec
             }.to fail_with(not_a_block_matcher_error)
           end
 
+          def new_non_dsl_matcher(&method_defs)
+            Module.new do
+              def self.matches?(object); end
+              def self.failure_message; end
+              module_eval(&method_defs)
+            end
+          end
+
           it "uses the matcher's `description` in the error message" do
-            custom_matcher = Module.new do
+            custom_matcher = new_non_dsl_matcher do
               def self.supports_block_expectations?; false; end
               def self.description; "matcher-description"; end
             end
@@ -129,7 +137,7 @@ module RSpec
 
           context 'when the matcher does not define `description` (since it is an optional part of the protocol)' do
             it 'uses `inspect` in the error message instead' do
-              custom_matcher = Module.new do
+              custom_matcher = new_non_dsl_matcher do
                 def self.supports_block_expectations?; false; end
                 def self.inspect; "matcher-inspect"; end
               end

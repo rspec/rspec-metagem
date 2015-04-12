@@ -55,7 +55,7 @@ module RSpec
         # @api private
         # @return [String]
         def description
-          "be between #{@min.inspect} and #{@max.inspect} (#{@mode})"
+          "be between #{description_of @min} and #{description_of @max} (#{@mode})"
         end
 
       private

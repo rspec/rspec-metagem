@@ -138,9 +138,9 @@ module RSpec
           when nil
             description_of(@expected_error)
           when Regexp
-            "#{@expected_error} with message matching #{@expected_message.inspect}"
+            "#{@expected_error} with message matching #{description_of(@expected_message)}"
           else
-            "#{@expected_error} with #{description_of @expected_message}"
+            "#{@expected_error} with #{description_of(@expected_message)}"
           end
         end
 
@@ -155,7 +155,7 @@ module RSpec
 
           backtrace = format_backtrace(@actual_error.backtrace)
           [
-            ", got #{@actual_error.inspect} with backtrace:",
+            ", got #{description_of(@actual_error)} with backtrace:",
             *backtrace
           ].join("\n  # ")
         end
