@@ -64,7 +64,18 @@ module RSpec
     # the user sets an expectation, it can't be caught in their
     # code by a bare `rescue`.
     # @api public
-    class ExpectationNotMetError < ::Exception
+    class ExpectationNotMetError < Exception
     end
+
+    # Exception raised from `aggregate_failures` when multiple expectations fail.
+    #
+    # @note The constant is defined here but the extensive logic of this class
+    #   is lazily defined when `FailureAggregator` is autoloaded, since we do
+    #   not need to waste time defining that functionality unless
+    #   `aggregate_failures` is used.
+    class MultipleExpectationsNotMetError < ExpectationNotMetError
+    end
+
+    autoload :FailureAggregator, "rspec/expectations/failure_aggregator"
   end
 end
