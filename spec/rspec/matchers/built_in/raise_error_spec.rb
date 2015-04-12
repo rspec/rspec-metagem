@@ -1,11 +1,26 @@
 RSpec.describe "expect { ... }.to raise_error" do
   it_behaves_like("an RSpec matcher", :valid_value => lambda { raise "boom" },
                                       :invalid_value => lambda { }) do
-    let(:matcher) { raise_error }
+    let(:matcher) { raise_error Exception }
   end
 
   it "passes if anything is raised" do
-    expect {raise}.to raise_error
+    expect { raise "error" }.to raise_error "error"
+  end
+
+  it "issues a warning when used without an error class or message" do
+    expect_warning_with_call_site __FILE__, __LINE__+1, /without providing a specific error/
+    expect { raise }.to raise_error
+  end
+
+  it "can supresses the warning when configured to do so" do
+    original_value = RSpec::Expectations.configuration.warn_about_false_positives?
+    begin
+      RSpec::Expectations.configuration.warn_about_false_positives = false
+      expect { raise }.to raise_error
+    ensure
+      RSpec::Expectations.configuration.warn_about_false_positives = original_value
+    end
   end
 
   it "passes if an error instance is expected" do
@@ -48,14 +63,14 @@ RSpec.describe "expect { ... }.to raise_error" do
 
   it "fails if nothing is raised" do
     expect {
-      expect {}.to raise_error
+      expect { }.to raise_error Exception
     }.to fail_with("expected Exception but nothing was raised")
   end
 end
 
 RSpec.describe "raise_exception aliased to raise_error" do
   it "passes if anything is raised" do
-    expect {raise}.to raise_exception
+    expect { raise "exception" }.to raise_exception "exception"
   end
 end
 

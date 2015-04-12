@@ -8,10 +8,16 @@ module RSpec
       class RaiseError
         include Composable
 
-        def initialize(expected_error_or_message=Exception, expected_message=nil, &block)
+        def initialize(expected_error_or_message=nil, expected_message=nil, &block)
           @block = block
           @actual_error = nil
+          @warn_about_bare_error =
+            RSpec::Expectations.configuration.warn_about_false_positives? &&
+            expected_error_or_message.nil?
+
           case expected_error_or_message
+          when nil
+            @expected_error, @expected_message = Exception, expected_message
           when String, Regexp
             @expected_error, @expected_message = Exception, expected_error_or_message
           else
@@ -23,6 +29,7 @@ module RSpec
         # Specifies the expected error message.
         def with_message(expected_message)
           raise_message_already_set if @expected_message
+          @warn_about_bare_error = false
           @expected_message = expected_message
           self
         end
@@ -36,6 +43,17 @@ module RSpec
           @with_expected_message = false
           @eval_block = false
           @eval_block_passed = false
+
+          if @warn_about_bare_error && !negative_expectation && @block.nil?
+            RSpec.warning("Using the `raise_error` matcher without providing a specific " \
+                          "error or message risks false positives, since `raise_error` " \
+                          "will match when Ruby raises a `NoMethodError`, `NameError` or " \
+                          "`ArgumentError`, potentially allowing the expectation to pass " \
+                          "without even executing the method you are intending to call. " \
+                          "Instead consider providing a specific error class or message. " \
+                          "This message can be supressed by setting: " \
+                          "`RSpec::Expectations.configuration.warn_about_false_positives = false`")
+          end
 
           return false unless Proc === given_proc
 
