@@ -78,9 +78,13 @@ module RSpec
       end
 
       # @private
+      def all_example_groups
+        FlatMap.flat_map(example_groups) { |g| g.descendants }
+      end
+
+      # @private
       def all_examples
-        flattened_groups = FlatMap.flat_map(example_groups) { |g| g.descendants }
-        FlatMap.flat_map(flattened_groups) { |g| g.examples }
+        FlatMap.flat_map(all_example_groups) { |g| g.examples }
       end
 
       # @api private
