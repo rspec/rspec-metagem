@@ -179,14 +179,6 @@ RSpec.describe "Matchers should be able to generate their own descriptions" do
     match { expect(1).to eq(1) }
     match_when_negated { expect(1).to eq(1) }
   end
-
-  def team
-    Class.new do
-      def players
-        [1,2,3]
-      end
-    end.new
-  end
 end
 
 RSpec.describe "a Matcher with no description" do
