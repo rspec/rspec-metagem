@@ -23,6 +23,18 @@ RSpec.describe "expect { ... }.to raise_error" do
     end
   end
 
+  it 'does not issue a warning when an exception class is specified (even if it is just `Exception`)' do
+    expect { raise "error" }.to raise_error Exception
+  end
+
+  it 'does not issue a warning when a message is specified' do
+    expect { raise "error" }.to raise_error "error"
+  end
+
+  it 'does not issue a warning when a block is passed' do
+    expect { raise "error" }.to raise_error { |_| }
+  end
+
   it "passes if an error instance is expected" do
     s = StandardError.new
     expect {raise s}.to raise_error(s)
