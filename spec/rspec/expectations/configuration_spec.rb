@@ -87,6 +87,23 @@ module RSpec
         end
       end
 
+      describe "#warn_about_false_positives?" do
+        it "is true by default" do
+          expect(config.warn_about_false_positives?).to be true
+        end
+
+        it "can be set to false" do
+          config.warn_about_false_positives = false
+          expect(config.warn_about_false_positives?).to be false
+        end
+
+        it "can be set back to true" do
+          config.warn_about_false_positives = false
+          config.warn_about_false_positives = true
+          expect(config.warn_about_false_positives?).to be true
+        end
+      end
+
       shared_examples "configuring the expectation syntax" do
         before do
           @orig_syntax = RSpec::Matchers.configuration.syntax

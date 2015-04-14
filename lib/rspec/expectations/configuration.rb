@@ -18,6 +18,10 @@ module RSpec
     #
     #   RSpec::Expectations.configuration
     class Configuration
+      def initialize
+        @warn_about_false_positives = true
+      end
+
       # Configures the supported syntax.
       # @param [Array<Symbol>, Symbol] values the syntaxes to enable
       # @example
@@ -132,6 +136,19 @@ module RSpec
         def self.format_backtrace(backtrace)
           backtrace
         end
+      end
+
+      # Configures whether RSpec will warn about matcher use which will
+      # potentially cause false positives in tests.
+      #
+      # @param value [Boolean]
+      attr_writer :warn_about_false_positives
+
+      # Indicates whether RSpec will warn about matcher use which will
+      # potentially cause false positives in tests, generally you want to
+      # avoid such scenarios so this defaults to `true`.
+      def warn_about_false_positives?
+        @warn_about_false_positives
       end
     end
 
