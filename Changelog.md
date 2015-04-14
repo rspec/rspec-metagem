@@ -45,6 +45,8 @@ Bug Fixes:
 * Make `let` work properly when defined in a shared context that is applied
   to an individual example via metadata. (Myron Marston, #1912)
 * Ensure `rspec/autorun` respects configuration defaults. (Jon Rowe, #1933)
+* Prevent modules overriding example group defined methods when included,
+  prepended or extended by config defined after an example group. (Eugene Kenny, #1935)
 
 ### 3.2.3 / 2015-04-06
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.2.2...v3.2.3)
