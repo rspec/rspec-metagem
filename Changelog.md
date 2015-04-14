@@ -34,6 +34,8 @@ Enhancements:
 * Add `--bisect` CLI option, which will repeatedly run your suite in
   order to isolate the failures to the smallest reproducible case.
   (Myron Marston, #1917)
+* For `config.include`, `config.extend` and `config.prepend`, apply the
+  module to previously defined matching example groups. (Eugene Kenny, #1935)
 
 Bug Fixes:
 
