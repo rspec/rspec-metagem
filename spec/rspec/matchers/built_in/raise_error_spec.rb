@@ -17,6 +17,7 @@ RSpec.describe "expect { ... }.to raise_error" do
     original_value = RSpec::Expectations.configuration.warn_about_false_positives?
     begin
       RSpec::Expectations.configuration.warn_about_false_positives = false
+      expect_no_warnings
       expect { raise }.to raise_error
     ensure
       RSpec::Expectations.configuration.warn_about_false_positives = original_value
@@ -24,14 +25,17 @@ RSpec.describe "expect { ... }.to raise_error" do
   end
 
   it 'does not issue a warning when an exception class is specified (even if it is just `Exception`)' do
+    expect_no_warnings
     expect { raise "error" }.to raise_error Exception
   end
 
   it 'does not issue a warning when a message is specified' do
+    expect_no_warnings
     expect { raise "error" }.to raise_error "error"
   end
 
   it 'does not issue a warning when a block is passed' do
+    expect_no_warnings
     expect { raise "error" }.to raise_error { |_| }
   end
 
