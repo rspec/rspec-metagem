@@ -44,17 +44,7 @@ module RSpec
           @eval_block = false
           @eval_block_passed = false
 
-          if warning_about_bare_error && !negative_expectation
-            RSpec.warning("Using the `raise_error` matcher without providing a specific " \
-                          "error or message risks false positives, since `raise_error` " \
-                          "will match when Ruby raises a `NoMethodError`, `NameError` or " \
-                          "`ArgumentError`, potentially allowing the expectation to pass " \
-                          "without even executing the method you are intending to call. " \
-                          "Instead consider providing a specific error class or message. " \
-                          "This message can be supressed by setting: " \
-                          "`RSpec::Expectations.configuration.warn_about_false_positives = false`")
-          end
-
+          warn_about_bare_error if warning_about_bare_error && !negative_expectation
           return false unless Proc === given_proc
 
           begin
@@ -155,6 +145,17 @@ module RSpec
 
         def warning_about_bare_error
           @warn_about_bare_error && @block.nil?
+        end
+
+        def warn_about_bare_error
+          RSpec.warning("Using the `raise_error` matcher without providing a specific " \
+                        "error or message risks false positives, since `raise_error` " \
+                        "will match when Ruby raises a `NoMethodError`, `NameError` or " \
+                        "`ArgumentError`, potentially allowing the expectation to pass " \
+                        "without even executing the method you are intending to call. " \
+                        "Instead consider providing a specific error class or message. " \
+                        "This message can be supressed by setting: " \
+                        "`RSpec::Expectations.configuration.warn_about_false_positives = false`")
         end
 
         def expected_error
