@@ -7,6 +7,14 @@ RSpec.describe "expect(...).to match(expected)" do
     expect("string").to match(/tri/)
   end
 
+  it "passes when target (Regexp) matches expected (String)" do
+    expect(/tri/).to match("string")
+  end
+
+  it "passes when target (Regexp) matches expected (Regexp)" do
+    expect(/tri/).to match(/tri/)
+  end
+
   it "passes when target (String) matches expected (a matcher)" do
     expect("string").to match(a_string_including("str"))
   end
@@ -22,7 +30,13 @@ RSpec.describe "expect(...).to match(expected)" do
   it "fails when target (String) does not match expected (Regexp)" do
     expect {
       expect("string").to match(/rings/)
-    }.to fail
+    }.to fail_with a_string_starting_with 'expected "string" to match /rings/'
+  end
+
+  it "fails when target (Regexp) does not match expected (String)" do
+    expect {
+      expect(/rings/).to match("string")
+    }.to fail_with a_string_starting_with 'expected /rings/ to match "string"'
   end
 
   it "fails when target (String) does not match expected (a matcher)" do
@@ -91,13 +105,13 @@ RSpec.describe "expect(...).not_to match(expected)" do
   it "fails when target (String) matches expected (Regexp)" do
     expect {
       expect("string").not_to match(/tri/)
-    }.to fail
+    }.to fail_with a_string_starting_with 'expected "string" not to match /tri/'
   end
 
   it "fails when target (String) matches expected (String)" do
     expect {
       expect("string").not_to match("tri")
-    }.to fail
+    }.to fail_with a_string_starting_with 'expected "string" not to match "tri"'
   end
 
   it "provides message, expected and actual on failure" do
