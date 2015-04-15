@@ -21,7 +21,8 @@ module RSpec
 
         def match(expected, actual)
           return true if values_match?(expected, actual)
-          actual.match(expected) if can_safely_call_match?(expected, actual)
+          return false unless can_safely_call_match?(expected, actual)
+          actual.match(expected)
         end
 
         def can_safely_call_match?(expected, actual)
