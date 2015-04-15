@@ -27,6 +27,9 @@ Bug Fixes:
 * Fix `include` matcher so that it omits the diff when it would
   confusingly highlight items that are actually included but are not
   an exact match in a line-by-line diff. (Tim Wade, #763)
+* Fix `match` matcher so that it does not blow up when matching a string
+  or regex against another matcher (rather than a string or regex).
+  (Myron Marston, #772)
 
 ### 3.2.1 / 2015-04-06
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.2.0...v3.2.1)

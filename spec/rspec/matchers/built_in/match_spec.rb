@@ -7,6 +7,14 @@ RSpec.describe "expect(...).to match(expected)" do
     expect("string").to match(/tri/)
   end
 
+  it "passes when target (String) matches expected (a matcher)" do
+    expect("string").to match(a_string_including("str"))
+  end
+
+  it "passes when target (Regexp) matches expected (a matcher)" do
+    expect(/foo/).to match(be_a Regexp)
+  end
+
   it "passes when target (String) matches expected (String)" do
     expect("string").to match("tri")
   end
@@ -15,6 +23,18 @@ RSpec.describe "expect(...).to match(expected)" do
     expect {
       expect("string").to match(/rings/)
     }.to fail
+  end
+
+  it "fails when target (String) does not match expected (a matcher)" do
+    expect {
+      expect("string").to match(a_string_including("foo"))
+    }.to fail_with(a_string_starting_with 'expected "string" to match (a string including "foo")')
+  end
+
+  it "fails when target (Regexp) does not match expected (a matcher)" do
+    expect {
+      expect(/foo/).to match(be_a_kind_of String)
+    }.to fail_with(a_string_starting_with 'expected /foo/ to match (be a kind of String)')
   end
 
   it "fails when target (String) does not match expected (String)" do
