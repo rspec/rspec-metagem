@@ -44,7 +44,7 @@ module RSpec
           @eval_block = false
           @eval_block_passed = false
 
-          if @warn_about_bare_error && !negative_expectation && @block.nil?
+          if warning_about_bare_error && !negative_expectation
             RSpec.warning("Using the `raise_error` matcher without providing a specific " \
                           "error or message risks false positives, since `raise_error` " \
                           "will match when Ruby raises a `NoMethodError`, `NameError` or " \
@@ -66,9 +66,7 @@ module RSpec
             end
           end
 
-          unless negative_expectation
-            eval_block if @raised_expected_error && @with_expected_message && @block
-          end
+          eval_block if !negative_expectation && ready_to_eval_block?
 
           expectation_matched?
         end
@@ -121,6 +119,10 @@ module RSpec
           @eval_block ? @eval_block_passed : true
         end
 
+        def ready_to_eval_block?
+          @raised_expected_error && @with_expected_message && @block
+        end
+
         def eval_block
           @eval_block = true
           begin
@@ -149,6 +151,10 @@ module RSpec
 
           specific_class_error = ArgumentError.new("#{what_to_raise} is not valid, use `expect { }.not_to raise_error` (with no args) instead")
           raise specific_class_error
+        end
+
+        def warning_about_bare_error
+          @warn_about_bare_error && @block.nil?
         end
 
         def expected_error
