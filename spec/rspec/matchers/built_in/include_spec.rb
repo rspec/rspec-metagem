@@ -129,10 +129,22 @@ RSpec.describe "#include matcher" do
         expect("a string").to include("str", "a")
       end
 
-      it "fails if target does not include any one of the items" do
+      it "fails if target does not include one of the items" do
         expect {
           expect("a string").to include("str", "a", "foo")
-        }.to fail_matching(%Q{expected "a string" to include "str", "a", and "foo"})
+        }.to fail_matching(%Q{expected "a string" to include "foo"})
+      end
+
+      it "fails if target does not include two of the items" do
+        expect {
+          expect("a string").to include("nope", "a", "nada", "str")
+        }.to fail_matching(%Q{expected "a string" to include "nope" and "nada"})
+      end
+
+      it "fails if target does not include many of the items" do
+        expect {
+          expect("a string").to include("nope", "a", "nada", "nein", "ing", "str")
+        }.to fail_matching(%Q{expected "a string" to include "nope", "nada", and "nein"})
       end
     end
 
@@ -141,10 +153,22 @@ RSpec.describe "#include matcher" do
         expect([1,2,3]).to include(1,2,3)
       end
 
-      it "fails if target does not include any one of the items" do
+      it "fails if target does not include one of the items" do
         expect {
           expect([1,2,3]).to include(1,2,4)
-        }.to fail_matching("expected [1, 2, 3] to include 1, 2, and 4")
+        }.to fail_matching("expected [1, 2, 3] to include 4")
+      end
+
+      it "fails if target does not include two of the items" do
+        expect {
+          expect([1,2,3]).to include(5,1,2,4)
+        }.to fail_matching("expected [1, 2, 3] to include 5 and 4")
+      end
+
+      it "fails if target does not include many of the items" do
+        expect {
+          expect([1,2,3]).to include(5,1,6,2,4)
+        }.to fail_matching("expected [1, 2, 3] to include 5, 6, and 4")
       end
     end
 
@@ -153,10 +177,22 @@ RSpec.describe "#include matcher" do
         expect({:key => 'value', :other => 'value'}).to include(:key, :other)
       end
 
-      it 'fails if target is missing any item as a key' do
+      it 'fails if target does not include one of the items as a key' do
         expect {
-          expect({:key => 'value'}).to include(:key, :other)
-        }.to fail_matching(%Q|expected {:key => "value"} to include :key and :other|)
+          expect({:key => 'value', :this => 'that'}).to include(:key, :nope, :this)
+        }.to fail_with(%r|expected #{hash_inspect :key => "value", :this => "that"} to include :nope|)
+      end
+
+      it "fails if target does not include two of the items as keys" do
+        expect {
+          expect({:key => 'value', :this => 'that'}).to include(:nada, :key, :nope, :this)
+        }.to fail_with(%r|expected #{hash_inspect :key => "value", :this => "that"} to include :nada and :nope|)
+      end
+
+      it "fails if target does not include many of the items as keys" do
+        expect {
+          expect({:key => 'value', :this => 'that'}).to include(:nada, :key, :nope, :negative, :this)
+        }.to fail_with(%r|expected #{hash_inspect :key => "value", :this => "that"} to include :nada, :nope, and :negative|)
       end
     end
   end
@@ -245,10 +281,22 @@ RSpec.describe "#include matcher" do
         }.to fail_with('expected "abc" not to include "c" and "a"')
       end
 
-      it "fails if the target includes some (but not all) of the expected" do
+      it "fails if the target includes one (but not all) of the expected" do
         expect {
           expect("abc").not_to include("d", "a")
-        }.to fail_with(%q{expected "abc" not to include "d" and "a"})
+        }.to fail_with(%q{expected "abc" not to include "a"})
+      end
+
+      it "fails if the target includes two (but not all) of the expected" do
+        expect {
+          expect("abc").not_to include("d", "a", "b")
+        }.to fail_with(%q{expected "abc" not to include "a" and "b"})
+      end
+
+      it "fails if the target includes many (but not all) of the expected" do
+        expect {
+          expect("abcd").not_to include("b", "d", "a", "f")
+        }.to fail_with(%q{expected "abcd" not to include "b", "d", and "a"})
       end
     end
 
@@ -263,10 +311,22 @@ RSpec.describe "#include matcher" do
         }.to fail_with(%r|expected #{hash_inspect :a => 1, :b => 2} not to include :a and :b|)
       end
 
-      it "fails if the target includes some (but not all) of the expected keys" do
+      it "fails if the target includes one (but not all) of the expected keys" do
         expect {
           expect({ :a => 1, :b => 2 }).not_to include(:d, :b)
-        }.to fail_with(%r|expected #{hash_inspect :a => 1, :b => 2} not to include :d and :b|)
+        }.to fail_with(%r|expected #{hash_inspect :a => 1, :b => 2} not to include :b|)
+      end
+
+      it "fails if the target includes two (but not all) of the expected keys" do
+        expect {
+          expect({ :a => 1, :b => 2 }).not_to include(:a, :b, :c)
+        }.to fail_with(%r|expected #{hash_inspect :a => 1, :b => 2} not to include :a and :b|)
+      end
+
+      it "fails if the target includes many (but not all) of the expected keys" do
+        expect {
+          expect({ :a => 1, :b => 2, :c => 3 }).not_to include(:b, :a, :c, :f)
+        }.to fail_with(%r|expected #{hash_inspect :a => 1, :b => 2, :c => 3} not to include :b, :a, and :c|)
       end
     end
 
@@ -281,10 +341,22 @@ RSpec.describe "#include matcher" do
         }.to fail_with(%q{expected [1, 2, 3] not to include 3 and 1})
       end
 
-      it "fails if the target includes some (but not all) of the expected" do
+      it "fails if the target includes one (but not all) of the expected" do
         expect {
           expect([1, 2, 3]).not_to include(4, 1)
-        }.to fail_with(%q{expected [1, 2, 3] not to include 4 and 1})
+        }.to fail_with(%q{expected [1, 2, 3] not to include 1})
+      end
+
+      it "fails if the target includes two (but not all) of the expected" do
+        expect {
+          expect([1, 2, 3]).not_to include(4, 1, 2)
+        }.to fail_with(%q{expected [1, 2, 3] not to include 1 and 2})
+      end
+
+      it "fails if the target includes many (but not all) of the expected" do
+        expect {
+          expect([1, 2, 3]).not_to include(5, 4, 2, 1, 3)
+        }.to fail_with(%q{expected [1, 2, 3] not to include 2, 1, and 3})
       end
     end
   end
@@ -374,7 +446,7 @@ RSpec.describe "#include matcher" do
       it "fails if target has a different value for one of the keys" do
         expect {
           expect({:a => 1, :b => 2}).to include(:a => 2, :b => 2)
-        }.to fail_with(%r|expected #{hash_inspect :a => 1, :b => 2} to include #{hash_inspect :a => 2, :b => 2}|)
+        }.to fail_with(%r|expected #{hash_inspect :a => 1, :b => 2} to include #{hash_inspect :a => 2}|)
       end
 
       it "fails if target has a different value for both of the keys" do
@@ -386,13 +458,19 @@ RSpec.describe "#include matcher" do
       it "fails if target lacks one of the keys" do
         expect {
           expect({:a => 1, :b => 1}).to include(:a => 1, :c => 1)
-        }.to fail_with(%r|expected #{hash_inspect :a => 1, :b => 1} to include #{hash_inspect :a => 1, :c => 1}|)
+        }.to fail_with(%r|expected #{hash_inspect :a => 1, :b => 1} to include #{hash_inspect :c => 1}|)
       end
 
       it "fails if target lacks both of the keys" do
         expect {
           expect({:a => 1, :b => 1}).to include(:c => 1, :d => 1)
         }.to fail_with(%r|expected #{hash_inspect :a => 1, :b => 1} to include #{hash_inspect :c => 1, :d => 1}|)
+      end
+
+      it "fails if target lacks one of the keys and has a different value for another" do
+        expect {
+          expect({:a => 1, :b => 2}).to include(:c => 1, :b => 3)
+        }.to fail_with(%r|expected #{hash_inspect :a => 1, :b => 2} to include #{hash_inspect :c => 1, :b => 3}|)
       end
     end
 
@@ -427,7 +505,7 @@ RSpec.describe "#include matcher" do
       it "fails if target has a different value for one of the keys" do
         expect {
           expect({:a => 1, :b => 2}).not_to include(:a => 2, :b => 2)
-        }.to fail_with(%r|expected #{hash_inspect :a => 1, :b => 2} not to include #{hash_inspect :a => 2, :b => 2}|)
+        }.to fail_with(%r|expected #{hash_inspect :a => 1, :b => 2} not to include #{hash_inspect :b => 2}|)
       end
 
       it "passes if target has a different value for both of the keys" do
@@ -437,7 +515,7 @@ RSpec.describe "#include matcher" do
       it "fails if target lacks one of the keys" do
         expect {
           expect({:a => 1, :b => 1}).not_to include(:a => 1, :c => 1)
-        }.to fail_with(%r|expected #{hash_inspect :a => 1, :b => 1} not to include #{hash_inspect :a => 1, :c => 1}|)
+        }.to fail_with(%r|expected #{hash_inspect :a => 1, :b => 1} not to include #{hash_inspect :a => 1}|)
       end
 
       it "passes if target lacks both of the keys" do
@@ -520,7 +598,7 @@ RSpec.describe "#include matcher" do
       it "fails if target does not include an item satisfying any one of the items" do
         expect {
           expect(['foo', 'bar', 'baz']).to include(a_string_containing("ar"), a_string_containing("abc"))
-        }.to fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} to include (a string containing 'ar') and (a string containing 'abc')|)
+        }.to fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} to include (a string containing 'abc')|)
       end
     end
 
@@ -572,7 +650,7 @@ RSpec.describe "#include matcher" do
       it 'fails if the some (but not all) of the matchers are satisifed' do
         expect {
           expect(['foo', 'bar', 'baz']).not_to include(a_string_containing("ar"), a_string_containing('bz'))
-        }.to fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} not to include (a string containing 'ar') and (a string containing 'bz')|)
+        }.to fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} not to include (a string containing 'ar')|)
       end
     end
   end
