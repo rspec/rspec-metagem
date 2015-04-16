@@ -19,6 +19,10 @@ Enhancements:
 * Use custom Time/DateTime/BigDecimal formatting for all matchers
   so they are consistently represented in failure messages.
   (Gavin Miller, #740)
+* Add configuration to turn off warnings about matcher combinations that
+  may cause false positives. (Jon Rowe, #768)
+* Warn when using a bare `raise_error` matcher that you may be subject to
+  false positives. (Jon Rowe, #768)
 
 Bug Fixes:
 
