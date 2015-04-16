@@ -8,10 +8,16 @@ module RSpec
       class RaiseError
         include Composable
 
-        def initialize(expected_error_or_message=Exception, expected_message=nil, &block)
+        def initialize(expected_error_or_message=nil, expected_message=nil, &block)
           @block = block
           @actual_error = nil
+          @warn_about_bare_error =
+            RSpec::Expectations.configuration.warn_about_false_positives? &&
+            expected_error_or_message.nil?
+
           case expected_error_or_message
+          when nil
+            @expected_error, @expected_message = Exception, expected_message
           when String, Regexp
             @expected_error, @expected_message = Exception, expected_error_or_message
           else
@@ -23,6 +29,7 @@ module RSpec
         # Specifies the expected error message.
         def with_message(expected_message)
           raise_message_already_set if @expected_message
+          @warn_about_bare_error = false
           @expected_message = expected_message
           self
         end
@@ -37,6 +44,7 @@ module RSpec
           @eval_block = false
           @eval_block_passed = false
 
+          warn_about_bare_error if warning_about_bare_error && !negative_expectation
           return false unless Proc === given_proc
 
           begin
@@ -48,9 +56,7 @@ module RSpec
             end
           end
 
-          unless negative_expectation
-            eval_block if @raised_expected_error && @with_expected_message && @block
-          end
+          eval_block if !negative_expectation && ready_to_eval_block?
 
           expectation_matched?
         end
@@ -103,6 +109,10 @@ module RSpec
           @eval_block ? @eval_block_passed : true
         end
 
+        def ready_to_eval_block?
+          @raised_expected_error && @with_expected_message && @block
+        end
+
         def eval_block
           @eval_block = true
           begin
@@ -131,6 +141,21 @@ module RSpec
 
           specific_class_error = ArgumentError.new("#{what_to_raise} is not valid, use `expect { }.not_to raise_error` (with no args) instead")
           raise specific_class_error
+        end
+
+        def warning_about_bare_error
+          @warn_about_bare_error && @block.nil?
+        end
+
+        def warn_about_bare_error
+          RSpec.warning("Using the `raise_error` matcher without providing a specific " \
+                        "error or message risks false positives, since `raise_error` " \
+                        "will match when Ruby raises a `NoMethodError`, `NameError` or " \
+                        "`ArgumentError`, potentially allowing the expectation to pass " \
+                        "without even executing the method you are intending to call. " \
+                        "Instead consider providing a specific error class or message. " \
+                        "This message can be supressed by setting: " \
+                        "`RSpec::Expectations.configuration.warn_about_false_positives = false`")
         end
 
         def expected_error

@@ -732,7 +732,7 @@ module RSpec
     #   expect { do_something_risky }.to raise_error(PoorRiskDecisionError, /oo ri/)
     #
     #   expect { do_something_risky }.not_to raise_error
-    def raise_error(error=Exception, message=nil, &block)
+    def raise_error(error=nil, message=nil, &block)
       BuiltIn::RaiseError.new(error, message, &block)
     end
     alias_method :raise_exception,  :raise_error
