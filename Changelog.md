@@ -36,6 +36,9 @@ Enhancements:
   (Myron Marston, #1917)
 * For `config.include`, `config.extend` and `config.prepend`, apply the
   module to previously defined matching example groups. (Eugene Kenny, #1935)
+* When invalid options are parsed, notify users where they came from
+  (e.g. `.rspec` or `~/.rspec` or `ENV['SPEC_OPTS']`) so they can
+  easily find the source of the problem. (Myron Marston, #1940)
 
 Bug Fixes:
 

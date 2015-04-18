@@ -4,8 +4,8 @@ require 'optparse'
 module RSpec::Core
   # @private
   class Parser
-    def self.parse(args)
-      new(args).parse
+    def self.parse(args, source=nil)
+      new(args).parse(source)
     end
 
     attr_reader :original_args
@@ -14,7 +14,7 @@ module RSpec::Core
       @original_args = original_args
     end
 
-    def parse
+    def parse(source=nil)
       return { :files_or_directories_to_run => [] } if original_args.empty?
       args = original_args.dup
 
@@ -22,7 +22,9 @@ module RSpec::Core
       begin
         parser(options).parse!(args)
       rescue OptionParser::InvalidOption => e
-        abort "#{e.message}\n\nPlease use --help for a listing of valid options"
+        failure = e.message
+        failure << " (defined in #{source})" if source
+        abort "#{failure}\n\nPlease use --help for a listing of valid options"
       end
 
       options[:files_or_directories_to_run] = args
