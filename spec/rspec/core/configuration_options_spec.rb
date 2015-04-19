@@ -367,6 +367,54 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
     end
   end
 
+  describe "invalid options" do
+    def expect_parsing_to_fail_mentioning_source(source, options=[])
+      expect {
+        parse_options(*options)
+      }.to raise_error(SystemExit).and output(a_string_including(
+        "invalid option: --default_path (defined in #{source})",
+        "Please use --help for a listing of valid options"
+      )).to_stderr
+    end
+
+    %w[ ~/.rspec ./.rspec ./.rspec-local ].each do |file_name|
+      context "defined in #{file_name}" do
+        it "mentions the file name in the error so users know where to look for it" do
+          file_name = File.expand_path(file_name) if file_name.start_with?("~")
+          File.open(File.expand_path(file_name), "w") { |f| f << "--default_path" }
+          expect_parsing_to_fail_mentioning_source(file_name)
+        end
+      end
+    end
+
+    context "defined in SPEC_OPTS" do
+      it "mentions ENV['SPEC_OPTS'] as the source in the error so users know where to look for it" do
+        with_env_vars 'SPEC_OPTS' => "--default_path" do
+          expect_parsing_to_fail_mentioning_source("ENV['SPEC_OPTS']")
+        end
+      end
+    end
+
+    context "defined in a custom file" do
+      it "mentions the custom file as the source of the error so users know where to look for it" do
+        File.open("./custom.opts", "w") {|f| f << "--default_path"}
+
+        expect_parsing_to_fail_mentioning_source("./custom.opts", %w[-O ./custom.opts])
+      end
+
+      context "passed at the command line" do
+        it "does not mention the source since it is obvious where it came from" do
+          expect {
+            parse_options("--default_path")
+          }.to raise_error(SystemExit).and output(a_string_including(
+            "invalid option: --default_path\n",
+            "Please use --help for a listing of valid options"
+          )).to_stderr
+        end
+      end
+    end
+  end
+
   describe "sources: ~/.rspec, ./.rspec, ./.rspec-local, custom, CLI, and SPEC_OPTS" do
     it "merges global, local, SPEC_OPTS, and CLI" do
       File.open("./.rspec", "w") {|f| f << "--require some_file"}
