@@ -87,20 +87,20 @@ module RSpec
         end
       end
 
-      describe "#warn_about_false_positives?" do
+      describe "#warn_about_potential_false_positives?" do
         it "is true by default" do
-          expect(config.warn_about_false_positives?).to be true
+          expect(config.warn_about_potential_false_positives?).to be true
         end
 
         it "can be set to false" do
-          config.warn_about_false_positives = false
-          expect(config.warn_about_false_positives?).to be false
+          config.warn_about_potential_false_positives = false
+          expect(config.warn_about_potential_false_positives?).to be false
         end
 
         it "can be set back to true" do
-          config.warn_about_false_positives = false
-          config.warn_about_false_positives = true
-          expect(config.warn_about_false_positives?).to be true
+          config.warn_about_potential_false_positives = false
+          config.warn_about_potential_false_positives = true
+          expect(config.warn_about_potential_false_positives?).to be true
         end
       end
 

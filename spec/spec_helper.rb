@@ -98,10 +98,10 @@ RSpec.shared_context "isolate include_chain_clauses_in_custom_matcher_descriptio
   end
 end
 
-RSpec.shared_context "with warn_about_false_positives set to false", :warn_about_false_positives do
-  original_value = RSpec::Expectations.configuration.warn_about_false_positives?
+RSpec.shared_context "with warn_about_potential_false_positives set to false", :warn_about_potential_false_positives do
+  original_value = RSpec::Expectations.configuration.warn_about_potential_false_positives?
 
-  after(:context)  { RSpec::Expectations.configuration.warn_about_false_positives = original_value }
+  after(:context)  { RSpec::Expectations.configuration.warn_about_potential_false_positives = original_value }
 end
 
 module MinitestIntegration

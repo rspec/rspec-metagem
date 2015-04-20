@@ -13,8 +13,8 @@ RSpec.describe "expect { ... }.to raise_error" do
     expect { raise }.to raise_error
   end
 
-  it "can supresses the warning when configured to do so", :warn_about_false_positives do
-    RSpec::Expectations.configuration.warn_about_false_positives = false
+  it "can supresses the warning when configured to do so", :warn_about_potential_false_positives do
+    RSpec::Expectations.configuration.warn_about_potential_false_positives = false
     expect_no_warnings
     expect { raise }.to raise_error
   end
