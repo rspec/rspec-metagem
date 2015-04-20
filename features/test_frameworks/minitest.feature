@@ -36,9 +36,17 @@ Feature: Minitest integration
         def test_custom_matcher_with_deprecation_warning
           expect(1).to be_an_int
         end
+
+        def test_using_aggregate_failures
+          aggregate_failures do
+            expect(1).to be_even
+            expect(2).to be_odd
+          end
+        end
       end
       """
      When I run `ruby rspec_expectations_test.rb`
-     Then the output should contain "3 runs, 3 assertions, 1 failures, 0 errors"
+     Then the output should contain "4 runs, 5 assertions, 2 failures, 0 errors"
       And the output should contain "expected `[1, 2].empty?` to return true, got false"
       And the output should contain "be_an_int is deprecated"
+      And the output should contain "Got 2 failures from failure aggregation block"
