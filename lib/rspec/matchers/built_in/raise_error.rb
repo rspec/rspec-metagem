@@ -12,7 +12,7 @@ module RSpec
           @block = block
           @actual_error = nil
           @warn_about_bare_error =
-            RSpec::Expectations.configuration.warn_about_false_positives? &&
+            RSpec::Expectations.configuration.warn_about_potential_false_positives? &&
             expected_error_or_message.nil?
 
           case expected_error_or_message
@@ -155,7 +155,7 @@ module RSpec
                         "without even executing the method you are intending to call. " \
                         "Instead consider providing a specific error class or message. " \
                         "This message can be supressed by setting: " \
-                        "`RSpec::Expectations.configuration.warn_about_false_positives = false`")
+                        "`RSpec::Expectations.configuration.warn_about_potential_false_positives = false`")
         end
 
         def expected_error
