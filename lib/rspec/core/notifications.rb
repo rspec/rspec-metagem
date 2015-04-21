@@ -428,24 +428,8 @@ module RSpec::Core
       end
 
       # @return [Array<RSpec::Core::Example>] the slowest example groups
-      def slowest_groups
-        @slowest_groups ||= calculate_slowest_groups
-      end
-
-    private
-
-      def calculate_slowest_groups
-        example_groups = {}
-
-        examples.each do |example|
-          location = example.example_group.parent_groups.last.metadata[:location]
-
-          location_hash = example_groups[location] ||= Hash.new(0)
-          location_hash[:total_time]  += example.execution_result.run_time
-          location_hash[:count]       += 1
-          next if location_hash.key?(:description)
-          location_hash[:description] = example.example_group.top_level_description
-        end
+      # todo rename this method or move it's code to the json_formater.rb and profile.formater.rb
+      def calculate_slowest_groups(example_groups)
 
         # stop if we've only one example group
         return {} if example_groups.keys.length <= 1

@@ -6,14 +6,35 @@ module RSpec
       # @api private
       # Formatter for providing profile output.
       class ProfileFormatter
-        Formatters.register self, :dump_profile
+        Formatters.register self, :dump_profile, :example_group_started, :example_group_finished, :example_started
 
         def initialize(output)
+          @example_groups = {} #todo rename, maybe groups_data, groups_information or profile_information
           @output = output
         end
 
         # @private
         attr_reader :output
+
+        # @private
+        def example_group_started(notification)
+          @example_groups[notification.group.id] = Hash.new(0)
+          @example_groups[notification.group.id][:start] = Time.now
+          @example_groups[notification.group.id][:description] = notification.group.top_level_description
+        end
+
+        # @private
+        def example_group_finished(notification)
+          @example_groups[notification.group.id][:total_time] =  Time.now - @example_groups[notification.group.id][:start]
+        end
+
+        # @private
+        def example_started(notification)
+          #todo: maybe move example_group.parent_groups.last to an example or notification method like example.last_anscestor_group
+          group = notification.example.example_group.parent_groups.last.id
+          @example_groups[group][:count] += 1
+        end
+
 
         # @api public
         #
@@ -42,10 +63,11 @@ module RSpec
         end
 
         def dump_profile_slowest_example_groups(profile)
-          return if profile.slowest_groups.empty?
+          slowest_groups = profile.calculate_slowest_groups(@example_groups)
+          return if slowest_groups.empty?
 
-          @output.puts "\nTop #{profile.slowest_groups.size} slowest example groups:"
-          profile.slowest_groups.each do |loc, hash|
+          @output.puts "\nTop #{slowest_groups.size} slowest example groups:"
+          slowest_groups.each do |loc, hash|
             average = "#{bold(Helpers.format_seconds(hash[:average]))} #{bold("seconds")} average"
             total   = "#{Helpers.format_seconds(hash[:total_time])} seconds"
             count   = Helpers.pluralize(hash[:count], "example")
