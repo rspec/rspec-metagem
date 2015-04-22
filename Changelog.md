@@ -23,6 +23,8 @@ Enhancements:
   may cause false positives. (Jon Rowe, #768)
 * Warn when using a bare `raise_error` matcher that you may be subject to
   false positives. (Jon Rowe, #768)
+* Warn rather than raise when using the`raise_error` matcher in negative
+  expectations that may be subject to false positives. (Jon Rowe, #775)
 
 Bug Fixes:
 

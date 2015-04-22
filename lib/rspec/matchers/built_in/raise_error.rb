@@ -11,9 +11,7 @@ module RSpec
         def initialize(expected_error_or_message=nil, expected_message=nil, &block)
           @block = block
           @actual_error = nil
-          @warn_about_bare_error =
-            RSpec::Expectations.configuration.warn_about_potential_false_positives? &&
-            expected_error_or_message.nil?
+          @warn_about_bare_error = warn_about_potential_false_positives? && expected_error_or_message.nil?
 
           case expected_error_or_message
           when nil
@@ -64,7 +62,7 @@ module RSpec
 
         # @private
         def does_not_match?(given_proc)
-          prevent_invalid_expectations
+          warn_for_false_positives
           !matches?(given_proc, :negative_expectation) && Proc === given_proc
         end
 
@@ -128,19 +126,23 @@ module RSpec
           values_match?(@expected_message, @actual_error.message.to_s)
         end
 
-        def prevent_invalid_expectations
-          what_to_raise = if expecting_specific_exception? && @expected_message
-                            "`expect { }.not_to raise_error(SpecificErrorClass, message)`"
-                          elsif expecting_specific_exception?
-                            "`expect { }.not_to raise_error(SpecificErrorClass)`"
-                          elsif @expected_message
-                            "`expect { }.not_to raise_error(message)`"
-                          end
+        def warn_for_false_positives
+          return unless warn_about_potential_false_positives?
+          expression = if expecting_specific_exception? && @expected_message
+                         "`expect { }.not_to raise_error(SpecificErrorClass, message)`"
+                       elsif expecting_specific_exception?
+                         "`expect { }.not_to raise_error(SpecificErrorClass)`"
+                       elsif @expected_message
+                         "`expect { }.not_to raise_error(message)`"
+                       end
 
-          return unless what_to_raise
+          return unless expression
 
-          specific_class_error = ArgumentError.new("#{what_to_raise} is not valid, use `expect { }.not_to raise_error` (with no args) instead")
-          raise specific_class_error
+          warn_about_negative_false_positive expression
+        end
+
+        def warn_about_potential_false_positives?
+          RSpec::Expectations.configuration.warn_about_potential_false_positives?
         end
 
         def warning_about_bare_error
@@ -155,6 +157,16 @@ module RSpec
                         "without even executing the method you are intending to call. " \
                         "Instead consider providing a specific error class or message. " \
                         "This message can be supressed by setting: " \
+                        "`RSpec::Expectations.configuration.warn_about_potential_false_positives = false`")
+        end
+
+        def warn_about_negative_false_positive(expression)
+          RSpec.warning("Using #{expression} risks false positives, since literally " \
+                        "any other error would cause the expectation to pass, " \
+                        "including those raised by Ruby (e.g. NoMethodError, NameError " \
+                        "and ArgumentError), meaning the code you are intending to test " \
+                        "may not even get reached. Instead consider using " \
+                        "`expect {}.not_to raise_error`. This message can be supressed by setting: " \
                         "`RSpec::Expectations.configuration.warn_about_potential_false_positives = false`")
         end
 
