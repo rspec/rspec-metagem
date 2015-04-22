@@ -8,7 +8,7 @@ Feature: User-defined metadata
   Metadata defined on an example group is available (and can be overridden) by
   any sub-group or from any example in that group or a sub-group.
 
-  In addition, you can specify metdata using just symbols. Each symbol passed
+  In addition, you can specify metadata using just symbols. Each symbol passed
   as an argument to `describe`, `context` or `it` will be a key in the metadata
   hash, with a corresponding value of `true`.
 
