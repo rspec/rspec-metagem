@@ -90,8 +90,8 @@ root
         |pending command with block format
         |  with content that would fail
         |    is pending (PENDING: No reason given)
-        |  with content that would pass
-        |    fails (FAILED - 1)
+        |  behaves like shared
+        |    is marked as pending but passes (FAILED - 1)
         |
         |passing spec
         |  passes

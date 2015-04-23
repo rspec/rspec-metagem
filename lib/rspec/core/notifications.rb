@@ -315,7 +315,7 @@ module RSpec::Core
       #
       # @return [Array<String>] The example failure message
       def message_lines
-        ["Expected pending '#{example.execution_result.pending_message}' to fail. No Error was raised."]
+        add_shared_group_lines(raw_message_lines, NullColorizer)
       end
 
       # Returns the message generated for this failure colorized line by line.
@@ -323,7 +323,15 @@ module RSpec::Core
       # @param colorizer [#wrap] An object to colorize the message_lines by
       # @return [Array<String>] The example failure message colorized
       def colorized_message_lines(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        message_lines.map { |line| colorizer.wrap(line, RSpec.configuration.fixed_color) }
+        add_shared_group_lines(raw_message_lines, colorizer).map do |line|
+          colorizer.wrap line, RSpec.configuration.fixed_color
+        end
+      end
+
+    private
+
+      def raw_message_lines
+        ["Expected pending '#{example.execution_result.pending_message}' to fail. No Error was raised."]
       end
     end
 

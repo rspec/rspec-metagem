@@ -296,18 +296,18 @@ a {
 </div>
 <div id="div_group_4" class="example_group passed">
   <dl style="margin-left: 15px;">
-<dt id="example_group_4" class="passed">with content that would pass</dt>
+<dt id="example_group_4" class="passed">behaves like shared</dt>
     <script type="text/javascript">makeRed('rspec-header');</script><script type="text/javascript">makeRed('div_group_4');</script><script type="text/javascript">makeRed('example_group_4');</script><script type="text/javascript">moveProgressBar('42.8');</script><dd class="example pending_fixed">
-      <span class="failed_spec_name">fails</span>
+      <span class="failed_spec_name">is marked as pending but passes</span>
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_1">
         <div class="message"><pre>Expected example to fail since it is pending, but it passed.</pre></div>
-        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:16</pre></div>
-    <pre class="ruby"><code><span class="linenum">14</span>
-<span class="linenum">15</span>  context <span class="string"><span class="delimiter">"</span><span class="content">with content that would pass</span><span class="delimiter">"</span></span> <span class="keyword">do</span>
-<span class="offending"><span class="linenum">16</span>    it <span class="string"><span class="delimiter">"</span><span class="content">fails</span><span class="delimiter">"</span></span> <span class="keyword">do</span></span>
-<span class="linenum">17</span>      pending
-<span class="linenum">18</span>      expect(<span class="integer">1</span>).to eq(<span class="integer">1</span>)</code></pre>
+        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:4</pre></div>
+    <pre class="ruby"><code><span class="linenum">2</span>
+<span class="linenum">3</span><span class="constant">RSpec</span>.shared_examples_for <span class="string"><span class="delimiter">"</span><span class="content">shared</span><span class="delimiter">"</span></span> <span class="keyword">do</span>
+<span class="offending"><span class="linenum">4</span>  it <span class="string"><span class="delimiter">"</span><span class="content">is marked as pending but passes</span><span class="delimiter">"</span></span> <span class="keyword">do</span></span>
+<span class="linenum">5</span>    pending
+<span class="linenum">6</span>    expect(<span class="integer">1</span>).to eq(<span class="integer">1</span>)</code></pre>
       </div>
     </dd>
   </dl>
@@ -333,12 +333,12 @@ expected: 2
 
 (compared using ==)
 </pre></div>
-        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:31</pre></div>
-    <pre class="ruby"><code><span class="linenum">29</span><span class="constant">RSpec</span>.describe <span class="string"><span class="delimiter">"</span><span class="content">failing spec</span><span class="delimiter">"</span></span> <span class="keyword">do</span>
-<span class="linenum">30</span>  it <span class="string"><span class="delimiter">"</span><span class="content">fails</span><span class="delimiter">"</span></span> <span class="keyword">do</span>
-<span class="offending"><span class="linenum">31</span>    expect(<span class="integer">1</span>).to eq(<span class="integer">2</span>)</span>
-<span class="linenum">32</span>  <span class="keyword">end</span>
-<span class="linenum">33</span><span class="keyword">end</span></code></pre>
+        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:33</pre></div>
+    <pre class="ruby"><code><span class="linenum">31</span><span class="constant">RSpec</span>.describe <span class="string"><span class="delimiter">"</span><span class="content">failing spec</span><span class="delimiter">"</span></span> <span class="keyword">do</span>
+<span class="linenum">32</span>  it <span class="string"><span class="delimiter">"</span><span class="content">fails</span><span class="delimiter">"</span></span> <span class="keyword">do</span>
+<span class="offending"><span class="linenum">33</span>    expect(<span class="integer">1</span>).to eq(<span class="integer">2</span>)</span>
+<span class="linenum">34</span>  <span class="keyword">end</span>
+<span class="linenum">35</span><span class="keyword">end</span></code></pre>
       </div>
     </dd>
   </dl>
@@ -351,7 +351,7 @@ expected: 2
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_3">
         <div class="message"><pre>foo</pre></div>
-        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:39</pre></div>
+        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:41</pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for (erb)</span></code></pre>
       </div>
     </dd>
