@@ -28,6 +28,11 @@ Then /^the example(?:s)? should(?: all)? pass$/ do
   step %q{the exit status should be 0}
 end
 
+Then /^it should pass with "(.*?)"$/ do |string|
+  step %Q{the output should contain "#{string}"}
+  step %q{the exit status should be 0}
+end
+
 Then /^the example(?:s)? should(?: all)? fail$/ do
   step %q{the output should not contain "0 examples"}
   step %q{the output should not contain "0 failures"}
