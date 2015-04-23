@@ -151,14 +151,10 @@ module RSpec::Core
       public_class_method :new
 
       # @return [Exception] The example failure
-      def exception
-        example.execution_result.exception
-      end
+      attr_reader :exception
 
       # @return [String] The example description
-      def description
-        example.full_description
-      end
+      attr_reader :description
 
       # Returns the message generated for this failure line by line.
       #
@@ -197,10 +193,23 @@ module RSpec::Core
       # @return [String] The failure information fully formatted in the way that
       #   RSpec's built-in formatters emit.
       def fully_formatted(failure_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        "\n  #{failure_number}) #{description}\n#{formatted_message_and_backtrace(colorizer)}"
+        "\n  #{failure_number}) #{description}#{detail_formatter.call(example, colorizer)}" \
+        "\n#{formatted_message_and_backtrace(colorizer)}"
       end
 
+      attr_reader :message_color, :detail_formatter
+      private :message_color, :detail_formatter
+
     private
+
+      def initialize(example, options={})
+        @exception        = options.fetch(:exception)        { example.execution_result.exception }
+        @message_color    = options.fetch(:message_color)    { RSpec.configuration.failure_color }
+        @description      = options.fetch(:description)      { example.full_description }
+        @detail_formatter = options.fetch(:detail_formatter) { lambda { |*| } }
+        @failure_lines    = options[:failure_lines]
+        super(example)
+      end
 
       if String.method_defined?(:encoding)
         def encoding_of(string)
@@ -290,10 +299,6 @@ module RSpec::Core
 
         formatted
       end
-
-      def message_color
-        RSpec.configuration.failure_color
-      end
     end
 
     # The `PendingExampleFixedNotification` extends `ExampleNotification` with
@@ -304,45 +309,21 @@ module RSpec::Core
     class PendingExampleFixedNotification < FailedExampleNotification
       public_class_method :new
 
-      # Returns the examples description.
-      #
-      # @return [String] The example description
-      def description
-        "#{example.full_description} FIXED"
-      end
-
-      # Returns the message generated for this failure line by line.
-      #
-      # @return [Array<String>] The example failure message
-      def message_lines
-        add_shared_group_lines(raw_message_lines, NullColorizer)
-      end
-
-      # Returns the message generated for this failure colorized line by line.
-      #
-      # @param colorizer [#wrap] An object to colorize the message_lines by
-      # @return [Array<String>] The example failure message colorized
-      def colorized_message_lines(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        add_shared_group_lines(raw_message_lines, colorizer).map do |line|
-          colorizer.wrap line, RSpec.configuration.fixed_color
-        end
-      end
-
     private
 
-      def raw_message_lines
-        ["Expected pending '#{example.execution_result.pending_message}' to fail. No Error was raised."]
+      def initialize(example)
+        super(
+          example,
+          :description   => "#{example.full_description} FIXED",
+          :message_color => RSpec.configuration.fixed_color,
+          :failure_lines => ["Expected pending '#{example.execution_result.pending_message}' to fail. No Error was raised."]
+        )
       end
     end
 
     # @private
-    module PendingExampleNotificationMethods
-    private
-
-      def fully_formatted_header(pending_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        colorizer.wrap("\n  #{pending_number}) #{example.full_description}\n", :pending) <<
-        colorizer.wrap("     # #{example.execution_result.pending_message}\n", :detail)
-      end
+    PENDING_DETAIL_FORMATTER = lambda do |example, colorizer|
+      colorizer.wrap("\n     # #{example.execution_result.pending_message}", :detail)
     end
 
     # The `PendingExampleFailedAsExpectedNotification` extends `FailedExampleNotification` with
@@ -351,24 +332,17 @@ module RSpec::Core
     # @attr [RSpec::Core::Example] example the current example
     # @see ExampleNotification
     class PendingExampleFailedAsExpectedNotification < FailedExampleNotification
-      include PendingExampleNotificationMethods
       public_class_method :new
-
-      # @return [Exception] The exception that occurred while the pending example was executed
-      def exception
-        example.execution_result.pending_exception
-      end
-
-      # @return [String] The pending detail fully formatted in the way that
-      #   RSpec's built-in formatters emit.
-      def fully_formatted(pending_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        fully_formatted_header(pending_number, colorizer) << formatted_message_and_backtrace(colorizer)
-      end
 
     private
 
-      def message_color
-        RSpec.configuration.pending_color
+      def initialize(example)
+        super(
+          example,
+          :exception        => example.execution_result.pending_exception,
+          :message_color    => RSpec.configuration.pending_color,
+          :detail_formatter => PENDING_DETAIL_FORMATTER
+        )
       end
     end
 
@@ -378,14 +352,15 @@ module RSpec::Core
     # @attr [RSpec::Core::Example] example the current example
     # @see ExampleNotification
     class SkippedExampleNotification < ExampleNotification
-      include PendingExampleNotificationMethods
       public_class_method :new
 
       # @return [String] The pending detail fully formatted in the way that
       #   RSpec's built-in formatters emit.
       def fully_formatted(pending_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         formatted_caller = RSpec.configuration.backtrace_formatter.backtrace_line(example.location)
-        fully_formatted_header(pending_number, colorizer) << colorizer.wrap("     # #{formatted_caller}\n", :detail)
+        colorizer.wrap("\n  #{pending_number}) #{example.full_description}", :pending) <<
+          PENDING_DETAIL_FORMATTER.call(example, colorizer) << "\n" <<
+          colorizer.wrap("     # #{formatted_caller}\n", :detail)
       end
     end
 
