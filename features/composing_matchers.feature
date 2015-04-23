@@ -54,7 +54,7 @@ Feature: Composing Matchers
             by( a_value_within(0.1).of(1.0) )
         end
 
-        specify "you can pass matchers to `from` and `to" do
+        specify "you can pass matchers to `from` and `to`" do
           s = "food"
           expect { s = "barn" }.to change { s }.
             from( a_string_matching(/foo/) ).

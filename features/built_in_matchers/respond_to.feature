@@ -1,6 +1,6 @@
 Feature: `respond_to` matcher
 
-  Use the respond_to matcher to specify details of an object's interface.  In its most basic form:
+  Use the `respond_to` matcher to specify details of an object's interface. In its most basic form:
 
     ```ruby
     expect(obj).to respond_to(:foo) # pass if obj.respond_to?(:foo)
@@ -21,8 +21,8 @@ Feature: `respond_to` matcher
     expect(obj).to respond_to(:bar).with(2).arguments
     ```
 
-  Note that this matcher relies entirely upon #respond_to?.  If an object dynamically responds
-  to a message via #method_missing, but does not indicate this via #respond_to?, then this
+  Note that this matcher relies entirely upon `#respond_to?`.  If an object dynamically responds
+  to a message via `#method_missing`, but does not indicate this via `#respond_to?`, then this
   matcher will give you false results.
 
   Scenario: basic usage
