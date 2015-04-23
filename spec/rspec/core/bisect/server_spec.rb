@@ -14,6 +14,8 @@ module RSpec::Core
     end
 
     it 'always stops the server, even if an error occurs while yielding' do
+      skip "This test flaps on JRuby 1.8 mode for some reason" if RSpec::Support::Ruby.jruby? && RUBY_VERSION.to_f < 1.9
+
       expect(DRb).not_to have_running_server
 
       expect {
