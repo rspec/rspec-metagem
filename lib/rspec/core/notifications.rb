@@ -1,3 +1,4 @@
+RSpec::Support.require_rspec_core "formatters/exception_presenter"
 RSpec::Support.require_rspec_core "formatters/helpers"
 RSpec::Support.require_rspec_core "shell_escape"
 RSpec::Support.require_rspec_support "encoded_string"
@@ -151,16 +152,20 @@ module RSpec::Core
       public_class_method :new
 
       # @return [Exception] The example failure
-      attr_reader :exception
+      def exception
+        @exception_presenter.exception
+      end
 
       # @return [String] The example description
-      attr_reader :description
+      def description
+        @exception_presenter.description
+      end
 
       # Returns the message generated for this failure line by line.
       #
       # @return [Array<String>] The example failure message
       def message_lines
-        add_shared_group_lines(failure_lines, NullColorizer)
+        @exception_presenter.message_lines
       end
 
       # Returns the message generated for this failure colorized line by line.
@@ -168,16 +173,14 @@ module RSpec::Core
       # @param colorizer [#wrap] An object to colorize the message_lines by
       # @return [Array<String>] The example failure message colorized
       def colorized_message_lines(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        add_shared_group_lines(failure_lines, colorizer).map do |line|
-          colorizer.wrap line, message_color
-        end
+        @exception_presenter.colorized_message_lines(colorizer)
       end
 
       # Returns the failures formatted backtrace.
       #
       # @return [Array<String>] the examples backtrace lines
       def formatted_backtrace
-        backtrace_formatter.format_backtrace(exception.backtrace, example.metadata)
+        @exception_presenter.formatted_backtrace
       end
 
       # Returns the failures colorized formatted backtrace.
@@ -185,119 +188,20 @@ module RSpec::Core
       # @param colorizer [#wrap] An object to colorize the message_lines by
       # @return [Array<String>] the examples colorized backtrace lines
       def colorized_formatted_backtrace(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        formatted_backtrace.map do |backtrace_info|
-          colorizer.wrap "# #{backtrace_info}", RSpec.configuration.detail_color
-        end
+        @exception_presenter.colorized_formatted_backtrace(colorizer)
       end
 
       # @return [String] The failure information fully formatted in the way that
       #   RSpec's built-in formatters emit.
       def fully_formatted(failure_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        "\n  #{failure_number}) #{description}#{detail_formatter.call(example, colorizer)}" \
-        "\n#{formatted_message_and_backtrace(colorizer)}"
+        @exception_presenter.fully_formatted(failure_number, colorizer)
       end
-
-      attr_reader :message_color, :detail_formatter
-      private :message_color, :detail_formatter
 
     private
 
-      def initialize(example, options={})
-        @exception        = options.fetch(:exception)        { example.execution_result.exception }
-        @message_color    = options.fetch(:message_color)    { RSpec.configuration.failure_color }
-        @description      = options.fetch(:description)      { example.full_description }
-        @detail_formatter = options.fetch(:detail_formatter) { lambda { |*| } }
-        @failure_lines    = options[:failure_lines]
+      def initialize(example, exception_presenter=Formatters::ExceptionPresenter.new(example.execution_result.exception, example))
+        @exception_presenter = exception_presenter
         super(example)
-      end
-
-      if String.method_defined?(:encoding)
-        def encoding_of(string)
-          string.encoding
-        end
-
-        def encoded_string(string)
-          RSpec::Support::EncodedString.new(string, Encoding.default_external)
-        end
-      else # for 1.8.7
-        # :nocov:
-        def encoding_of(_string)
-        end
-
-        def encoded_string(string)
-          RSpec::Support::EncodedString.new(string)
-        end
-        # :nocov:
-      end
-
-      def backtrace_formatter
-        RSpec.configuration.backtrace_formatter
-      end
-
-      def exception_class_name
-        name = exception.class.name.to_s
-        name = "(anonymous error class)" if name == ''
-        name
-      end
-
-      def failure_lines
-        @failure_lines ||=
-          begin
-            lines = ["Failure/Error: #{read_failed_line.strip}"]
-            lines << "#{exception_class_name}:" unless exception_class_name =~ /RSpec/
-            encoded_string(exception.message.to_s).split("\n").each do |line|
-              lines << "  #{line}"
-            end
-            lines
-          end
-      end
-
-      def add_shared_group_lines(lines, colorizer)
-        example.metadata[:shared_group_inclusion_backtrace].each do |frame|
-          lines << colorizer.wrap(frame.description, RSpec.configuration.default_color)
-        end
-
-        lines
-      end
-
-      def read_failed_line
-        matching_line = find_failed_line
-        unless matching_line
-          return "Unable to find matching line from backtrace"
-        end
-
-        file_path, line_number = matching_line.match(/(.+?):(\d+)(|:\d+)/)[1..2]
-
-        if File.exist?(file_path)
-          File.readlines(file_path)[line_number.to_i - 1] ||
-            "Unable to find matching line in #{file_path}"
-        else
-          "Unable to find #{file_path} to read failed line"
-        end
-      rescue SecurityError
-        "Unable to read failed line"
-      end
-
-      def find_failed_line
-        example_path = example.metadata[:absolute_file_path].downcase
-        exception.backtrace.find do |line|
-          next unless (line_path = line[/(.+?):(\d+)(|:\d+)/, 1])
-          File.expand_path(line_path).downcase == example_path
-        end
-      end
-
-      def formatted_message_and_backtrace(colorizer)
-        formatted = ""
-
-        colorized_message_lines(colorizer).each do |line|
-          formatted << RSpec::Support::EncodedString.new("     #{line}\n", encoding_of(formatted))
-        end
-
-        colorized_formatted_backtrace(colorizer).each do |line|
-          formatted << RSpec::Support::EncodedString.new("     #{line}\n", encoding_of(formatted))
-        end
-
-        formatted
       end
     end
 
@@ -312,12 +216,12 @@ module RSpec::Core
     private
 
       def initialize(example)
-        super(
-          example,
+        super(example, Formatters::ExceptionPresenter.new(
+          example.execution_result.exception, example,
           :description   => "#{example.full_description} FIXED",
           :message_color => RSpec.configuration.fixed_color,
           :failure_lines => ["Expected pending '#{example.execution_result.pending_message}' to fail. No Error was raised."]
-        )
+        ))
       end
     end
 
@@ -337,12 +241,11 @@ module RSpec::Core
     private
 
       def initialize(example)
-        super(
-          example,
-          :exception        => example.execution_result.pending_exception,
+        super(example, Formatters::ExceptionPresenter.new(
+          example.execution_result.pending_exception, example,
           :message_color    => RSpec.configuration.pending_color,
           :detail_formatter => PENDING_DETAIL_FORMATTER
-        )
+        ))
       end
     end
 
