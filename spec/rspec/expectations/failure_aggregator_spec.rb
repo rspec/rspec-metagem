@@ -30,6 +30,42 @@ module RSpec::Expectations
       ))
     end
 
+    it 'ensures the exposed failures have backtraces' do
+      aggregation_line = __LINE__ + 2
+      expect {
+        aggregate_failures do
+          expect(1).to be_even
+          expect(2).to be_odd
+          expect(3).to be_even
+        end
+      }.to raise_error do |error|
+        expect(error.failures.map(&:backtrace)).to match [
+          a_collection_including(a_string_including(__FILE__, (aggregation_line + 1).to_s)),
+          a_collection_including(a_string_including(__FILE__, (aggregation_line + 2).to_s)),
+          a_collection_including(a_string_including(__FILE__, (aggregation_line + 3).to_s))
+        ]
+      end
+    end
+
+    def notify_error_with(backtrace)
+      exception = Exception.new
+      exception.set_backtrace backtrace
+      RSpec::Support.notify_failure(exception)
+    end
+
+    it 'does not stomp the backtrace on failures that have it' do
+      backtrace = ["./foo.rb:13"]
+
+      expect {
+        aggregate_failures do
+          notify_error_with(backtrace)
+          notify_error_with(backtrace)
+        end
+      }.to raise_error do |error|
+        expect(error.failures.map(&:backtrace)).to eq([ backtrace, backtrace ])
+      end
+    end
+
     it 'raises a normal `ExpectationNotMetError` when only one expectation fails' do
       expect {
         aggregate_failures do
