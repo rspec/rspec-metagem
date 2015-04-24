@@ -25,6 +25,8 @@ Enhancements:
   false positives. (Jon Rowe, #768)
 * Warn rather than raise when using the`raise_error` matcher in negative
   expectations that may be subject to false positives. (Jon Rowe, #775)
+* Improve failure message for `include(a, b, c)` so that if `a` and `b`
+  are included the failure message only mentions `c`. (Chris Arcand, #780)
 
 Bug Fixes:
 
