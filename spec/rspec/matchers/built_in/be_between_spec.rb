@@ -65,7 +65,7 @@ module RSpec::Matchers::BuiltIn
 
         expect {
           expect(["baz", 2.14]).to include(matcher(3.1, 3.2), matcher("bar", "foo") )
-        }.to fail_with("expected [\"baz\", 2.14] to include (a value between 3.1 and 3.2 (#{mode})) and (a value between \"bar\" and \"foo\" (#{mode}))")
+        }.to fail_with("expected [\"baz\", 2.14] to include (a value between 3.1 and 3.2 (#{mode}))")
       end
 
       it "provides a description" do
@@ -76,7 +76,7 @@ module RSpec::Matchers::BuiltIn
       it "fails with a clear error message when the matchers do not match" do
         expect {
           expect([nil, 1]).to include(matcher(2, 4), a_nil_value)
-        }.to fail_with("expected [nil, 1] to include (a value between 2 and 4 (#{mode})) and (a nil value)")
+        }.to fail_with("expected [nil, 1] to include (a value between 2 and 4 (#{mode}))")
       end
     end
 

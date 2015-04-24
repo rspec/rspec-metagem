@@ -58,8 +58,8 @@ Feature: `include` matcher
       | expected [1, 3, 7] not to include 3           |
       | expected [1, 3, 7] not to include 7           |
       | expected [1, 3, 7] not to include 1, 3, and 7 |
-      | expected [1, 3, 7] to include 1 and 9         |
-      | expected [1, 3, 7] not to include 1 and 9     |
+      | expected [1, 3, 7] to include 9               |
+      | expected [1, 3, 7] not to include 1           |
 
   Scenario: string usage
     Given a file named "string_include_matcher_spec.rb" with:
@@ -79,11 +79,11 @@ Feature: `include` matcher
       """
     When I run `rspec string_include_matcher_spec.rb`
     Then the output should contain all of these:
-      | 8 examples, 4 failures                             |
-      | expected "a string" to include "foo"               |
-      | expected "a string" not to include "str"           |
-      | expected "a string" to include "str" and "foo"     |
-      | expected "a string" not to include "str" and "foo" |
+      | 8 examples, 4 failures                   |
+      | expected "a string" to include "foo"     |
+      | expected "a string" not to include "str" |
+      | expected "a string" to include "foo"     |
+      | expected "a string" not to include "str" |
 
   Scenario: hash usage
     Given a file named "hash_include_matcher_spec.rb" with:
@@ -119,5 +119,19 @@ Feature: `include` matcher
       end
       """
     When I run `rspec hash_include_matcher_spec.rb`
-    Then the output should contain "13 failure"
+    Then the output should contain all of these:
+      | 22 examples, 13 failures                                      |
+      | expected {:a => 7, :b => 5} not to include :a                 |
+      | expected {:a => 7, :b => 5} not to include :b and :a          |
+      | expected {:a => 7, :b => 5} not to include {:a => 7}          |
+      | expected {:a => 7, :b => 5} not to include {:a => 7, :b => 5} |
+      | expected {:a => 7, :b => 5} to include :c                     |
+      | expected {:a => 7, :b => 5} to include :c and :d              |
+      | expected {:a => 7, :b => 5} to include {:d => 2}              |
+      | expected {:a => 7, :b => 5} to include {:a => 5}              |
+      | expected {:a => 7, :b => 5} to include {:a => 5, :b => 7}     |
+      | expected {:a => 7, :b => 5} to include :d                     |
+      | expected {:a => 7, :b => 5} not to include :a                 |
+      | expected {:a => 7, :b => 5} to include {:d => 3}              |
+      | expected {:a => 7, :b => 5} not to include {:a => 7}          |
 

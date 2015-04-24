@@ -12,35 +12,31 @@ module RSpec
         # @api private
         # @return [Boolean]
         def matches?(actual)
-          @actual = actual
-          perform_match(:all?, :all?)
+          perform_match(actual) { |v| v }
         end
 
         # @api private
         # @return [Boolean]
         def does_not_match?(actual)
-          @actual = actual
-          perform_match(:none?, :any?)
+          perform_match(actual) { |v| !v }
         end
 
         # @api private
         # @return [String]
         def description
-          described_items = surface_descriptions_in(expected)
-          item_list = EnglishPhrasing.list(described_items)
-          improve_hash_formatting "include#{item_list}"
+          improve_hash_formatting("include#{readable_list_of(expected)}")
         end
 
         # @api private
         # @return [String]
         def failure_message
-          improve_hash_formatting(super) + invalid_object_message
+          format_failure_message("to") { super }
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          improve_hash_formatting(super) + invalid_object_message
+          format_failure_message("not to") { super }
         end
 
         # @api private
@@ -51,24 +47,43 @@ module RSpec
 
       private
 
-        def invalid_object_message
-          return '' if actual.respond_to?(:include?)
-          ", but it does not respond to `include?`"
+        def format_failure_message(preposition)
+          if actual.respond_to?(:include?)
+            improve_hash_formatting("expected #{description_of @actual} #{preposition} include#{readable_list_of @divergent_items}")
+          else
+            improve_hash_formatting(yield) + ", but it does not respond to `include?`"
+          end
         end
 
-        def perform_match(predicate, hash_subset_predicate)
-          return false unless actual.respond_to?(:include?)
+        def readable_list_of(items)
+          described_items = surface_descriptions_in(items)
+          if described_items.all? { |item| item.is_a?(Hash) }
+            " #{described_items.inject(:merge).inspect}"
+          else
+            EnglishPhrasing.list(described_items)
+          end
+        end
 
-          expected.__send__(predicate) do |expected_item|
+        def perform_match(actual, &block)
+          @actual = actual
+          @divergent_items = excluded_from_actual(&block)
+          actual.respond_to?(:include?) && @divergent_items.empty?
+        end
+
+        def excluded_from_actual
+          return [] unless @actual.respond_to?(:include?)
+
+          expected.inject([]) do |memo, expected_item|
             if comparing_hash_to_a_subset?(expected_item)
-              expected_item.__send__(hash_subset_predicate) do |(key, value)|
-                actual_hash_includes?(key, value)
+              expected_item.each do |(key, value)|
+                memo << { key => value } unless yield actual_hash_includes?(key, value)
               end
             elsif comparing_hash_keys?(expected_item)
-              actual_hash_has_key?(expected_item)
+              memo << expected_item unless yield actual_hash_has_key?(expected_item)
             else
-              actual_collection_includes?(expected_item)
+              memo << expected_item unless yield actual_collection_includes?(expected_item)
             end
+            memo
           end
         end
 
