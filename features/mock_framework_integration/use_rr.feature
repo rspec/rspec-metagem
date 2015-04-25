@@ -6,7 +6,7 @@ Feature: mock with rr
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.mock_framework = :rr
+        config.mock_with :rr
       end
 
       RSpec.describe "mocking with RSpec" do
@@ -24,7 +24,7 @@ Feature: mock with rr
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.mock_framework = :rr
+        config.mock_with :rr
       end
 
       RSpec.describe "mocking with RSpec" do
@@ -41,7 +41,7 @@ Feature: mock with rr
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.mock_framework = :rr
+        config.mock_with :rr
       end
 
       RSpec.describe "failed message expectation in a pending example" do
@@ -60,7 +60,7 @@ Feature: mock with rr
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.mock_framework = :rr
+        config.mock_with :rr
       end
 
       RSpec.describe "passing message expectation in a pending example" do
@@ -81,7 +81,7 @@ Feature: mock with rr
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.mock_framework = :rr
+        config.mock_with :rr
       end
 
       RSpec.describe "RSpec.configuration.mock_framework.framework_name" do

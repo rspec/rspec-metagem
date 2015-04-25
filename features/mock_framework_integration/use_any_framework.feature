@@ -84,7 +84,7 @@ Feature: mock with an alternative framework
       require File.expand_path("../expector", __FILE__)
 
       RSpec.configure do |config|
-        config.mock_framework = Expector::RSpecAdapter
+        config.mock_with Expector::RSpecAdapter
       end
 
       RSpec.describe Expector do
