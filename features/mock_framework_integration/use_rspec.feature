@@ -7,7 +7,7 @@ Feature: mock with rspec
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.mock_framework = :rspec
+        config.mock_with :rspec
       end
 
       RSpec.describe "mocking with RSpec" do
@@ -25,7 +25,7 @@ Feature: mock with rspec
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.mock_framework = :rspec
+        config.mock_with :rspec
       end
 
       RSpec.describe "mocking with RSpec" do
@@ -42,7 +42,7 @@ Feature: mock with rspec
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.mock_framework = :rspec
+        config.mock_with :rspec
       end
 
       RSpec.describe "failed message expectation in a pending example" do
@@ -61,7 +61,7 @@ Feature: mock with rspec
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.mock_framework = :rspec
+        config.mock_with :rspec
       end
 
       RSpec.describe "passing message expectation in a pending example" do
@@ -82,7 +82,7 @@ Feature: mock with rspec
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.mock_framework = :rspec
+        config.mock_with :rspec
       end
 
       RSpec.describe "RSpec.configuration.mock_framework.framework_name" do
@@ -98,7 +98,7 @@ Feature: mock with rspec
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.mock_framework = :rspec
+        config.mock_with :rspec
       end
 
       RSpec.describe "Testing" do

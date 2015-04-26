@@ -6,7 +6,7 @@ Feature: mock with flexmock
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.mock_framework = :flexmock
+        config.mock_with :flexmock
       end
 
       RSpec.describe "mocking with Flexmock" do
@@ -24,7 +24,7 @@ Feature: mock with flexmock
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.mock_framework = :flexmock
+        config.mock_with :flexmock
       end
 
       RSpec.describe "mocking with Flexmock" do
@@ -41,7 +41,7 @@ Feature: mock with flexmock
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.mock_framework = :flexmock
+        config.mock_with :flexmock
       end
 
       RSpec.describe "failed message expectation in a pending example" do
@@ -60,7 +60,7 @@ Feature: mock with flexmock
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.mock_framework = :flexmock
+        config.mock_with :flexmock
       end
 
       RSpec.describe "passing message expectation in a pending example" do
@@ -81,7 +81,7 @@ Feature: mock with flexmock
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.mock_framework = :flexmock
+        config.mock_with :flexmock
       end
 
       RSpec.describe "RSpec.configuration.mock_framework.framework_name" do
