@@ -1,6 +1,6 @@
 Feature: `output` matcher
 
-  The `output` matcher provides a way to assert that the has emitted content to either
+  The `output` matcher provides a way to assert that the block has emitted content to either
   `$stdout` or `$stderr`.
 
   With no arg, passes if the block outputs `to_stdout` or `to_stderr`. With a string, passes
