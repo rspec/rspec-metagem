@@ -454,12 +454,13 @@ RSpec.describe "expect { ... }.not_to raise_error(NamedError, error_message) { |
 end
 
 RSpec.describe "Composing matchers with `raise_error`" do
-  matcher :an_error_with_attribute do |attr|
+  matcher :an_attribute do |attr|
     chain :equal_to do |value|
       @expected_value = value
     end
 
     match do |error|
+      return false unless error.respond_to?(attr)
       error.__send__(attr) == @expected_value
     end
   end
@@ -470,18 +471,28 @@ RSpec.describe "Composing matchers with `raise_error`" do
 
   describe "expect { }.to raise_error(matcher)" do
     it 'passes when the matcher matches the raised error' do
-      expect { raise FooError }.to raise_error(an_error_with_attribute(:foo).equal_to(:bar))
+      expect { raise FooError }.to raise_error(an_attribute(:foo).equal_to(:bar))
+    end
+
+    it 'passes when the matcher matches the exception message' do
+      expect { raise FooError, "food" }.to raise_error(a_string_including("foo"))
     end
 
     it 'fails with a clear message when the matcher does not match the raised error' do
       expect {
-        expect { raise FooError }.to raise_error(an_error_with_attribute(:foo).equal_to(3))
-      }.to fail_including("expected an error with attribute :foo equal to 3, got #<FooError: FooError>")
+        expect { raise FooError }.to raise_error(an_attribute(:foo).equal_to(3))
+      }.to fail_including("expected Exception with an attribute :foo equal to 3, got #<FooError: FooError>")
+    end
+
+    it 'fails with a clear message when the matcher does not match the exception message' do
+      expect {
+        expect { raise FooError, "food" }.to raise_error(a_string_including("bar"))
+      }.to fail_including('expected Exception with a string including "bar", got #<FooError: food')
     end
 
     it 'provides a description' do
-      description = raise_error(an_error_with_attribute(:foo).equal_to(3)).description
-      expect(description).to eq("raise an error with attribute :foo equal to 3")
+      description = raise_error(an_attribute(:foo).equal_to(3)).description
+      expect(description).to eq("raise Exception with an attribute :foo equal to 3")
     end
   end
 
