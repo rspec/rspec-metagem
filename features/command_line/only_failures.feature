@@ -11,6 +11,7 @@ Feature: Only Failures
       """ruby
       RSpec.configure do |c|
         c.example_status_persistence_file_path = "examples.txt"
+        c.run_all_when_everything_filtered = true
       end
       """
     And a file named ".rspec" with:
@@ -102,6 +103,10 @@ Feature: Only Failures
 
     When I run `rspec --next-failure`
     Then the output should contain "All examples were filtered out"
+
+  Scenario: Running `rspec --only-failures` with spec files that pass doesn't run anything
+    When I run `rspec spec/passing_spec.rb --only-failures`
+    Then it should pass with "0 examples, 0 failures"
 
   Scenario: Clear error given when using `--only-failures` without configuring `example_status_persistence_file_path`
     Given I have not configured `example_status_persistence_file_path`

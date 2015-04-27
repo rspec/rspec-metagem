@@ -136,6 +136,19 @@ module RSpec::Core
       context "when --only-failures is passed" do
         before { configuration.force(:only_failures => true) }
 
+        context "and all examples are filtered out" do
+          before do
+            configuration.filter_run_including :foo => 'bar'
+          end
+
+          it 'will ignore run_all_when_everything_filtered' do
+            configuration.run_all_when_everything_filtered = true
+            expect(world.filtered_examples).to_not receive(:clear)
+            expect(world.inclusion_filter).to_not receive(:clear)
+            world.announce_filters
+          end
+        end
+
         context "and `example_status_persistence_file_path` is not configured" do
           it 'aborts with a message explaining the config option must be set first' do
             configuration.example_status_persistence_file_path = nil
