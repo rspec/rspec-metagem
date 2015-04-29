@@ -767,10 +767,13 @@ module RSpec
     # If you do find yourself in such a situation, you could always write
     # a custom matcher, which would likely make your specs more expressive.
     #
+    # @param description [String] optional description to be used for this matcher.
+    #
     # @example
     #   expect(5).to satisfy { |n| n > 3 }
-    def satisfy(&block)
-      BuiltIn::Satisfy.new(&block)
+    #   expect(5).to satisfy("be greater than 3") { |n| n > 3 }
+    def satisfy(description="satisfy block", &block)
+      BuiltIn::Satisfy.new(description, &block)
     end
     alias_matcher :an_object_satisfying, :satisfy
     alias_matcher :satisfying,           :satisfy
