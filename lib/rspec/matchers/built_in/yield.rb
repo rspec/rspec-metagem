@@ -78,6 +78,7 @@ module RSpec
                   "matcher. Pass the argument as a block on to the method you are testing."
           end
         else
+          # :nocov:
           # On 1.8.7, `lambda { }.arity` and `lambda { |*a| }.arity` both return -1,
           # so we can't distinguish between accepting no args and an arg splat.
           # It's OK to skip, this, though; it just provides a nice error message
@@ -86,6 +87,7 @@ module RSpec
           def assert_valid_expect_block!
             # nothing to do
           end
+          # :nocov:
         end
       end
 

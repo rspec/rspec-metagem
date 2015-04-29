@@ -49,9 +49,11 @@ module RSpec
 
         # support 1.8.7, evaluate once at load time for performance
         if String === methods.first
+          # :nocov:
           def private_predicate?
             @actual.private_methods.include? predicate.to_s
           end
+          # :nocov:
         else
           def private_predicate?
             @actual.private_methods.include? predicate

@@ -933,11 +933,13 @@ module RSpec
         method =~ DYNAMIC_MATCHER_REGEX || super
       end
     else # for 1.8.7
+      # :nocov:
       def respond_to?(method, *)
         method = method.to_s
         method =~ DYNAMIC_MATCHER_REGEX || super
       end
       public :respond_to?
+      # :nocov:
     end
 
     # @api private
