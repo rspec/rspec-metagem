@@ -39,6 +39,7 @@ Enhancements:
 * When invalid options are parsed, notify users where they came from
   (e.g. `.rspec` or `~/.rspec` or `ENV['SPEC_OPTS']`) so they can
   easily find the source of the problem. (Myron Marston, #1940)
+* Add pending message contents to the json formatter output. (Jon Rowe, #1949)
 
 Bug Fixes:
 
