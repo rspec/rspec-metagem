@@ -251,14 +251,6 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
   end
 
   describe "#run" do
-    it "sets its reference to the example group instance to nil" do
-      group = RSpec.describe do
-        example('example') { expect(1).to eq(1) }
-      end
-      group.run
-      expect(group.examples.first.instance_variable_get("@example_group_instance")).to be_nil
-    end
-
     it "generates a description before tearing down mocks in case a mock object is used in the description" do
       group = RSpec.describe do
         example { test = double('Test'); expect(test).to eq test }
@@ -346,33 +338,47 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
                         ])
     end
 
-    context "clearing ivars" do
-      it "sets ivars to nil to prep them for GC" do
-        group = RSpec.describe do
-          before(:all)  { @before_all  = :before_all }
-          before(:each) { @before_each = :before_each }
-          after(:each)  { @after_each = :after_each }
-          after(:all)   { @after_all  = :after_all }
-        end
-        group.example("does something") do
-          expect(@before_all).to eq(:before_all)
-          expect(@before_each).to eq(:before_each)
-        end
-        expect(group.run(double.as_null_object)).to be_truthy
-        group.new do |example|
-          %w[@before_all @before_each @after_each @after_all].each do |ivar|
-            expect(example.instance_variable_get(ivar)).to be_nil
-          end
-        end
+
+    context 'memory leaks, see GH-321, GH-1921' do
+      def self.reliable_gc
+        0 != GC.method(:start).arity # older Rubies don't give us options to ensure a full GC
       end
 
-      it "does not impact the before_all_ivars which are copied to each example" do
-        group = RSpec.describe do
-          before(:all) { @before_all = "abc" }
-          example("first") { expect(@before_all).not_to be_nil }
-          example("second") { expect(@before_all).not_to be_nil }
+      it 'releases references to the examples / their ivars', :if => reliable_gc do
+        config        = RSpec::Core::Configuration.new
+        real_reporter = RSpec::Core::Reporter.new(config) # in case it is the cause of a leak
+        garbage       = Struct.new :defined_in
+        group         = RSpec.describe do
+          before(:all)  { @before_all  = garbage.new :before_all  }
+          before(:each) { @before_each = garbage.new :before_each }
+          after(:each)  { @after_each  = garbage.new :after_each  }
+          after(:all)   { @after_all   = garbage.new :after_all   }
+          example "passing" do
+            @passing_example = garbage.new :passing_example
+            expect(@passing_example).to be
+          end
+          example "failing" do
+            @failing_example = garbage.new :failing_example
+            expect(@failing_example).to_not be
+          end
         end
-        expect(group.run).to be_truthy
+
+        GC.disable
+        group.run real_reporter
+
+        expect {
+          GC.enable
+          GC.start :full_mark => true, :immediate_sweep => true
+        }.to change { ObjectSpace.each_object(garbage).count }.from(8).to(0)
+      end
+
+      it 'can still be referenced by user code afterwards' do
+        calls_a = nil
+        describe_successfully 'saves a lambda that references its memoized helper' do
+          let(:a) { 123 }
+          example { calls_a = lambda { a } }
+        end
+        expect(calls_a.call).to eq 123
       end
     end
 

@@ -31,15 +31,15 @@ Dir['./spec/support/**/*.rb'].map do |file|
   require file.gsub("./spec/support", "support")
 end
 
-  class RaiseOnFailuresReporter < RSpec::Core::NullReporter
-    def self.example_failed(example)
-      raise example.exception
-    end
+class RaiseOnFailuresReporter < RSpec::Core::NullReporter
+  def self.example_failed(example)
+    raise example.exception
   end
+end
 
 module CommonHelpers
-  def describe_successfully(&describe_body)
-    example_group    = RSpec.describe(&describe_body)
+  def describe_successfully(description="", &describe_body)
+    example_group    = RSpec.describe(description, &describe_body)
     ran_successfully = example_group.run RaiseOnFailuresReporter
     expect(ran_successfully).to eq true
     example_group
