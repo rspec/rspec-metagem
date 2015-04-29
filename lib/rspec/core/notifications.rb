@@ -228,8 +228,8 @@ module RSpec::Core
     end
 
     # @private
-    PENDING_DETAIL_FORMATTER = lambda do |example, colorizer|
-      colorizer.wrap("\n     # #{example.execution_result.pending_message}", :detail)
+    PENDING_DETAIL_FORMATTER = lambda do |example, colorizer, indentation|
+      colorizer.wrap("\n#{indentation}# #{example.execution_result.pending_message}", :detail)
     end
 
     # The `PendingExampleFailedAsExpectedNotification` extends `FailedExampleNotification` with
@@ -264,7 +264,7 @@ module RSpec::Core
       def fully_formatted(pending_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         formatted_caller = RSpec.configuration.backtrace_formatter.backtrace_line(example.location)
         colorizer.wrap("\n  #{pending_number}) #{example.full_description}", :pending) <<
-          PENDING_DETAIL_FORMATTER.call(example, colorizer) << "\n" <<
+          PENDING_DETAIL_FORMATTER.call(example, colorizer, "     ") << "\n" <<
           colorizer.wrap("     # #{formatted_caller}\n", :detail)
       end
     end

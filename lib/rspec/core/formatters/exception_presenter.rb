@@ -3,17 +3,18 @@ module RSpec
     module Formatters
       # @private
       class ExceptionPresenter
-        attr_reader :exception, :example, :description, :message_color, :detail_formatter
-        private :message_color, :detail_formatter
+        attr_reader :exception, :example, :description, :message_color, :detail_formatter, :extra_detail_formatter
+        private :message_color, :detail_formatter, :extra_detail_formatter
 
         def initialize(exception, example, options={})
-          @exception        = exception
-          @example          = example
-          @message_color    = options.fetch(:message_color)         { RSpec.configuration.failure_color }
-          @description      = options.fetch(:description_formatter) { Proc.new { example.full_description } }.call(self)
-          @detail_formatter = options.fetch(:detail_formatter)      { Proc.new {} }
-          @indentation      = options.fetch(:indentation, 2)
-          @failure_lines    = options[:failure_lines]
+          @exception              = exception
+          @example                = example
+          @message_color          = options.fetch(:message_color)          { RSpec.configuration.failure_color }
+          @description            = options.fetch(:description_formatter)  { Proc.new { example.full_description } }.call(self)
+          @detail_formatter       = options.fetch(:detail_formatter)       { Proc.new {} }
+          @extra_detail_formatter = options.fetch(:extra_detail_formatter) { Proc.new {} }
+          @indentation            = options.fetch(:indentation, 2)
+          @failure_lines          = options[:failure_lines]
         end
 
         def message_lines
@@ -38,8 +39,11 @@ module RSpec
 
         def fully_formatted(failure_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
           alignment_basis = "#{' ' * @indentation}#{failure_number}) "
-          "\n#{alignment_basis}#{description}#{detail_formatter.call(example, colorizer)}" \
-          "\n#{formatted_message_and_backtrace(colorizer, alignment_basis.length)}"
+          indentation = ' ' * alignment_basis.length
+
+          "\n#{alignment_basis}#{description}#{detail_formatter.call(example, colorizer, indentation)}" \
+          "\n#{formatted_message_and_backtrace(colorizer, indentation)}" \
+          "#{extra_detail_formatter.call(failure_number, colorizer, indentation)}"
         end
 
         def failure_slash_error_line
@@ -130,7 +134,7 @@ module RSpec
           formatted = ""
 
           lines.each do |line|
-            formatted << RSpec::Support::EncodedString.new("#{' ' * indentation}#{line}\n", encoding_of(formatted))
+            formatted << RSpec::Support::EncodedString.new("#{indentation}#{line}\n", encoding_of(formatted))
           end
 
           formatted

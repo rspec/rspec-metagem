@@ -52,6 +52,24 @@ module RSpec::Core
         EOS
       end
 
+      it 'passes the indentation on to the `:detail_formatter` lambda so it can align things' do
+        detail_formatter = lambda do |ex, colorizer, indentation|
+          "\n#{indentation}Some Detail"
+        end
+
+        presenter = Formatters::ExceptionPresenter.new(exception, example, :indentation => 4,
+                                                       :detail_formatter => detail_formatter)
+        expect(presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
+          |
+          |    1) Example
+          |       Some Detail
+          |       Failure/Error: # The failure happened here!
+          |         Boom
+          |         Bam
+          |       # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
+        EOS
+      end
+
       it 'allows the failure/error line to be used as the description' do
         presenter = Formatters::ExceptionPresenter.new(exception, example, :description_formatter => lambda { |p| p.failure_slash_error_line })
 
@@ -64,6 +82,23 @@ module RSpec::Core
         EOS
       end
 
+      it 'allows a caller to specify extra details that are added to the bottom' do
+        presenter = Formatters::ExceptionPresenter.new(
+          exception, example, :extra_detail_formatter => lambda do |failure_number, colorizer, indentation|
+            "#{indentation}extra detail for failure: #{failure_number}\n"
+          end
+        )
+
+        expect(presenter.fully_formatted(2)).to eq(<<-EOS.gsub(/^ +\|/, ''))
+          |
+          |  2) Example
+          |     Failure/Error: # The failure happened here!
+          |       Boom
+          |       Bam
+          |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
+          |     extra detail for failure: 2
+        EOS
+      end
     end
 
     describe "#read_failed_line" do
