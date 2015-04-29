@@ -216,11 +216,13 @@ module RSpec::Core
     private
 
       def initialize(example)
+        execution_result = example.execution_result
+
         super(example, Formatters::ExceptionPresenter.new(
           example.execution_result.exception, example,
-          :description   => "#{example.full_description} FIXED",
-          :message_color => RSpec.configuration.fixed_color,
-          :failure_lines => ["Expected pending '#{example.execution_result.pending_message}' to fail. No Error was raised."]
+          :description_formatter => Proc.new { "#{example.full_description} FIXED" },
+          :message_color         => RSpec.configuration.fixed_color,
+          :failure_lines         => ["Expected pending '#{execution_result.pending_message}' to fail. No Error was raised."]
         ))
       end
     end

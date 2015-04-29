@@ -52,6 +52,18 @@ module RSpec::Core
         EOS
       end
 
+      it 'allows the failure/error line to be used as the description' do
+        presenter = Formatters::ExceptionPresenter.new(exception, example, :description_formatter => lambda { |p| p.failure_slash_error_line })
+
+        expect(presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
+          |
+          |  1) Failure/Error: # The failure happened here!
+          |       Boom
+          |       Bam
+          |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
+        EOS
+      end
+
     end
 
     describe "#read_failed_line" do
