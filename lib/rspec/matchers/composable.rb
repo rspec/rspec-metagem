@@ -148,6 +148,7 @@ module RSpec
       end
 
       if String.ancestors.include?(Enumerable) # 1.8.7
+        # :nocov:
         # Strings are not enumerable on 1.9, and on 1.8 they are an infinitely
         # nested enumerable: since ruby lacks a character class, it yields
         # 1-character strings, which are themselves enumerable, composed of a
@@ -158,6 +159,7 @@ module RSpec
           return false if String === item
           Enumerable === item && !(Range === item)
         end
+        # :nocov:
       else
         # @api private
         def should_enumerate?(item)

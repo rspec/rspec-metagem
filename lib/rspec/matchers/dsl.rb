@@ -24,9 +24,11 @@ module RSpec
           end
         end
       else
+        # :nocov:
         def warn_about_block_args(*)
           # There's no way to detect block params on 1.8 since the method reflection APIs don't expose it
         end
+        # :nocov:
       end
 
       RSpec.configure { |c| c.extend self } if RSpec.respond_to?(:configure)
@@ -410,11 +412,13 @@ module RSpec
             super || @matcher_execution_context.respond_to?(method, include_private)
           end
         else # for 1.8.7
+          # :nocov:
           # Indicates that this matcher responds to messages
           # from the `@matcher_execution_context` as well.
           def respond_to?(method, include_private=false)
             super || @matcher_execution_context.respond_to?(method, include_private)
           end
+          # :nocov:
         end
 
       private
