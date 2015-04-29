@@ -47,13 +47,32 @@ module RSpec::Core
         elsif execution_result.status == :pending
           PendingExampleFailedAsExpectedNotification.new(example)
         elsif execution_result.status == :failed
-          FailedExampleNotification.new(example)
+          FailedExampleNotification.new(example, exception_presenter_for(example))
         else
           new(example)
         end
       end
 
-      private_class_method :new
+      def self.exception_presenter_for(example)
+        options = if multiple_exceptions_not_met_error?(example)
+          Formatters::MultipleExpectationsNotMetPresenterOptions.for(
+            example.execution_result.exception, example
+          )
+        else
+          {}
+        end
+
+        Formatters::ExceptionPresenter.new(
+          example.execution_result.exception, example, options
+        )
+      end
+
+      def self.multiple_exceptions_not_met_error?(example)
+        return false unless defined?(RSpec::Expectations::MultipleExpectationsNotMetError)
+        RSpec::Expectations::MultipleExpectationsNotMetError === example.execution_result.exception
+      end
+
+      private_class_method :new, :exception_presenter_for, :multiple_exceptions_not_met_error?
     end
 
     # The `ExamplesNotification` represents notifications sent by the reporter

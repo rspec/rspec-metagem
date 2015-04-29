@@ -140,6 +140,53 @@ module RSpec
           formatted
         end
       end
+
+      # @private
+      class MultipleExpectationsNotMetPresenterOptions
+        def self.for(exception, example, options={})
+          new(exception, example, options).presenter_options
+        end
+
+        attr_reader :exception, :example, :options
+
+        def initialize(exception, example, options={})
+          @exception = exception
+          @example   = example
+          @options   = options
+        end
+
+        def presenter_options
+          options.merge(
+            :failure_lines          => [],
+            :detail_formatter       => method(:failure_summary),
+            :extra_detail_formatter => method(:formatted_sub_failure_list)
+          )
+        end
+
+      private
+
+        def failure_summary(_example, colorizer, indentation)
+          # TODO: ensure this is printed in pending color when appropriate
+          colorizer.wrap("\n#{indentation}#{exception.summary}.", RSpec.configuration.failure_color)
+        end
+
+        def formatted_sub_failure_list(failure_number, colorizer, indentation)
+          # TODO: message_color
+          exception.all_exceptions.each_with_index.map do |failure, index|
+            ExceptionPresenter.new(
+              convert_to_relative_backtrace(failure), example,
+              :description_formatter => :failure_slash_error_line.to_proc,
+              :indentation           => indentation.length
+            ).fully_formatted("#{failure_number}.#{index + 1}", colorizer)
+          end.join
+        end
+
+        def convert_to_relative_backtrace(failure)
+          failure = failure.dup
+          failure.set_backtrace(failure.backtrace[0..-exception.backtrace.size])
+          failure
+        end
+      end
     end
   end
 end
