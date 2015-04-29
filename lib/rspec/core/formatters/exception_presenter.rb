@@ -12,6 +12,7 @@ module RSpec
           @message_color    = options.fetch(:message_color)    { RSpec.configuration.failure_color }
           @description      = options.fetch(:description)      { example.full_description }
           @detail_formatter = options.fetch(:detail_formatter) { lambda { |*| } }
+          @indentation      = options.fetch(:indentation, 2)
           @failure_lines    = options[:failure_lines]
         end
 
@@ -36,8 +37,9 @@ module RSpec
         end
 
         def fully_formatted(failure_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-          "\n  #{failure_number}) #{description}#{detail_formatter.call(example, colorizer)}" \
-          "\n#{formatted_message_and_backtrace(colorizer)}"
+          alignment_basis = "#{' ' * @indentation}#{failure_number}) "
+          "\n#{alignment_basis}#{description}#{detail_formatter.call(example, colorizer)}" \
+          "\n#{formatted_message_and_backtrace(colorizer, alignment_basis.length)}"
         end
 
       private
@@ -117,15 +119,13 @@ module RSpec
           end
         end
 
-        def formatted_message_and_backtrace(colorizer)
+        def formatted_message_and_backtrace(colorizer, indentation)
+          lines = colorized_message_lines(colorizer) + colorized_formatted_backtrace(colorizer)
+
           formatted = ""
 
-          colorized_message_lines(colorizer).each do |line|
-            formatted << RSpec::Support::EncodedString.new("     #{line}\n", encoding_of(formatted))
-          end
-
-          colorized_formatted_backtrace(colorizer).each do |line|
-            formatted << RSpec::Support::EncodedString.new("     #{line}\n", encoding_of(formatted))
+          lines.each do |line|
+            formatted << RSpec::Support::EncodedString.new("#{' ' * indentation}#{line}\n", encoding_of(formatted))
           end
 
           formatted

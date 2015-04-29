@@ -12,6 +12,48 @@ module RSpec::Core
       example.metadata[:absolute_file_path] = __FILE__
     end
 
+    describe "#fully_formatted" do
+      line_num = __LINE__ + 2
+      let(:exception) { instance_double(Exception, :message => "Boom\nBam", :backtrace => [ "#{__FILE__}:#{line_num}"]) }
+      # The failure happened here!
+
+      it "formats the exception with all the normal details" do
+        expect(presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
+          |
+          |  1) Example
+          |     Failure/Error: # The failure happened here!
+          |       Boom
+          |       Bam
+          |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
+        EOS
+      end
+
+      it "indents properly when given a multiple-digit failure index" do
+        expect(presenter.fully_formatted(100)).to eq(<<-EOS.gsub(/^ +\|/, ''))
+          |
+          |  100) Example
+          |       Failure/Error: # The failure happened here!
+          |         Boom
+          |         Bam
+          |       # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
+        EOS
+      end
+
+      it "allows the caller to specify additional indentation" do
+        presenter = Formatters::ExceptionPresenter.new(exception, example, :indentation => 4)
+
+        expect(presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
+          |
+          |    1) Example
+          |       Failure/Error: # The failure happened here!
+          |         Boom
+          |         Bam
+          |       # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
+        EOS
+      end
+
+    end
+
     describe "#read_failed_line" do
       def read_failed_line
         presenter.send(:read_failed_line)
