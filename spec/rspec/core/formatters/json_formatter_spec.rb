@@ -49,7 +49,8 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
           :status => "passed",
           :file_path => this_file,
           :line_number => succeeding_line,
-          :run_time => formatter.output_hash[:examples][0][:run_time]
+          :run_time => formatter.output_hash[:examples][0][:run_time],
+          :pending_message => nil,
         },
         {
           :description => "fails",
@@ -58,11 +59,12 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
           :file_path => this_file,
           :line_number => failing_line,
           :run_time => formatter.output_hash[:examples][1][:run_time],
+          :pending_message => nil,
           :exception => {
             :class     => "RuntimeError",
             :message   => "eek",
             :backtrace => failing_backtrace
-          }
+          },
         },
         {
           :description => "pends",
@@ -70,7 +72,8 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
           :status => "pending",
           :file_path => this_file,
           :line_number => pending_line,
-          :run_time => formatter.output_hash[:examples][2][:run_time]
+          :run_time => formatter.output_hash[:examples][2][:run_time],
+          :pending_message => "world peace",
         },
       ],
       :summary => {
