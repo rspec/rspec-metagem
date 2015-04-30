@@ -142,8 +142,9 @@ module RSpec
           options.update(:skip => RSpec::Core::Pending::NOT_YET_IMPLEMENTED) unless block
           options.update(extra_options)
 
-          examples << RSpec::Core::Example.new(self, desc, options, block)
-          examples.last
+          example = RSpec::Core::Example.new(self, desc, options, block)
+          examples << example
+          example
         end
       end
 
