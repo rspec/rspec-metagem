@@ -29,6 +29,7 @@
   - define_matcher_with_fluent_interface.feature
   - access_running_example.feature
   - define_matcher_outside_rspec.feature
+- aggregating_failures.feature
 - composing_matchers.feature
 - compound_expectations.feature
 - define_negated_matcher.feature
