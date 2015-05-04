@@ -61,33 +61,38 @@ module RSpec::Core
             :message_color    => RSpec.configuration.pending_color,
             :detail_formatter => PENDING_DETAIL_FORMATTER
           }
-        elsif multiple_exceptions_not_met_error?(example)
-          ex_presenter_options = {
+        end
+
+        if multiple_exceptions_not_met_error?(exception)
+          ex_presenter_options.merge!(
             :failure_lines          => [],
-            :detail_formatter       => multiple_failure_sumarizer(exception),
-            :extra_detail_formatter => sub_failure_list_formatter(exception, example)
-          }
+            :extra_detail_formatter => sub_failure_list_formatter(exception, example,
+                                                                  ex_presenter_options[:message_color]),
+            :detail_formatter       => multiple_failure_sumarizer(exception,
+                                                                  ex_presenter_options[:detail_formatter],
+                                                                  ex_presenter_options[:message_color])
+          )
         end
 
         ex_presenter = Formatters::ExceptionPresenter.new(exception, example, ex_presenter_options)
         klass.new(example, ex_presenter)
       end
 
-      def self.multiple_exceptions_not_met_error?(example)
+      def self.multiple_exceptions_not_met_error?(exception)
         return false unless defined?(RSpec::Expectations::MultipleExpectationsNotMetError)
-        RSpec::Expectations::MultipleExpectationsNotMetError === example.execution_result.exception
+        RSpec::Expectations::MultipleExpectationsNotMetError === exception
       end
 
-      def self.multiple_failure_sumarizer(exception)
-        lambda do |_example, colorizer, indentation|
-          # TODO: ensure this is printed in pending color when appropriate
-          colorizer.wrap("\n#{indentation}#{exception.summary}.", RSpec.configuration.failure_color)
+      def self.multiple_failure_sumarizer(exception, prior_detail_formatter, color)
+        lambda do |example, colorizer, indentation|
+          summary = "\n#{indentation}#{colorizer.wrap(exception.summary, color || RSpec.configuration.failure_color)}."
+          return summary unless prior_detail_formatter
+          "#{prior_detail_formatter.call(example, colorizer, indentation)}#{summary}"
         end
       end
 
-      def self.sub_failure_list_formatter(exception, example)
+      def self.sub_failure_list_formatter(exception, example, message_color)
         lambda do |failure_number, colorizer, indentation|
-          # TODO: message_color
           exception.all_exceptions.each_with_index.map do |failure, index|
             failure = failure.dup
             failure.set_backtrace(failure.backtrace[0..-exception.backtrace.size])
@@ -95,7 +100,8 @@ module RSpec::Core
             Formatters::ExceptionPresenter.new(
               failure, example,
               :description_formatter => :failure_slash_error_line.to_proc,
-              :indentation           => indentation.length
+              :indentation           => indentation.length,
+              :message_color         => message_color || RSpec.configuration.failure_color
             ).fully_formatted("#{failure_number}.#{index + 1}", colorizer)
           end.join
         end

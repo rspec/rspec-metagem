@@ -9,7 +9,7 @@ RSpec.describe "FailedExampleNotification" do
   let(:notification) { ::RSpec::Core::Notifications::ExampleNotification.for(example) }
 
   before do
-    allow(example.execution_result).to receive(:exception) { exception }
+    example.execution_result.exception = exception
     example.metadata[:absolute_file_path] = __FILE__
   end
 
@@ -23,12 +23,19 @@ RSpec.describe "FailedExampleNotification" do
   end
 
   describe "fully formatted failure output" do
-    def fully_formatted
-      notification.fully_formatted(1)
+    def fully_formatted(*args)
+      notification.fully_formatted(1, *args)
     end
 
     def dedent(string)
       string.gsub(/^ +\|/, '')
+    end
+
+    # ANSI codes aren't easy to read in failure output, so use tags instead
+    class TagColorizer
+      def self.wrap(text, code_or_symbol)
+        "<#{code_or_symbol}>#{text}</#{code_or_symbol}>"
+      end
     end
 
     context "when the exception is a MultipleExpectationsNotMetError" do
@@ -87,6 +94,19 @@ RSpec.describe "FailedExampleNotification" do
         EOS
       end
 
+      it 'uses the `failure` color in the summary output' do
+        expect(fully_formatted(TagColorizer)).to include(
+          '<red>Got 2 failures from failure aggregation block "multiple expectations"</red>.'
+        )
+      end
+
+      it 'uses the `failure` color for the sub-failure messages' do
+        expect(fully_formatted(TagColorizer)).to include(
+         '<red>  expected pass, but foo</red>',
+         '<red>  expected pass, but bar</red>'
+        )
+      end
+
       context "when there are failures and other errors" do
         let(:aggregate_line) { __LINE__ + 3 }
         let(:exception) do
@@ -110,6 +130,39 @@ RSpec.describe "FailedExampleNotification" do
             |            boom
             |          # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 2}
            EOS
+        end
+      end
+
+      context "in a pending spec" do
+        before do
+          example.execution_result.status = :pending
+          example.execution_result.pending_message = 'Some pending reason'
+          example.execution_result.pending_exception = exception
+          example.execution_result.exception = nil
+        end
+
+        it 'includes both the pending message and aggregate summary' do
+          expect(fully_formatted.lines.first(6)).to eq(dedent(<<-EOS).lines.to_a)
+            |
+            |  1) Example
+            |     # Some pending reason
+            |     Got 2 failures from failure aggregation block "multiple expectations".
+            |     # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line}
+            |
+          EOS
+        end
+
+        it 'uses the `pending` color in the summary output' do
+          expect(fully_formatted(TagColorizer)).to include(
+            '<yellow>Got 2 failures from failure aggregation block "multiple expectations"</yellow>.'
+          )
+        end
+
+        it 'uses the `pending` color for the sub-failure messages' do
+          expect(fully_formatted(TagColorizer)).to include(
+           '<yellow>  expected pass, but foo</yellow>',
+           '<yellow>  expected pass, but bar</yellow>'
+          )
         end
       end
     end
