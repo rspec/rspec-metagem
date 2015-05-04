@@ -99,9 +99,10 @@ module RSpec::Core
 
             Formatters::ExceptionPresenter.new(
               failure, example,
-              :description_formatter => :failure_slash_error_line.to_proc,
-              :indentation           => indentation.length,
-              :message_color         => message_color || RSpec.configuration.failure_color
+              :description_formatter   => :failure_slash_error_line.to_proc,
+              :indentation             => indentation.length,
+              :message_color           => message_color || RSpec.configuration.failure_color,
+              :skip_shared_group_trace => true
             ).fully_formatted("#{failure_number}.#{index + 1}", colorizer)
           end.join
         end

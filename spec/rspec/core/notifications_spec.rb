@@ -107,6 +107,38 @@ RSpec.describe "FailedExampleNotification" do
         )
       end
 
+      context "when the failure happened in a shared example group" do
+        before do |ex|
+          example.metadata[:shared_group_inclusion_backtrace] << RSpec::Core::SharedExampleGroupInclusionStackFrame.new(
+            "Stuff", "./some_shared_group_file.rb:13"
+          )
+        end
+
+        it "includes the shared group backtrace as part of the aggregate failure backtrace" do
+          expect(fully_formatted.lines.first(6)).to eq(dedent(<<-EOS).lines.to_a)
+            |
+            |  1) Example
+            |     Got 2 failures from failure aggregation block "multiple expectations".
+            |     Shared Example Group: "Stuff" called from ./some_shared_group_file.rb:13
+            |     # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line}
+            |
+          EOS
+        end
+
+        it "does not include the shared group backtrace in the sub-failure backtraces" do
+          expect(fully_formatted.lines.to_a.last(8)).to eq(dedent(<<-EOS).lines.to_a)
+            |
+            |     1.1) Failure/Error: expect(1).to fail_with_description("foo")
+            |            expected pass, but foo
+            |          # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 1}
+            |
+            |     1.2) Failure/Error: expect(1).to fail_with_description("bar")
+            |            expected pass, but bar
+            |          # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 2}
+          EOS
+        end
+      end
+
       context "when there are failures and other errors" do
         let(:aggregate_line) { __LINE__ + 3 }
         let(:exception) do

@@ -7,14 +7,15 @@ module RSpec
         private :message_color, :detail_formatter, :extra_detail_formatter
 
         def initialize(exception, example, options={})
-          @exception              = exception
-          @example                = example
-          @message_color          = options.fetch(:message_color)          { RSpec.configuration.failure_color }
-          @description            = options.fetch(:description_formatter)  { Proc.new { example.full_description } }.call(self)
-          @detail_formatter       = options.fetch(:detail_formatter)       { Proc.new {} }
-          @extra_detail_formatter = options.fetch(:extra_detail_formatter) { Proc.new {} }
-          @indentation            = options.fetch(:indentation, 2)
-          @failure_lines          = options[:failure_lines]
+          @exception               = exception
+          @example                 = example
+          @message_color           = options.fetch(:message_color)          { RSpec.configuration.failure_color }
+          @description             = options.fetch(:description_formatter)  { Proc.new { example.full_description } }.call(self)
+          @detail_formatter        = options.fetch(:detail_formatter)       { Proc.new {} }
+          @extra_detail_formatter  = options.fetch(:extra_detail_formatter) { Proc.new {} }
+          @indentation             = options.fetch(:indentation, 2)
+          @skip_shared_group_trace = options.fetch(:skip_shared_group_trace, false)
+          @failure_lines           = options[:failure_lines]
         end
 
         def message_lines
@@ -95,6 +96,8 @@ module RSpec
         end
 
         def add_shared_group_lines(lines, colorizer)
+          return lines if @skip_shared_group_trace
+
           example.metadata[:shared_group_inclusion_backtrace].each do |frame|
             lines << colorizer.wrap(frame.description, RSpec.configuration.default_color)
           end
