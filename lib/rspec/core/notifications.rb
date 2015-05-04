@@ -40,31 +40,37 @@ module RSpec::Core
       def self.for(example)
         execution_result = example.execution_result
 
+        return SkippedExampleNotification.new(example) if execution_result.example_skipped?
+        return new(example) unless execution_result.status == :pending || execution_result.status == :failed
+
+        klass = FailedExampleNotification
+        exception = execution_result.exception
+        ex_presenter_options = {}
+
         if execution_result.pending_fixed?
-          PendingExampleFixedNotification.new(example)
-        elsif execution_result.example_skipped?
-          SkippedExampleNotification.new(example)
+          klass = PendingExampleFixedNotification
+          ex_presenter_options = {
+            :description_formatter => Proc.new { "#{example.full_description} FIXED" },
+            :message_color         => RSpec.configuration.fixed_color,
+            :failure_lines         => ["Expected pending '#{execution_result.pending_message}' to fail. No Error was raised."]
+          }
         elsif execution_result.status == :pending
-          PendingExampleFailedAsExpectedNotification.new(example)
-        elsif execution_result.status == :failed
-          FailedExampleNotification.new(example, exception_presenter_for(example))
-        else
-          new(example)
-        end
-      end
-
-      def self.exception_presenter_for(example)
-        options = if multiple_exceptions_not_met_error?(example)
-          Formatters::MultipleExpectationsNotMetPresenterOptions.for(
-            example.execution_result.exception, example
-          )
-        else
-          {}
+          klass = PendingExampleFailedAsExpectedNotification
+          exception = example.execution_result.pending_exception
+          ex_presenter_options = {
+            :message_color    => RSpec.configuration.pending_color,
+            :detail_formatter => PENDING_DETAIL_FORMATTER
+          }
+        elsif multiple_exceptions_not_met_error?(example)
+          ex_presenter_options = {
+            :failure_lines          => [],
+            :detail_formatter       => multiple_failure_sumarizer(exception),
+            :extra_detail_formatter => sub_failure_list_formatter(exception, example)
+          }
         end
 
-        Formatters::ExceptionPresenter.new(
-          example.execution_result.exception, example, options
-        )
+        ex_presenter = Formatters::ExceptionPresenter.new(exception, example, ex_presenter_options)
+        klass.new(example, ex_presenter)
       end
 
       def self.multiple_exceptions_not_met_error?(example)
@@ -72,7 +78,30 @@ module RSpec::Core
         RSpec::Expectations::MultipleExpectationsNotMetError === example.execution_result.exception
       end
 
-      private_class_method :new, :exception_presenter_for, :multiple_exceptions_not_met_error?
+      def self.multiple_failure_sumarizer(exception)
+        lambda do |_example, colorizer, indentation|
+          # TODO: ensure this is printed in pending color when appropriate
+          colorizer.wrap("\n#{indentation}#{exception.summary}.", RSpec.configuration.failure_color)
+        end
+      end
+
+      def self.sub_failure_list_formatter(exception, example)
+        lambda do |failure_number, colorizer, indentation|
+          # TODO: message_color
+          exception.all_exceptions.each_with_index.map do |failure, index|
+            failure = failure.dup
+            failure.set_backtrace(failure.backtrace[0..-exception.backtrace.size])
+
+            Formatters::ExceptionPresenter.new(
+              failure, example,
+              :description_formatter => :failure_slash_error_line.to_proc,
+              :indentation           => indentation.length
+            ).fully_formatted("#{failure_number}.#{index + 1}", colorizer)
+          end.join
+        end
+      end
+
+      private_class_method :new, :multiple_exceptions_not_met_error?, :multiple_failure_sumarizer, :sub_failure_list_formatter
     end
 
     # The `ExamplesNotification` represents notifications sent by the reporter
@@ -156,7 +185,8 @@ module RSpec::Core
     end
 
     # The `FailedExampleNotification` extends `ExampleNotification` with
-    # things useful for failed specs.
+    # things useful for examples that have failure info -- typically a
+    # failed or pending spec.
     #
     # @example
     #   def example_failed(notification)
@@ -224,50 +254,15 @@ module RSpec::Core
       end
     end
 
-    # The `PendingExampleFixedNotification` extends `ExampleNotification` with
-    # things useful for specs that pass when they are expected to fail.
-    #
-    # @attr [RSpec::Core::Example] example the current example
-    # @see ExampleNotification
-    class PendingExampleFixedNotification < FailedExampleNotification
-      public_class_method :new
+    # @deprecated Use {FailedExampleNotification} instead.
+    class PendingExampleFixedNotification < FailedExampleNotification; end
 
-    private
-
-      def initialize(example)
-        execution_result = example.execution_result
-
-        super(example, Formatters::ExceptionPresenter.new(
-          example.execution_result.exception, example,
-          :description_formatter => Proc.new { "#{example.full_description} FIXED" },
-          :message_color         => RSpec.configuration.fixed_color,
-          :failure_lines         => ["Expected pending '#{execution_result.pending_message}' to fail. No Error was raised."]
-        ))
-      end
-    end
+    # @deprecated Use {FailedExampleNotification} instead.
+    class PendingExampleFailedAsExpectedNotification < FailedExampleNotification; end
 
     # @private
     PENDING_DETAIL_FORMATTER = lambda do |example, colorizer, indentation|
       colorizer.wrap("\n#{indentation}# #{example.execution_result.pending_message}", :detail)
-    end
-
-    # The `PendingExampleFailedAsExpectedNotification` extends `FailedExampleNotification` with
-    # things useful for pending specs that fail as expected.
-    #
-    # @attr [RSpec::Core::Example] example the current example
-    # @see ExampleNotification
-    class PendingExampleFailedAsExpectedNotification < FailedExampleNotification
-      public_class_method :new
-
-    private
-
-      def initialize(example)
-        super(example, Formatters::ExceptionPresenter.new(
-          example.execution_result.pending_exception, example,
-          :message_color    => RSpec.configuration.pending_color,
-          :detail_formatter => PENDING_DETAIL_FORMATTER
-        ))
-      end
     end
 
     # The `SkippedExampleNotification` extends `ExampleNotification` with
