@@ -1,0 +1,5 @@
+# Remove `.java` lines from JRuby stacktraces. Necessary for a passing travis build
+# on JRuby in 1.8 mode for the new failure aggregator specs. Our generated test
+# fixture doesn't know how to deal with excess java lines so it's best to ignore
+# those lines.
+backtrace.mask=true
