@@ -72,10 +72,23 @@ module RSpec::Core
                                                                   ex_presenter_options[:detail_formatter],
                                                                   ex_presenter_options[:message_color])
           )
+
+          if exception.aggregation_metadata[:from_around_hook]
+            ex_presenter_options[:backtrace_formatter] = EmptyBacktraceFormatter
+          end
         end
 
         ex_presenter = Formatters::ExceptionPresenter.new(exception, example, ex_presenter_options)
         klass.new(example, ex_presenter)
+      end
+
+      # @private
+      # Used to prevent a confusing backtrace from showing up from the `aggregate_failures`
+      # block declared for `:aggregate_failures` metadata.
+      module EmptyBacktraceFormatter
+        def self.format_backtrace(*)
+          []
+        end
       end
 
       def self.multiple_exceptions_not_met_error?(exception)
@@ -85,7 +98,13 @@ module RSpec::Core
 
       def self.multiple_failure_sumarizer(exception, prior_detail_formatter, color)
         lambda do |example, colorizer, indentation|
-          summary = "\n#{indentation}#{colorizer.wrap(exception.summary, color || RSpec.configuration.failure_color)}."
+          summary = if exception.aggregation_metadata[:from_around_hook]
+                      "Got #{exception.exception_count_description}:"
+                    else
+                      "#{exception.summary}."
+                    end
+
+          summary = "\n#{indentation}#{colorizer.wrap(summary, color || RSpec.configuration.failure_color)}"
           return summary unless prior_detail_formatter
           "#{prior_detail_formatter.call(example, colorizer, indentation)}#{summary}"
         end

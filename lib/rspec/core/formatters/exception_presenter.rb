@@ -3,8 +3,9 @@ module RSpec
     module Formatters
       # @private
       class ExceptionPresenter
-        attr_reader :exception, :example, :description, :message_color, :detail_formatter, :extra_detail_formatter
-        private :message_color, :detail_formatter, :extra_detail_formatter
+        attr_reader :exception, :example, :description, :message_color,
+                    :detail_formatter, :extra_detail_formatter, :backtrace_formatter
+        private :message_color, :detail_formatter, :extra_detail_formatter, :backtrace_formatter
 
         def initialize(exception, example, options={})
           @exception               = exception
@@ -13,6 +14,7 @@ module RSpec
           @description             = options.fetch(:description_formatter)  { Proc.new { example.full_description } }.call(self)
           @detail_formatter        = options.fetch(:detail_formatter)       { Proc.new {} }
           @extra_detail_formatter  = options.fetch(:extra_detail_formatter) { Proc.new {} }
+          @backtrace_formatter     = options.fetch(:backtrace_formatter)    { RSpec.configuration.backtrace_formatter }
           @indentation             = options.fetch(:indentation, 2)
           @skip_shared_group_trace = options.fetch(:skip_shared_group_trace, false)
           @failure_lines           = options[:failure_lines]
@@ -70,10 +72,6 @@ module RSpec
             RSpec::Support::EncodedString.new(string)
           end
           # :nocov:
-        end
-
-        def backtrace_formatter
-          RSpec.configuration.backtrace_formatter
         end
 
         def exception_class_name

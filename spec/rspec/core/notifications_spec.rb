@@ -96,7 +96,7 @@ RSpec.describe "FailedExampleNotification" do
 
       it 'uses the `failure` color in the summary output' do
         expect(fully_formatted(TagColorizer)).to include(
-          '<red>Got 2 failures from failure aggregation block "multiple expectations"</red>.'
+          '<red>Got 2 failures from failure aggregation block "multiple expectations".</red>'
         )
       end
 
@@ -105,6 +105,29 @@ RSpec.describe "FailedExampleNotification" do
          '<red>  expected pass, but foo</red>',
          '<red>  expected pass, but bar</red>'
         )
+      end
+
+      context "due to using `:aggregate_failures` metadata" do
+        let(:exception) do
+          ex = nil
+          RSpec.describe do
+            ex = it "", :aggregate_failures do
+              expect(1).to fail_with_description("foo")
+              expect(1).to fail_with_description("bar")
+            end
+          end.run
+
+          capture_and_normalize_aggregation_error { raise ex.execution_result.exception }
+        end
+
+        it 'uses an alternate format for the exception summary to avoid confusing references to the aggregation block or stack trace' do
+          expect(fully_formatted.lines.first(4)).to eq(dedent(<<-EOS).lines.to_a)
+            |
+            |  1) Example
+            |     Got 2 failures:
+            |
+          EOS
+        end
       end
 
       context "when the failure happened in a shared example group" do
@@ -186,7 +209,7 @@ RSpec.describe "FailedExampleNotification" do
 
         it 'uses the `pending` color in the summary output' do
           expect(fully_formatted(TagColorizer)).to include(
-            '<yellow>Got 2 failures from failure aggregation block "multiple expectations"</yellow>.'
+            '<yellow>Got 2 failures from failure aggregation block "multiple expectations".</yellow>'
           )
         end
 
