@@ -369,7 +369,13 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
         expect {
           GC.enable
           GC.start :full_mark => true, :immediate_sweep => true
-        }.to change { ObjectSpace.each_object(garbage).count }.from(8).to(0)
+        }.to change {
+          ObjectSpace.each_object(garbage).map(&:defined_in).map(&:to_s).sort
+        }.from(%w[
+          after_all  after_each  after_each
+          before_all before_each before_each
+          failing_example passing_example
+        ]).to([])
       end
 
       it 'can still be referenced by user code afterwards' do
