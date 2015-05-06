@@ -218,6 +218,14 @@ RSpec.describe RSpec do
     end
   end
 
+  it 'uses only one thread local variable', :run_last do
+    # Trigger features that use thread locals...
+    aggregate_failures { }
+    RSpec.shared_examples_for("something") { }
+
+    expect(Thread.current.keys.map(&:to_s).grep(/rspec/i).count).to eq(1)
+  end
+
   describe "::Core.path_to_executable" do
     it 'returns the absolute location of the exe/rspec file' do
       expect(File.exist? RSpec::Core.path_to_executable).to be_truthy

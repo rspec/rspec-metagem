@@ -119,20 +119,13 @@ module RSpec
   #     end
   #
   def self.current_example
-    thread_local_metadata[:current_example]
+    RSpec::Support.thread_local_data[:current_example]
   end
 
   # Set the current example being executed.
   # @api private
   def self.current_example=(example)
-    thread_local_metadata[:current_example] = example
-  end
-
-  # @private
-  # A single thread local variable so we don't excessively pollute that
-  # namespace.
-  def self.thread_local_metadata
-    Thread.current[:_rspec] ||= { :shared_example_group_inclusions => [] }
+    RSpec::Support.thread_local_data[:current_example] = example
   end
 
   # @private

@@ -1460,7 +1460,7 @@ module RSpec::Core
         it "leaves RSpec's thread metadata unchanged" do
           expect {
             self.group.send(name, "named this")
-          }.to avoid_changing(RSpec, :thread_local_metadata)
+          }.to avoid_changing(RSpec::Support, :thread_local_data)
         end
 
         it "leaves RSpec's thread metadata unchanged, even when an error occurs during evaluation" do
@@ -1468,7 +1468,7 @@ module RSpec::Core
             self.group.send(name, "named this") do
               raise "boom"
             end
-          }.to raise_error("boom").and avoid_changing(RSpec, :thread_local_metadata)
+          }.to raise_error("boom").and avoid_changing(RSpec::Support, :thread_local_data)
         end
 
         it "passes parameters to the shared content" do
@@ -1637,7 +1637,7 @@ module RSpec::Core
             shared_examples_for("stuff") { }
             it_should_behave_like "stuff"
           end
-        }.to avoid_changing(RSpec, :thread_local_metadata)
+        }.to avoid_changing(RSpec::Support, :thread_local_data)
       end
 
       it "leaves RSpec's thread metadata unchanged, even when an error occurs during evaluation" do
@@ -1648,7 +1648,7 @@ module RSpec::Core
               raise "boom"
             end
           end
-        }.to raise_error("boom").and avoid_changing(RSpec, :thread_local_metadata)
+        }.to raise_error("boom").and avoid_changing(RSpec::Support, :thread_local_data)
       end
     end
 

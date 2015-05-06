@@ -270,7 +270,7 @@ module RSpec
               # that take a metadata hash, and MetadataFilter sets this thread
               # local to silence the warning here since it would be so
               # confusing.
-              unless RSpec.thread_local_metadata[:silence_metadata_example_group_deprecations]
+              unless RSpec::Support.thread_local_data[:silence_metadata_example_group_deprecations]
                 RSpec.deprecate("The `:example_group` key in an example group's metadata hash",
                                 :replacement => "the example group's hash directly for the " \
                                 "computed keys and `:parent_example_group` to access the parent " \
