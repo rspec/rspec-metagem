@@ -600,6 +600,51 @@ module RSpec::Matchers::DSL
           expect("206-123-1234").not_to be_a_phone_number_string
         }.to fail_with(/expected "206-123-1234" not to be a phone number string/)
       end
+
+      context "when used within an `aggregate_failures` block" do
+        it 'does not aggregate the inner expectation failure' do
+          use_an_internal_expectation = new_matcher(:use_an_internal_expectation) do
+            match do |actual|
+              expect(actual).to end_with "z"
+            end
+          end
+
+          expect {
+            aggregate_failures do
+              expect(1).to be_even
+              expect("foo").to use_an_internal_expectation
+            end
+          }.to fail do |error|
+            expect(error).to have_attributes(:failures => [
+              an_object_having_attributes(:message => "expected `1.even?` to return true, got false"),
+              an_object_having_attributes(:message => 'expected "foo" to use an internal expectation')
+            ])
+          end
+        end
+
+        it 'still raises the expectation failure internally in case the matcher relies upon rescuing the error' do
+          error_rescued = false
+
+          rescue_failure = new_matcher(:rescue_failure) do
+            match do |actual|
+              begin
+                expect(actual).to eq(2)
+              rescue RSpec::Expectations::ExpectationNotMetError
+                error_rescued = true
+              end
+            end
+          end
+
+          begin
+            aggregate_failures do
+              expect(1).to rescue_failure
+            end
+          rescue RSpec::Expectations::ExpectationNotMetError
+          end
+
+          expect(error_rescued).to be true
+        end
+      end
     end
 
     context "with overrides" do
