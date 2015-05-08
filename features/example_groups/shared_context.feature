@@ -4,7 +4,7 @@ Feature: shared context
   of example groups either explicitly, using `include_context`, or implicitly by
   matching metadata.
 
-  When implicitly including shared contexts via matching metadata, the normal way is to define matching metadata on an example group (in which case the ontext is included in the entire group), but you can also include it in an individual example. RSpec treats every example as having a singleton example group (analogous to Ruby's singleton classes) containing just the one example.
+  When implicitly including shared contexts via matching metadata, the normal way is to define matching metadata on an example group, in which case the context is included in the entire group. However, you also have the option to include it in an individual example instead. RSpec treats every example as having a singleton example group (analogous to Ruby's singleton classes) containing just the one example.
 
   Background:
     Given a file named "shared_stuff.rb" with:
