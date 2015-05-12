@@ -1,6 +1,6 @@
 Feature: `satisfy` matcher
 
-  The satisfy matcher is extremely flexible and can handle almost anything you want to
+  The `satisfy` matcher is extremely flexible and can handle almost anything you want to
   specify. It passes if the block you provide returns true:
 
     ```ruby

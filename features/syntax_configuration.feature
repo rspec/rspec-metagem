@@ -6,7 +6,7 @@ Feature: Syntax Configuration
   of code in order to set an expectation on it.
 
   There's also an older `should`-based syntax, which relies upon `should` being
-  monkey-patched onto every object in the system.However, this syntax can at times lead to
+  monkey-patched onto every object in the system. However, this syntax can at times lead to
   some surprising failures, since RSpec does not own every object in the system and cannot
   guarantee that it will always work consistently.
 

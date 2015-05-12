@@ -10,7 +10,7 @@ Feature: `be_within` matcher
       > area_of_circle == 28.2743338823081
         => false
 
-  Instead, you should use the be_within matcher to check that the value is within a delta of
+  Instead, you should use the `be_within` matcher to check that the value is within a delta of
   your expected value:
 
     ```ruby
