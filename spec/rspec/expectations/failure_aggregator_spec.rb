@@ -66,6 +66,31 @@ module RSpec::Expectations
       end
     end
 
+    it 'supports nested `aggregate_failures` blocks' do
+      expect {
+        aggregate_failures("outer") do
+          aggregate_failures("inner 2") do
+            expect(2).to be_odd
+            expect(3).to be_even
+          end
+
+          aggregate_failures("inner 1") do
+            expect(1).to be_even
+          end
+
+          expect(1).to be_even
+        end
+      }.to raise_error do |error|
+        aggregate_failures("failure expectations") do
+          expect(error.failures.count).to eq(3)
+          expect(error.failures[0]).to be_an_instance_of(RSpec::Expectations::MultipleExpectationsNotMetError)
+          expect(error.failures[0].failures.count).to eq(2)
+          expect(error.failures[1]).to be_an_instance_of(RSpec::Expectations::ExpectationNotMetError)
+          expect(error.failures[2]).to be_an_instance_of(RSpec::Expectations::ExpectationNotMetError)
+        end
+      end
+    end
+
     it 'raises a normal `ExpectationNotMetError` when only one expectation fails' do
       expect {
         aggregate_failures do

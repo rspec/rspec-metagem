@@ -15,7 +15,7 @@ module RSpec
           end
         end
 
-        raise_aggregated_failures
+        notify_aggregated_failures
       end
 
       def failures
@@ -40,13 +40,13 @@ module RSpec
         @metadata    = metadata
       end
 
-      def raise_aggregated_failures
+      def notify_aggregated_failures
         all_errors = failures + other_errors
 
         case all_errors.size
         when 0 then return nil
-        when 1 then raise all_errors.first
-        else raise MultipleExpectationsNotMetError.new(self)
+        when 1 then RSpec::Support.notify_failure all_errors.first
+        else RSpec::Support.notify_failure MultipleExpectationsNotMetError.new(self)
         end
       end
     end
