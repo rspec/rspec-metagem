@@ -46,6 +46,7 @@
   - default_path.feature
 - expectation_framework_integration:
   - configure_expectation_framework.feature
+  - failure_aggregation.feature
 - mock_framework_integration:
   - use_rspec.feature
   - use_flexmock.feature
