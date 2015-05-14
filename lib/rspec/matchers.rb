@@ -278,7 +278,7 @@ module RSpec
     end
 
     # Allows multiple expectations in the provided block to fail, and then
-    # aggregates them into a single exception, rather than bailing on the
+    # aggregates them into a single exception, rather than aborting on the
     # first expectation failure like normal. This allows you to see all
     # failures from an entire set of expectations without splitting each
     # off into its own example (which may slow things down if the example
@@ -288,7 +288,8 @@ module RSpec
     #   included in the aggregated exception message.
     # @param metadata [Hash] additional metadata about this failure aggregation
     #   block. If multiple expectations fail, it will be exposed from the
-    #   {Expectations::MultipleExpectationsNotMetError} exception.
+    #   {Expectations::MultipleExpectationsNotMetError} exception. Mostly
+    #   intended for internal RSpec use but you can use it as well.
     # @yield Block containing as many expectation as you want. The block is
     #   simply yielded to, so you can trust that anything that works outside
     #   the block should work within it.
@@ -304,6 +305,10 @@ module RSpec
     #     expect(response.headers).to include("Content-Type" => "text/plain")
     #     expect(response.body).to include("Success")
     #   end
+    #
+    # @note The implementation of this feature uses a thread-local variable,
+    #   which means that if you have an expectation failure in another thread,
+    #   it'll abort like normal.
     def aggregate_failures(label=nil, metadata={}, &block)
       Expectations::FailureAggregator.new(label, metadata).aggregate(&block)
     end
