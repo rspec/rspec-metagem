@@ -43,7 +43,7 @@ Feature: Aggregating Failures
 
         1) Client returns a successful response
            Got 3 failures from failure aggregation block "testing reponse".
-           # ./spec/use_block_form_spec.rb:7:in `block (2 levels) in <top (required)>'
+           # ./spec/use_block_form_spec.rb:7
 
            1.1) Failure/Error: expect(response.status).to eq(200)
 
@@ -51,7 +51,7 @@ Feature: Aggregating Failures
                        got: 404
 
                   (compared using ==)
-                # ./spec/use_block_form_spec.rb:8:in `block (3 levels) in <top (required)>'
+                # ./spec/use_block_form_spec.rb:8
 
            1.2) Failure/Error: expect(response.headers).to include("Content-Type" => "application/json")
                   expected {"Content-Type" => "text/plain"} to include {"Content-Type" => "application/json"}
@@ -59,7 +59,7 @@ Feature: Aggregating Failures
                   @@ -1,2 +1,2 @@
                   -[{"Content-Type"=>"application/json"}]
                   +"Content-Type" => "text/plain",
-                # ./spec/use_block_form_spec.rb:9:in `block (3 levels) in <top (required)>'
+                # ./spec/use_block_form_spec.rb:9
 
            1.3) Failure/Error: expect(response.body).to eq('{"message":"Success"}')
 
@@ -67,7 +67,7 @@ Feature: Aggregating Failures
                        got: "Not Found"
 
                   (compared using ==)
-                # ./spec/use_block_form_spec.rb:10:in `block (3 levels) in <top (required)>'
+                # ./spec/use_block_form_spec.rb:10
       """
 
   Scenario: Use `:aggregate_failures` metadata
@@ -99,7 +99,7 @@ Feature: Aggregating Failures
                        got: 404
 
                   (compared using ==)
-                # ./spec/use_metadata_spec.rb:7:in `block (2 levels) in <top (required)>'
+                # ./spec/use_metadata_spec.rb:7
 
            1.2) Failure/Error: expect(response.headers).to include("Content-Type" => "application/json")
                   expected {"Content-Type" => "text/plain"} to include {"Content-Type" => "application/json"}
@@ -107,7 +107,7 @@ Feature: Aggregating Failures
                   @@ -1,2 +1,2 @@
                   -[{"Content-Type"=>"application/json"}]
                   +"Content-Type" => "text/plain",
-                # ./spec/use_metadata_spec.rb:8:in `block (2 levels) in <top (required)>'
+                # ./spec/use_metadata_spec.rb:8
 
            1.3) Failure/Error: expect(response.body).to eq('{"message":"Success"}')
 
@@ -115,7 +115,7 @@ Feature: Aggregating Failures
                        got: "Not Found"
 
                   (compared using ==)
-                # ./spec/use_metadata_spec.rb:9:in `block (2 levels) in <top (required)>'
+                # ./spec/use_metadata_spec.rb:9
       """
 
   Scenario: Enable failure aggregation globally using `define_derived_metadata`
@@ -153,7 +153,7 @@ Feature: Aggregating Failures
                        got: 404
 
                   (compared using ==)
-                # ./spec/enable_globally_spec.rb:13:in `block (2 levels) in <top (required)>'
+                # ./spec/enable_globally_spec.rb:13
 
            1.2) Failure/Error: expect(response.headers).to include("Content-Type" => "application/json")
                   expected {"Content-Type" => "text/plain"} to include {"Content-Type" => "application/json"}
@@ -161,7 +161,7 @@ Feature: Aggregating Failures
                   @@ -1,2 +1,2 @@
                   -[{"Content-Type"=>"application/json"}]
                   +"Content-Type" => "text/plain",
-                # ./spec/enable_globally_spec.rb:14:in `block (2 levels) in <top (required)>'
+                # ./spec/enable_globally_spec.rb:14
 
            1.3) Failure/Error: expect(response.body).to eq('{"message":"Success"}')
 
@@ -169,5 +169,5 @@ Feature: Aggregating Failures
                        got: "Not Found"
 
                   (compared using ==)
-                # ./spec/enable_globally_spec.rb:15:in `block (2 levels) in <top (required)>'
+                # ./spec/enable_globally_spec.rb:15
       """
