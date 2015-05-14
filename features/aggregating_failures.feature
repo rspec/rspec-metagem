@@ -4,6 +4,8 @@ Feature: Aggregating Failures
 
   `aggregate_failures` takes an optional string argument that will be used in the aggregated failure message as a label.
 
+  RSpec::Core expands this feature a bit; see [the rspec-core docs](../../rspec-core/docs/expectation-framework-integration/aggregating-failures) for more detail.
+
   Note: The implementation of `aggregate_failures` uses a thread-local variable, which means that if you have an expectation failure in another thread, it'll abort like normal.
 
   Scenario: Multiple expectation failures within `aggregate_failures` are all reported
