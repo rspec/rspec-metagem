@@ -21,7 +21,7 @@ module RSpec
             # or raise a `MultipleExpectationsNotMetError` that includes the exception), and it's
             # essential that the user is notified of expectation failures that may have already
             # occurred in the `aggregate_failures` block. Those expectation failures may provide
-            # important diagnostics for understanding why this exception occurred, and if simply
+            # important diagnostics for understanding why this exception occurred, and if we simply
             # allowed this exception to be raised as-is, it would (wrongly) suggest to the user
             # that the expectation passed when it did not, which would be quite confusing.
             other_errors << e
