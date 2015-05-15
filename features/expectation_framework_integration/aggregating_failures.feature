@@ -235,3 +235,43 @@ Feature: Aggregating Failures
                   (compared using ==)
                 # ./spec/nested_failure_aggregation_spec.rb:14
       """
+
+  Scenario: Mock expectation failures are aggregated as well
+    Given a file named "spec/mock_expectation_failure_spec.rb" with:
+      """ruby
+      require 'client'
+
+      RSpec.describe "Aggregating Failures", :aggregate_failures do
+        it "has a normal expectation failure and a message expectation failure" do
+          client = double("Client")
+          expect(client).to receive(:put).with("updated data")
+          allow(client).to receive(:get).and_return(Response.new(404, {}, "Not Found"))
+
+          response = client.get
+          expect(response.status).to eq(200)
+        end
+      end
+      """
+    When I run `rspec spec/mock_expectation_failure_spec.rb`
+    Then it should fail listing all the failures:
+      """
+      Failures:
+
+        1) Aggregating Failures has a normal expectation failure and a message expectation failure
+           Got 2 failures:
+
+           1.1) Failure/Error: expect(response.status).to eq(200)
+
+                  expected: 200
+                       got: 404
+
+                  (compared using ==)
+                # ./spec/mock_expectation_failure_spec.rb:10
+
+           1.2) Failure/Error: expect(client).to receive(:put).with("updated data")
+                  (Double "Client").put("updated data")
+                      expected: 1 time with arguments: ("updated data")
+                      received: 0 times
+                # ./spec/mock_expectation_failure_spec.rb:6
+
+      """
