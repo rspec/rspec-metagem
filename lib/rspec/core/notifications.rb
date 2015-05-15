@@ -104,9 +104,9 @@ module RSpec::Core
                       "#{exception.summary}."
                     end
 
-          summary = "\n#{indentation}#{colorizer.wrap(summary, color || RSpec.configuration.failure_color)}"
+          summary = colorizer.wrap(summary, color || RSpec.configuration.failure_color)
           return summary unless prior_detail_formatter
-          "#{prior_detail_formatter.call(example, colorizer, indentation)}#{summary}"
+          "#{prior_detail_formatter.call(example, colorizer, indentation)}\n#{indentation}#{summary}"
         end
       end
 
@@ -287,8 +287,8 @@ module RSpec::Core
     class PendingExampleFailedAsExpectedNotification < FailedExampleNotification; end
 
     # @private
-    PENDING_DETAIL_FORMATTER = lambda do |example, colorizer, indentation|
-      colorizer.wrap("\n#{indentation}# #{example.execution_result.pending_message}", :detail)
+    PENDING_DETAIL_FORMATTER = Proc.new do |example, colorizer|
+      colorizer.wrap("# #{example.execution_result.pending_message}", :detail)
     end
 
     # The `SkippedExampleNotification` extends `ExampleNotification` with
@@ -304,7 +304,7 @@ module RSpec::Core
       def fully_formatted(pending_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         formatted_caller = RSpec.configuration.backtrace_formatter.backtrace_line(example.location)
         colorizer.wrap("\n  #{pending_number}) #{example.full_description}", :pending) <<
-          PENDING_DETAIL_FORMATTER.call(example, colorizer, "     ") << "\n" <<
+          "\n     " << PENDING_DETAIL_FORMATTER.call(example, colorizer) << "\n" <<
           colorizer.wrap("     # #{formatted_caller}\n", :detail)
       end
     end

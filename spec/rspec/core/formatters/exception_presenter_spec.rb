@@ -53,9 +53,7 @@ module RSpec::Core
       end
 
       it 'passes the indentation on to the `:detail_formatter` lambda so it can align things' do
-        detail_formatter = lambda do |ex, colorizer, indentation|
-          "\n#{indentation}Some Detail"
-        end
+        detail_formatter = Proc.new { "Some Detail" }
 
         presenter = Formatters::ExceptionPresenter.new(exception, example, :indentation => 4,
                                                        :detail_formatter => detail_formatter)
@@ -67,6 +65,21 @@ module RSpec::Core
           |         Boom
           |         Bam
           |       # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
+        EOS
+      end
+
+      it 'allows the caller to omit the description' do
+        presenter = Formatters::ExceptionPresenter.new(exception, example,
+                                                       :detail_formatter => Proc.new { "Detail!" },
+                                                       :description_formatter => Proc.new { })
+
+        expect(presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
+          |
+          |  1) Detail!
+          |     Failure/Error: # The failure happened here!
+          |       Boom
+          |       Bam
+          |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
         EOS
       end
 

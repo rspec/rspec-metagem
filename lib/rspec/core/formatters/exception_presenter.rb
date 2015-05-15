@@ -44,7 +44,7 @@ module RSpec
           alignment_basis = "#{' ' * @indentation}#{failure_number}) "
           indentation = ' ' * alignment_basis.length
 
-          "\n#{alignment_basis}#{description}#{detail_formatter.call(example, colorizer, indentation)}" \
+          "\n#{alignment_basis}#{description_and_detail(colorizer, indentation)}" \
           "\n#{formatted_message_and_backtrace(colorizer, indentation)}" \
           "#{extra_detail_formatter.call(failure_number, colorizer, indentation)}"
         end
@@ -54,6 +54,12 @@ module RSpec
         end
 
       private
+
+        def description_and_detail(colorizer, indentation)
+          detail = detail_formatter.call(example, colorizer, indentation)
+          return (description || detail) unless description && detail
+          "#{description}\n#{indentation}#{detail}"
+        end
 
         if String.method_defined?(:encoding)
           def encoding_of(string)
