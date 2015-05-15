@@ -64,22 +64,32 @@ module RSpec::Core
         end
 
         if multiple_exceptions_not_met_error?(exception)
-          ex_presenter_options.merge!(
-            :failure_lines          => [],
-            :extra_detail_formatter => sub_failure_list_formatter(exception, example,
-                                                                  ex_presenter_options[:message_color]),
-            :detail_formatter       => multiple_failure_sumarizer(exception,
-                                                                  ex_presenter_options[:detail_formatter],
-                                                                  ex_presenter_options[:message_color])
+          ex_presenter_options = exception_presenter_opts_for_multiple_error(
+            exception, example, ex_presenter_options
           )
-
-          if exception.aggregation_metadata[:from_around_hook]
-            ex_presenter_options[:backtrace_formatter] = EmptyBacktraceFormatter
-          end
         end
 
         ex_presenter = Formatters::ExceptionPresenter.new(exception, example, ex_presenter_options)
         klass.new(example, ex_presenter)
+      end
+
+      def self.exception_presenter_opts_for_multiple_error(exception, example, options)
+        ex_presenter_options = options.merge(
+          :failure_lines          => [],
+          :extra_detail_formatter => sub_failure_list_formatter(exception, example,
+                                                                options[:message_color]),
+          :detail_formatter       => multiple_failure_sumarizer(exception,
+                                                                options[:detail_formatter],
+                                                                options[:message_color])
+        )
+
+        ex_presenter_options[:description_formatter] &&= Proc.new {}
+
+        if exception.aggregation_metadata[:from_around_hook]
+          ex_presenter_options[:backtrace_formatter] = EmptyBacktraceFormatter
+        end
+
+        ex_presenter_options
       end
 
       # @private
@@ -113,21 +123,30 @@ module RSpec::Core
       def self.sub_failure_list_formatter(exception, example, message_color)
         lambda do |failure_number, colorizer, indentation|
           exception.all_exceptions.each_with_index.map do |failure, index|
-            failure = failure.dup
-            failure.set_backtrace(failure.backtrace[0..-exception.backtrace.size])
-
-            Formatters::ExceptionPresenter.new(
-              failure, example,
+            options = {
               :description_formatter   => :failure_slash_error_line.to_proc,
               :indentation             => indentation.length,
               :message_color           => message_color || RSpec.configuration.failure_color,
               :skip_shared_group_trace => true
+            }
+
+            if multiple_exceptions_not_met_error?(failure)
+              options = exception_presenter_opts_for_multiple_error(failure, example, options)
+            end
+
+            failure = failure.dup
+            failure.set_backtrace(failure.backtrace[0..-exception.backtrace.size])
+
+            Formatters::ExceptionPresenter.new(
+              failure, example, options
             ).fully_formatted("#{failure_number}.#{index + 1}", colorizer)
           end.join
         end
       end
 
-      private_class_method :new, :multiple_exceptions_not_met_error?, :multiple_failure_sumarizer, :sub_failure_list_formatter
+      private_class_method :new, :multiple_exceptions_not_met_error?,
+                           :multiple_failure_sumarizer, :sub_failure_list_formatter,
+                           :exception_presenter_opts_for_multiple_error
     end
 
     # The `ExamplesNotification` represents notifications sent by the reporter

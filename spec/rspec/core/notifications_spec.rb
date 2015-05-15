@@ -46,19 +46,27 @@ RSpec.describe "FailedExampleNotification" do
       end
 
       def capture_and_normalize_aggregation_error
-        backtrace_truncation_frames = caller.length + 2
+        yield
+      rescue RSpec::Expectations::MultipleExpectationsNotMetError => failure
+        normalize_backtraces(failure)
+        failure
+      end
 
-        begin
-          yield
-        rescue RSpec::Expectations::MultipleExpectationsNotMetError => failure
-          # To keep the output manageable, truncate the backtraces...
-          ([failure] + failure.all_exceptions).each do |exception|
-            exception.set_backtrace(exception.backtrace[0..-backtrace_truncation_frames])
-            exception.backtrace.map! { |line| line.sub(/:in .*$/, '') }
+      def normalize_backtraces(failure)
+        failure.all_exceptions.each do |exception|
+          if exception.is_a?(RSpec::Expectations::MultipleExpectationsNotMetError)
+            normalize_backtraces(exception)
           end
 
-          failure
+          normalize_one_backtrace(exception)
         end
+
+        normalize_one_backtrace(failure)
+      end
+
+      def normalize_one_backtrace(exception)
+        line = exception.backtrace.find { |l| l.include?(__FILE__) }
+        exception.set_backtrace([ line.sub(/:in .*$/, '') ])
       end
 
       let(:aggregate_line) { __LINE__ + 3 }
@@ -158,6 +166,52 @@ RSpec.describe "FailedExampleNotification" do
             |     1.2) Failure/Error: expect(1).to fail_with_description("bar")
             |            expected pass, but bar
             |          # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 2}
+          EOS
+        end
+      end
+
+      context "when `aggregate_failures` is used in nested fashion" do
+        let(:aggregate_line) { __LINE__ + 3 }
+        let(:exception) do
+          capture_and_normalize_aggregation_error do
+            aggregate_failures("outer") do
+              expect(1).to fail_with_description("foo")
+
+              aggregate_failures("inner") do
+                expect(2).to fail_with_description("bar")
+                expect(3).to fail_with_description("baz")
+              end
+
+              expect(1).to fail_with_description("qux")
+            end
+          end
+        end
+
+        it 'recursively formats the nested aggregated failures' do
+          expect(fully_formatted).to eq(dedent <<-EOS)
+            |
+            |  1) Example
+            |     Got 3 failures from failure aggregation block "outer".
+            |     # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line}
+            |
+            |     1.1) Failure/Error: expect(1).to fail_with_description("foo")
+            |            expected pass, but foo
+            |          # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 1}
+            |
+            |     1.2) Got 2 failures from failure aggregation block "inner".
+            |          # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 3}
+            |
+            |          1.2.1) Failure/Error: expect(2).to fail_with_description("bar")
+            |                   expected pass, but bar
+            |                 # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 4}
+            |
+            |          1.2.2) Failure/Error: expect(3).to fail_with_description("baz")
+            |                   expected pass, but baz
+            |                 # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 5}
+            |
+            |     1.3) Failure/Error: expect(1).to fail_with_description("qux")
+            |            expected pass, but qux
+            |          # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 8}
           EOS
         end
       end
