@@ -37,7 +37,7 @@ Feature: Aggregating Failures
       end
       """
     When I run `rspec spec/use_block_form_spec.rb`
-    Then it should fail listing all the failures:
+    Then it should fail and list all the failures:
       """
       Failures:
 
@@ -86,7 +86,7 @@ Feature: Aggregating Failures
       end
       """
     When I run `rspec spec/use_metadata_spec.rb`
-    Then it should fail listing all the failures:
+    Then it should fail and list all the failures:
       """
       Failures:
 
@@ -140,7 +140,7 @@ Feature: Aggregating Failures
       end
       """
     When I run `rspec spec/enable_globally_spec.rb`
-    Then it should fail listing all the failures:
+    Then it should fail and list all the failures:
       """
       Failures:
 
@@ -193,7 +193,7 @@ Feature: Aggregating Failures
       end
       """
     When I run `rspec spec/nested_failure_aggregation_spec.rb`
-    Then it should fail listing all the failures:
+    Then it should fail and list all the failures:
       """
       Failures:
 
@@ -253,7 +253,7 @@ Feature: Aggregating Failures
       end
       """
     When I run `rspec spec/mock_expectation_failure_spec.rb`
-    Then it should fail listing all the failures:
+    Then it should fail and list all the failures:
       """
       Failures:
 

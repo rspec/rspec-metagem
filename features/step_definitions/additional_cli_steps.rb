@@ -187,7 +187,7 @@ When(/^I run `([^`]+)` and abort in the middle with ctrl\-c$/) do |cmd|
   step "I run `#{cmd}`"
 end
 
-Then(/^it should fail listing all the failures:$/) do |string|
+Then(/^it should fail and list all the failures:$/) do |string|
   step %q{the exit status should not be 0}
   expect(normalize_whitespace_and_backtraces(all_output)).to include(normalize_whitespace_and_backtraces(string))
 end
