@@ -42,6 +42,11 @@ Enhancements:
 * Add pending message contents to the json formatter output. (Jon Rowe, #1949)
 * Add shared group backtrace to the output displayed by the built-in
   formatters for pending examples that have been fixed. (Myron Marston, #1946)
+* Add support for `:aggregate_failures` metadata. Tag an example or
+  group with this metadata and it'll use rspec-expectations'
+  `aggregate_failures` feature to allow multiple failures in an example
+  and list them all, rather than aborting on the first failure. (Myron
+  Marston, #1946)
 
 Bug Fixes:
 
