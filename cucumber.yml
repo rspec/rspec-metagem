@@ -7,4 +7,4 @@ end
 %>
 
 default: --require features --tags <%= tags("~@wip") %> --format progress
-wip: --require features --tags <%= tags("@wip:3") --wip features
+wip: --require features --tags @wip:3 --wip features

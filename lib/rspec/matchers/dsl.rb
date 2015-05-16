@@ -60,12 +60,17 @@ module RSpec
           define_user_override(:matches?, match_block) do |actual|
             begin
               @actual = actual
-              super(*actual_arg_for(match_block))
+              RSpec::Support.with_failure_notifier(RAISE_METHOD) do
+                super(*actual_arg_for(match_block))
+              end
             rescue RSpec::Expectations::ExpectationNotMetError
               false
             end
           end
         end
+
+        # @private
+        RAISE_METHOD = method(:raise)
 
         # Use this to define the block for a negative expectation (`expect(...).not_to`)
         # when the positive and negative forms require different handling. This

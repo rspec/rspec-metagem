@@ -3,3 +3,7 @@ inherit_from: .rubocop_rspec_base.yml
 # Over time we'd like to get this down, but this is what we're at now.
 LineLength:
   Max: 186
+
+# We have some situations where we need to use `raise ExceptionClass.new(argument)`.
+Style/RaiseArgs:
+  Enabled: false

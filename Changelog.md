@@ -31,6 +31,9 @@ Enhancements:
   that will be used in the `description`, `failure_message` and
   `failure_message_when_negated` in place of the undescriptive
   "sastify block". (Chris Arcand, #783)
+* Add new `aggregate_failures` API that allows multiple independent
+  expectations to all fail and be listed in the failure output, rather
+  than the example aborting on the first failure. (Myron Marston, #776)
 
 Bug Fixes:
 

@@ -277,6 +277,42 @@ module RSpec
       alias_matcher(negated_name, base_name, :klass => AliasedNegatedMatcher, &description_override)
     end
 
+    # Allows multiple expectations in the provided block to fail, and then
+    # aggregates them into a single exception, rather than aborting on the
+    # first expectation failure like normal. This allows you to see all
+    # failures from an entire set of expectations without splitting each
+    # off into its own example (which may slow things down if the example
+    # setup is expensive).
+    #
+    # @param label [String] label for this aggregation block, which will be
+    #   included in the aggregated exception message.
+    # @param metadata [Hash] additional metadata about this failure aggregation
+    #   block. If multiple expectations fail, it will be exposed from the
+    #   {Expectations::MultipleExpectationsNotMetError} exception. Mostly
+    #   intended for internal RSpec use but you can use it as well.
+    # @yield Block containing as many expectation as you want. The block is
+    #   simply yielded to, so you can trust that anything that works outside
+    #   the block should work within it.
+    # @raise [Expectations::MultipleExpectationsNotMetError] raised when
+    #   multiple expectations fail.
+    # @raise [Expectations::ExpectationNotMetError] raised when a single
+    #   expectation fails.
+    # @raise [Exception] other sorts of exceptions will be raised as normal.
+    #
+    # @example
+    #   aggregate_failures("verifying response") do
+    #     expect(response.status).to eq(200)
+    #     expect(response.headers).to include("Content-Type" => "text/plain")
+    #     expect(response.body).to include("Success")
+    #   end
+    #
+    # @note The implementation of this feature uses a thread-local variable,
+    #   which means that if you have an expectation failure in another thread,
+    #   it'll abort like normal.
+    def aggregate_failures(label=nil, metadata={}, &block)
+      Expectations::FailureAggregator.new(label, metadata).aggregate(&block)
+    end
+
     # Passes if actual is truthy (anything but false or nil)
     def be_truthy
       BuiltIn::BeTruthy.new

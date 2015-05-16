@@ -14,8 +14,8 @@ module RSpec
       #
       # @example
       #   expect { some_expectation }.to fail
-      def fail
-        raise_error(RSpec::Expectations::ExpectationNotMetError)
+      def fail(&block)
+        raise_error(RSpec::Expectations::ExpectationNotMetError, &block)
       end
 
       # Matches if an expectation fails with the provided message
@@ -31,10 +31,10 @@ module RSpec
       #
       # @example
       #   expect { some_expectation }.to fail_including("portion of some failure message")
-      def fail_including(snippet)
+      def fail_including(*snippets)
         raise_error(
           RSpec::Expectations::ExpectationNotMetError,
-          a_string_including(snippet)
+          a_string_including(*snippets)
         )
       end
     end
