@@ -18,10 +18,12 @@ module RSpec::Core::Formatters
     it "numbers the failures" do
       send_notification :example_failed, example_notification( double("example 1",
                :description => "first example",
+               :full_description => "group first example",
                :execution_result => execution_result(:status => :failed, :exception => Exception.new)
               ))
       send_notification :example_failed, example_notification( double("example 2",
                :description => "second example",
+               :full_description => "group second example",
                :execution_result => execution_result(:status => :failed, :exception => Exception.new)
               ))
 
@@ -90,8 +92,8 @@ root
         |pending command with block format
         |  with content that would fail
         |    is pending (PENDING: No reason given)
-        |  with content that would pass
-        |    fails (FAILED - 1)
+        |  behaves like shared
+        |    is marked as pending but passes (FAILED - 1)
         |
         |passing spec
         |  passes

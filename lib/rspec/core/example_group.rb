@@ -231,7 +231,7 @@ module RSpec
       # @see DSL#describe
       def self.define_example_group_method(name, metadata={})
         idempotently_define_singleton_method(name) do |*args, &example_group_block|
-          thread_data = RSpec.thread_local_metadata
+          thread_data = RSpec::Support.thread_local_data
           top_level   = self == ExampleGroup
 
           if top_level
@@ -705,16 +705,21 @@ module RSpec
 
       # @private
       def self.current_backtrace
-        RSpec.thread_local_metadata[:shared_example_group_inclusions].reverse
+        shared_example_group_inclusions.reverse
       end
 
       # @private
       def self.with_frame(name, location)
-        current_stack = RSpec.thread_local_metadata[:shared_example_group_inclusions]
+        current_stack = shared_example_group_inclusions
         current_stack << new(name, location)
         yield
       ensure
         current_stack.pop
+      end
+
+      # @private
+      def self.shared_example_group_inclusions
+        RSpec::Support.thread_local_data[:shared_example_group_inclusions] ||= []
       end
     end
   end

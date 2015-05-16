@@ -1,3 +1,4 @@
+RSpec::Support.require_rspec_core "formatters/exception_presenter"
 RSpec::Support.require_rspec_core "formatters/helpers"
 RSpec::Support.require_rspec_core "shell_escape"
 RSpec::Support.require_rspec_support "encoded_string"
@@ -39,20 +40,113 @@ module RSpec::Core
       def self.for(example)
         execution_result = example.execution_result
 
+        return SkippedExampleNotification.new(example) if execution_result.example_skipped?
+        return new(example) unless execution_result.status == :pending || execution_result.status == :failed
+
+        klass = FailedExampleNotification
+        exception = execution_result.exception
+        ex_presenter_options = {}
+
         if execution_result.pending_fixed?
-          PendingExampleFixedNotification.new(example)
-        elsif execution_result.example_skipped?
-          SkippedExampleNotification.new(example)
+          klass = PendingExampleFixedNotification
+          ex_presenter_options = {
+            :description_formatter => Proc.new { "#{example.full_description} FIXED" },
+            :message_color         => RSpec.configuration.fixed_color,
+            :failure_lines         => ["Expected pending '#{execution_result.pending_message}' to fail. No Error was raised."]
+          }
         elsif execution_result.status == :pending
-          PendingExampleFailedAsExpectedNotification.new(example)
-        elsif execution_result.status == :failed
-          FailedExampleNotification.new(example)
-        else
-          new(example)
+          klass = PendingExampleFailedAsExpectedNotification
+          exception = example.execution_result.pending_exception
+          ex_presenter_options = {
+            :message_color    => RSpec.configuration.pending_color,
+            :detail_formatter => PENDING_DETAIL_FORMATTER
+          }
+        end
+
+        if multiple_exceptions_not_met_error?(exception)
+          ex_presenter_options = exception_presenter_opts_for_multiple_error(
+            exception, example, ex_presenter_options
+          )
+        end
+
+        ex_presenter = Formatters::ExceptionPresenter.new(exception, example, ex_presenter_options)
+        klass.new(example, ex_presenter)
+      end
+
+      def self.exception_presenter_opts_for_multiple_error(exception, example, options)
+        ex_presenter_options = options.merge(
+          :failure_lines          => [],
+          :extra_detail_formatter => sub_failure_list_formatter(exception, example,
+                                                                options[:message_color]),
+          :detail_formatter       => multiple_failure_sumarizer(exception,
+                                                                options[:detail_formatter],
+                                                                options[:message_color])
+        )
+
+        ex_presenter_options[:description_formatter] &&= Proc.new {}
+
+        if exception.aggregation_metadata[:from_around_hook]
+          ex_presenter_options[:backtrace_formatter] = EmptyBacktraceFormatter
+        end
+
+        ex_presenter_options
+      end
+
+      # @private
+      # Used to prevent a confusing backtrace from showing up from the `aggregate_failures`
+      # block declared for `:aggregate_failures` metadata.
+      module EmptyBacktraceFormatter
+        def self.format_backtrace(*)
+          []
         end
       end
 
-      private_class_method :new
+      def self.multiple_exceptions_not_met_error?(exception)
+        return false unless defined?(RSpec::Expectations::MultipleExpectationsNotMetError)
+        RSpec::Expectations::MultipleExpectationsNotMetError === exception
+      end
+
+      def self.multiple_failure_sumarizer(exception, prior_detail_formatter, color)
+        lambda do |example, colorizer, indentation|
+          summary = if exception.aggregation_metadata[:from_around_hook]
+                      "Got #{exception.exception_count_description}:"
+                    else
+                      "#{exception.summary}."
+                    end
+
+          summary = colorizer.wrap(summary, color || RSpec.configuration.failure_color)
+          return summary unless prior_detail_formatter
+          "#{prior_detail_formatter.call(example, colorizer, indentation)}\n#{indentation}#{summary}"
+        end
+      end
+
+      def self.sub_failure_list_formatter(exception, example, message_color)
+        lambda do |failure_number, colorizer, indentation|
+          exception.all_exceptions.each_with_index.map do |failure, index|
+            options = {
+              :description_formatter   => :failure_slash_error_line.to_proc,
+              :indentation             => indentation.length,
+              :message_color           => message_color || RSpec.configuration.failure_color,
+              :skip_shared_group_trace => true
+            }
+
+            if multiple_exceptions_not_met_error?(failure)
+              options = exception_presenter_opts_for_multiple_error(failure, example, options)
+            end
+
+            failure = failure.dup
+            failure.set_backtrace(failure.backtrace[0..-exception.backtrace.size])
+
+            Formatters::ExceptionPresenter.new(
+              failure, example, options
+            ).fully_formatted("#{failure_number}.#{index + 1}", colorizer)
+          end.join
+        end
+      end
+
+      private_class_method :new, :multiple_exceptions_not_met_error?,
+                           :multiple_failure_sumarizer, :sub_failure_list_formatter,
+                           :exception_presenter_opts_for_multiple_error
     end
 
     # The `ExamplesNotification` represents notifications sent by the reporter
@@ -136,7 +230,8 @@ module RSpec::Core
     end
 
     # The `FailedExampleNotification` extends `ExampleNotification` with
-    # things useful for failed specs.
+    # things useful for examples that have failure info -- typically a
+    # failed or pending spec.
     #
     # @example
     #   def example_failed(notification)
@@ -152,19 +247,19 @@ module RSpec::Core
 
       # @return [Exception] The example failure
       def exception
-        example.execution_result.exception
+        @exception_presenter.exception
       end
 
       # @return [String] The example description
       def description
-        example.full_description
+        @exception_presenter.description
       end
 
       # Returns the message generated for this failure line by line.
       #
       # @return [Array<String>] The example failure message
       def message_lines
-        add_shared_group_lines(failure_lines, NullColorizer)
+        @exception_presenter.message_lines
       end
 
       # Returns the message generated for this failure colorized line by line.
@@ -172,16 +267,14 @@ module RSpec::Core
       # @param colorizer [#wrap] An object to colorize the message_lines by
       # @return [Array<String>] The example failure message colorized
       def colorized_message_lines(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        add_shared_group_lines(failure_lines, colorizer).map do |line|
-          colorizer.wrap line, message_color
-        end
+        @exception_presenter.colorized_message_lines(colorizer)
       end
 
       # Returns the failures formatted backtrace.
       #
       # @return [Array<String>] the examples backtrace lines
       def formatted_backtrace
-        backtrace_formatter.format_backtrace(exception.backtrace, example.metadata)
+        @exception_presenter.formatted_backtrace
       end
 
       # Returns the failures colorized formatted backtrace.
@@ -189,179 +282,32 @@ module RSpec::Core
       # @param colorizer [#wrap] An object to colorize the message_lines by
       # @return [Array<String>] the examples colorized backtrace lines
       def colorized_formatted_backtrace(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        formatted_backtrace.map do |backtrace_info|
-          colorizer.wrap "# #{backtrace_info}", RSpec.configuration.detail_color
-        end
+        @exception_presenter.colorized_formatted_backtrace(colorizer)
       end
 
       # @return [String] The failure information fully formatted in the way that
       #   RSpec's built-in formatters emit.
       def fully_formatted(failure_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        "\n  #{failure_number}) #{description}\n#{formatted_message_and_backtrace(colorizer)}"
+        @exception_presenter.fully_formatted(failure_number, colorizer)
       end
 
     private
 
-      if String.method_defined?(:encoding)
-        def encoding_of(string)
-          string.encoding
-        end
-
-        def encoded_string(string)
-          RSpec::Support::EncodedString.new(string, Encoding.default_external)
-        end
-      else # for 1.8.7
-        # :nocov:
-        def encoding_of(_string)
-        end
-
-        def encoded_string(string)
-          RSpec::Support::EncodedString.new(string)
-        end
-        # :nocov:
-      end
-
-      def backtrace_formatter
-        RSpec.configuration.backtrace_formatter
-      end
-
-      def exception_class_name
-        name = exception.class.name.to_s
-        name = "(anonymous error class)" if name == ''
-        name
-      end
-
-      def failure_lines
-        @failure_lines ||=
-          begin
-            lines = ["Failure/Error: #{read_failed_line.strip}"]
-            lines << "#{exception_class_name}:" unless exception_class_name =~ /RSpec/
-            encoded_string(exception.message.to_s).split("\n").each do |line|
-              lines << "  #{line}"
-            end
-            lines
-          end
-      end
-
-      def add_shared_group_lines(lines, colorizer)
-        example.metadata[:shared_group_inclusion_backtrace].each do |frame|
-          lines << colorizer.wrap(frame.description, RSpec.configuration.default_color)
-        end
-
-        lines
-      end
-
-      def read_failed_line
-        matching_line = find_failed_line
-        unless matching_line
-          return "Unable to find matching line from backtrace"
-        end
-
-        file_path, line_number = matching_line.match(/(.+?):(\d+)(|:\d+)/)[1..2]
-
-        if File.exist?(file_path)
-          File.readlines(file_path)[line_number.to_i - 1] ||
-            "Unable to find matching line in #{file_path}"
-        else
-          "Unable to find #{file_path} to read failed line"
-        end
-      rescue SecurityError
-        "Unable to read failed line"
-      end
-
-      def find_failed_line
-        example_path = example.metadata[:absolute_file_path].downcase
-        exception.backtrace.find do |line|
-          next unless (line_path = line[/(.+?):(\d+)(|:\d+)/, 1])
-          File.expand_path(line_path).downcase == example_path
-        end
-      end
-
-      def formatted_message_and_backtrace(colorizer)
-        formatted = ""
-
-        colorized_message_lines(colorizer).each do |line|
-          formatted << RSpec::Support::EncodedString.new("     #{line}\n", encoding_of(formatted))
-        end
-
-        colorized_formatted_backtrace(colorizer).each do |line|
-          formatted << RSpec::Support::EncodedString.new("     #{line}\n", encoding_of(formatted))
-        end
-
-        formatted
-      end
-
-      def message_color
-        RSpec.configuration.failure_color
+      def initialize(example, exception_presenter=Formatters::ExceptionPresenter.new(example.execution_result.exception, example))
+        @exception_presenter = exception_presenter
+        super(example)
       end
     end
 
-    # The `PendingExampleFixedNotification` extends `ExampleNotification` with
-    # things useful for specs that pass when they are expected to fail.
-    #
-    # @attr [RSpec::Core::Example] example the current example
-    # @see ExampleNotification
-    class PendingExampleFixedNotification < FailedExampleNotification
-      public_class_method :new
+    # @deprecated Use {FailedExampleNotification} instead.
+    class PendingExampleFixedNotification < FailedExampleNotification; end
 
-      # Returns the examples description.
-      #
-      # @return [String] The example description
-      def description
-        "#{example.full_description} FIXED"
-      end
-
-      # Returns the message generated for this failure line by line.
-      #
-      # @return [Array<String>] The example failure message
-      def message_lines
-        ["Expected pending '#{example.execution_result.pending_message}' to fail. No Error was raised."]
-      end
-
-      # Returns the message generated for this failure colorized line by line.
-      #
-      # @param colorizer [#wrap] An object to colorize the message_lines by
-      # @return [Array<String>] The example failure message colorized
-      def colorized_message_lines(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        message_lines.map { |line| colorizer.wrap(line, RSpec.configuration.fixed_color) }
-      end
-    end
+    # @deprecated Use {FailedExampleNotification} instead.
+    class PendingExampleFailedAsExpectedNotification < FailedExampleNotification; end
 
     # @private
-    module PendingExampleNotificationMethods
-    private
-
-      def fully_formatted_header(pending_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        colorizer.wrap("\n  #{pending_number}) #{example.full_description}\n", :pending) <<
-        colorizer.wrap("     # #{example.execution_result.pending_message}\n", :detail)
-      end
-    end
-
-    # The `PendingExampleFailedAsExpectedNotification` extends `FailedExampleNotification` with
-    # things useful for pending specs that fail as expected.
-    #
-    # @attr [RSpec::Core::Example] example the current example
-    # @see ExampleNotification
-    class PendingExampleFailedAsExpectedNotification < FailedExampleNotification
-      include PendingExampleNotificationMethods
-      public_class_method :new
-
-      # @return [Exception] The exception that occurred while the pending example was executed
-      def exception
-        example.execution_result.pending_exception
-      end
-
-      # @return [String] The pending detail fully formatted in the way that
-      #   RSpec's built-in formatters emit.
-      def fully_formatted(pending_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        fully_formatted_header(pending_number, colorizer) << formatted_message_and_backtrace(colorizer)
-      end
-
-    private
-
-      def message_color
-        RSpec.configuration.pending_color
-      end
+    PENDING_DETAIL_FORMATTER = Proc.new do |example, colorizer|
+      colorizer.wrap("# #{example.execution_result.pending_message}", :detail)
     end
 
     # The `SkippedExampleNotification` extends `ExampleNotification` with
@@ -370,14 +316,15 @@ module RSpec::Core
     # @attr [RSpec::Core::Example] example the current example
     # @see ExampleNotification
     class SkippedExampleNotification < ExampleNotification
-      include PendingExampleNotificationMethods
       public_class_method :new
 
       # @return [String] The pending detail fully formatted in the way that
       #   RSpec's built-in formatters emit.
       def fully_formatted(pending_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         formatted_caller = RSpec.configuration.backtrace_formatter.backtrace_line(example.location)
-        fully_formatted_header(pending_number, colorizer) << colorizer.wrap("     # #{formatted_caller}\n", :detail)
+        colorizer.wrap("\n  #{pending_number}) #{example.full_description}", :pending) <<
+          "\n     " << PENDING_DETAIL_FORMATTER.call(example, colorizer) << "\n" <<
+          colorizer.wrap("     # #{formatted_caller}\n", :detail)
       end
     end
 

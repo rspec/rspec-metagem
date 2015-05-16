@@ -44,7 +44,7 @@ module FormatterSupport
         |
         |  1) pending spec with no implementation is pending
         |     # Not yet implemented
-        |     # ./spec/rspec/core/resources/formatter_specs.rb:4
+        |     # ./spec/rspec/core/resources/formatter_specs.rb:11
         |
         |  2) pending command with block format with content that would fail is pending
         |     # No reason given
@@ -54,16 +54,17 @@ module FormatterSupport
         |            got: 1
         |
         |       (compared using ==)
-        |     # ./spec/rspec/core/resources/formatter_specs.rb:11
+        |     # ./spec/rspec/core/resources/formatter_specs.rb:18
         |     # ./spec/support/formatter_support.rb:13:in `run_example_specs_with_formatter'
         |     # ./spec/support/sandboxing.rb:14
         |     # ./spec/support/sandboxing.rb:7
         |
         |Failures:
         |
-        |  1) pending command with block format with content that would pass fails FIXED
+        |  1) pending command with block format behaves like shared is marked as pending but passes FIXED
         |     Expected pending 'No reason given' to fail. No Error was raised.
-        |     # ./spec/rspec/core/resources/formatter_specs.rb:16
+        |     Shared Example Group: "shared" called from ./spec/rspec/core/resources/formatter_specs.rb:22
+        |     # ./spec/rspec/core/resources/formatter_specs.rb:4
         |
         |  2) failing spec fails
         |     Failure/Error: expect(1).to eq(2)
@@ -72,7 +73,7 @@ module FormatterSupport
         |            got: 1
         |
         |       (compared using ==)
-        |     # ./spec/rspec/core/resources/formatter_specs.rb:31
+        |     # ./spec/rspec/core/resources/formatter_specs.rb:33
         |     # ./spec/support/formatter_support.rb:13:in `run_example_specs_with_formatter'
         |     # ./spec/support/sandboxing.rb:14
         |     # ./spec/support/sandboxing.rb:7
@@ -94,10 +95,10 @@ module FormatterSupport
         |
         |Failed examples:
         |
-        |rspec ./spec/rspec/core/resources/formatter_specs.rb:16 # pending command with block format with content that would pass fails
-        |rspec ./spec/rspec/core/resources/formatter_specs.rb:30 # failing spec fails
-        |rspec ./spec/rspec/core/resources/formatter_specs.rb:36 # a failing spec with odd backtraces fails with a backtrace that has no file
-        |rspec ./spec/rspec/core/resources/formatter_specs.rb:42 # a failing spec with odd backtraces fails with a backtrace containing an erb file
+        |rspec ./spec/rspec/core/resources/formatter_specs.rb:4 # pending command with block format behaves like shared is marked as pending but passes
+        |rspec ./spec/rspec/core/resources/formatter_specs.rb:32 # failing spec fails
+        |rspec ./spec/rspec/core/resources/formatter_specs.rb:38 # a failing spec with odd backtraces fails with a backtrace that has no file
+        |rspec ./spec/rspec/core/resources/formatter_specs.rb:44 # a failing spec with odd backtraces fails with a backtrace containing an erb file
       EOS
     end
   else
@@ -107,7 +108,7 @@ module FormatterSupport
         |
         |  1) pending spec with no implementation is pending
         |     # Not yet implemented
-        |     # ./spec/rspec/core/resources/formatter_specs.rb:4
+        |     # ./spec/rspec/core/resources/formatter_specs.rb:11
         |
         |  2) pending command with block format with content that would fail is pending
         |     # No reason given
@@ -117,16 +118,17 @@ module FormatterSupport
         |            got: 1
         |
         |       (compared using ==)
-        |     # ./spec/rspec/core/resources/formatter_specs.rb:11:in `block (3 levels) in <top (required)>'
+        |     # ./spec/rspec/core/resources/formatter_specs.rb:18:in `block (3 levels) in <top (required)>'
         |     # ./spec/support/formatter_support.rb:13:in `run_example_specs_with_formatter'
         |     # ./spec/support/sandboxing.rb:14:in `block (3 levels) in <top (required)>'
         |     # ./spec/support/sandboxing.rb:7:in `block (2 levels) in <top (required)>'
         |
         |Failures:
         |
-        |  1) pending command with block format with content that would pass fails FIXED
+        |  1) pending command with block format behaves like shared is marked as pending but passes FIXED
         |     Expected pending 'No reason given' to fail. No Error was raised.
-        |     # ./spec/rspec/core/resources/formatter_specs.rb:16
+        |     Shared Example Group: "shared" called from ./spec/rspec/core/resources/formatter_specs.rb:22
+        |     # ./spec/rspec/core/resources/formatter_specs.rb:4
         |
         |  2) failing spec fails
         |     Failure/Error: expect(1).to eq(2)
@@ -135,7 +137,7 @@ module FormatterSupport
         |            got: 1
         |
         |       (compared using ==)
-        |     # ./spec/rspec/core/resources/formatter_specs.rb:31:in `block (2 levels) in <top (required)>'
+        |     # ./spec/rspec/core/resources/formatter_specs.rb:33:in `block (2 levels) in <top (required)>'
         |     # ./spec/support/formatter_support.rb:13:in `run_example_specs_with_formatter'
         |     # ./spec/support/sandboxing.rb:14:in `block (3 levels) in <top (required)>'
         |     # ./spec/support/sandboxing.rb:7:in `block (2 levels) in <top (required)>'
@@ -145,7 +147,7 @@ module FormatterSupport
         |     RuntimeError:
         |       foo
         |     # (erb):1:in `<main>'
-        |     # ./spec/rspec/core/resources/formatter_specs.rb:39:in `block (2 levels) in <top (required)>'
+        |     # ./spec/rspec/core/resources/formatter_specs.rb:41:in `block (2 levels) in <top (required)>'
         |     # ./spec/support/formatter_support.rb:13:in `run_example_specs_with_formatter'
         |     # ./spec/support/sandboxing.rb:14:in `block (3 levels) in <top (required)>'
         |     # ./spec/support/sandboxing.rb:7:in `block (2 levels) in <top (required)>'
@@ -161,10 +163,10 @@ module FormatterSupport
         |
         |Failed examples:
         |
-        |rspec ./spec/rspec/core/resources/formatter_specs.rb:16 # pending command with block format with content that would pass fails
-        |rspec ./spec/rspec/core/resources/formatter_specs.rb:30 # failing spec fails
-        |rspec ./spec/rspec/core/resources/formatter_specs.rb:36 # a failing spec with odd backtraces fails with a backtrace that has no file
-        |rspec ./spec/rspec/core/resources/formatter_specs.rb:42 # a failing spec with odd backtraces fails with a backtrace containing an erb file
+        |rspec ./spec/rspec/core/resources/formatter_specs.rb:4 # pending command with block format behaves like shared is marked as pending but passes
+        |rspec ./spec/rspec/core/resources/formatter_specs.rb:32 # failing spec fails
+        |rspec ./spec/rspec/core/resources/formatter_specs.rb:38 # a failing spec with odd backtraces fails with a backtrace that has no file
+        |rspec ./spec/rspec/core/resources/formatter_specs.rb:44 # a failing spec with odd backtraces fails with a backtrace containing an erb file
       EOS
     end
   end

@@ -78,10 +78,10 @@ module RSpec
         end
 
         def silence_metadata_example_group_deprecations
-          RSpec.thread_local_metadata[:silence_metadata_example_group_deprecations] = true
+          RSpec::Support.thread_local_data[:silence_metadata_example_group_deprecations] = true
           yield
         ensure
-          RSpec.thread_local_metadata.delete(:silence_metadata_example_group_deprecations)
+          RSpec::Support.thread_local_data.delete(:silence_metadata_example_group_deprecations)
         end
       end
     end

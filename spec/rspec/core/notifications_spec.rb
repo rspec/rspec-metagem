@@ -1,97 +1,283 @@
 require 'rspec/core/notifications'
-require 'pathname'
 
 RSpec.describe "FailedExampleNotification" do
   include FormatterSupport
 
-  let(:example) { new_example }
-  let(:notification) { ::RSpec::Core::Notifications::FailedExampleNotification.new(example) }
+  let(:example) { new_example(:status => :failed) }
+  exception_line = __LINE__ + 1
+  let(:exception) { instance_double(Exception, :backtrace => [ "#{__FILE__}:#{exception_line}"], :message => 'Test exception') }
+  let(:notification) { ::RSpec::Core::Notifications::ExampleNotification.for(example) }
 
   before do
-    allow(example.execution_result).to receive(:exception) { exception }
+    example.execution_result.exception = exception
     example.metadata[:absolute_file_path] = __FILE__
   end
 
-  # ported from `base_formatter_spec` should be refactored by final
-  describe "#read_failed_line" do
-    context "when backtrace is a heterogeneous language stack trace" do
+  it 'provides a description' do
+    expect(notification.description).to eq(example.full_description)
+  end
+
+  it 'provides `colorized_formatted_backtrace`, which formats the backtrace and colorizes it' do
+    allow(RSpec.configuration).to receive(:color_enabled?).and_return(true)
+    expect(notification.colorized_formatted_backtrace).to eq(["\e[36m# #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{exception_line}\e[0m"])
+  end
+
+  describe "fully formatted failure output" do
+    def fully_formatted(*args)
+      notification.fully_formatted(1, *args)
+    end
+
+    def dedent(string)
+      string.gsub(/^ +\|/, '')
+    end
+
+    # ANSI codes aren't easy to read in failure output, so use tags instead
+    class TagColorizer
+      def self.wrap(text, code_or_symbol)
+        "<#{code_or_symbol}>#{text}</#{code_or_symbol}>"
+      end
+    end
+
+    context "when the exception is a MultipleExpectationsNotMetError" do
+      RSpec::Matchers.define :fail_with_description do |desc|
+        match { false }
+        description { desc }
+        failure_message { "expected pass, but #{desc}" }
+      end
+
+      def capture_and_normalize_aggregation_error
+        yield
+      rescue RSpec::Expectations::MultipleExpectationsNotMetError => failure
+        normalize_backtraces(failure)
+        failure
+      end
+
+      def normalize_backtraces(failure)
+        failure.all_exceptions.each do |exception|
+          if exception.is_a?(RSpec::Expectations::MultipleExpectationsNotMetError)
+            normalize_backtraces(exception)
+          end
+
+          normalize_one_backtrace(exception)
+        end
+
+        normalize_one_backtrace(failure)
+      end
+
+      def normalize_one_backtrace(exception)
+        line = exception.backtrace.find { |l| l.include?(__FILE__) }
+        exception.set_backtrace([ line.sub(/:in .*$/, '') ])
+      end
+
+      let(:aggregate_line) { __LINE__ + 3 }
       let(:exception) do
-        instance_double(Exception, :backtrace => [
-          "at Object.prototypeMethod (foo:331:18)",
-          "at Array.forEach (native)",
-          "at a_named_javascript_function (/some/javascript/file.js:39:5)",
-          "/some/line/of/ruby.rb:14"
-        ])
-      end
-
-      it "is handled gracefully" do
-        expect { notification.send(:read_failed_line) }.not_to raise_error
-      end
-    end
-
-    context "when backtrace will generate a security error" do
-      let(:exception) { instance_double(Exception, :backtrace => [ "#{__FILE__}:#{__LINE__}"]) }
-
-      it "is handled gracefully" do
-        with_safe_set_to_level_that_triggers_security_errors do
-          expect { notification.send(:read_failed_line) }.not_to raise_error
-        end
-      end
-    end
-
-    context "when ruby reports a bogus line number in the stack trace" do
-      let(:exception) { instance_double(Exception, :backtrace => [ "#{__FILE__}:10000000"]) }
-
-      it "reports the filename and that it was unable to find the matching line" do
-        expect(notification.send(:read_failed_line)).to include("Unable to find matching line")
-      end
-    end
-
-    context "when ruby reports a file that does not exist" do
-      let(:file) { "#{__FILE__}/blah.rb" }
-      let(:exception) { instance_double(Exception, :backtrace => [ "#{file}:1"]) }
-
-      it "reports the filename and that it was unable to find the matching line" do
-        example.metadata[:absolute_file_path] = file
-        expect(notification.send(:read_failed_line)).to include("Unable to find #{file} to read failed line")
-      end
-    end
-
-    context "when the stacktrace includes relative paths (which can happen when using `rspec/autorun` and running files through `ruby`)" do
-      let(:relative_file) { Pathname(__FILE__).relative_path_from(Pathname(Dir.pwd)) }
-      line = __LINE__
-      let(:exception) { instance_double(Exception, :backtrace => ["#{relative_file}:#{line}"]) }
-
-      it 'still finds the backtrace line' do
-        expect(notification.send(:read_failed_line)).to include("line = __LINE__")
-      end
-    end
-
-    context "when String alias to_int to_i" do
-      before do
-        String.class_exec do
-          alias :to_int :to_i
+        capture_and_normalize_aggregation_error do
+          aggregate_failures("multiple expectations") do
+            expect(1).to fail_with_description("foo")
+            expect(1).to fail_with_description("bar")
+          end
         end
       end
 
-      after do
-        String.class_exec do
-          undef to_int
+      it 'provides a summary composed of example description, failure count and aggregate backtrace' do
+        expect(fully_formatted.lines.first(5)).to eq(dedent(<<-EOS).lines.to_a)
+          |
+          |  1) Example
+          |     Got 2 failures from failure aggregation block "multiple expectations".
+          |     # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line}
+          |
+        EOS
+      end
+
+      it 'lists each individual expectation failure, with a backtrace relative to the aggregation block' do
+        expect(fully_formatted.lines.to_a.last(8)).to eq(dedent(<<-EOS).lines.to_a)
+          |
+          |     1.1) Failure/Error: expect(1).to fail_with_description("foo")
+          |            expected pass, but foo
+          |          # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 1}
+          |
+          |     1.2) Failure/Error: expect(1).to fail_with_description("bar")
+          |            expected pass, but bar
+          |          # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 2}
+        EOS
+      end
+
+      it 'uses the `failure` color in the summary output' do
+        expect(fully_formatted(TagColorizer)).to include(
+          '<red>Got 2 failures from failure aggregation block "multiple expectations".</red>'
+        )
+      end
+
+      it 'uses the `failure` color for the sub-failure messages' do
+        expect(fully_formatted(TagColorizer)).to include(
+         '<red>  expected pass, but foo</red>',
+         '<red>  expected pass, but bar</red>'
+        )
+      end
+
+      context "due to using `:aggregate_failures` metadata" do
+        let(:exception) do
+          ex = nil
+          RSpec.describe do
+            ex = it "", :aggregate_failures do
+              expect(1).to fail_with_description("foo")
+              expect(1).to fail_with_description("bar")
+            end
+          end.run
+
+          capture_and_normalize_aggregation_error { raise ex.execution_result.exception }
+        end
+
+        it 'uses an alternate format for the exception summary to avoid confusing references to the aggregation block or stack trace' do
+          expect(fully_formatted.lines.first(4)).to eq(dedent(<<-EOS).lines.to_a)
+            |
+            |  1) Example
+            |     Got 2 failures:
+            |
+          EOS
         end
       end
 
-      let(:exception) { instance_double(Exception, :backtrace => [ "#{__FILE__}:#{__LINE__}"]) }
+      context "when the failure happened in a shared example group" do
+        before do |ex|
+          example.metadata[:shared_group_inclusion_backtrace] << RSpec::Core::SharedExampleGroupInclusionStackFrame.new(
+            "Stuff", "./some_shared_group_file.rb:13"
+          )
+        end
 
-      it "doesn't hang when file exists" do
-        expect(notification.send(:read_failed_line).strip).to eql(
-          %Q[let(:exception) { instance_double(Exception, :backtrace => [ "\#{__FILE__}:\#{__LINE__}"]) }])
+        it "includes the shared group backtrace as part of the aggregate failure backtrace" do
+          expect(fully_formatted.lines.first(6)).to eq(dedent(<<-EOS).lines.to_a)
+            |
+            |  1) Example
+            |     Got 2 failures from failure aggregation block "multiple expectations".
+            |     Shared Example Group: "Stuff" called from ./some_shared_group_file.rb:13
+            |     # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line}
+            |
+          EOS
+        end
+
+        it "does not include the shared group backtrace in the sub-failure backtraces" do
+          expect(fully_formatted.lines.to_a.last(8)).to eq(dedent(<<-EOS).lines.to_a)
+            |
+            |     1.1) Failure/Error: expect(1).to fail_with_description("foo")
+            |            expected pass, but foo
+            |          # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 1}
+            |
+            |     1.2) Failure/Error: expect(1).to fail_with_description("bar")
+            |            expected pass, but bar
+            |          # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 2}
+          EOS
+        end
       end
 
+      context "when `aggregate_failures` is used in nested fashion" do
+        let(:aggregate_line) { __LINE__ + 3 }
+        let(:exception) do
+          capture_and_normalize_aggregation_error do
+            aggregate_failures("outer") do
+              expect(1).to fail_with_description("foo")
+
+              aggregate_failures("inner") do
+                expect(2).to fail_with_description("bar")
+                expect(3).to fail_with_description("baz")
+              end
+
+              expect(1).to fail_with_description("qux")
+            end
+          end
+        end
+
+        it 'recursively formats the nested aggregated failures' do
+          expect(fully_formatted).to eq(dedent <<-EOS)
+            |
+            |  1) Example
+            |     Got 3 failures from failure aggregation block "outer".
+            |     # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line}
+            |
+            |     1.1) Failure/Error: expect(1).to fail_with_description("foo")
+            |            expected pass, but foo
+            |          # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 1}
+            |
+            |     1.2) Got 2 failures from failure aggregation block "inner".
+            |          # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 3}
+            |
+            |          1.2.1) Failure/Error: expect(2).to fail_with_description("bar")
+            |                   expected pass, but bar
+            |                 # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 4}
+            |
+            |          1.2.2) Failure/Error: expect(3).to fail_with_description("baz")
+            |                   expected pass, but baz
+            |                 # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 5}
+            |
+            |     1.3) Failure/Error: expect(1).to fail_with_description("qux")
+            |            expected pass, but qux
+            |          # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 8}
+          EOS
+        end
+      end
+
+      context "when there are failures and other errors" do
+        let(:aggregate_line) { __LINE__ + 3 }
+        let(:exception) do
+          capture_and_normalize_aggregation_error do
+            aggregate_failures("multiple expectations") do
+              expect(1).to fail_with_description("foo")
+              raise "boom"
+            end
+          end
+        end
+
+        it 'lists both types in the exception listing' do
+          expect(fully_formatted.lines.to_a.last(9)).to eq(dedent(<<-EOS).lines.to_a)
+            |
+            |     1.1) Failure/Error: expect(1).to fail_with_description("foo")
+            |            expected pass, but foo
+            |          # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 1}
+            |
+            |     1.2) Failure/Error: raise "boom"
+            |          RuntimeError:
+            |            boom
+            |          # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 2}
+           EOS
+        end
+      end
+
+      context "in a pending spec" do
+        before do
+          example.execution_result.status = :pending
+          example.execution_result.pending_message = 'Some pending reason'
+          example.execution_result.pending_exception = exception
+          example.execution_result.exception = nil
+        end
+
+        it 'includes both the pending message and aggregate summary' do
+          expect(fully_formatted.lines.first(6)).to eq(dedent(<<-EOS).lines.to_a)
+            |
+            |  1) Example
+            |     # Some pending reason
+            |     Got 2 failures from failure aggregation block "multiple expectations".
+            |     # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line}
+            |
+          EOS
+        end
+
+        it 'uses the `pending` color in the summary output' do
+          expect(fully_formatted(TagColorizer)).to include(
+            '<yellow>Got 2 failures from failure aggregation block "multiple expectations".</yellow>'
+          )
+        end
+
+        it 'uses the `pending` color for the sub-failure messages' do
+          expect(fully_formatted(TagColorizer)).to include(
+           '<yellow>  expected pass, but foo</yellow>',
+           '<yellow>  expected pass, but bar</yellow>'
+          )
+        end
+      end
     end
   end
 
   describe '#message_lines' do
-    let(:exception) { instance_double(Exception, :backtrace => [ "#{__FILE__}:#{__LINE__}"], :message => 'Test exception') }
     let(:example_group) { class_double(RSpec::Core::ExampleGroup, :metadata => {}, :parent_groups => [], :location => "#{__FILE__}:#{__LINE__}") }
 
     before do

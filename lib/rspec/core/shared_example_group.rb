@@ -80,7 +80,7 @@ module RSpec
       # @see ExampleGroup.include_context
       def shared_examples(name, *args, &block)
         top_level = self == ExampleGroup
-        if top_level && RSpec.thread_local_metadata[:in_example_group]
+        if top_level && RSpec::Support.thread_local_data[:in_example_group]
           raise "Creating isolated shared examples from within a context is " \
                 "not allowed. Remove `RSpec.` prefix or move this to a " \
                 "top-level scope."
