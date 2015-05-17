@@ -159,6 +159,28 @@ module RSpec::Core
             included_via_tag, excluded_via_tag
           ]).map(&:description)).to eq([included_via_loc_or_id, included_via_tag].map(&:description))
         end
+
+        it "skips examples in external files when included from a #{type} filtered file" do
+          group = RSpec.describe("group")
+
+          included_via_loc_or_id = group.example("inc via #{type}"); line = __LINE__
+
+          # instantiate shared example in external file
+          instance_eval <<-EOS, "a_shared_example.rb", 1
+            RSpec.shared_examples_for("a shared example") do
+              example("inside of a shared example")
+            end
+          EOS
+
+          included_via_behaves_like = group.it_behaves_like("a shared example")
+          test_inside_a_shared_example = included_via_behaves_like.examples.first
+
+          add_filter(:line_number => line, :scoped_id => "1:1")
+
+          expect(prune([
+            included_via_loc_or_id, test_inside_a_shared_example
+          ]).map(&:description)).to eq([included_via_loc_or_id].map(&:description))
+        end
       end
 
       describe "location filtering" do
