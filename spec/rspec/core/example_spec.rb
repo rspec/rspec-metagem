@@ -344,11 +344,33 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
         0 != GC.method(:start).arity # older Rubies don't give us options to ensure a full GC
       end
 
+      def expect_gc(opts)
+        get_all = opts.fetch :get_all
+
+        begin
+          GC.disable
+          opts.fetch(:event).call
+          expect(get_all.call).to eq(opts.fetch :pre_gc)
+        ensure
+          GC.enable
+        end
+
+        # See discussion on https://github.com/rspec/rspec-core/pull/1950
+        # for why it's necessary to do this multiple times
+        20.times do
+          GC.start :full_mark => true, :immediate_sweep => true
+          return if get_all.call == opts.fetch(:post_gc)
+        end
+
+        expect(get_all.call).to eq opts.fetch(:post_gc)
+      end
+
       it 'releases references to the examples / their ivars', :if => reliable_gc do
         config        = RSpec::Core::Configuration.new
         real_reporter = RSpec::Core::Reporter.new(config) # in case it is the cause of a leak
         garbage       = Struct.new :defined_in
-        group         = RSpec.describe do
+
+        group = RSpec.describe do
           before(:all)  { @before_all  = garbage.new :before_all  }
           before(:each) { @before_each = garbage.new :before_each }
           after(:each)  { @after_each  = garbage.new :after_each  }
@@ -363,19 +385,10 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
           end
         end
 
-        GC.disable
-        group.run real_reporter
-
-        expect {
-          GC.enable
-          GC.start :full_mark => true, :immediate_sweep => true
-        }.to change {
-          ObjectSpace.each_object(garbage).map(&:defined_in).map(&:to_s).sort
-        }.from(%w[
-          after_all  after_each  after_each
-          before_all before_each before_each
-          failing_example passing_example
-        ]).to([])
+        expect_gc :event   => lambda { group.run real_reporter },
+                  :get_all => lambda { ObjectSpace.each_object(garbage).map { |g| g.defined_in.to_s }.sort },
+                  :pre_gc  => %w[after_all after_each after_each before_all before_each before_each failing_example passing_example],
+                  :post_gc => []
       end
 
       it 'can still be referenced by user code afterwards' do
