@@ -34,6 +34,8 @@ Enhancements:
 * Add new `aggregate_failures` API that allows multiple independent
   expectations to all fail and be listed in the failure output, rather
   than the example aborting on the first failure. (Myron Marston, #776)
+* Improve `raise_error` matcher so that it can accept a matcher as a single argument
+  that matches the message. (Time Wade, #782)
 
 Bug Fixes:
 
