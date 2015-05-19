@@ -16,7 +16,7 @@ module RSpec
           case expected_error_or_message
           when nil
             @expected_error, @expected_message = Exception, expected_message
-          when String, Regexp
+          when String
             @expected_error, @expected_message = Exception, expected_error_or_message
           else
             @expected_error, @expected_message = expected_error_or_message, expected_message
@@ -48,7 +48,8 @@ module RSpec
           begin
             given_proc.call
           rescue Exception => @actual_error
-            if values_match?(@expected_error, @actual_error)
+            if values_match?(@expected_error, @actual_error) ||
+               values_match?(@expected_error, @actual_error.message)
               @raised_expected_error = true
               @with_expected_message = verify_message
             end
@@ -173,7 +174,11 @@ module RSpec
         def expected_error
           case @expected_message
           when nil
-            description_of(@expected_error)
+            if RSpec::Support.is_a_matcher?(@expected_error)
+              "Exception with #{description_of(@expected_error)}"
+            else
+              description_of(@expected_error)
+            end
           when Regexp
             "#{@expected_error} with message matching #{description_of(@expected_message)}"
           else
