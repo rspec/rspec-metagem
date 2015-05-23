@@ -73,7 +73,7 @@ MESSAGE
         end
 
         def inspect_object(o)
-          "#<#{o.class}:#{o.object_id}> => #{RSpec::Support::ObjectInspector.inspect(o)}"
+          "#<#{o.class}:#{o.object_id}> => #{RSpec::Support::ObjectFormatter.format(o)}"
         end
       end
     end

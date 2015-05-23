@@ -82,12 +82,12 @@ module RSpec
 
         # @private
         def expected_formatted
-          RSpec::Support::ObjectInspector.inspect(@expected)
+          RSpec::Support::ObjectFormatter.format(@expected)
         end
 
         # @private
         def actual_formatted
-          RSpec::Support::ObjectInspector.inspect(@actual)
+          RSpec::Support::ObjectFormatter.format(@actual)
         end
 
         # @private
