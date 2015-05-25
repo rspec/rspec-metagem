@@ -99,7 +99,7 @@ module RSpec
         return if supports_block_expectations?(matcher)
 
         raise ExpectationNotMetError, "You must pass an argument rather than a block to use the provided " \
-          "matcher (#{RSpec::Support::ObjectInspector.inspect(matcher)}), or the matcher must implement " \
+          "matcher (#{RSpec::Support::ObjectFormatter.format(matcher)}), or the matcher must implement " \
           "`supports_block_expectations?`."
       end
 

@@ -42,7 +42,7 @@ module RSpec
         # @return [String]
         def description
           described_items = surface_descriptions_in(expected)
-          improve_hash_formatting "have attributes #{RSpec::Support::ObjectInspector.inspect(described_items)}"
+          improve_hash_formatting "have attributes #{RSpec::Support::ObjectFormatter.format(described_items)}"
         end
 
         # @api private
@@ -105,7 +105,7 @@ module RSpec
         end
 
         def formatted_values
-          values = RSpec::Support::ObjectInspector.inspect(@values)
+          values = RSpec::Support::ObjectFormatter.format(@values)
           improve_hash_formatting(values)
         end
       end

@@ -83,7 +83,7 @@ module RSpec
         end
 
         def inspected_args
-          @args.map { |a| RSpec::Support::ObjectInspector.inspect(a) }
+          @args.map { |a| RSpec::Support::ObjectFormatter.format(a) }
         end
 
         def expected_to_sentence

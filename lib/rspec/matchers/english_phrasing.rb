@@ -24,8 +24,8 @@ module RSpec
       #     list([]) #=> ""
       #
       def self.list(obj)
-        return " #{RSpec::Support::ObjectInspector.inspect(obj)}" if !obj || Struct === obj
-        items = Array(obj).map { |w| RSpec::Support::ObjectInspector.inspect(w) }
+        return " #{RSpec::Support::ObjectFormatter.format(obj)}" if !obj || Struct === obj
+        items = Array(obj).map { |w| RSpec::Support::ObjectFormatter.format(w) }
         case items.length
         when 0
           ""

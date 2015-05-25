@@ -74,7 +74,7 @@ module RSpec
         # @api private
         # @return [String]
         def description
-          "#{@operator} #{RSpec::Support::ObjectInspector.inspect(@expected)}"
+          "#{@operator} #{RSpec::Support::ObjectFormatter.format(@expected)}"
         end
 
       private
@@ -99,8 +99,8 @@ module RSpec
           if actual.__send__(operator, expected)
             true
           else
-            expected_formatted = RSpec::Support::ObjectInspector.inspect(expected)
-            actual_formatted   = RSpec::Support::ObjectInspector.inspect(actual)
+            expected_formatted = RSpec::Support::ObjectFormatter.format(expected)
+            actual_formatted   = RSpec::Support::ObjectFormatter.format(actual)
 
             if ['==', '===', '=~'].include?(operator)
               fail_with_message("expected: #{expected_formatted}\n     got: #{actual_formatted} (using #{operator})")
@@ -117,8 +117,8 @@ module RSpec
         def __delegate_operator(actual, operator, expected)
           return false unless actual.__send__(operator, expected)
 
-          expected_formatted = RSpec::Support::ObjectInspector.inspect(expected)
-          actual_formatted   = RSpec::Support::ObjectInspector.inspect(actual)
+          expected_formatted = RSpec::Support::ObjectFormatter.format(expected)
+          actual_formatted   = RSpec::Support::ObjectFormatter.format(actual)
 
           fail_with_message("expected not: #{operator} #{expected_formatted}\n         got: #{operator.gsub(/./, ' ')} #{actual_formatted}")
         end
