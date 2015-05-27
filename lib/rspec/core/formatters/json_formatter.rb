@@ -60,8 +60,7 @@ module RSpec
         # @api private
         def dump_profile_slowest_examples(profile)
           @output_hash[:profile] = {}
-          sorted_examples = profile.slowest_examples
-          @output_hash[:profile][:examples] = sorted_examples.map do |example|
+          @output_hash[:profile][:examples] = profile.slowest_examples.map do |example|
             format_example(example).tap do |hash|
               hash[:run_time] = example.execution_result.run_time
             end

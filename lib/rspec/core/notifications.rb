@@ -400,7 +400,8 @@ module RSpec::Core
     # @attr duration [Float] the time taken (in seconds) to run the suite
     # @attr examples [Array<RSpec::Core::Example>] the examples run
     # @attr number_of_examples [Fixnum] the number of examples to profile
-    ProfileNotification = Struct.new(:duration, :examples, :number_of_examples)
+    # @attr profiler [RSpec::Core::Profiler] the profiler used to capture examples
+    ProfileNotification = Struct.new(:duration, :examples, :number_of_examples, :profiler)
     class ProfileNotification
       # @return [Array<RSpec::Core::Example>] the slowest examples
       def slowest_examples
@@ -428,8 +429,14 @@ module RSpec::Core
       end
 
       # @return [Array<RSpec::Core::Example>] the slowest example groups
-      # todo rename this method or move it's code to the json_formater.rb and profile.formater.rb
-      def calculate_slowest_groups(example_groups)
+      def slowest_groups
+        @slowest_groups ||= calculate_slowest_groups
+      end
+
+    private
+
+      def calculate_slowest_groups
+        example_groups = profiler.example_groups
 
         # stop if we've only one example group
         return {} if example_groups.keys.length <= 1

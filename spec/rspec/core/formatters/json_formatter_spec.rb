@@ -133,8 +133,8 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
     end
 
     before do
+      setup_profiler
       formatter
-      config.profile_examples = 10
     end
 
     context "with one example group" do

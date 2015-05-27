@@ -185,6 +185,11 @@ module FormatterSupport
     @reporter = config.reporter
   end
 
+  def setup_profiler
+    config.profile_examples = true
+    config.profiler
+  end
+
   def formatter_output
     @formatter_output ||= StringIO.new
   end
@@ -274,7 +279,7 @@ module FormatterSupport
   end
 
   def profile_notification(duration, examples, number)
-    ::RSpec::Core::Notifications::ProfileNotification.new duration, examples, number
+    ::RSpec::Core::Notifications::ProfileNotification.new duration, examples, number, config.profiler
   end
 
 end

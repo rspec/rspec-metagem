@@ -150,7 +150,8 @@ module RSpec::Core
         notify :deprecation_summary, Notifications::NullNotification
         unless mute_profile_output?
           notify :dump_profile, Notifications::ProfileNotification.new(@duration, @examples,
-                                                                       @configuration.profile_examples)
+                                                                       @configuration.profile_examples,
+                                                                       @configuration.profiler)
         end
         notify :dump_summary, Notifications::SummaryNotification.new(@duration, @examples, @failed_examples,
                                                                      @pending_examples, @load_time)
