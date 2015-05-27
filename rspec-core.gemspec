@@ -13,8 +13,6 @@ Gem::Specification.new do |s|
   s.summary     = "rspec-core-#{RSpec::Core::Version::STRING}"
   s.description = "BDD for Ruby. RSpec runner and example groups."
 
-  s.rubyforge_project  = "rspec"
-
   s.files            = `git ls-files -- lib/*`.split("\n")
   s.files           += %w[README.md License.txt Changelog.md .yardopts .document]
   s.test_files       = []
