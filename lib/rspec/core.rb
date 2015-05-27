@@ -137,6 +137,7 @@ module RSpec
   # Namespace for the rspec-core code.
   module Core
     autoload :ExampleStatusPersister, "rspec/core/example_status_persister"
+    autoload :Profiler,               "rspec/core/profiler"
 
     # @private
     # This avoids issues with reporting time caused by examples that

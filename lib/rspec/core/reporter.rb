@@ -18,6 +18,7 @@ module RSpec::Core
       @failed_examples = []
       @pending_examples = []
       @duration = @start = @load_time = nil
+      register_listener @configuration.profiler, *@configuration.profiler.notifications
     end
 
     # @private

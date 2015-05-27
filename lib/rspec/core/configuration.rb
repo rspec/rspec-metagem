@@ -828,6 +828,18 @@ module RSpec
       end
 
       # @private
+      def profiler
+        @profiler ||=
+          begin
+            if value_for(:profile_examples) { @profile_examples }
+              Profiler.new
+            else
+              NoProfiler
+            end
+          end
+      end
+
+      # @private
       def files_or_directories_to_run=(*files)
         files = files.flatten
 
