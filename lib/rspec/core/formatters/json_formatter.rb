@@ -6,34 +6,15 @@ module RSpec
     module Formatters
       # @private
       class JsonFormatter < BaseFormatter
-        Formatters.register self, :message, :dump_summary, :dump_profile, :stop, :close,
-                            :example_group_started, :example_group_finished,
-                            :example_started
+        Formatters.register self, :message, :dump_summary, :dump_profile, :stop, :close
 
         attr_reader :output_hash
 
         def initialize(output)
           super
-          @example_groups= {} #todo rename, maybe example_groups_data ...
           @output_hash = {
             :version => RSpec::Core::Version::STRING
           }
-        end
-
-        #todo remove duplication with lib/rspec/core/formatters/profile_formatter.rb line 16
-        def example_group_started(notification)
-          @example_groups[notification.group.id] = Hash.new(0)
-          @example_groups[notification.group.id][:start] = Time.now
-          @example_groups[notification.group.id][:description] = notification.group.top_level_description
-        end
-
-        def example_group_finished(notification)
-          @example_groups[notification.group.id][:total_time] =  Time.now - @example_groups[notification.group.id][:start]
-        end
-
-        def example_started(notification)
-          group = notification.example.example_group.parent_groups.last.id
-          @example_groups[group][:count] += 1
         end
 
         def message(notification)
@@ -91,9 +72,8 @@ module RSpec
 
         # @api private
         def dump_profile_slowest_example_groups(profile)
-          slowest_groups = profile.calculate_slowest_groups(@example_groups)
           @output_hash[:profile] ||= {}
-          @output_hash[:profile][:groups] = slowest_groups.map do |loc, hash|
+          @output_hash[:profile][:groups] = profile.slowest_groups.map do |loc, hash|
             hash.update(:location => loc)
           end
         end

@@ -186,9 +186,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
         expect(formatter.output_hash[:profile][:groups].first.keys).to match_array([:total_time, :count, :description, :average, :location, :start])
       end
 
-      #todo the group profiling dont use the example clock anymore
-      #I need to adapt this test
-      xit "ranks the example groups by average time" do
+      it "ranks the example groups by average time" do
         expect(formatter.output_hash[:profile][:groups].first[:description]).to eq("slow group")
       end
     end
