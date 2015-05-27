@@ -249,8 +249,8 @@ module FormatterSupport
    ::RSpec::Core::Notifications::ExampleNotification.for specific_example
   end
 
-  def group_notification
-   ::RSpec::Core::Notifications::GroupNotification.new group
+  def group_notification group_to_notify = group
+   ::RSpec::Core::Notifications::GroupNotification.new group_to_notify
   end
 
   def message_notification(message)
