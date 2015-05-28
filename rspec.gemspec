@@ -14,8 +14,6 @@ Gem::Specification.new do |s|
   s.summary     = "rspec-#{RSpec::Version::STRING}"
   s.description = "BDD for Ruby"
 
-  s.rubyforge_project  = "rspec"
-
   s.files            = `git ls-files -- lib/*`.split("\n")
   s.files           += ["License.txt"]
   s.test_files       = `git ls-files -- {spec,features}/*`.split("\n")
