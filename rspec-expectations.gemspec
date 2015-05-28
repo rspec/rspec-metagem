@@ -13,8 +13,6 @@ Gem::Specification.new do |s|
   s.summary     = "rspec-expectations-#{RSpec::Expectations::Version::STRING}"
   s.description = "rspec-expectations provides a simple, readable API to express expected outcomes of a code example."
 
-  s.rubyforge_project  = "rspec"
-
   s.files            = `git ls-files -- lib/*`.split("\n")
   s.files           += %w[README.md License.txt Changelog.md .yardopts .document]
   s.test_files       = []
