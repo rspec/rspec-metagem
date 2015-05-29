@@ -400,9 +400,16 @@ module RSpec::Core
     # @attr duration [Float] the time taken (in seconds) to run the suite
     # @attr examples [Array<RSpec::Core::Example>] the examples run
     # @attr number_of_examples [Fixnum] the number of examples to profile
-    # @attr profiler [RSpec::Core::Profiler] the profiler used to capture examples
-    ProfileNotification = Struct.new(:duration, :examples, :number_of_examples, :profiler)
+    # @attr example_groups [Array<RSpec::Core::Profiler>] example groups run
     class ProfileNotification
+      def initialize(duration, examples, number_of_examples, example_groups)
+        @duration = duration
+        @examples = examples
+        @number_of_examples = number_of_examples
+        @example_groups = example_groups
+      end
+      attr_reader :duration, :examples, :number_of_examples
+
       # @return [Array<RSpec::Core::Example>] the slowest examples
       def slowest_examples
         @slowest_examples ||=
@@ -436,16 +443,14 @@ module RSpec::Core
     private
 
       def calculate_slowest_groups
-        example_groups = profiler.example_groups
-
         # stop if we've only one example group
-        return {} if example_groups.keys.length <= 1
+        return {} if @example_groups.keys.length <= 1
 
-        example_groups.each_value do |hash|
+        @example_groups.each_value do |hash|
           hash[:average] = hash[:total_time].to_f / hash[:count]
         end
 
-        example_groups.sort_by { |_, hash| -hash[:average] }.first(number_of_examples)
+        @example_groups.sort_by { |_, hash| -hash[:average] }.first(number_of_examples)
       end
     end
 

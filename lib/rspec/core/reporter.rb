@@ -152,7 +152,7 @@ module RSpec::Core
         unless mute_profile_output?
           notify :dump_profile, Notifications::ProfileNotification.new(@duration, @examples,
                                                                        @configuration.profile_examples,
-                                                                       @profiler)
+                                                                       @profiler.example_groups)
         end
         notify :dump_summary, Notifications::SummaryNotification.new(@duration, @examples, @failed_examples,
                                                                      @pending_examples, @load_time)

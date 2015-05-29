@@ -281,7 +281,7 @@ module FormatterSupport
   end
 
   def profile_notification(duration, examples, number)
-    ::RSpec::Core::Notifications::ProfileNotification.new duration, examples, number, reporter.instance_variable_get('@profiler')
+    ::RSpec::Core::Notifications::ProfileNotification.new duration, examples, number, reporter.instance_variable_get('@profiler').example_groups
   end
 
 end
