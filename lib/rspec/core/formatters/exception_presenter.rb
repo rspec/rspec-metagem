@@ -146,6 +146,121 @@ module RSpec
 
           formatted
         end
+
+        # @private
+        # Configuring the `ExceptionPresenter` with the right set of options to handle
+        # pending vs failed vs skipped and aggregated (or not) failures is not simple.
+        # This class takes care of building an appropriate `ExceptionPresenter` for the
+        # provided example.
+        class Factory
+          def build
+            ExceptionPresenter.new(@exception, @example, options)
+          end
+
+        private
+
+          def initialize(example)
+            @example          = example
+            @execution_result = example.execution_result
+            @exception        = if @execution_result.status == :pending
+                                  @execution_result.pending_exception
+                                else
+                                  @execution_result.exception
+                                end
+          end
+
+          def options
+            with_multiple_error_options_as_needed(@exception, pending_options || {})
+          end
+
+          def pending_options
+            if @execution_result.pending_fixed?
+              {
+                :description_formatter => Proc.new { "#{@example.full_description} FIXED" },
+                :message_color         => RSpec.configuration.fixed_color,
+                :failure_lines         => [
+                  "Expected pending '#{@execution_result.pending_message}' to fail. No Error was raised."
+                ]
+              }
+            elsif @execution_result.status == :pending
+              {
+                :message_color    => RSpec.configuration.pending_color,
+                :detail_formatter => PENDING_DETAIL_FORMATTER
+              }
+            end
+          end
+
+          def with_multiple_error_options_as_needed(exception, options)
+            return options unless multiple_exceptions_not_met_error?(exception)
+
+            options = options.merge(
+              :failure_lines          => [],
+              :extra_detail_formatter => sub_failure_list_formatter(exception, options[:message_color]),
+              :detail_formatter       => multiple_failure_sumarizer(exception,
+                                                                    options[:detail_formatter],
+                                                                    options[:message_color])
+            )
+
+            options[:description_formatter] &&= Proc.new {}
+
+            return options unless exception.aggregation_metadata[:from_around_hook]
+            options[:backtrace_formatter] = EmptyBacktraceFormatter
+            options
+          end
+
+          def multiple_exceptions_not_met_error?(exception)
+            return false unless defined?(RSpec::Expectations::MultipleExpectationsNotMetError)
+            RSpec::Expectations::MultipleExpectationsNotMetError === exception
+          end
+
+          def multiple_failure_sumarizer(exception, prior_detail_formatter, color)
+            lambda do |example, colorizer, indentation|
+              summary = if exception.aggregation_metadata[:from_around_hook]
+                          "Got #{exception.exception_count_description}:"
+                        else
+                          "#{exception.summary}."
+                        end
+
+              summary = colorizer.wrap(summary, color || RSpec.configuration.failure_color)
+              return summary unless prior_detail_formatter
+              "#{prior_detail_formatter.call(example, colorizer, indentation)}\n#{indentation}#{summary}"
+            end
+          end
+
+          def sub_failure_list_formatter(exception, message_color)
+            lambda do |failure_number, colorizer, indentation|
+              exception.all_exceptions.each_with_index.map do |failure, index|
+                options = with_multiple_error_options_as_needed(
+                  failure,
+                  :description_formatter   => :failure_slash_error_line.to_proc,
+                  :indentation             => indentation.length,
+                  :message_color           => message_color || RSpec.configuration.failure_color,
+                  :skip_shared_group_trace => true
+                )
+
+                failure = failure.dup
+                failure.set_backtrace(failure.backtrace[0..-exception.backtrace.size])
+
+                presenter = ExceptionPresenter.new(failure, @example, options)
+                presenter.fully_formatted("#{failure_number}.#{index + 1}", colorizer)
+              end.join
+            end
+          end
+
+          # @private
+          # Used to prevent a confusing backtrace from showing up from the `aggregate_failures`
+          # block declared for `:aggregate_failures` metadata.
+          module EmptyBacktraceFormatter
+            def self.format_backtrace(*)
+              []
+            end
+          end
+        end
+
+        # @private
+        PENDING_DETAIL_FORMATTER = Proc.new do |example, colorizer|
+          colorizer.wrap("# #{example.execution_result.pending_message}", :detail)
+        end
       end
     end
   end
