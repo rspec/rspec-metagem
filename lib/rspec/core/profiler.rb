@@ -1,17 +1,6 @@
 module RSpec
   module Core
     # @private
-    class NoProfiler
-      def self.notifications
-        []
-      end
-
-      def self.example_groups
-        {}
-      end
-    end
-
-    # @private
     class Profiler
       NOTIFICATIONS = [:example_group_started, :example_group_finished, :example_started]
 
@@ -20,10 +9,6 @@ module RSpec
       end
 
       attr_reader :example_groups
-
-      def notifications
-        NOTIFICATIONS
-      end
 
       def example_group_started(notification)
         @example_groups[notification.group][:start] = Time.now

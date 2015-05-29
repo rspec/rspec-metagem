@@ -18,7 +18,8 @@ module RSpec::Core
       @failed_examples = []
       @pending_examples = []
       @duration = @start = @load_time = nil
-      register_listener @configuration.profiler, *@configuration.profiler.notifications
+      @profiler = Profiler.new
+      register_listener @profiler, *Profiler::NOTIFICATIONS
     end
 
     # @private
@@ -151,7 +152,7 @@ module RSpec::Core
         unless mute_profile_output?
           notify :dump_profile, Notifications::ProfileNotification.new(@duration, @examples,
                                                                        @configuration.profile_examples,
-                                                                       @configuration.profiler)
+                                                                       @profiler)
         end
         notify :dump_summary, Notifications::SummaryNotification.new(@duration, @examples, @failed_examples,
                                                                      @pending_examples, @load_time)

@@ -1,13 +1,5 @@
 require 'rspec/core/profiler'
 
-RSpec.describe 'RSpec::Core::NoProfiler' do
-  let(:no_profiler) { RSpec::Core::NoProfiler }
-
-  it 'has an empty hash of example_groups' do
-    expect(no_profiler.example_groups).to be_empty.and be_a Hash
-  end
-end
-
 RSpec.describe 'RSpec::Core::Profiler' do
   let(:profiler) { RSpec::Core::Profiler.new }
 
