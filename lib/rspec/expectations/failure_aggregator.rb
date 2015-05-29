@@ -42,11 +42,29 @@ module RSpec
       # This method is defined to satisfy the callable interface
       # expected by `RSpec::Support.with_failure_notifier`.
       def call(failure)
-        failure.set_backtrace(caller) unless failure.backtrace
+        assign_backtrace(failure) unless failure.backtrace
         failures << failure
       end
 
     private
+
+      if RSpec::Support::Ruby.jruby?
+        # On JRuby, `caller` and `raise` produce different backtraces with regards to `.java`
+        # stack frames. It's important that we use `raise` for JRuby to produce a backtrace
+        # that has a continuous common section with the raised `MultipleExpectationsNotMetError`,
+        # so that rspec-core's truncation logic can work properly on it to list the backtrace
+        # relative to the `aggregate_failures` block.
+        def assign_backtrace(failure)
+          raise failure
+        rescue failure.class => e
+          failure.set_backtrace(e.backtrace)
+        end
+      else
+        # Using `caller` performs better (and is simpler) than `raise` on most Rubies.
+        def assign_backtrace(failure)
+          failure.set_backtrace(caller)
+        end
+      end
 
       def initialize(block_label, metadata)
         @block_label = block_label

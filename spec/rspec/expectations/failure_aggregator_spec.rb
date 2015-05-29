@@ -47,6 +47,32 @@ module RSpec::Expectations
       end
     end
 
+    def common_contiguous_frame_percent(failure, aggregate)
+      failure_frames = failure.backtrace.reverse
+      aggregate_frames = aggregate.backtrace.reverse
+
+      first_differing_index = failure_frames.zip(aggregate_frames).index { |f, a| f != a }
+      100 * (first_differing_index / failure_frames.count.to_f)
+    end
+
+    it 'ensures the sub-failure backtraces are in a form that overlaps with the aggregated failure backtrace' do
+      # On JRuby, `caller` and `raise` backtraces can differ significantly --
+      # I've seen one include java frames but not the other -- and as a result,
+      # the backtrace truncation rspec-core does (based on the common part) fails
+      # and produces undesirable output. This spec is a guard against that.
+
+      expect {
+        aggregate_failures do
+          expect(1).to be_even
+          expect(2).to be_odd
+        end
+      }.to raise_error do |error|
+        failure_1, failure_2 = error.failures
+        expect(common_contiguous_frame_percent(failure_1, error)).to be > 70
+        expect(common_contiguous_frame_percent(failure_2, error)).to be > 70
+      end
+    end
+
     def notify_error_with(backtrace)
       exception = Exception.new
       exception.set_backtrace backtrace
