@@ -228,6 +228,8 @@ module RSpec
           end
 
           def sub_failure_list_formatter(exception, message_color)
+            common_backtrace_truncater = CommonBacktraceTruncater.new(exception)
+
             lambda do |failure_number, colorizer, indentation|
               exception.all_exceptions.each_with_index.map do |failure, index|
                 options = with_multiple_error_options_as_needed(
@@ -238,9 +240,7 @@ module RSpec
                   :skip_shared_group_trace => true
                 )
 
-                failure = failure.dup
-                failure.set_backtrace(failure.backtrace[0..-exception.backtrace.size])
-
+                failure   = common_backtrace_truncater.with_truncated_backtrace(failure)
                 presenter = ExceptionPresenter.new(failure, @example, options)
                 presenter.fully_formatted("#{failure_number}.#{index + 1}", colorizer)
               end.join
@@ -253,6 +253,29 @@ module RSpec
           module EmptyBacktraceFormatter
             def self.format_backtrace(*)
               []
+            end
+          end
+
+          # @private
+          class CommonBacktraceTruncater
+            def initialize(parent)
+              @parent = parent
+            end
+
+            def with_truncated_backtrace(child)
+              child_bt  = child.backtrace
+              parent_bt = @parent.backtrace
+              return child if child_bt.nil? || child_bt.empty? || parent_bt.nil?
+
+              index_before_first_common_frame = -1.downto(-child_bt.size).find do |index|
+                parent_bt[index] != child_bt[index]
+              end
+
+              return child if index_before_first_common_frame == -1
+
+              child = child.dup
+              child.set_backtrace(child_bt[0..index_before_first_common_frame])
+              child
             end
           end
         end
