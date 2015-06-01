@@ -30,9 +30,9 @@ RSpec.describe 'RSpec::Core::Profiler' do
       it 'records example groups start time and description via id' do
         expect {
           profiler.example_group_started group_notification group
-        }.to change { profiler.example_groups[group] }.to include(
-          :start => now, :description => description
-        )
+        }.to change { profiler.example_groups[group] }.
+          from(a_hash_excluding(:start, :description)).
+          to(a_hash_including(:start => now, :description => description))
       end
     end
 
@@ -45,9 +45,9 @@ RSpec.describe 'RSpec::Core::Profiler' do
       it 'records example groups total time and description via id' do
         expect {
           profiler.example_group_finished group_notification group
-        }.to change { profiler.example_groups[group] }.to include(
-          :total_time => 1.0
-        )
+        }.to change { profiler.example_groups[group] }.
+          from(a_hash_excluding(:total_time)).
+          to(a_hash_including(:total_time => 1.0))
       end
     end
 
