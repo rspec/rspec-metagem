@@ -194,4 +194,116 @@ module RSpec::Core
       end
     end
   end
+
+  RSpec.describe Formatters::ExceptionPresenter::Factory::CommonBacktraceTruncater do
+    def truncate(parent, child)
+      described_class.new(parent).with_truncated_backtrace(child)
+    end
+
+    def exception_with(backtrace)
+      exception = Exception.new
+      exception.set_backtrace(backtrace)
+      exception
+    end
+
+    it 'returns an exception with the common part truncated' do
+      parent = exception_with %w[ foo.rb:1 bar.rb:2 car.rb:7 ]
+      child  = exception_with %w[ file_1.rb:3 file_1.rb:9 foo.rb:1 bar.rb:2 car.rb:7 ]
+
+      truncated = truncate(parent, child)
+
+      expect(truncated.backtrace).to eq %w[ file_1.rb:3 file_1.rb:9 ]
+    end
+
+    it 'ignores excess lines in the top of the parent trace that the child does not have' do
+      parent = exception_with %w[ foo.rb:1 foo.rb:2 foo.rb:3 bar.rb:2 car.rb:7 ]
+      child  = exception_with %w[ file_1.rb:3 file_1.rb:9 bar.rb:2 car.rb:7 ]
+
+      truncated = truncate(parent, child)
+
+      expect(truncated.backtrace).to eq %w[ file_1.rb:3 file_1.rb:9 ]
+    end
+
+    it 'does not truncate anything if the parent has excess lines at the bottom of the trace' do
+      parent = exception_with %w[ foo.rb:1 bar.rb:2 car.rb:7 bazz.rb:9 ]
+      child  = exception_with %w[ file_1.rb:3 file_1.rb:9 foo.rb:1 bar.rb:2 car.rb:7 ]
+
+      truncated = truncate(parent, child)
+
+      expect(truncated.backtrace).to eq %w[ file_1.rb:3 file_1.rb:9 foo.rb:1 bar.rb:2 car.rb:7 ]
+    end
+
+    it 'does not mutate the provided exception' do
+      parent = exception_with %w[ foo.rb:1 bar.rb:2 car.rb:7 ]
+      child  = exception_with %w[ file_1.rb:3 file_1.rb:9 foo.rb:1 bar.rb:2 car.rb:7 ]
+
+      expect { truncate(parent, child) }.not_to change(child, :backtrace)
+    end
+
+    it 'returns an exception with all the same attributes (except backtrace) as the provided one' do
+      parent = exception_with %w[ foo.rb:1 bar.rb:2 car.rb:7 ]
+
+      my_custom_exception_class = Class.new(StandardError) do
+        attr_accessor :foo, :bar
+      end
+
+      child = my_custom_exception_class.new("Some Message")
+      child.foo = 13
+      child.bar = 20
+      child.set_backtrace(%w[ foo.rb:1 ])
+
+      truncated = truncate(parent, child)
+
+      expect(truncated).to have_attributes(
+        :message => "Some Message",
+        :foo => 13,
+        :bar => 20
+      )
+    end
+
+    it 'handles child exceptions that have a blank array for the backtrace' do
+      parent = exception_with %w[ foo.rb:1 bar.rb:2 car.rb:7 ]
+      child  = exception_with %w[ ]
+
+      truncated = truncate(parent, child)
+
+      expect(truncated.backtrace).to eq %w[ ]
+    end
+
+    it 'handles child exceptions that have `nil` for the backtrace' do
+      parent = exception_with %w[ foo.rb:1 bar.rb:2 car.rb:7 ]
+      child  = Exception.new
+
+      truncated = truncate(parent, child)
+
+      expect(truncated.backtrace).to be_nil
+    end
+
+    it 'handles parent exceptions that have a blank array for the backtrace' do
+      parent = exception_with %w[ ]
+      child  = exception_with %w[ foo.rb:1 ]
+
+      truncated = truncate(parent, child)
+
+      expect(truncated.backtrace).to eq %w[ foo.rb:1 ]
+    end
+
+    it 'handles parent exceptions that have `nil` for the backtrace' do
+      parent = Exception.new
+      child  = exception_with %w[ foo.rb:1 ]
+
+      truncated = truncate(parent, child)
+
+      expect(truncated.backtrace).to eq %w[ foo.rb:1 ]
+    end
+
+    it 'returns the original exception object (not a dup) when there is no need to update the backtrace' do
+      parent = exception_with %w[ bar.rb:1 ]
+      child  = exception_with %w[ foo.rb:1 ]
+
+      truncated = truncate(parent, child)
+
+      expect(truncated).to be child
+    end
+  end
 end
