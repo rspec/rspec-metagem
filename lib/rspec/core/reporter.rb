@@ -18,8 +18,6 @@ module RSpec::Core
       @failed_examples = []
       @pending_examples = []
       @duration = @start = @load_time = nil
-      @profiler = Profiler.new
-      register_listener @profiler, *Profiler::NOTIFICATIONS
     end
 
     # @private
@@ -30,6 +28,13 @@ module RSpec::Core
       @examples = []
       @failed_examples = []
       @pending_examples = []
+      @profiler = Profiler.new if defined?(@profiler)
+    end
+
+    # @private
+    def setup_profiler
+      @profiler = Profiler.new
+      register_listener @profiler, *Profiler::NOTIFICATIONS
     end
 
     # Registers a listener to a list of notifications. The reporter will send

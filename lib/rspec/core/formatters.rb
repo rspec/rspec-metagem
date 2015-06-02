@@ -126,7 +126,11 @@ module RSpec::Core::Formatters
         add FallbackMessageFormatter, output_stream
       end
 
-      return unless RSpec.configuration.profile_examples? && !existing_formatter_implements?(:dump_profile)
+      return unless RSpec.configuration.profile_examples?
+
+      @reporter.setup_profiler
+
+      return if existing_formatter_implements?(:dump_profile)
 
       add RSpec::Core::Formatters::ProfileFormatter, output_stream
     end
