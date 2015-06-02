@@ -31,7 +31,7 @@ module CommonHelperMethods
   # put a literal string for what we expect because it varies.
   if RUBY_VERSION.to_f == 1.8
     def hash_inspect(hash)
-      /\{(#{hash.map { |key,value| "#{key.inspect} => #{value.inspect}.*" }.join "|" }){#{hash.size}}\}/
+      "\\{(#{hash.map { |key,value| "#{key.inspect} => #{value.inspect}.*" }.join "|"}){#{hash.size}}\\}"
     end
   else
     def hash_inspect(hash)
