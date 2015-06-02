@@ -97,6 +97,8 @@ module RSpec
             [Time.utc(2014, 1, 1), "eq 2014-01-01 00:00:00.#{expected_seconds} +0000"],
         ].each do |expected, expected_description|
           context "with #{expected.inspect}" do
+            around { |ex| with_env_vars('TZ' => 'UTC', &ex) } if expected.is_a?(Time)
+
             it "is \"#{expected_description}\"" do
               expect(eq(expected).description).to eq expected_description
             end
