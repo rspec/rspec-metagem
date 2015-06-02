@@ -68,6 +68,7 @@ RSpec::Support.require_rspec_support "directory_maker"
 module RSpec::Core::Formatters
   autoload :DocumentationFormatter, 'rspec/core/formatters/documentation_formatter'
   autoload :HtmlFormatter,          'rspec/core/formatters/html_formatter'
+  autoload :MessageFormatter,       'rspec/core/formatters/message_formatter'
   autoload :ProgressFormatter,      'rspec/core/formatters/progress_formatter'
   autoload :ProfileFormatter,       'rspec/core/formatters/profile_formatter'
   autoload :JsonFormatter,          'rspec/core/formatters/json_formatter'
@@ -119,6 +120,10 @@ module RSpec::Core::Formatters
 
       unless @formatters.any? { |formatter| DeprecationFormatter === formatter }
         add DeprecationFormatter, deprecation_stream, output_stream
+      end
+
+      unless existing_formatter_implements?(:message)
+        add MessageFormatter, output_stream
       end
 
       return unless RSpec.configuration.profile_examples? && !existing_formatter_implements?(:dump_profile)
