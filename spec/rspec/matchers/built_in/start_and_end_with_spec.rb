@@ -116,7 +116,7 @@ RSpec.describe "expect(...).to start_with" do
       expected = { :a => 'b', :b => 'b' }
       expect{
         expect(actual).to start_with(expected)
-      }.to fail_with("expected #{actual.inspect} to start with #{expected.inspect}, but it does not have ordered elements")
+      }.to fail_with(/\Aexpected #{hash_inspect(actual).gsub(" => ", "=>")} to start with #{hash_inspect(expected).gsub(" => ", "=>")}, but it does not have ordered elements\z/)
     end
   end
 
@@ -324,7 +324,7 @@ RSpec.describe "expect(...).to end_with" do
       expected = { :a => 'b', :b => 'b' }
       expect{
         expect(actual).to end_with(expected)
-      }.to fail_with("expected #{actual.inspect} to end with #{expected.inspect}, but it does not have ordered elements")
+      }.to fail_with(/\Aexpected #{hash_inspect(actual).gsub(" => ", "=>")} to end with #{hash_inspect(expected).gsub(" => ", "=>")}, but it does not have ordered elements\z/)
     end
   end
 

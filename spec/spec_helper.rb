@@ -9,7 +9,18 @@ Dir['./spec/support/**/*'].each do |f|
   require f.sub(%r{\./spec/}, '')
 end
 
-module FormattingSupport
+module CommonHelperMethods
+  def with_env_vars(vars)
+    original = ENV.to_hash
+    vars.each { |k, v| ENV[k] = v }
+
+    begin
+      yield
+    ensure
+      ENV.replace(original)
+    end
+  end
+
   def dedent(string)
     string.gsub(/^\s+\|/, '').chomp
   end
@@ -20,7 +31,7 @@ module FormattingSupport
   # put a literal string for what we expect because it varies.
   if RUBY_VERSION.to_f == 1.8
     def hash_inspect(hash)
-      /\{(#{hash.map { |key,value| "#{key.inspect} => #{value.inspect}.*" }.join "|" }){#{hash.size}}\}/
+      "\\{(#{hash.map { |key,value| "#{key.inspect} => #{value.inspect}.*" }.join "|"}){#{hash.size}}\\}"
     end
   else
     def hash_inspect(hash)
@@ -34,7 +45,7 @@ RSpec::configure do |config|
   config.color = true
   config.order = :random
 
-  config.include FormattingSupport
+  config.include CommonHelperMethods
   config.include RSpec::Support::InSubProcess
 
   config.expect_with :rspec do |expectations|
