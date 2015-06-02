@@ -163,8 +163,11 @@ module RSpec::Core::Formatters
         context "without an existing profile formatter" do
           it "will add the profile formatter" do
             allow(reporter).to receive(:registered_listeners).with(:dump_profile) { [] }
-            setup_default
-            expect(loader.formatters.last).to be_a ::RSpec::Core::Formatters::ProfileFormatter
+            expect {
+              setup_default
+            }.to change { loader.formatters }.
+              from( excluding an_instance_of ::RSpec::Core::Formatters::ProfileFormatter ).
+              to( including an_instance_of ::RSpec::Core::Formatters::ProfileFormatter )
           end
         end
 
