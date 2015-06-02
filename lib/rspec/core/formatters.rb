@@ -66,13 +66,13 @@ RSpec::Support.require_rspec_support "directory_maker"
 # @see RSpec::Core::Formatters::BaseTextFormatter
 # @see RSpec::Core::Reporter
 module RSpec::Core::Formatters
-  autoload :DocumentationFormatter, 'rspec/core/formatters/documentation_formatter'
-  autoload :HtmlFormatter,          'rspec/core/formatters/html_formatter'
-  autoload :MessageFormatter,       'rspec/core/formatters/message_formatter'
-  autoload :ProgressFormatter,      'rspec/core/formatters/progress_formatter'
-  autoload :ProfileFormatter,       'rspec/core/formatters/profile_formatter'
-  autoload :JsonFormatter,          'rspec/core/formatters/json_formatter'
-  autoload :BisectFormatter,        'rspec/core/formatters/bisect_formatter'
+  autoload :DocumentationFormatter,   'rspec/core/formatters/documentation_formatter'
+  autoload :HtmlFormatter,            'rspec/core/formatters/html_formatter'
+  autoload :FallbackMessageFormatter, 'rspec/core/formatters/fallback_message_formatter'
+  autoload :ProgressFormatter,        'rspec/core/formatters/progress_formatter'
+  autoload :ProfileFormatter,         'rspec/core/formatters/profile_formatter'
+  autoload :JsonFormatter,            'rspec/core/formatters/json_formatter'
+  autoload :BisectFormatter,          'rspec/core/formatters/bisect_formatter'
 
   # Register the formatter class
   # @param formatter_class [Class] formatter class to register
@@ -123,7 +123,7 @@ module RSpec::Core::Formatters
       end
 
       unless existing_formatter_implements?(:message)
-        add MessageFormatter, output_stream
+        add FallbackMessageFormatter, output_stream
       end
 
       return unless RSpec.configuration.profile_examples? && !existing_formatter_implements?(:dump_profile)

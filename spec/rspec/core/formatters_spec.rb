@@ -138,7 +138,7 @@ module RSpec::Core::Formatters
           allow(reporter).to receive(:registered_listeners).with(:message) { [:json] }
           setup_default
           expect(loader.formatters).to exclude(
-            an_instance_of ::RSpec::Core::Formatters::MessageFormatter
+            an_instance_of ::RSpec::Core::Formatters::FallbackMessageFormatter
           )
         end
       end
@@ -149,8 +149,8 @@ module RSpec::Core::Formatters
           expect {
             setup_default
           }.to change { loader.formatters }.
-            from( excluding an_instance_of ::RSpec::Core::Formatters::MessageFormatter ).
-            to( including an_instance_of ::RSpec::Core::Formatters::MessageFormatter )
+            from( excluding an_instance_of ::RSpec::Core::Formatters::FallbackMessageFormatter ).
+            to( including an_instance_of ::RSpec::Core::Formatters::FallbackMessageFormatter )
         end
       end
 

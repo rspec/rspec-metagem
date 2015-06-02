@@ -4,7 +4,7 @@ module RSpec
       # @api private
       # Formatter for providing message output as a fallback when no other
       # profiler implements #message
-      class MessageFormatter
+      class FallbackMessageFormatter
         Formatters.register self, :message
 
         def initialize(output)
