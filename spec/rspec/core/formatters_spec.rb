@@ -130,28 +130,55 @@ module RSpec::Core::Formatters
       end
     end
 
-    describe "#setup_default", "with profiling enabled" do
+    describe "#setup_default" do
       let(:setup_default) { loader.setup_default output, output }
 
-      before do
-        allow(RSpec.configuration).to receive(:profile_examples?) { true }
-      end
-
-      context "without an existing profile formatter" do
-        it "will add the profile formatter" do
-          allow(reporter).to receive(:registered_listeners).with(:dump_profile) { [] }
+      context "with a formatter that implements #message" do
+        it 'doesnt add a fallback formatter' do
+          allow(reporter).to receive(:registered_listeners).with(:message) { [:json] }
           setup_default
-          expect(loader.formatters.last).to be_a ::RSpec::Core::Formatters::ProfileFormatter
+          expect(loader.formatters).to exclude(
+            an_instance_of ::RSpec::Core::Formatters::FallbackMessageFormatter
+          )
         end
       end
 
-      context "when a formatter that implement #dump_profile is added" do
-        it "wont add the profile formatter" do
-          allow(reporter).to receive(:registered_listeners).with(:dump_profile) { [:json] }
-          setup_default
-          expect(
-            loader.formatters.map(&:class)
-          ).to_not include ::RSpec::Core::Formatters::ProfileFormatter
+      context "without a formatter that implements #message" do
+        it 'adds a fallback for message output' do
+          allow(reporter).to receive(:registered_listeners).with(:message) { [] }
+          expect {
+            setup_default
+          }.to change { loader.formatters }.
+            from( excluding an_instance_of ::RSpec::Core::Formatters::FallbackMessageFormatter ).
+            to( including an_instance_of ::RSpec::Core::Formatters::FallbackMessageFormatter )
+        end
+      end
+
+      context "with profiling enabled" do
+        before do
+          allow(reporter).to receive(:registered_listeners).with(:message) { [:json] }
+          allow(RSpec.configuration).to receive(:profile_examples?) { true }
+        end
+
+        context "without an existing profile formatter" do
+          it "will add the profile formatter" do
+            allow(reporter).to receive(:registered_listeners).with(:dump_profile) { [] }
+            expect {
+              setup_default
+            }.to change { loader.formatters }.
+              from( excluding an_instance_of ::RSpec::Core::Formatters::ProfileFormatter ).
+              to( including an_instance_of ::RSpec::Core::Formatters::ProfileFormatter )
+          end
+        end
+
+        context "when a formatter that implement #dump_profile is added" do
+          it "wont add the profile formatter" do
+            allow(reporter).to receive(:registered_listeners).with(:dump_profile) { [:json] }
+            setup_default
+            expect(
+              loader.formatters.map(&:class)
+            ).to_not include ::RSpec::Core::Formatters::ProfileFormatter
+          end
         end
       end
     end

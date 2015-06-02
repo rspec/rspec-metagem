@@ -47,6 +47,8 @@ Enhancements:
   `aggregate_failures` feature to allow multiple failures in an example
   and list them all, rather than aborting on the first failure. (Myron
   Marston, #1946)
+* When no formatter implements #message add a fallback to prevent those
+  messages being lost. (Jon Rowe, #1980)
 
 Bug Fixes:
 
