@@ -133,8 +133,8 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
     end
 
     before do
+      setup_profiler
       formatter
-      config.profile_examples = 10
     end
 
     context "with one example group" do
@@ -183,7 +183,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
       end
 
       it "provides information" do
-        expect(formatter.output_hash[:profile][:groups].first.keys).to match_array([:total_time, :count, :description, :average, :location])
+        expect(formatter.output_hash[:profile][:groups].first.keys).to match_array([:total_time, :count, :description, :average, :location, :start])
       end
 
       it "ranks the example groups by average time" do
