@@ -41,7 +41,11 @@ module RSpec
 
       # This method is defined to satisfy the callable interface
       # expected by `RSpec::Support.with_failure_notifier`.
-      def call(failure, _options)
+      def call(failure, options)
+        source_id = options[:source_id]
+        return if source_id && @seen_source_ids.key?(source_id)
+
+        @seen_source_ids[source_id] = true
         assign_backtrace(failure) unless failure.backtrace
         failures << failure
       end
@@ -67,8 +71,9 @@ module RSpec
       end
 
       def initialize(block_label, metadata)
-        @block_label = block_label
-        @metadata    = metadata
+        @block_label     = block_label
+        @metadata        = metadata
+        @seen_source_ids = {} # don't want to load stdlib set
       end
 
       def notify_aggregated_failures
