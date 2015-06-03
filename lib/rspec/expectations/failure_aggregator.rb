@@ -41,7 +41,7 @@ module RSpec
 
       # This method is defined to satisfy the callable interface
       # expected by `RSpec::Support.with_failure_notifier`.
-      def call(failure)
+      def call(failure, _options)
         assign_backtrace(failure) unless failure.backtrace
         failures << failure
       end
