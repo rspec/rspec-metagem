@@ -127,6 +127,24 @@ module RSpec::Expectations
       }.to fail_with("expected `2.odd?` to return true, got false")
     end
 
+    context "when multiple exceptions are notified with the same `:source_id`" do
+      it 'keeps only the first' do
+        expect {
+          aggregate_failures do
+            RSpec::Support.notify_failure(StandardError.new("e1"), :source_id => "1")
+            RSpec::Support.notify_failure(StandardError.new("e2"), :source_id => "2")
+            RSpec::Support.notify_failure(StandardError.new("e3"), :source_id => "1")
+            RSpec::Support.notify_failure(StandardError.new("e4"), :source_id => "1")
+          end
+        }.to raise_error do |e|
+          expect(e.failures).to match [
+            an_object_having_attributes(:message => "e1"),
+            an_object_having_attributes(:message => "e2")
+          ]
+        end
+      end
+    end
+
     context "when an error other than an expectation failure occurs" do
       def expect_error_included_in_aggregated_failure(error)
         expect {
