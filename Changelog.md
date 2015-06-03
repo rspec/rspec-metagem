@@ -49,6 +49,8 @@ Enhancements:
   Marston, #1946)
 * When no formatter implements #message add a fallback to prevent those
   messages being lost. (Jon Rowe, #1980)
+* Profiling examples now takes into account time spent in `before(:context)`
+  hooks. (Denis Laliberté, Jon Rowe, #1971)
 
 Bug Fixes:
 
