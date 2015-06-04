@@ -203,7 +203,7 @@ module RSpec
 
             options[:description_formatter] &&= Proc.new {}
 
-            return options unless exception.aggregation_metadata[:from_around_hook]
+            return options unless exception.aggregation_metadata[:hide_backtrace]
             options[:backtrace_formatter] = EmptyBacktraceFormatter
             options
           end
@@ -215,9 +215,13 @@ module RSpec
 
           def multiple_failure_sumarizer(exception, prior_detail_formatter, color)
             lambda do |example, colorizer, indentation|
-              summary = if exception.aggregation_metadata[:from_around_hook]
+              summary = if exception.aggregation_metadata[:hide_backtrace]
+                          # Since the backtrace is hidden, the subfailures will come
+                          # immeidately after this, and using `:` will read well.
                           "Got #{exception.exception_count_description}:"
                         else
+                          # The backtrace comes after this, so using a `:` doesn't make sense
+                          # since the failures may be many lines below.
                           "#{exception.summary}."
                         end
 

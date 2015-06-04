@@ -1736,7 +1736,7 @@ module RSpec
 
       def define_built_in_hooks
         around(:example, :aggregate_failures => true) do |ex|
-          aggregate_failures(nil, :from_around_hook => true, &ex)
+          aggregate_failures(nil, :hide_backtrace => true, &ex)
         end
       end
 
