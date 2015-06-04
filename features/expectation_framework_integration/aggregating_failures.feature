@@ -13,7 +13,7 @@ Feature: Aggregating Failures
       Response = Struct.new(:status, :headers, :body)
 
       class Client
-        def self.make_request
+        def self.make_request(url='/')
           Response.new(404, { "Content-Type" => "text/plain" }, "Not Found")
         end
       end
@@ -25,6 +25,17 @@ Feature: Aggregating Failures
       require 'client'
 
       RSpec.describe Client do
+        after do
+          # this should be appended to failure list
+          expect(false).to be(true), "after hook failure"
+        end
+
+        around do |ex|
+          ex.run
+          # this should also be appended to failure list
+          expect(false).to be(true), "around hook failure"
+        end
+
         it "returns a successful response" do
           response = Client.make_request
 
@@ -42,32 +53,44 @@ Feature: Aggregating Failures
       Failures:
 
         1) Client returns a successful response
-           Got 3 failures from failure aggregation block "testing reponse".
-           # ./spec/use_block_form_spec.rb:7
+           Got 3 failures:
 
-           1.1) Failure/Error: expect(response.status).to eq(200)
+           1.1) Got 3 failures from failure aggregation block "testing reponse".
+                # ./spec/use_block_form_spec.rb:18:in `block (2 levels) in <top (required)>'
+                # ./spec/use_block_form_spec.rb:10:in `block (2 levels) in <top (required)>'
 
-                  expected: 200
-                       got: 404
+                1.1.1) Failure/Error: expect(response.status).to eq(200)
 
-                  (compared using ==)
-                # ./spec/use_block_form_spec.rb:8
+                         expected: 200
+                              got: 404
 
-           1.2) Failure/Error: expect(response.headers).to include("Content-Type" => "application/json")
-                  expected {"Content-Type" => "text/plain"} to include {"Content-Type" => "application/json"}
-                  Diff:
-                  @@ -1,2 +1,2 @@
-                  -[{"Content-Type"=>"application/json"}]
-                  +"Content-Type" => "text/plain",
-                # ./spec/use_block_form_spec.rb:9
+                         (compared using ==)
+                       # ./spec/use_block_form_spec.rb:19:in `block (3 levels) in <top (required)>'
 
-           1.3) Failure/Error: expect(response.body).to eq('{"message":"Success"}')
+                1.1.2) Failure/Error: expect(response.headers).to include("Content-Type" => "application/json")
+                         expected {"Content-Type" => "text/plain"} to include {"Content-Type" => "application/json"}
+                         Diff:
+                         @@ -1,2 +1,2 @@
+                         -[{"Content-Type"=>"application/json"}]
+                         +"Content-Type" => "text/plain",
+                       # ./spec/use_block_form_spec.rb:20:in `block (3 levels) in <top (required)>'
 
-                  expected: "{\"message\":\"Success\"}"
-                       got: "Not Found"
+                1.1.3) Failure/Error: expect(response.body).to eq('{"message":"Success"}')
 
-                  (compared using ==)
-                # ./spec/use_block_form_spec.rb:10
+                         expected: "{\"message\":\"Success\"}"
+                              got: "Not Found"
+
+                         (compared using ==)
+                       # ./spec/use_block_form_spec.rb:21:in `block (3 levels) in <top (required)>'
+
+           1.2) Failure/Error: expect(false).to be(true), "after hook failure"
+                  after hook failure
+                # ./spec/use_block_form_spec.rb:6:in `block (2 levels) in <top (required)>'
+                # ./spec/use_block_form_spec.rb:10:in `block (2 levels) in <top (required)>'
+
+           1.3) Failure/Error: expect(false).to be(true), "around hook failure"
+                  around hook failure
+                # ./spec/use_block_form_spec.rb:12:in `block (2 levels) in <top (required)>'
       """
 
   Scenario: Use `:aggregate_failures` metadata

@@ -306,24 +306,17 @@ module RSpec
       #
       # Used internally to set an exception in an after hook, which
       # captures the exception but doesn't raise it.
-      def set_exception(exception, context=nil)
+      def set_exception(exception)
         if pending? && !(Pending::PendingExampleFixedError === exception)
           execution_result.pending_exception = exception
-        else
-          if @exception
-            # An error has already been set; we don't want to override it,
-            # but we also don't want silence the error, so let's print it.
-            msg = <<-EOS
-
-  An error occurred #{context}
-    #{exception.class}: #{exception.message}
-    occurred at #{exception.backtrace.first}
-
-            EOS
-            RSpec.configuration.reporter.message(msg)
+        elsif @exception
+          unless RSpec::Core::MultipleExceptionError === @exception
+            @exception = RSpec::Core::MultipleExceptionError.new(@exception)
           end
 
-          @exception ||= exception
+          @exception.add exception
+        else
+          @exception = exception
         end
       end
 
@@ -348,10 +341,10 @@ module RSpec
       end
 
       # @private
-      def instance_exec_with_rescue(context, &block)
+      def instance_exec_with_rescue(&block)
         @example_group_instance.instance_exec(self, &block)
       rescue Exception => e
-        set_exception(e, context)
+        set_exception(e)
       end
 
       # @private
@@ -368,7 +361,7 @@ module RSpec
       def with_around_example_hooks
         hooks.run(:around, :example, self) { yield }
       rescue Exception => e
-        set_exception(e, "in an `around(:example)` hook")
+        set_exception(e)
       end
 
       def start(reporter)
@@ -548,7 +541,7 @@ module RSpec
       end
 
       # To ensure we don't silence errors.
-      def set_exception(exception, _context=nil)
+      def set_exception(exception)
         raise exception
       end
     end
