@@ -290,5 +290,72 @@ module RSpec
         end
       end
     end
+
+    # Provides a single exception instance that provides access to
+    # multiple sub-exceptions. This is used in situations where a single
+    # individual spec has multiple exceptions, such as one in the `it` block
+    # and one in an `after` block.
+    class MultipleExceptionError < StandardError
+      # @return [Array<Exception>] The list of failures.
+      attr_reader :failures
+
+      # @return [Array<Exception>] The list of other errors.
+      attr_reader :other_errors
+
+      # @return [Array<Exception>] The list of failures and other exceptions, combined.
+      attr_reader :all_exceptions
+
+      # @return [Hash] Metadata used by RSpec for formatting purposes.
+      attr_reader :aggregation_metadata
+
+      # @return [nil] Provided only for interface compatibility with
+      #   `RSpec::Expectations::MultipleExpectationsNotMetError`.
+      attr_reader :aggregation_block_label
+
+      # @param exceptions [Array<Exception>] The initial list of exceptions.
+      def initialize(*exceptions)
+        super()
+
+        @failures                = []
+        @other_errors            = []
+        @all_exceptions          = []
+        @aggregation_metadata    = { :hide_backtrace => true }
+        @aggregation_block_label = nil
+
+        exceptions.each { |e| add e }
+      end
+
+      # Appends the provided exception to the list.
+      # @param exception [Exception] Exception to append to the list.
+      def add(exception)
+        @all_exceptions << exception
+
+        if exception.class.name =~ /RSpec/
+          @failures << exception
+        else
+          @other_errors << exception
+        end
+      end
+
+      # @return [String] Combines all the exception messages into a single string.
+      # @note RSpec does not actually use this -- instead it formats each exception
+      #   individually.
+      def message
+        all_exceptions.map(&:message).join("\n\n")
+      end
+
+      # @return [String] A summary of the failure, including the block label and a count of failures.
+      def summary
+        "Got #{exception_count_description}"
+      end
+
+      # return [String] A description of the failure/error counts.
+      def exception_count_description
+        failure_count = Formatters::Helpers.pluralize(failures.size, "failure")
+        return failure_count if other_errors.empty?
+        error_count = Formatters::Helpers.pluralize(other_errors.size, "other error")
+        "#{failure_count} and #{error_count}"
+      end
+    end
   end
 end
