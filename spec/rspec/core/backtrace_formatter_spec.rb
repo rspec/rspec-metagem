@@ -132,6 +132,13 @@ module RSpec::Core
         end
       end
 
+      describe "an empty backtrace" do
+        it "does not add the explanatory message about backtrace filtering" do
+          formatter = BacktraceFormatter.new
+          expect(formatter.format_backtrace([])).to eq([])
+        end
+      end
+
       context "when rspec is installed in the current working directory" do
         it "excludes lines from rspec libs by default", :unless => RSpec::Support::OS.windows? do
           backtrace = [
