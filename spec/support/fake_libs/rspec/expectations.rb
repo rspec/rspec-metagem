@@ -1,5 +1,6 @@
 module RSpec
   module Expectations
+    MultipleExpectationsNotMetError = Class.new(Exception)
   end
 
   module Matchers

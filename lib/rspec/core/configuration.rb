@@ -638,6 +638,13 @@ module RSpec
             framework
           when :rspec
             require 'rspec/expectations'
+
+            # Tag this exception class so our exception formatting logic knows
+            # that it satisfies the `MultipleExceptionError` interface.
+            ::RSpec::Expectations::MultipleExpectationsNotMetError.__send__(
+              :include, MultipleExceptionError::InterfaceTag
+            )
+
             ::RSpec::Matchers
           when :test_unit
             require 'rspec/core/test_unit_assertions_adapter'

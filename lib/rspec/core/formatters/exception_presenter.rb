@@ -191,14 +191,14 @@ module RSpec
           end
 
           def with_multiple_error_options_as_needed(exception, options)
-            return options unless multiple_exceptions_not_met_error?(exception)
+            return options unless multiple_exceptions_error?(exception)
 
             options = options.merge(
               :failure_lines          => [],
               :extra_detail_formatter => sub_failure_list_formatter(exception, options[:message_color]),
-              :detail_formatter       => multiple_failure_sumarizer(exception,
-                                                                    options[:detail_formatter],
-                                                                    options[:message_color])
+              :detail_formatter       => multiple_exception_sumarizer(exception,
+                                                                      options[:detail_formatter],
+                                                                      options[:message_color])
             )
 
             options[:description_formatter] &&= Proc.new {}
@@ -208,12 +208,11 @@ module RSpec
             options
           end
 
-          def multiple_exceptions_not_met_error?(exception)
-            return false unless defined?(RSpec::Expectations::MultipleExpectationsNotMetError)
-            RSpec::Expectations::MultipleExpectationsNotMetError === exception
+          def multiple_exceptions_error?(exception)
+            MultipleExceptionError::InterfaceTag === exception
           end
 
-          def multiple_failure_sumarizer(exception, prior_detail_formatter, color)
+          def multiple_exception_sumarizer(exception, prior_detail_formatter, color)
             lambda do |example, colorizer, indentation|
               summary = if exception.aggregation_metadata[:hide_backtrace]
                           # Since the backtrace is hidden, the subfailures will come
@@ -296,6 +295,15 @@ module RSpec
     # individual spec has multiple exceptions, such as one in the `it` block
     # and one in an `after` block.
     class MultipleExceptionError < StandardError
+      # @private
+      # Used so there is a common module in the ancestor chain of this class
+      # and `RSpec::Expectations::MultipleExpectationsNotMetError`, which allows
+      # code to detect exceptions that are instances of either, without first
+      # checking to see if rspec-expectations is loaded.
+      InterfaceTag = Module.new
+
+      include InterfaceTag
+
       # @return [Array<Exception>] The list of failures.
       attr_reader :failures
 
