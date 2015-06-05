@@ -300,7 +300,20 @@ module RSpec
       # and `RSpec::Expectations::MultipleExpectationsNotMetError`, which allows
       # code to detect exceptions that are instances of either, without first
       # checking to see if rspec-expectations is loaded.
-      InterfaceTag = Module.new
+      module InterfaceTag
+        # Appends the provided exception to the list.
+        # @param exception [Exception] Exception to append to the list.
+        # @private
+        def add(exception)
+          all_exceptions << exception
+
+          if exception.class.name =~ /RSpec/
+            failures << exception
+          else
+            other_errors << exception
+          end
+        end
+      end
 
       include InterfaceTag
 
@@ -331,18 +344,6 @@ module RSpec
         @aggregation_block_label = nil
 
         exceptions.each { |e| add e }
-      end
-
-      # Appends the provided exception to the list.
-      # @param exception [Exception] Exception to append to the list.
-      def add(exception)
-        @all_exceptions << exception
-
-        if exception.class.name =~ /RSpec/
-          @failures << exception
-        else
-          @other_errors << exception
-        end
       end
 
       # @return [String] Combines all the exception messages into a single string.

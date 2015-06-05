@@ -307,16 +307,7 @@ module RSpec::Core
     end
   end
 
-  RSpec.describe MultipleExceptionError do
-    it 'supports the same interface as `RSpec::Expectations::MultipleExpectationsNotMetError`' do
-      skip "Skipping to allow an rspec-expectations PR to add a new method and remain green" if ENV['NEW_MUTLI_EXCEPTION_METHOD']
-
-      aggregate_failures { } # force autoload
-
-      interface = RSpec::Expectations::MultipleExpectationsNotMetError.instance_methods - Exception.instance_methods
-      expect(MultipleExceptionError.new).to respond_to(*interface)
-    end
-
+  RSpec.shared_examples_for "a class satisfying the common multiple exception error interface" do
     def new_failure(*a)
       RSpec::Expectations::ExpectationNotMetError.new(*a)
     end
@@ -326,7 +317,7 @@ module RSpec::Core
     end
 
     it 'allows you to keep track of failures and other errors in order' do
-      mee = MultipleExceptionError.new
+      mee = new_multiple_exception_error
 
       f1 = new_failure
       e1 = new_error
@@ -340,10 +331,41 @@ module RSpec::Core
     end
 
     it 'allows you to add exceptions of an anonymous class' do
-      mee = MultipleExceptionError.new
+      mee = new_multiple_exception_error
+
       expect {
         mee.add(Class.new(StandardError).new)
       }.to change(mee.other_errors, :count).by 1
+    end
+
+    it 'is tagged with a common module so it is clear it has the interface for multiple exceptions' do
+      expect(MultipleExceptionError::InterfaceTag).to be === new_multiple_exception_error
+    end
+  end
+
+  RSpec.describe RSpec::Expectations::ExpectationNotMetError do
+    include_examples "a class satisfying the common multiple exception error interface" do
+      def new_multiple_exception_error
+        failure_aggregator = RSpec::Expectations::FailureAggregator.new(nil, {})
+        RSpec::Expectations::MultipleExpectationsNotMetError.new(failure_aggregator)
+      end
+    end
+  end
+
+  RSpec.describe MultipleExceptionError do
+    include_examples "a class satisfying the common multiple exception error interface" do
+      def new_multiple_exception_error
+        MultipleExceptionError.new
+      end
+    end
+
+    it 'supports the same interface as `RSpec::Expectations::MultipleExpectationsNotMetError`' do
+      skip "Skipping to allow an rspec-expectations PR to add a new method and remain green" if ENV['NEW_MUTLI_EXCEPTION_METHOD']
+
+      aggregate_failures { } # force autoload
+
+      interface = RSpec::Expectations::MultipleExpectationsNotMetError.instance_methods - Exception.instance_methods
+      expect(MultipleExceptionError.new).to respond_to(*interface)
     end
 
     it 'allows you to instantiate it with an initial list of exceptions' do
