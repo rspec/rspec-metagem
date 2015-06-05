@@ -51,6 +51,8 @@ Enhancements:
   messages being lost. (Jon Rowe, #1980)
 * Profiling examples now takes into account time spent in `before(:context)`
   hooks. (Denis Laliberté, Jon Rowe, #1971)
+* Improve failure output when an example has multiple exceptions, such
+  as one from an `it` block and one from an `after` block. (Myron Marston, #1985)
 
 Bug Fixes:
 
