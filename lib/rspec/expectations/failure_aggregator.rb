@@ -105,9 +105,7 @@ module RSpec
       end
 
       # @return [Array<Exception>] The list of expectation failures and other exceptions, combined.
-      def all_exceptions
-        failures + other_errors
-      end
+      attr_reader :all_exceptions
 
       # @return [String] The user-assigned label for the aggregation block.
       def aggregation_block_label
@@ -137,6 +135,7 @@ module RSpec
 
       def initialize(failure_aggregator)
         @failure_aggregator = failure_aggregator
+        @all_exceptions = failures + other_errors
       end
 
       def block_description
