@@ -305,6 +305,16 @@ module RSpec
         # @param exception [Exception] Exception to append to the list.
         # @private
         def add(exception)
+          # `PendingExampleFixedError` can be assigned to an example that initially has no
+          # failures, but when the `aggregate_failures` around hook completes, it notifies of
+          # a failure. If we do not ignore `PendingExampleFixedError` it would be surfaced to
+          # the user as part of a multiple exception error, which is undesirable. While it's
+          # pretty weird we handle this here, it's the best solution I've been able to come
+          # up with, and `PendingExampleFixedError` always represents the _lack_ of any exception
+          # so clearly when we are transitioning to a `MultipleExceptionError`, it makes sense to
+          # ignore it.
+          return if Pending::PendingExampleFixedError === exception
+
           all_exceptions << exception
 
           if exception.class.name =~ /RSpec/

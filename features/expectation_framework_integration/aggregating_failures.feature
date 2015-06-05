@@ -300,3 +300,53 @@ Feature: Aggregating Failures
                 # ./spec/mock_expectation_failure_spec.rb:6
 
       """
+
+  Scenario: Pending integrates properly with aggregated failures
+    Given a file named "spec/pending_spec.rb" with:
+      """ruby
+      require 'client'
+
+      RSpec.describe Client do
+        it "returns a successful response", :aggregate_failures do
+          pending "Not yet ready"
+          response = Client.make_request
+
+          expect(response.status).to eq(200)
+          expect(response.headers).to include("Content-Type" => "application/json")
+          expect(response.body).to eq('{"message":"Success"}')
+        end
+      end
+      """
+    When I run `rspec spec/pending_spec.rb`
+    Then it should pass and list all the pending examples:
+      """
+      Pending: (Failures listed here are expected and do not affect your suite's status)
+
+        1) Client returns a successful response
+           # Not yet ready
+           Got 3 failures:
+
+           1.1) Failure/Error: expect(response.status).to eq(200)
+
+                  expected: 200
+                       got: 404
+
+                  (compared using ==)
+                # ./spec/pending_spec.rb:8:in `block (2 levels) in <top (required)>'
+
+           1.2) Failure/Error: expect(response.headers).to include("Content-Type" => "application/json")
+                  expected {"Content-Type" => "text/plain"} to include {"Content-Type" => "application/json"}
+                  Diff:
+                  @@ -1,2 +1,2 @@
+                  -[{"Content-Type"=>"application/json"}]
+                  +"Content-Type" => "text/plain",
+                # ./spec/pending_spec.rb:9:in `block (2 levels) in <top (required)>'
+
+           1.3) Failure/Error: expect(response.body).to eq('{"message":"Success"}')
+
+                  expected: "{\"message\":\"Success\"}"
+                       got: "Not Found"
+
+                  (compared using ==)
+                # ./spec/pending_spec.rb:10:in `block (2 levels) in <top (required)>'
+      """

@@ -58,8 +58,6 @@ RSpec.describe "Aggregating failures" do
 
     context "via `:aggregate_failures` metadata" do
       it 'applies `aggregate_failures` to examples or groups tagged with `:aggregate_failures`' do
-        pending "Not yet working with pending examples" if example_meta.key?(:pending)
-
         ex = nil
 
         RSpec.describe "Aggregate failures", :aggregate_failures do
@@ -69,8 +67,10 @@ RSpec.describe "Aggregating failures" do
           end
         end.run
 
+        expect(ex.execution_result).not_to be_pending_fixed
+        expect(ex.execution_result.status).to eq(:pending) if example_meta.key?(:pending)
         expect(ex.execution_result.__send__(exception_attribute)).to have_attributes(
-          :failures => [
+          :all_exceptions => [
             an_object_having_attributes(:message => 'expected `1.even?` to return true, got false'),
             an_object_having_attributes(:message => 'expected `2.odd?` to return true, got false')
           ]

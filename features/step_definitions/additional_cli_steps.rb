@@ -192,6 +192,11 @@ Then(/^it should fail and list all the failures:$/) do |string|
   expect(normalize_whitespace_and_backtraces(all_output)).to include(normalize_whitespace_and_backtraces(string))
 end
 
+Then(/^it should pass and list all the pending examples:$/) do |string|
+  step %q{the exit status should be 0}
+  expect(normalize_whitespace_and_backtraces(all_output)).to include(normalize_whitespace_and_backtraces(string))
+end
+
 module WhitespaceNormalization
   def normalize_whitespace_and_backtraces(text)
     text.lines.map { |line| line.sub(/\s+$/, '').sub(/:in .*$/, '') }.join

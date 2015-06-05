@@ -316,6 +316,8 @@ module RSpec
       # the example or the `pending_exception` if the example is pending.
       def display_exception=(ex)
         if pending? && !(Pending::PendingExampleFixedError === ex)
+          @exception = nil
+          execution_result.pending_fixed = false
           execution_result.pending_exception = ex
         else
           @exception = ex
@@ -441,13 +443,7 @@ module RSpec
       def verify_mocks
         @example_group_instance.verify_mocks_for_rspec
       rescue Exception => e
-        if pending?
-          execution_result.pending_fixed = false
-          execution_result.pending_exception = e
-          @exception = nil
-        else
-          set_exception(e)
-        end
+        set_exception(e)
       end
 
       def assign_generated_description

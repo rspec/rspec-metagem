@@ -338,6 +338,16 @@ module RSpec::Core
       }.to change(mee.other_errors, :count).by 1
     end
 
+    it 'ignores `Pending::PendingExampleFixedError` since it does not represent a real failure but rather the lack of one' do
+      mee = new_multiple_exception_error
+
+      expect {
+        mee.add Pending::PendingExampleFixedError.new
+      }.to avoid_changing(mee.other_errors, :count).
+       and avoid_changing(mee.all_exceptions, :count).
+       and avoid_changing(mee.failures, :count)
+    end
+
     it 'is tagged with a common module so it is clear it has the interface for multiple exceptions' do
       expect(MultipleExceptionError::InterfaceTag).to be === new_multiple_exception_error
     end
