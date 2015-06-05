@@ -70,8 +70,7 @@ module RSpec
         # @param string [String] string with trailing zeros
         # @return [String] string with trailing zeros removed
         def self.strip_trailing_zeroes(string)
-          stripped = string.sub(/[^1-9]+$/, '')
-          stripped.empty? ? "0" : stripped
+          string.sub(/(?:(\..*[^0])0+|\.0+)$/, '\1')
         end
         private_class_method :strip_trailing_zeroes
 

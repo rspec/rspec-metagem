@@ -45,6 +45,12 @@ RSpec.describe RSpec::Core::Formatters::Helpers do
         expect(helper.format_duration(1)).to eq("1 second")
       end
     end
+    
+    context '= 70' do
+      it "returns 'x minute, x0 seconds' formatted string" do
+        expect(helper.format_duration(70)).to eq("1 minute 10 seconds")
+      end
+    end
 
     context 'with mathn loaded' do
       include MathnIntegrationSupport
@@ -80,6 +86,12 @@ RSpec.describe RSpec::Core::Formatters::Helpers do
       context "> 1" do
         it "strips off trailing zeroes" do
           expect(helper.format_seconds(1.00000000001)).to eq("1")
+        end
+      end
+
+      context "70" do
+        it "doesn't strip of meaningful trailing zeros" do
+          expect(helper.format_seconds(70)).to eq("70") 
         end
       end
     end
