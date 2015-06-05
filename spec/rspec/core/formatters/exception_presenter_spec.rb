@@ -434,5 +434,34 @@ module RSpec::Core
       expected_metadata = ex.exception.aggregation_metadata
       expect(MultipleExceptionError.new.aggregation_metadata).to eq(expected_metadata)
     end
+
+    describe "::InterfaceTag.for" do
+      def value_for(ex)
+        described_class::InterfaceTag.for(ex)
+      end
+
+      context "when given an `#{described_class.name}`" do
+        it 'returns the provided error' do
+          ex = MultipleExceptionError.new
+          expect(value_for ex).to be ex
+        end
+      end
+
+      context "when given an `RSpec::Expectations::MultipleExpectationsNotMetError`" do
+        it 'returns the provided error' do
+          failure_aggregator = RSpec::Expectations::FailureAggregator.new(nil, {})
+          ex = RSpec::Expectations::MultipleExpectationsNotMetError.new(failure_aggregator)
+
+          expect(value_for ex).to be ex
+        end
+      end
+
+      context "when given any other exception" do
+        it 'wraps it in a `RSpec::Expectations::MultipleExceptionError`' do
+          ex = StandardError.new
+          expect(value_for ex).to be_a(MultipleExceptionError).and have_attributes(:all_exceptions => [ex])
+        end
+      end
+    end
   end
 end

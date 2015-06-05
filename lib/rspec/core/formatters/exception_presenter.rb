@@ -313,6 +313,15 @@ module RSpec
             other_errors << exception
           end
         end
+
+        # Provides a way to force `ex` to be something that satisfies the multiple
+        # exception error interface. If it already satisfies it, it will be returned;
+        # otherwise it will wrap it in a `MultipleExceptionError`.
+        # @private
+        def self.for(ex)
+          return ex if self === ex
+          MultipleExceptionError.new(ex)
+        end
       end
 
       include InterfaceTag
