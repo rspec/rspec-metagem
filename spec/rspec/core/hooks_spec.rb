@@ -74,6 +74,15 @@ module RSpec::Core
               instance.hooks.run(type, scope, double("Example").as_null_object)
             }.not_to yield_control
           end
+
+          if scope == :example
+            it "yields the example as an argument to the hook" do
+              group = RSpec.describe
+              ex = group.example { }
+
+              expect { |p| group.send(type, scope, &p); group.run }.to yield_with_args(ex)
+            end
+          end
         end
       end
     end

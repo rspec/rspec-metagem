@@ -341,13 +341,6 @@ module RSpec
       end
 
       # @private
-      def instance_exec_with_rescue(&block)
-        @example_group_instance.instance_exec(self, &block)
-      rescue Exception => e
-        set_exception(e)
-      end
-
-      # @private
       def instance_exec(*args, &block)
         @example_group_instance.instance_exec(*args, &block)
       end

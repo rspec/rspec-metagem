@@ -361,7 +361,9 @@ module RSpec
       # @private
       class AfterHook < Hook
         def run(example)
-          example.instance_exec_with_rescue(&block)
+          example.instance_exec(example, &block)
+        rescue Exception => ex
+          example.set_exception(ex)
         end
       end
 
