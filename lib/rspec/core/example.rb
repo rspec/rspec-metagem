@@ -304,21 +304,52 @@ module RSpec
 
       # @private
       #
+      # The exception that will be displayed to the user -- either the failure of
+      # the example or the `pending_exception` if the example is pending.
+      def display_exception
+        @exception || execution_result.pending_exception
+      end
+
+      # @private
+      #
+      # Assigns the exception that will be displayed to the user -- either the failure of
+      # the example or the `pending_exception` if the example is pending.
+      def display_exception=(ex)
+        if pending? && !(Pending::PendingExampleFixedError === ex)
+          execution_result.pending_exception = ex
+        else
+          @exception = ex
+        end
+      end
+
+      # rubocop:disable Style/AccessorMethodName
+
+      # @private
+      #
       # Used internally to set an exception in an after hook, which
       # captures the exception but doesn't raise it.
       def set_exception(exception)
-        if pending? && !(Pending::PendingExampleFixedError === exception)
-          execution_result.pending_exception = exception
-        elsif @exception
-          unless RSpec::Core::MultipleExceptionError === @exception
-            @exception = RSpec::Core::MultipleExceptionError.new(@exception)
-          end
+        return self.display_exception = exception unless display_exception
 
-          @exception.add exception
-        else
-          @exception = exception
+        unless RSpec::Core::MultipleExceptionError === display_exception
+          self.display_exception = RSpec::Core::MultipleExceptionError.new(display_exception)
         end
+
+        display_exception.add exception
       end
+
+      # @private
+      #
+      # Used to set the exception when `aggregate_failures` fails.
+      def set_aggregate_failures_exception(exception)
+        return set_exception(exception) unless display_exception
+
+        exception = RSpec::Core::MultipleExceptionError::InterfaceTag.for(exception)
+        exception.add display_exception
+        self.display_exception = exception
+      end
+
+      # rubocop:enable Style/AccessorMethodName
 
       # @private
       #
@@ -529,10 +560,13 @@ module RSpec
         super(AnonymousExampleGroup, "", {})
       end
 
+      # rubocop:disable Style/AccessorMethodName
+
       # To ensure we don't silence errors.
       def set_exception(exception)
         raise exception
       end
+      # rubocop:enable Style/AccessorMethodName
     end
   end
 end

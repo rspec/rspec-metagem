@@ -1742,8 +1742,12 @@ module RSpec
       end
 
       def define_built_in_hooks
-        around(:example, :aggregate_failures => true) do |ex|
-          aggregate_failures(nil, :hide_backtrace => true, &ex)
+        around(:example, :aggregate_failures => true) do |procsy|
+          begin
+            aggregate_failures(nil, :hide_backtrace => true, &procsy)
+          rescue Exception => exception
+            procsy.example.set_aggregate_failures_exception(exception)
+          end
         end
       end
 

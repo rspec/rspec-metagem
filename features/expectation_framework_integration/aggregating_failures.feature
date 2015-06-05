@@ -99,12 +99,16 @@ Feature: Aggregating Failures
       require 'client'
 
       RSpec.describe Client do
-        it "returns a successful response", :aggregate_failures do
+        it "follows a redirect", :aggregate_failures do
           response = Client.make_request
 
-          expect(response.status).to eq(200)
-          expect(response.headers).to include("Content-Type" => "application/json")
-          expect(response.body).to eq('{"message":"Success"}')
+          expect(response.status).to eq(302)
+          expect(response.body).to eq('{"message":"Redirect"}')
+
+          redirect_response = Client.make_request(response.headers.fetch('Location'))
+
+          expect(redirect_response.status).to eq(200)
+          expect(redirect_response.body).to eq('{"message":"OK"}')
         end
       end
       """
@@ -113,32 +117,30 @@ Feature: Aggregating Failures
       """
       Failures:
 
-        1) Client returns a successful response
-           Got 3 failures:
+        1) Client follows a redirect
+           Got 2 failures and 1 other error:
 
-           1.1) Failure/Error: expect(response.status).to eq(200)
+           1.1) Failure/Error: expect(response.status).to eq(302)
 
-                  expected: 200
+                  expected: 302
                        got: 404
 
                   (compared using ==)
-                # ./spec/use_metadata_spec.rb:7
+                # ./spec/use_metadata_spec.rb:7:in `block (2 levels) in <top (required)>'
 
-           1.2) Failure/Error: expect(response.headers).to include("Content-Type" => "application/json")
-                  expected {"Content-Type" => "text/plain"} to include {"Content-Type" => "application/json"}
-                  Diff:
-                  @@ -1,2 +1,2 @@
-                  -[{"Content-Type"=>"application/json"}]
-                  +"Content-Type" => "text/plain",
-                # ./spec/use_metadata_spec.rb:8
+           1.2) Failure/Error: expect(response.body).to eq('{"message":"Redirect"}')
 
-           1.3) Failure/Error: expect(response.body).to eq('{"message":"Success"}')
-
-                  expected: "{\"message\":\"Success\"}"
+                  expected: "{\"message\":\"Redirect\"}"
                        got: "Not Found"
 
                   (compared using ==)
-                # ./spec/use_metadata_spec.rb:9
+                # ./spec/use_metadata_spec.rb:8:in `block (2 levels) in <top (required)>'
+
+           1.3) Failure/Error: redirect_response = Client.make_request(response.headers.fetch('Location'))
+                KeyError:
+                  key not found: "Location"
+                # ./spec/use_metadata_spec.rb:10:in `fetch'
+                # ./spec/use_metadata_spec.rb:10:in `block (2 levels) in <top (required)>'
       """
 
   Scenario: Enable failure aggregation globally using `define_derived_metadata`
