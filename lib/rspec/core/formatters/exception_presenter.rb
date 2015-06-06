@@ -196,9 +196,9 @@ module RSpec
             options = options.merge(
               :failure_lines          => [],
               :extra_detail_formatter => sub_failure_list_formatter(exception, options[:message_color]),
-              :detail_formatter       => multiple_exception_sumarizer(exception,
-                                                                      options[:detail_formatter],
-                                                                      options[:message_color])
+              :detail_formatter       => multiple_exception_summarizer(exception,
+                                                                       options[:detail_formatter],
+                                                                       options[:message_color])
             )
 
             options[:description_formatter] &&= Proc.new {}
@@ -212,11 +212,11 @@ module RSpec
             MultipleExceptionError::InterfaceTag === exception
           end
 
-          def multiple_exception_sumarizer(exception, prior_detail_formatter, color)
+          def multiple_exception_summarizer(exception, prior_detail_formatter, color)
             lambda do |example, colorizer, indentation|
               summary = if exception.aggregation_metadata[:hide_backtrace]
                           # Since the backtrace is hidden, the subfailures will come
-                          # immeidately after this, and using `:` will read well.
+                          # immediately after this, and using `:` will read well.
                           "Got #{exception.exception_count_description}:"
                         else
                           # The backtrace comes after this, so using a `:` doesn't make sense
