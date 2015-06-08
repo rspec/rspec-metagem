@@ -68,6 +68,8 @@ Bug Fixes:
   prepended or extended by config defined after an example group. (Eugene Kenny, #1935)
 * Fix regression which caused shared examples to be mistakenly run when specs
   where filtered to a particular location.  (Ben Axnick, #1963)
+* Fix time formatting logic so that it displays 70 seconds as "1 minute,
+  10 seconds" rather than "1 minute, 1 second". (Paul Brennan, #1984)
 
 ### 3.2.3 / 2015-04-06
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.2.2...v3.2.3)
