@@ -109,4 +109,6 @@ RSpec.configure do |c|
       !(RUBY_VERSION.to_s =~ /^#{version.to_s}/)
     end
   }
+
+  $original_rspec_configuration = c
 end

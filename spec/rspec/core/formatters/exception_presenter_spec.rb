@@ -306,4 +306,172 @@ module RSpec::Core
       expect(truncated).to be child
     end
   end
+
+  RSpec.shared_examples_for "a class satisfying the common multiple exception error interface" do
+    def new_failure(*a)
+      RSpec::Expectations::ExpectationNotMetError.new(*a)
+    end
+
+    def new_error(*a)
+      StandardError.new(*a)
+    end
+
+    it 'allows you to keep track of failures and other errors in order' do
+      mee = new_multiple_exception_error
+
+      f1 = new_failure
+      e1 = new_error
+      f2 = new_failure
+
+      expect { mee.add(f1) }.to change(mee, :failures).to [f1]
+      expect { mee.add(e1) }.to change(mee, :other_errors).to [e1]
+      expect { mee.add(f2) }.to change(mee, :failures).to [f1, f2]
+
+      expect(mee.all_exceptions).to eq([f1, e1, f2])
+    end
+
+    it 'allows you to add exceptions of an anonymous class' do
+      mee = new_multiple_exception_error
+
+      expect {
+        mee.add(Class.new(StandardError).new)
+      }.to change(mee.other_errors, :count).by 1
+    end
+
+    it 'ignores `Pending::PendingExampleFixedError` since it does not represent a real failure but rather the lack of one' do
+      mee = new_multiple_exception_error
+
+      expect {
+        mee.add Pending::PendingExampleFixedError.new
+      }.to avoid_changing(mee.other_errors, :count).
+       and avoid_changing(mee.all_exceptions, :count).
+       and avoid_changing(mee.failures, :count)
+    end
+
+    it 'is tagged with a common module so it is clear it has the interface for multiple exceptions' do
+      expect(MultipleExceptionError::InterfaceTag).to be === new_multiple_exception_error
+    end
+  end
+
+  RSpec.describe RSpec::Expectations::ExpectationNotMetError do
+    include_examples "a class satisfying the common multiple exception error interface" do
+      def new_multiple_exception_error
+        failure_aggregator = RSpec::Expectations::FailureAggregator.new(nil, {})
+        RSpec::Expectations::MultipleExpectationsNotMetError.new(failure_aggregator)
+      end
+    end
+  end
+
+  RSpec.describe MultipleExceptionError do
+    include_examples "a class satisfying the common multiple exception error interface" do
+      def new_multiple_exception_error
+        MultipleExceptionError.new
+      end
+    end
+
+    it 'supports the same interface as `RSpec::Expectations::MultipleExpectationsNotMetError`' do
+      skip "Skipping to allow an rspec-expectations PR to add a new method and remain green" if ENV['NEW_MUTLI_EXCEPTION_METHOD']
+
+      aggregate_failures { } # force autoload
+
+      interface = RSpec::Expectations::MultipleExpectationsNotMetError.instance_methods - Exception.instance_methods
+      expect(MultipleExceptionError.new).to respond_to(*interface)
+    end
+
+    it 'allows you to instantiate it with an initial list of exceptions' do
+      mee = MultipleExceptionError.new(f1 = new_failure, e1 = new_error)
+
+      expect(mee).to have_attributes(
+        :failures       => [f1],
+        :other_errors   => [e1],
+        :all_exceptions => [f1, e1]
+      )
+    end
+
+    specify 'the `message` implementation provides all failure messages, but is not well formatted because we do not actually use it' do
+      mee = MultipleExceptionError.new(
+        new_failure("failure 1"),
+        new_error("error 1")
+      )
+
+      expect(mee.message).to include("failure 1", "error 1")
+    end
+
+    it 'provides a description of the exception counts, correctly categorized as failures or exceptions' do
+      mee = MultipleExceptionError.new
+
+      expect {
+        mee.add new_failure
+        mee.add new_error
+      }.to change(mee, :exception_count_description).
+        from("0 failures").
+        to("1 failure and 1 other error")
+
+      expect {
+        mee.add new_failure
+        mee.add new_error
+      }.to change(mee, :exception_count_description).
+        to("2 failures and 2 other errors")
+    end
+
+    it 'provides a summary of the exception counts' do
+      mee = MultipleExceptionError.new
+
+      expect {
+        mee.add new_failure
+        mee.add new_error
+      }.to change(mee, :summary).
+        from("Got 0 failures").
+        to("Got 1 failure and 1 other error")
+
+      expect {
+        mee.add new_failure
+        mee.add new_error
+      }.to change(mee, :summary).
+        to("Got 2 failures and 2 other errors")
+    end
+
+    it 'presents the same aggregation metadata that an `:aggregate_failures`-tagged example produces' do
+      ex = nil
+
+      RSpec.describe do
+        ex = it "", :aggregate_failures do
+          expect(1).to eq(2)
+          expect(1).to eq(2)
+        end
+      end.run
+
+      expected_metadata = ex.exception.aggregation_metadata
+      expect(MultipleExceptionError.new.aggregation_metadata).to eq(expected_metadata)
+    end
+
+    describe "::InterfaceTag.for" do
+      def value_for(ex)
+        described_class::InterfaceTag.for(ex)
+      end
+
+      context "when given an `#{described_class.name}`" do
+        it 'returns the provided error' do
+          ex = MultipleExceptionError.new
+          expect(value_for ex).to be ex
+        end
+      end
+
+      context "when given an `RSpec::Expectations::MultipleExpectationsNotMetError`" do
+        it 'returns the provided error' do
+          failure_aggregator = RSpec::Expectations::FailureAggregator.new(nil, {})
+          ex = RSpec::Expectations::MultipleExpectationsNotMetError.new(failure_aggregator)
+
+          expect(value_for ex).to be ex
+        end
+      end
+
+      context "when given any other exception" do
+        it 'wraps it in a `RSpec::Expectations::MultipleExceptionError`' do
+          ex = StandardError.new
+          expect(value_for ex).to be_a(MultipleExceptionError).and have_attributes(:all_exceptions => [ex])
+        end
+      end
+    end
+  end
 end

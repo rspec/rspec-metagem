@@ -31,7 +31,7 @@ module RSpec
       end
 
       def format_backtrace(backtrace, options={})
-        return backtrace if options[:full_backtrace]
+        return backtrace if options[:full_backtrace] || backtrace.empty?
 
         backtrace.map { |l| backtrace_line(l) }.compact.
           tap do |filtered|

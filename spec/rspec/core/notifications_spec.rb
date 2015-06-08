@@ -275,6 +275,25 @@ RSpec.describe "FailedExampleNotification" do
         end
       end
     end
+
+    context "when the exception is a MultipleExceptionError" do
+      let(:sub_failure_1)  { StandardError.new("foo").tap { |e| e.set_backtrace([]) } }
+      let(:sub_failure_2)  { StandardError.new("bar").tap { |e| e.set_backtrace([]) } }
+      let(:exception)      { RSpec::Core::MultipleExceptionError.new(sub_failure_1, sub_failure_2) }
+
+      it "lists each sub-failure, just like with MultipleExpectationsNotMetError" do
+        expect(fully_formatted.lines.to_a.last(8)).to eq(dedent(<<-EOS).lines.to_a)
+          |
+          |     1.1) Failure/Error: Unable to find matching line from backtrace
+          |          StandardError:
+          |            foo
+          |
+          |     1.2) Failure/Error: Unable to find matching line from backtrace
+          |          StandardError:
+          |            bar
+        EOS
+      end
+    end
   end
 
   describe '#message_lines' do

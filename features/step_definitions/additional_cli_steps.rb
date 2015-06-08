@@ -189,14 +189,25 @@ end
 
 Then(/^it should fail and list all the failures:$/) do |string|
   step %q{the exit status should not be 0}
-  expect(normalize_whitespace_and_backtraces(all_output)).to include(normalize_whitespace_and_backtraces(string))
+  expect(normalize_failure_output(all_output)).to include(normalize_failure_output(string))
 end
 
-module WhitespaceNormalization
-  def normalize_whitespace_and_backtraces(text)
-    text.lines.map { |line| line.sub(/\s+$/, '').sub(/:in .*$/, '') }.join
+Then(/^it should pass and list all the pending examples:$/) do |string|
+  step %q{the exit status should be 0}
+  expect(normalize_failure_output(all_output)).to include(normalize_failure_output(string))
+end
+
+module Normalization
+  def normalize_failure_output(text)
+    whitespace_normalized = text.lines.map { |line| line.sub(/\s+$/, '').sub(/:in .*$/, '') }.join
+
+    # 1.8.7 and JRuby produce slightly different output for `Hash#fetch` errors, so we
+    # convert it to the same output here to match our expectation.
+    whitespace_normalized.
+      sub("IndexError", "KeyError").
+      sub(/key not found.*$/, "key not found")
   end
 end
 
-World(WhitespaceNormalization)
+World(Normalization)
 World(FormatterSupport)

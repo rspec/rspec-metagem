@@ -638,6 +638,13 @@ module RSpec
             framework
           when :rspec
             require 'rspec/expectations'
+
+            # Tag this exception class so our exception formatting logic knows
+            # that it satisfies the `MultipleExceptionError` interface.
+            ::RSpec::Expectations::MultipleExpectationsNotMetError.__send__(
+              :include, MultipleExceptionError::InterfaceTag
+            )
+
             ::RSpec::Matchers
           when :test_unit
             require 'rspec/core/test_unit_assertions_adapter'
@@ -1735,8 +1742,12 @@ module RSpec
       end
 
       def define_built_in_hooks
-        around(:example, :aggregate_failures => true) do |ex|
-          aggregate_failures(nil, :from_around_hook => true, &ex)
+        around(:example, :aggregate_failures => true) do |procsy|
+          begin
+            aggregate_failures(nil, :hide_backtrace => true, &procsy)
+          rescue Exception => exception
+            procsy.example.set_aggregate_failures_exception(exception)
+          end
         end
       end
 

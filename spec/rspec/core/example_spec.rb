@@ -31,11 +31,8 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
   end
 
   describe "#exception" do
-    it "supplies the first exception raised, if any" do
-      RSpec.configuration.output_stream = StringIO.new
-
+    it "supplies the exception raised, if there is one" do
       example = example_group.example { raise "first" }
-      example_group.after { raise "second" }
       example_group.run
       expect(example.exception.message).to eq("first")
     end
@@ -44,6 +41,25 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       example = example_group.example('example') { }
       example_group.run
       expect(example.exception).to be_nil
+    end
+
+    it 'provides a `MultipleExceptionError` if there are multiple exceptions (e.g. from `it`, `around` and `after`)' do
+      the_example = nil
+
+      after_ex   = StandardError.new("after")
+      around_ex  = StandardError.new("around")
+      example_ex = StandardError.new("example")
+
+      RSpec.describe do
+        the_example = example { raise example_ex }
+        after { raise after_ex }
+        around { |ex| ex.run; raise around_ex }
+      end.run
+
+      expect(the_example.exception).to have_attributes(
+        :class => RSpec::Core::MultipleExceptionError,
+        :all_exceptions => [example_ex, after_ex, around_ex]
+      )
     end
   end
 
@@ -401,65 +417,20 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       end
     end
 
-    context 'when the example raises an error' do
-      def run_and_capture_reported_message(group)
-        reported_msg = nil
-        # We can't use should_receive(:message).with(/.../) here,
-        # because if that fails, it would fail within our example-under-test,
-        # and since there's already two errors, it would just be reported again.
-        allow(RSpec.configuration.reporter).to receive(:message) { |msg| reported_msg = msg }
-        group.run
-        reported_msg
+    it "leaves raised exceptions unmodified (GH-1103)" do
+      # set the backtrace, otherwise MRI will build a whole new object,
+      # and thus mess with our expectations. Rubinius and JRuby are not
+      # affected.
+      exception = StandardError.new
+      exception.set_backtrace([])
+
+      group = RSpec.describe do
+        example { raise exception.freeze }
       end
+      group.run
 
-      it "prints any around hook errors rather than silencing them" do
-        group = RSpec.describe do
-          around(:each) { |e| e.run; raise "around" }
-          example("e") { raise "example" }
-        end
-
-        message = run_and_capture_reported_message(group)
-        expect(message).to match(/An error occurred in an `around.* hook/i)
-      end
-
-      it "prints any after hook errors rather than silencing them" do
-        group = RSpec.describe do
-          after(:each) { raise "after" }
-          example("e") { raise "example" }
-        end
-
-        message = run_and_capture_reported_message(group)
-        expect(message).to match(/An error occurred in an after.* hook/i)
-      end
-
-      it "does not print mock expectation errors" do
-        group = RSpec.describe do
-          example do
-            foo = double
-            expect(foo).to receive(:bar)
-            raise "boom"
-          end
-        end
-
-        message = run_and_capture_reported_message(group)
-        expect(message).to be_nil
-      end
-
-      it "leaves a raised exception unmodified (GH-1103)" do
-        # set the backtrace, otherwise MRI will build a whole new object,
-        # and thus mess with our expectations. Rubinius and JRuby are not
-        # affected.
-        exception = StandardError.new
-        exception.set_backtrace([])
-
-        group = RSpec.describe do
-          example { raise exception.freeze }
-        end
-        group.run
-
-        actual = group.examples.first.execution_result.exception
-        expect(actual.__id__).to eq(exception.__id__)
-      end
+      actual = group.examples.first.execution_result.exception
+      expect(actual.__id__).to eq(exception.__id__)
     end
 
     context "with --dry-run" do
@@ -752,17 +723,35 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       expect(ex).to fail_with(RSpec::Mocks::MockExpectationError)
     end
 
+    context "when the example has already failed" do
+      it 'appends the mock error to a `MultipleExceptionError` so the user can see both' do
+        ex = nil
+        boom = StandardError.new("boom")
+
+        RSpec.describe do
+          ex = example do
+            dbl = double
+            expect(dbl).to receive(:Foo)
+            raise boom
+          end
+        end.run
+
+        expect(ex.exception).to be_a(RSpec::Core::MultipleExceptionError)
+        expect(ex.exception.all_exceptions).to match [boom, an_instance_of(RSpec::Mocks::MockExpectationError)]
+      end
+    end
+
     it 'allows `after(:example)` hooks to satisfy mock expectations, since examples are not complete until their `after` hooks run' do
       ex = nil
 
       RSpec.describe do
-        let(:dbl) { double }
+        let(:the_dbl) { double }
 
         ex = example do
-          expect(dbl).to receive(:foo)
+          expect(the_dbl).to receive(:foo)
         end
 
-        after { dbl.foo }
+        after { the_dbl.foo }
       end.run
 
       expect(ex).to pass

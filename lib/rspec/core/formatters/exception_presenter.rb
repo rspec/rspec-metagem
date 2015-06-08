@@ -191,33 +191,36 @@ module RSpec
           end
 
           def with_multiple_error_options_as_needed(exception, options)
-            return options unless multiple_exceptions_not_met_error?(exception)
+            return options unless multiple_exceptions_error?(exception)
 
             options = options.merge(
               :failure_lines          => [],
               :extra_detail_formatter => sub_failure_list_formatter(exception, options[:message_color]),
-              :detail_formatter       => multiple_failure_sumarizer(exception,
-                                                                    options[:detail_formatter],
-                                                                    options[:message_color])
+              :detail_formatter       => multiple_exception_summarizer(exception,
+                                                                       options[:detail_formatter],
+                                                                       options[:message_color])
             )
 
             options[:description_formatter] &&= Proc.new {}
 
-            return options unless exception.aggregation_metadata[:from_around_hook]
+            return options unless exception.aggregation_metadata[:hide_backtrace]
             options[:backtrace_formatter] = EmptyBacktraceFormatter
             options
           end
 
-          def multiple_exceptions_not_met_error?(exception)
-            return false unless defined?(RSpec::Expectations::MultipleExpectationsNotMetError)
-            RSpec::Expectations::MultipleExpectationsNotMetError === exception
+          def multiple_exceptions_error?(exception)
+            MultipleExceptionError::InterfaceTag === exception
           end
 
-          def multiple_failure_sumarizer(exception, prior_detail_formatter, color)
+          def multiple_exception_summarizer(exception, prior_detail_formatter, color)
             lambda do |example, colorizer, indentation|
-              summary = if exception.aggregation_metadata[:from_around_hook]
+              summary = if exception.aggregation_metadata[:hide_backtrace]
+                          # Since the backtrace is hidden, the subfailures will come
+                          # immediately after this, and using `:` will read well.
                           "Got #{exception.exception_count_description}:"
                         else
+                          # The backtrace comes after this, so using a `:` doesn't make sense
+                          # since the failures may be many lines below.
                           "#{exception.summary}."
                         end
 
@@ -284,6 +287,102 @@ module RSpec
         PENDING_DETAIL_FORMATTER = Proc.new do |example, colorizer|
           colorizer.wrap("# #{example.execution_result.pending_message}", :detail)
         end
+      end
+    end
+
+    # Provides a single exception instance that provides access to
+    # multiple sub-exceptions. This is used in situations where a single
+    # individual spec has multiple exceptions, such as one in the `it` block
+    # and one in an `after` block.
+    class MultipleExceptionError < StandardError
+      # @private
+      # Used so there is a common module in the ancestor chain of this class
+      # and `RSpec::Expectations::MultipleExpectationsNotMetError`, which allows
+      # code to detect exceptions that are instances of either, without first
+      # checking to see if rspec-expectations is loaded.
+      module InterfaceTag
+        # Appends the provided exception to the list.
+        # @param exception [Exception] Exception to append to the list.
+        # @private
+        def add(exception)
+          # `PendingExampleFixedError` can be assigned to an example that initially has no
+          # failures, but when the `aggregate_failures` around hook completes, it notifies of
+          # a failure. If we do not ignore `PendingExampleFixedError` it would be surfaced to
+          # the user as part of a multiple exception error, which is undesirable. While it's
+          # pretty weird we handle this here, it's the best solution I've been able to come
+          # up with, and `PendingExampleFixedError` always represents the _lack_ of any exception
+          # so clearly when we are transitioning to a `MultipleExceptionError`, it makes sense to
+          # ignore it.
+          return if Pending::PendingExampleFixedError === exception
+
+          all_exceptions << exception
+
+          if exception.class.name =~ /RSpec/
+            failures << exception
+          else
+            other_errors << exception
+          end
+        end
+
+        # Provides a way to force `ex` to be something that satisfies the multiple
+        # exception error interface. If it already satisfies it, it will be returned;
+        # otherwise it will wrap it in a `MultipleExceptionError`.
+        # @private
+        def self.for(ex)
+          return ex if self === ex
+          MultipleExceptionError.new(ex)
+        end
+      end
+
+      include InterfaceTag
+
+      # @return [Array<Exception>] The list of failures.
+      attr_reader :failures
+
+      # @return [Array<Exception>] The list of other errors.
+      attr_reader :other_errors
+
+      # @return [Array<Exception>] The list of failures and other exceptions, combined.
+      attr_reader :all_exceptions
+
+      # @return [Hash] Metadata used by RSpec for formatting purposes.
+      attr_reader :aggregation_metadata
+
+      # @return [nil] Provided only for interface compatibility with
+      #   `RSpec::Expectations::MultipleExpectationsNotMetError`.
+      attr_reader :aggregation_block_label
+
+      # @param exceptions [Array<Exception>] The initial list of exceptions.
+      def initialize(*exceptions)
+        super()
+
+        @failures                = []
+        @other_errors            = []
+        @all_exceptions          = []
+        @aggregation_metadata    = { :hide_backtrace => true }
+        @aggregation_block_label = nil
+
+        exceptions.each { |e| add e }
+      end
+
+      # @return [String] Combines all the exception messages into a single string.
+      # @note RSpec does not actually use this -- instead it formats each exception
+      #   individually.
+      def message
+        all_exceptions.map(&:message).join("\n\n")
+      end
+
+      # @return [String] A summary of the failure, including the block label and a count of failures.
+      def summary
+        "Got #{exception_count_description}"
+      end
+
+      # return [String] A description of the failure/error counts.
+      def exception_count_description
+        failure_count = Formatters::Helpers.pluralize(failures.size, "failure")
+        return failure_count if other_errors.empty?
+        error_count = Formatters::Helpers.pluralize(other_errors.size, "other error")
+        "#{failure_count} and #{error_count}"
       end
     end
   end
