@@ -67,6 +67,9 @@ module RSpec
         #
         # Remove trailing zeros from a string.
         #
+        # Only remove trailing zeros after a decimal place.
+        # see: http://rubular.com/r/ojtTydOgpn
+        #
         # @param string [String] string with trailing zeros
         # @return [String] string with trailing zeros removed
         def self.strip_trailing_zeroes(string)
