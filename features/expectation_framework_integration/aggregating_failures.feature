@@ -39,7 +39,7 @@ Feature: Aggregating Failures
         it "returns a successful response" do
           response = Client.make_request
 
-          aggregate_failures "testing reponse" do
+          aggregate_failures "testing response" do
             expect(response.status).to eq(200)
             expect(response.headers).to include("Content-Type" => "application/json")
             expect(response.body).to eq('{"message":"Success"}')
@@ -55,7 +55,7 @@ Feature: Aggregating Failures
         1) Client returns a successful response
            Got 3 failures:
 
-           1.1) Got 3 failures from failure aggregation block "testing reponse".
+           1.1) Got 3 failures from failure aggregation block "testing response".
                 # ./spec/use_block_form_spec.rb:18:in `block (2 levels) in <top (required)>'
                 # ./spec/use_block_form_spec.rb:10:in `block (2 levels) in <top (required)>'
 
