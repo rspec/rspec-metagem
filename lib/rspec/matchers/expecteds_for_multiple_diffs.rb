@@ -64,7 +64,7 @@ module RSpec
       def diffs(differ, actual)
         @expected_list.map do |(expected, diff_label)|
           diff = differ.diff(actual, expected)
-          next if diff.empty?
+          next if diff.strip.empty?
           "#{diff_label}#{diff}"
         end.compact.join("\n")
       end

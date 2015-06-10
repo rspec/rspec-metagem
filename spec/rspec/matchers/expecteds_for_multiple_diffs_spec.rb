@@ -69,6 +69,15 @@ module RSpec
           EOS
         end
 
+        it "returns just provided message if diff is just whitespace" do
+          allow(FakeDiffer).to receive(:diff) { "  \n   \t" }
+          expect(wrapped_value.message_with_diff(
+            message, differ, actual
+          )).to eq(dedent <<-EOS)
+            |a message
+          EOS
+        end
+
         it "returns regular message with diff when single expected" do
           expect(wrapped_value.message_with_diff(
             message, differ, actual

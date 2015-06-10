@@ -47,6 +47,7 @@ Bug Fixes:
 * Fix `match` matcher so that it does not blow up when matching a string
   or regex against another matcher (rather than a string or regex).
   (Myron Marston, #772)
+* Silence whitespace-only diffs. (Myron Marston, #801)
 
 ### 3.2.1 / 2015-04-06
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.2.0...v3.2.1)
