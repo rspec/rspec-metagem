@@ -98,7 +98,7 @@ Feature: Composing Matchers
   Scenario: Composing matchers with `include`
     Given a file named "include_spec.rb" with:
       """ruby
-      RSpec.describe "Passing matchers to `contain_exactly`" do
+      RSpec.describe "Passing matchers to `include`" do
         specify "you can use matchers in place of array values" do
           expect(["barn", 2.45]).to include( a_string_starting_with("bar") )
         end
