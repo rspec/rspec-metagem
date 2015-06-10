@@ -742,13 +742,13 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       ex = nil
 
       RSpec.describe do
-        let(:dbl) { double }
+        let(:the_dbl) { double }
 
         ex = example do
-          expect(dbl).to receive(:foo)
+          expect(the_dbl).to receive(:foo)
         end
 
-        after { dbl.foo }
+        after { the_dbl.foo }
       end.run
 
       expect(ex).to pass
