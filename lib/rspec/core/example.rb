@@ -441,9 +441,13 @@ module RSpec
       end
 
       def verify_mocks
-        @example_group_instance.verify_mocks_for_rspec
+        @example_group_instance.verify_mocks_for_rspec if mocks_need_verification?
       rescue Exception => e
         set_exception(e)
+      end
+
+      def mocks_need_verification?
+        exception.nil? || execution_result.pending_fixed?
       end
 
       def assign_generated_description

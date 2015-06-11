@@ -723,22 +723,19 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       expect(ex).to fail_with(RSpec::Mocks::MockExpectationError)
     end
 
-    context "when the example has already failed" do
-      it 'appends the mock error to a `MultipleExceptionError` so the user can see both' do
-        ex = nil
-        boom = StandardError.new("boom")
+    it 'skips mock verification if the example has already failed' do
+      ex = nil
+      boom = StandardError.new("boom")
 
-        RSpec.describe do
-          ex = example do
-            dbl = double
-            expect(dbl).to receive(:Foo)
-            raise boom
-          end
-        end.run
+      RSpec.describe do
+        ex = example do
+          dbl = double
+          expect(dbl).to receive(:Foo)
+          raise boom
+        end
+      end.run
 
-        expect(ex.exception).to be_a(RSpec::Core::MultipleExceptionError)
-        expect(ex.exception.all_exceptions).to match [boom, an_instance_of(RSpec::Mocks::MockExpectationError)]
-      end
+      expect(ex.exception).to be boom
     end
 
     it 'allows `after(:example)` hooks to satisfy mock expectations, since examples are not complete until their `after` hooks run' do
