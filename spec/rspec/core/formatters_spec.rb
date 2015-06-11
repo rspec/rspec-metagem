@@ -41,7 +41,7 @@ module RSpec::Core::Formatters
 
       context "when a legacy formatter is added with RSpec::LegacyFormatters" do
         formatter_class = Struct.new(:output)
-        let(:formatter) { double "formatter", :notifications => notifications }
+        let(:formatter) { double "formatter", :notifications => notifications, :output => output }
         let(:notifications) { [:a, :b, :c] }
 
         before do
@@ -56,6 +56,14 @@ module RSpec::Core::Formatters
         it "subscribes the formatter to the notifications the adaptor implements" do
           expect(reporter).to receive(:register_listener).with(formatter, *notifications)
           loader.add formatter_class, output
+        end
+
+        it "will ignore duplicate legacy formatters" do
+          loader.add formatter_class, output
+          expect(reporter).to_not receive(:register_listener)
+          expect {
+            loader.add formatter_class, output
+          }.not_to change { loader.formatters.length }
         end
       end
 
@@ -117,6 +125,7 @@ module RSpec::Core::Formatters
         before { loader.add :documentation, output }
 
         it "doesn't add the formatter for the same output target" do
+          expect(reporter).to_not receive(:register_listener)
           expect {
             loader.add :documentation, output
           }.not_to change { loader.formatters.length }
