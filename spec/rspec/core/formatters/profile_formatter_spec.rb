@@ -83,17 +83,5 @@ RSpec.describe RSpec::Core::Formatters::ProfileFormatter do
         expect(formatter_output.string).to match(/slow group(.*)fast group/m)
       end
     end
-
-    it "depends on parent_groups to get the top level example group" do
-      ex = nil
-      group = RSpec.describe
-      group.describe("group 2") do
-        describe "group 3" do
-          ex = example("nested example 1")
-        end
-      end
-
-      expect(ex.example_group.parent_groups.last).to eq(group)
-    end
   end
 end
