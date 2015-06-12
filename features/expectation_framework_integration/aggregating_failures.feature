@@ -1,6 +1,6 @@
 Feature: Aggregating Failures
 
-  RSpec::Expectations provides [`aggregate_failures`](../../../rspec-expectations/docs/aggregating-failures), an API that allows you to group a set of expectations and see all the failures at once, rather than it aborting on the first failure. RSpec::Core improves on this feature in a couple of ways:
+  RSpec::Expectations provides [`aggregate_failures`](/rspec/rspec-expectations/v/3-4/docs/aggregating-failures), an API that allows you to group a set of expectations and see all the failures at once, rather than it aborting on the first failure. RSpec::Core improves on this feature in a couple of ways:
 
     * RSpec::Core provides much better failure output, adding code snippets and backtraces to the sub-failures, just like it does for any normal failure.
     * RSpec::Core provides [metadata](../metadata/user-defined-metadata) integration for this feature. Each example that is tagged with `:aggregate_failures` will be wrapped in an `aggregate_failures` block. You can also use `config.define_derived_metadata` to apply this to every example automatically.
@@ -56,8 +56,8 @@ Feature: Aggregating Failures
            Got 3 failures:
 
            1.1) Got 3 failures from failure aggregation block "testing response".
-                # ./spec/use_block_form_spec.rb:18:in `block (2 levels) in <top (required)>'
-                # ./spec/use_block_form_spec.rb:10:in `block (2 levels) in <top (required)>'
+                # ./spec/use_block_form_spec.rb:18
+                # ./spec/use_block_form_spec.rb:10
 
                 1.1.1) Failure/Error: expect(response.status).to eq(200)
 
@@ -65,7 +65,7 @@ Feature: Aggregating Failures
                               got: 404
 
                          (compared using ==)
-                       # ./spec/use_block_form_spec.rb:19:in `block (3 levels) in <top (required)>'
+                       # ./spec/use_block_form_spec.rb:19
 
                 1.1.2) Failure/Error: expect(response.headers).to include("Content-Type" => "application/json")
                          expected {"Content-Type" => "text/plain"} to include {"Content-Type" => "application/json"}
@@ -73,7 +73,7 @@ Feature: Aggregating Failures
                          @@ -1,2 +1,2 @@
                          -[{"Content-Type"=>"application/json"}]
                          +"Content-Type" => "text/plain",
-                       # ./spec/use_block_form_spec.rb:20:in `block (3 levels) in <top (required)>'
+                       # ./spec/use_block_form_spec.rb:20
 
                 1.1.3) Failure/Error: expect(response.body).to eq('{"message":"Success"}')
 
@@ -81,16 +81,16 @@ Feature: Aggregating Failures
                               got: "Not Found"
 
                          (compared using ==)
-                       # ./spec/use_block_form_spec.rb:21:in `block (3 levels) in <top (required)>'
+                       # ./spec/use_block_form_spec.rb:21
 
            1.2) Failure/Error: expect(false).to be(true), "after hook failure"
                   after hook failure
-                # ./spec/use_block_form_spec.rb:6:in `block (2 levels) in <top (required)>'
-                # ./spec/use_block_form_spec.rb:10:in `block (2 levels) in <top (required)>'
+                # ./spec/use_block_form_spec.rb:6
+                # ./spec/use_block_form_spec.rb:10
 
            1.3) Failure/Error: expect(false).to be(true), "around hook failure"
                   around hook failure
-                # ./spec/use_block_form_spec.rb:12:in `block (2 levels) in <top (required)>'
+                # ./spec/use_block_form_spec.rb:12
       """
 
   Scenario: Use `:aggregate_failures` metadata
@@ -126,7 +126,7 @@ Feature: Aggregating Failures
                        got: 404
 
                   (compared using ==)
-                # ./spec/use_metadata_spec.rb:7:in `block (2 levels) in <top (required)>'
+                # ./spec/use_metadata_spec.rb:7
 
            1.2) Failure/Error: expect(response.body).to eq('{"message":"Redirect"}')
 
@@ -134,13 +134,13 @@ Feature: Aggregating Failures
                        got: "Not Found"
 
                   (compared using ==)
-                # ./spec/use_metadata_spec.rb:8:in `block (2 levels) in <top (required)>'
+                # ./spec/use_metadata_spec.rb:8
 
            1.3) Failure/Error: redirect_response = Client.make_request(response.headers.fetch('Location'))
                 KeyError:
                   key not found: "Location"
-                # ./spec/use_metadata_spec.rb:10:in `fetch'
-                # ./spec/use_metadata_spec.rb:10:in `block (2 levels) in <top (required)>'
+                # ./spec/use_metadata_spec.rb:10
+                # ./spec/use_metadata_spec.rb:10
       """
 
   Scenario: Enable failure aggregation globally using `define_derived_metadata`
@@ -332,7 +332,7 @@ Feature: Aggregating Failures
                        got: 404
 
                   (compared using ==)
-                # ./spec/pending_spec.rb:8:in `block (2 levels) in <top (required)>'
+                # ./spec/pending_spec.rb:8
 
            1.2) Failure/Error: expect(response.headers).to include("Content-Type" => "application/json")
                   expected {"Content-Type" => "text/plain"} to include {"Content-Type" => "application/json"}
@@ -340,7 +340,7 @@ Feature: Aggregating Failures
                   @@ -1,2 +1,2 @@
                   -[{"Content-Type"=>"application/json"}]
                   +"Content-Type" => "text/plain",
-                # ./spec/pending_spec.rb:9:in `block (2 levels) in <top (required)>'
+                # ./spec/pending_spec.rb:9
 
            1.3) Failure/Error: expect(response.body).to eq('{"message":"Success"}')
 
@@ -348,5 +348,5 @@ Feature: Aggregating Failures
                        got: "Not Found"
 
                   (compared using ==)
-                # ./spec/pending_spec.rb:10:in `block (2 levels) in <top (required)>'
+                # ./spec/pending_spec.rb:10
       """
