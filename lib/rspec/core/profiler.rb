@@ -11,11 +11,15 @@ module RSpec
       attr_reader :example_groups
 
       def example_group_started(notification)
+        return unless notification.group.top_level?
+
         @example_groups[notification.group][:start] = Time.now
         @example_groups[notification.group][:description] = notification.group.top_level_description
       end
 
       def example_group_finished(notification)
+        return unless notification.group.top_level?
+
         @example_groups[notification.group][:total_time] =  Time.now - @example_groups[notification.group][:start]
       end
 

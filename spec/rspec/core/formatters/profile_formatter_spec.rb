@@ -57,6 +57,7 @@ RSpec.describe RSpec::Core::Formatters::ProfileFormatter do
       before do
         example_clock = class_double(RSpec::Core::Time, :now => RSpec::Core::Time.now + 0.5)
 
+        @slow_group_line_number = __LINE__ + 1
         group1 = RSpec.describe("slow group") do
           example("example") do |example|
             # make it look slow without actually taking up precious time
@@ -83,6 +84,10 @@ RSpec.describe RSpec::Core::Formatters::ProfileFormatter do
 
       it "ranks the example groups by average time" do
         expect(formatter_output.string).to match(/slow group(.*)fast group/m)
+      end
+
+      it "prints the location of the slow groups" do
+        expect(formatter_output.string).to include("#{RSpec::Core::Metadata.relative_path __FILE__}:#{@slow_group_line_number}")
       end
     end
   end

@@ -226,8 +226,11 @@ Feature: Profile examples
         before(:context) do
           sleep 0.2
         end
-        it "example" do
-          expect(10).to eq(10)
+
+        context "nested" do
+          it "example" do
+            expect(10).to eq(10)
+          end
         end
       end
 
@@ -239,4 +242,4 @@ Feature: Profile examples
       end
       """
     When I run `rspec spec --profile 1`
-    Then the output should contain "slow before context hook"
+    Then the output should report "slow before context hook" as the slowest example group

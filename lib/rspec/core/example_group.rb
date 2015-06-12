@@ -437,6 +437,11 @@ module RSpec
       end
 
       # @private
+      def self.top_level?
+        superclass == ExampleGroup
+      end
+
+      # @private
       def self.ensure_example_groups_are_configured
         unless defined?(@@example_groups_configured)
           RSpec.configuration.configure_mock_framework
