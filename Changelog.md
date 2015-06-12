@@ -1,5 +1,5 @@
-### 3.3 Development
-[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.2.1...master)
+### 3.3.0 / 2015-06-12
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.2.1...v3.3.0)
 
 Enhancements:
 
