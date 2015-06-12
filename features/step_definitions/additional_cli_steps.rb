@@ -197,6 +197,30 @@ Then(/^it should pass and list all the pending examples:$/) do |string|
   expect(normalize_failure_output(all_output)).to include(normalize_failure_output(string))
 end
 
+Then(/^the output should report "slow before context hook" as the slowest example group$/) do
+  # These expectations are trying to guard against a regression that introduced
+  # this output:
+  #   Top 1 slowest example groups:
+  #     slow before context hook
+  #       Inf seconds average (0.00221 seconds / 0 examples) RSpec::ExampleGroups::SlowBeforeContextHook::Nested
+  #
+  # Problems:
+  # - "Inf seconds"
+  # - 0 examples
+  # - "Nested" group listed (it should be the outer group)
+  # - The example group class name is listed (it should be the location)
+
+  expect(all_output).not_to match(/nested/i)
+  expect(all_output).not_to match(/inf/i)
+  expect(all_output).not_to match(/\b0 examples/i)
+
+  seconds = '\d+(?:\.\d+)? seconds'
+
+  expect(all_output).to match(
+    %r{Top 1 slowest example groups?:\n\s+slow before context hook\n\s+#{seconds} average \(#{seconds} / 1 example\) \./spec/example_spec\.rb:1}
+  )
+end
+
 module Normalization
   def normalize_failure_output(text)
     whitespace_normalized = text.lines.map { |line| line.sub(/\s+$/, '').sub(/:in .*$/, '') }.join

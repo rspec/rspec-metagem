@@ -17,22 +17,25 @@ RSpec.describe 'RSpec::Core::Profiler' do
       allow(::RSpec::Core::Time).to receive(:now) { now }
     end
 
-    def group
-      @group ||=
-        begin
-          group = super
-          allow(group).to receive(:top_level_description) { description }
-          group
-        end
-    end
+    let(:group) { RSpec.describe "My Group" }
 
     describe '#example_group_started' do
-      it 'records example groups start time and description via id' do
+      it 'records example groups start time and description' do
         expect {
           profiler.example_group_started group_notification group
         }.to change { profiler.example_groups[group] }.
           from(a_hash_excluding(:start, :description)).
           to(a_hash_including(:start => now, :description => description))
+      end
+
+      context "when the group is not a top-level group" do
+        let(:group) { super().describe "nested" }
+
+        it 'no-ops since we only consider top-level groups for profiling' do
+          expect {
+            profiler.example_group_started group_notification group
+          }.not_to change(profiler, :example_groups)
+        end
       end
     end
 
@@ -42,12 +45,22 @@ RSpec.describe 'RSpec::Core::Profiler' do
         allow(::RSpec::Core::Time).to receive(:now) { now + 1 }
       end
 
-      it 'records example groups total time and description via id' do
+      it 'records example groups total time and description' do
         expect {
           profiler.example_group_finished group_notification group
         }.to change { profiler.example_groups[group] }.
           from(a_hash_excluding(:total_time)).
           to(a_hash_including(:total_time => 1.0))
+      end
+
+      context "when the group is not a top-level group" do
+        let(:group) { super().describe "nested" }
+
+        it 'no-ops since we only consider top-level groups for profiling' do
+          expect {
+            profiler.example_group_finished group_notification group
+          }.not_to change(profiler, :example_groups)
+        end
       end
     end
 

@@ -31,10 +31,6 @@ RSpec.describe RSpec::Core::Formatters::ProfileFormatter do
       it "prints the percentage taken from the total runtime" do
         expect(formatter_output.string).to match(/, 100.0% of total time\):/)
       end
-
-      it "doesn't profile a single example group" do
-        expect(formatter_output.string).not_to match(/slowest example groups/)
-      end
     end
 
     context "with one example group" do
@@ -51,18 +47,23 @@ RSpec.describe RSpec::Core::Formatters::ProfileFormatter do
       end
 
       it_should_behave_like "profiles examples"
+
+      it "doesn't profile a single example group" do
+        expect(formatter_output.string).not_to match(/slowest example groups/)
+      end
     end
 
     context "with multiple example groups" do
       before do
         example_clock = class_double(RSpec::Core::Time, :now => RSpec::Core::Time.now + 0.5)
 
+        @slow_group_line_number = __LINE__ + 1
         group1 = RSpec.describe("slow group") do
           example("example") do |example|
             # make it look slow without actually taking up precious time
             example.clock = example_clock
           end
-            example_line_number = __LINE__ - 4
+          example_line_number = __LINE__ - 4
         end
         group2 = RSpec.describe("fast group") do
           example("example 1") { }
@@ -70,6 +71,8 @@ RSpec.describe RSpec::Core::Formatters::ProfileFormatter do
         end
         profile group1, group2
       end
+
+      it_should_behave_like "profiles examples"
 
       it "prints the slowest example groups" do
         expect(formatter_output.string).to match(/slowest example groups/)
@@ -82,18 +85,10 @@ RSpec.describe RSpec::Core::Formatters::ProfileFormatter do
       it "ranks the example groups by average time" do
         expect(formatter_output.string).to match(/slow group(.*)fast group/m)
       end
-    end
 
-    it "depends on parent_groups to get the top level example group" do
-      ex = nil
-      group = RSpec.describe
-      group.describe("group 2") do
-        describe "group 3" do
-          ex = example("nested example 1")
-        end
+      it "prints the location of the slow groups" do
+        expect(formatter_output.string).to include("#{RSpec::Core::Metadata.relative_path __FILE__}:#{@slow_group_line_number}")
       end
-
-      expect(ex.example_group.parent_groups.last).to eq(group)
     end
   end
 end
