@@ -31,10 +31,6 @@ RSpec.describe RSpec::Core::Formatters::ProfileFormatter do
       it "prints the percentage taken from the total runtime" do
         expect(formatter_output.string).to match(/, 100.0% of total time\):/)
       end
-
-      it "doesn't profile a single example group" do
-        expect(formatter_output.string).not_to match(/slowest example groups/)
-      end
     end
 
     context "with one example group" do
@@ -51,6 +47,10 @@ RSpec.describe RSpec::Core::Formatters::ProfileFormatter do
       end
 
       it_should_behave_like "profiles examples"
+
+      it "doesn't profile a single example group" do
+        expect(formatter_output.string).not_to match(/slowest example groups/)
+      end
     end
 
     context "with multiple example groups" do
@@ -62,7 +62,7 @@ RSpec.describe RSpec::Core::Formatters::ProfileFormatter do
             # make it look slow without actually taking up precious time
             example.clock = example_clock
           end
-            example_line_number = __LINE__ - 4
+          example_line_number = __LINE__ - 4
         end
         group2 = RSpec.describe("fast group") do
           example("example 1") { }
@@ -70,6 +70,8 @@ RSpec.describe RSpec::Core::Formatters::ProfileFormatter do
         end
         profile group1, group2
       end
+
+      it_should_behave_like "profiles examples"
 
       it "prints the slowest example groups" do
         expect(formatter_output.string).to match(/slowest example groups/)
