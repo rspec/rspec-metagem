@@ -163,17 +163,19 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
 
     context "with multiple example groups", :slow do
       before do
-        example_clock = class_double(RSpec::Core::Time, :now => RSpec::Core::Time.now + 5)
+        start = Time.utc(2015, 6, 10, 12, 30)
+        now = start
+
+        allow(RSpec::Core::Time).to receive(:now) { now }
 
         group1 = RSpec.describe("slow group") do
-          example("example") do |example|
-            # make it look slow without actually taking up precious time
-            example.clock = example_clock
-          end
+          example("example") { }
+          after { now += 100 }
         end
         group2 = RSpec.describe("fast group") do
           example("example 1") { }
           example("example 2") { }
+          after { now += 1 }
         end
         profile group1, group2
       end
@@ -187,14 +189,6 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
       end
 
       it "ranks the example groups by average time" do |ex|
-        if ENV['TRAVIS'] && RSpec::Support::Ruby.mri? && RUBY_VERSION == '2.0.0' &&
-           $original_rspec_configuration.loaded_spec_files.to_a == [File.expand_path(__FILE__)]
-          RSpec.current_example = ex # necessary due to sandboxing so that `skip` works.
-          skip "This spec fails on Travis on MRI 2.0.0 only when this spec file runs " \
-            "individually. It passes on Travis when run as part of the entire suite " \
-            "and I can't repro locally, so we are skipping it for this case."
-        end
-
         expect(formatter.output_hash[:profile][:groups].first[:description]).to eq("slow group")
       end
     end
