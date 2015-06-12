@@ -143,10 +143,10 @@ module RSpec::Core::Formatters
 
       if !Loader.formatters[formatter_class].nil?
         formatter = formatter_class.new(*args)
-        @reporter.register_listener formatter, *notifications_for(formatter_class)
+        register formatter, notifications_for(formatter_class)
       elsif defined?(RSpec::LegacyFormatters)
         formatter = RSpec::LegacyFormatters.load_formatter formatter_class, *args
-        @reporter.register_listener formatter, *formatter.notifications
+        register formatter, formatter.notifications
       else
         call_site = "Formatter added at: #{::RSpec::CallerFilter.first_non_rspec_line}"
 
@@ -161,10 +161,7 @@ module RSpec::Core::Formatters
           |
           |#{call_site}
         WARNING
-        return
       end
-      @formatters << formatter unless duplicate_formatter_exists?(formatter)
-      formatter
     end
 
   private
@@ -174,6 +171,13 @@ module RSpec::Core::Formatters
       custom_formatter(formatter_to_use)   ||
       (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - " \
                             "maybe you meant 'documentation' or 'progress'?.")
+    end
+
+    def register(formatter, notifications)
+      return if duplicate_formatter_exists?(formatter)
+      @reporter.register_listener formatter, *notifications
+      @formatters << formatter
+      formatter
     end
 
     def duplicate_formatter_exists?(new_formatter)
