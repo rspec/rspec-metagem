@@ -19,6 +19,17 @@ module RSpec::Core
       expect(minimizer.repro_command_for_currently_needed_ids).to eq("rspec ex_2 ex_4 ex_5")
     end
 
+    it 'reduces a failure where none of the passing examples are implicated' do
+      no_dependents_runner = FakeBisectRunner.new(
+        %w[ ex_1 ex_2 ],
+        %w[ ex_2 ],
+        {}
+      )
+      minimizer = Bisect::ExampleMinimizer.new(no_dependents_runner, RSpec::Core::NullReporter)
+      minimizer.find_minimal_repro
+      expect(minimizer.repro_command_for_currently_needed_ids).to eq("rspec ex_2")
+    end
+
     it 'reduces a failure when more than 50% of examples are implicated' do
       fake_runner.always_failures = []
       fake_runner.dependent_failures = { "ex_8" => %w[ ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ] }
@@ -39,40 +50,45 @@ module RSpec::Core
       )
     end
 
-    context 'with an unminimisable run' do
-      class RoundCountingReporter < RSpec::Core::NullReporter
+    context 'with an unminimisable failure' do
+      class RunCountingReporter < RSpec::Core::NullReporter
         attr_accessor :round_count
-
-        def publish(event, *_args)
-          public_send(event) if respond_to? event
+        attr_accessor :example_count
+        def initialize
+          @round_count = 0
         end
 
-        def bisect_individual_run_start
-          self.round_count ||= 0
+        def publish(event, *args)
+          send(event, *args) if respond_to? event
+        end
+
+        def bisect_individual_run_start(_notification)
           self.round_count += 1
         end
       end
 
-      let(:counting_reporter) { RoundCountingReporter.new }
+      let(:counting_reporter) { RunCountingReporter.new }
       let(:fake_runner) do
         FakeBisectRunner.new(
           %w[ ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ex_7 ex_8 ex_9 ],
           [],
-          { "ex_9" => %w[ ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ex_7 ex_8 ] }
+          "ex_9" => %w[ ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ex_7 ex_8 ]
         )
       end
-      let(:minimizer) { Bisect::ExampleMinimizer.new(fake_runner, counting_reporter) }
+      let(:counting_minimizer) do
+        Bisect::ExampleMinimizer.new(fake_runner, counting_reporter)
+      end
 
-      it 'returns the full command if the run can not be reduced' do
-        minimizer.find_minimal_repro
+      it 'returns the full command if the failure can not be reduced' do
+        counting_minimizer.find_minimal_repro
 
-        expect(minimizer.repro_command_for_currently_needed_ids).to eq(
+        expect(counting_minimizer.repro_command_for_currently_needed_ids).to eq(
           "rspec ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ex_7 ex_8 ex_9"
         )
       end
 
-      it 'detects an unminimisable run in the minimum number of rounds' do
-        minimizer.find_minimal_repro
+      it 'detects an unminimisable failure in the minimum number of runs' do
+        counting_minimizer.find_minimal_repro
 
         # The recursive bisection strategy should take 1 + 2 + 4 + 8 = 15 runs
         # to determine that a failure is fully dependent on 8 preceding
