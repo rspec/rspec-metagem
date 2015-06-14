@@ -9,7 +9,7 @@ module RSpec::Core
       FakeBisectRunner.new(
         %w[ ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ex_7 ex_8 ],
         %w[ ex_2 ],
-        { "ex_5" => "ex_4" }
+        { "ex_5" => %w[ ex_4 ] }
       )
     end
 

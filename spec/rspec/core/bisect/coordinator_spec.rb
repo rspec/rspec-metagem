@@ -10,7 +10,7 @@ module RSpec::Core
       FakeBisectRunner.new(
         1.upto(8).map { |i| "#{i}.rb[1:1]" },
         %w[ 2.rb[1:1] ],
-        { "5.rb[1:1]" => "4.rb[1:1]" }
+        { "5.rb[1:1]" => %w[ 4.rb[1:1] ] }
       )
     end
 
