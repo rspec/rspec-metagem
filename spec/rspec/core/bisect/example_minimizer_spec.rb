@@ -19,6 +19,53 @@ module RSpec::Core
       expect(minimizer.repro_command_for_currently_needed_ids).to eq("rspec ex_2 ex_4 ex_5")
     end
 
+    context 'with an unminimisable run' do
+      class RoundCountingReporter < RSpec::Core::NullReporter
+        attr_accessor :round_count
+
+        def publish(event, *_args)
+          public_send(event) if respond_to? event
+        end
+
+        def bisect_individual_run_start
+          self.round_count ||= 0
+          self.round_count += 1
+        end
+      end
+
+      let(:counting_reporter) { RoundCountingReporter.new }
+      let(:fake_runner) do
+        FakeBisectRunner.new(
+          %w[ ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ex_7 ex_8 ex_9 ],
+          [],
+          { "ex_9" => %w[ ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ex_7 ex_8 ] }
+        )
+      end
+      let(:minimizer) { Bisect::ExampleMinimizer.new(fake_runner, counting_reporter) }
+
+      it 'returns the full command if the run can not be reduced' do
+        minimizer.find_minimal_repro
+
+        expect(minimizer.repro_command_for_currently_needed_ids).to eq(
+          "rspec ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ex_7 ex_8 ex_9"
+        )
+      end
+
+      it 'detects an unminimisable run in the minimum number of rounds' do
+        minimizer.find_minimal_repro
+
+        # The recursive bisection strategy should take 1 + 2 + 4 + 8 = 15 runs
+        # to determine that a failure is fully dependent on 8 preceding
+        # examples:
+        #
+        # 1 run to determine that any of the candidates are culprits
+        # 2 runs to determine that each half contains a culprit
+        # 4 runs to determine that each quarter contains a culprit
+        # 8 runs to determine that each candidate is a culprit
+        expect(counting_reporter.round_count).to eq(15)
+      end
+    end
+
     it 'ignores flapping examples that did not fail on the initial full run but fail on later runs' do
       def fake_runner.run(ids)
         super.tap do |results|
