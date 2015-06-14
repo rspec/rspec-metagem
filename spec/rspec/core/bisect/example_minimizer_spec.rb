@@ -19,6 +19,26 @@ module RSpec::Core
       expect(minimizer.repro_command_for_currently_needed_ids).to eq("rspec ex_2 ex_4 ex_5")
     end
 
+    it 'reduces a failure when more than 50% of examples are implicated' do
+      fake_runner.always_failures = []
+      fake_runner.dependent_failures = { "ex_8" => %w[ ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ] }
+      minimizer = Bisect::ExampleMinimizer.new(fake_runner, RSpec::Core::NullReporter)
+      minimizer.find_minimal_repro
+      expect(minimizer.repro_command_for_currently_needed_ids).to eq(
+        "rspec ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ex_8"
+      )
+    end
+
+    it 'reduces a failure with multiple dependencies' do
+      fake_runner.always_failures = []
+      fake_runner.dependent_failures = { "ex_8" => %w[ ex_1 ex_3 ex_5 ex_7 ] }
+      minimizer = Bisect::ExampleMinimizer.new(fake_runner, RSpec::Core::NullReporter)
+      minimizer.find_minimal_repro
+      expect(minimizer.repro_command_for_currently_needed_ids).to eq(
+        "rspec ex_1 ex_3 ex_5 ex_7 ex_8"
+      )
+    end
+
     context 'with an unminimisable run' do
       class RoundCountingReporter < RSpec::Core::NullReporter
         attr_accessor :round_count
