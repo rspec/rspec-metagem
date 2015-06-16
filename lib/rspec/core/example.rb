@@ -558,6 +558,7 @@ module RSpec
     class SuiteHookContext < Example
       def initialize
         super(AnonymousExampleGroup, "", {})
+        @example_group_instance = AnonymousExampleGroup.new
       end
 
       # rubocop:disable Style/AccessorMethodName
