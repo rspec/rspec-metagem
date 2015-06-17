@@ -20,7 +20,7 @@ module RSpec
             bisect(non_failing_example_ids)
           end
 
-          notify(:bisect_complete, :round => 10, :duration => duration,
+          notify(:bisect_complete, :duration => duration,
                                    :original_non_failing_count => non_failing_example_ids.size,
                                    :remaining_count => remaining_ids.size)
 
@@ -42,31 +42,34 @@ module RSpec
         def bisect_over(candidate_ids)
           return if candidate_ids.one?
 
+          notify(
+            :bisect_round_started,
+            :candidate_range => example_range(candidate_ids),
+            :candidates_count => candidate_ids.size
+          )
+
           slice_size = (candidate_ids.length / 2.0).ceil
           lhs, rhs = candidate_ids.each_slice(slice_size).to_a
 
-          notify(
-            :bisect_round_started,
-            :round => 10,
-            :subset_size => slice_size,
-            :remaining_count => candidate_ids.size
-          )
-
-          ids_to_ignore = [lhs, rhs].find do |ids|
-            get_expected_failures_for?(remaining_ids - ids)
+          ids_to_ignore, duration = track_duration do
+            [lhs, rhs].find do |ids|
+              get_expected_failures_for?(remaining_ids - ids)
+            end
           end
 
           if ids_to_ignore
             self.remaining_ids -= ids_to_ignore
             notify(
-              :bisect_ignoring_ids,
+              :bisect_round_ignoring_ids,
               :ids_to_ignore => ids_to_ignore,
-              :remaining_ids => remaining_ids
+              :ignore_range => example_range(ids_to_ignore),
+              :remaining_ids => remaining_ids,
+              :duration => duration
             )
             bisect_over(candidate_ids - ids_to_ignore)
           else
             notify(
-              :bisect_multiple_culprits_detected,
+              :bisect_round_detected_multiple_culprits,
               :duration => duration
             )
             bisect_over(lhs)
@@ -83,7 +86,26 @@ module RSpec
           "(Not yet enough information to provide any repro command)"
         end
 
+        # @private
+        # Convenience class for describing a subset of the candidate examples
+        ExampleRange = Struct.new(:start, :finish) do
+          def description
+            if start == finish
+              "example #{start}"
+            else
+              "examples #{start}-#{finish}"
+            end
+          end
+        end
+
       private
+
+        def example_range(ids)
+          ExampleRange.new(
+            non_failing_example_ids.find_index(ids.first) + 1,
+            non_failing_example_ids.find_index(ids.last) + 1
+          )
+        end
 
         def prep
           notify(:bisect_starting, :original_cli_args => runner.original_cli_args)

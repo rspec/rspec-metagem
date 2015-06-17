@@ -5,8 +5,8 @@ module RSpec::Core::Formatters
   BisectProgressFormatter = Class.new(remove_const :BisectProgressFormatter) do
     RSpec::Core::Formatters.register self
 
-    def bisect_round_finished(notification)
-      return super unless notification.round == 3
+    def bisect_round_started(notification)
+      return super unless @round_count == 3
 
       Process.kill("INT", Process.pid)
       # Process.kill is not a synchronous call, so to ensure the output

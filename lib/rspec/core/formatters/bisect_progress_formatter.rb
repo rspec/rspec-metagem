@@ -9,10 +9,14 @@ module RSpec
         # We've named all events with a `bisect_` prefix to prevent naming collisions.
         Formatters.register self, :bisect_starting, :bisect_original_run_complete,
                             :bisect_round_started, :bisect_individual_run_complete,
-                            :bisect_round_finished, :bisect_complete, :bisect_repro_command,
-                            :bisect_failed, :bisect_aborted
+                            :bisect_complete, :bisect_repro_command,
+                            :bisect_failed, :bisect_aborted,
+                            :bisect_round_ignoring_ids, :bisect_round_detected_multiple_culprits,
+                            :bisect_dependency_check_started, :bisect_dependency_check_passed,
+                            :bisect_dependency_check_failed
 
         def bisect_starting(notification)
+          @round_count = 0
           options = notification.original_cli_args.join(' ')
           output.puts "Bisect started using options: #{options.inspect}"
           output.print "Running suite to find failures..."
@@ -26,17 +30,35 @@ module RSpec
           output.puts "Starting bisect with #{failures} and #{non_failures}."
         end
 
-        def bisect_round_started(notification, include_trailing_space=true)
-          search_desc = Helpers.pluralize(
-            notification.subset_size, "non-failing example"
-          )
+        def bisect_dependency_check_started(_notification)
+          output.print "Checking that failure(s) are order-dependent.."
+        end
 
-          output.print "\nRound #{notification.round}: searching for #{search_desc}" \
-                       " (of #{notification.remaining_count}) to ignore:"
+        def bisect_dependency_check_passed(_notification)
+          output.puts " failure appears to be order-dependent"
+        end
+
+        def bisect_dependency_check_failed(_notification)
+          output.puts " failure is not order-dependent"
+        end
+
+        def bisect_round_started(notification, include_trailing_space=true)
+          @round_count += 1
+          range_desc = notification.candidate_range.description
+
+          output.print "\nRound #{@round_count}: bisecting over non-failing #{range_desc}"
           output.print " " if include_trailing_space
         end
 
-        def bisect_round_finished(notification)
+        def bisect_round_ignoring_ids(notification)
+          range_desc = notification.ignore_range.description
+
+          output.print " ignoring #{range_desc}"
+          output.print " (#{Helpers.format_duration(notification.duration)})"
+        end
+
+        def bisect_round_detected_multiple_culprits(notification)
+          output.print " multiple culprits detected - splitting candidates"
           output.print " (#{Helpers.format_duration(notification.duration)})"
         end
 
@@ -71,7 +93,7 @@ module RSpec
       # Designed to provide details for us when we need to troubleshoot bisect bugs.
       class BisectDebugFormatter < BisectProgressFormatter
         Formatters.register self, :bisect_original_run_complete, :bisect_individual_run_start,
-                            :bisect_individual_run_complete, :bisect_round_finished, :bisect_ignoring_ids
+                            :bisect_individual_run_complete, :bisect_round_ignoring_ids
 
         def bisect_original_run_complete(notification)
           output.puts " (#{Helpers.format_duration(notification.duration)})"
@@ -88,18 +110,25 @@ module RSpec
           output.print " (#{Helpers.format_duration(notification.duration)})"
         end
 
+        def bisect_dependency_check_passed(_notification)
+          output.print "\n - Failure appears to be order-dependent"
+        end
+
+        def bisect_dependency_check_failed(_notification)
+          output.print "\n - Failure is not order-dependent"
+        end
+
         def bisect_round_started(notification)
           super(notification, false)
         end
 
-        def bisect_round_finished(notification)
-          output.print "\n - Round finished"
-          super
-        end
-
-        def bisect_ignoring_ids(notification)
+        def bisect_round_ignoring_ids(notification)
           output.print "\n - #{describe_ids 'Examples we can safely ignore', notification.ids_to_ignore}"
           output.print "\n - #{describe_ids 'Remaining non-failing examples', notification.remaining_ids}"
+        end
+
+        def bisect_round_detected_multiple_culprits(_notification)
+          output.print "\n - Multiple culprits detected - splitting candidates"
         end
 
       private
