@@ -179,7 +179,11 @@ FILTERING
         end
 
         parser.on('-P', '--pattern PATTERN', 'Load files matching pattern (default: "spec/**/*_spec.rb").') do |o|
-          options[:pattern] = o
+          if options[:pattern]
+            options[:pattern] += ',' + o
+          else
+            options[:pattern] = o
+          end
         end
 
         parser.on('--exclude-pattern PATTERN',
