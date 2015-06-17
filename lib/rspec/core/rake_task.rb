@@ -91,7 +91,7 @@ module RSpec
 
       def file_inclusion_specification
         if ENV['SPEC']
-          FileList[ ENV['SPEC']].sort
+          FileList[ENV['SPEC']].sort
         elsif String === pattern && !File.exist?(pattern)
           "--pattern #{escape pattern}"
         else
