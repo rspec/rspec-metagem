@@ -23,6 +23,30 @@ module RSpec::Core
           }.to raise_error(ZeroDivisionError)
         end
 
+        it 'runs in the context of an example group' do
+          run_context = nil
+          RSpec.configuration.__send__(registration_method, :suite) { run_context = self }
+          RSpec.configuration.with_suite_hooks { }
+          expect(run_context).to be_a ExampleGroup
+        end
+
+        it 'allows access to rspec-mocks methods within the hook' do
+          run = false
+          RSpec.configuration.__send__(registration_method, :suite) do
+            RSpec::Mocks.with_temporary_scope { double('something') }
+            run = true
+          end
+          RSpec.configuration.with_suite_hooks { }
+          expect(run).to be true
+        end
+
+        it 'allows access to rspec-expectation methods within the hook' do
+          RSpec.configuration.__send__(registration_method, :suite) { expect(true).to be false }
+          expect {
+            RSpec.configuration.with_suite_hooks { }
+          }.to raise_error RSpec::Expectations::ExpectationNotMetError
+        end
+
         context "registered on an example group" do
           it "is ignored with a clear warning" do
             sequence = []
