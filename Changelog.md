@@ -1,9 +1,13 @@
-### Development
+### 3.4.0 Development
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.3.1...master)
 
 Enhancements:
 
 * Combine multiple `--pattern` arguments making them equivalent to
   `--pattern=1,2,...,n`. (Jon Rowe, #2002)
+
+### 3.3.1 / 2015-06-18
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.3.0...v3.3.1)
 
 Bug Fixes:
 
