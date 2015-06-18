@@ -1,3 +1,10 @@
+### Development
+
+Enhancements:
+
+* Combine multiple `--pattern` arguments making them equivalent to
+  `--pattern=1,2,...,n`. (Jon Rowe, #2002)
+
 ### 3.3.0 / 2015-06-12
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.2.3...v3.3.0)
 

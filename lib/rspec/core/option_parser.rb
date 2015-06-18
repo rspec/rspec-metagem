@@ -34,6 +34,7 @@ module RSpec::Core
   private
 
     # rubocop:disable MethodLength
+    # rubocop:disable CyclomaticComplexity
     def parser(options)
       OptionParser.new do |parser|
         parser.banner = "Usage: rspec [options] [files or directories]\n\n"
@@ -179,7 +180,11 @@ FILTERING
         end
 
         parser.on('-P', '--pattern PATTERN', 'Load files matching pattern (default: "spec/**/*_spec.rb").') do |o|
-          options[:pattern] = o
+          if options[:pattern]
+            options[:pattern] += ',' + o
+          else
+            options[:pattern] = o
+          end
         end
 
         parser.on('--exclude-pattern PATTERN',
@@ -250,6 +255,7 @@ FILTERING
       end
     end
     # rubocop:enable MethodLength
+    # rubocop:enable CyclomaticComplexity
 
     def add_tag_filter(options, filter_type, tag_name, value=true)
       (options[filter_type] ||= {})[tag_name] = value
