@@ -22,6 +22,16 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
     expect { ignoring_warnings { pp example_instance }}.to output(/RSpec::Core::Example/).to_stdout
   end
 
+  describe "human readable output" do
+    it 'prints a human readable description when inspected' do
+      expect(example_instance.inspect).to eq("#<RSpec::Core::Example \"example description\">")
+    end
+
+    it 'prints a human readable description for #to_s' do
+      expect(example_instance.to_s).to eq("#<RSpec::Core::Example \"example description\">")
+    end
+  end
+
   describe "#rerun_argument" do
     it "returns the location-based rerun argument" do
       allow(RSpec.configuration).to receive_messages(:loaded_spec_files => [__FILE__])

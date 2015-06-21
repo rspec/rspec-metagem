@@ -170,6 +170,12 @@ module RSpec
         @reporter = RSpec::Core::NullReporter
       end
 
+      # Provide a human-readable representation of this class
+      def inspect
+        "#<#{self.class.name} #{description.inspect}>"
+      end
+      alias to_s inspect
+
       # @return [RSpec::Core::Reporter] the current reporter for the example
       attr_reader :reporter
 
@@ -256,13 +262,13 @@ module RSpec
         attr_reader :example
 
         Example.public_instance_methods(false).each do |name|
-          next if name.to_sym == :run || name.to_sym == :inspect
+          next if name.to_sym == :run || name.to_sym == :inspect || name.to_sym == :to_s
 
           define_method(name) { |*a, &b| @example.__send__(name, *a, &b) }
         end
 
         Proc.public_instance_methods(false).each do |name|
-          next if name.to_sym == :call || name.to_sym == :inspect || name.to_sym == :to_proc
+          next if name.to_sym == :call || name.to_sym == :inspect || name.to_sym == :to_s || name.to_sym == :to_proc
 
           define_method(name) { |*a, &b| @proc.__send__(name, *a, &b) }
         end
