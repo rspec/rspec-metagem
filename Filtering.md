@@ -159,3 +159,16 @@ end
 ```
 
 These declarations can also be overridden from the command line.
+
+## Silencing filter announcements
+
+By default, RSpec will print a message before your specs run indicating what filters are configured, for instance, it might print "Run options: include {:focus=>true}" if you set `config.filter_run_including :focus => true`.
+
+If you wish to prevent those messages from appearing in your spec output, you can set the `silence_filter_announcements` config setting to `true` like this:
+
+``` ruby
+RSpec.configure do |c|
+  c.filter_run_including :foo => :bar
+  c.silence_filter_announcements = true
+end
+```

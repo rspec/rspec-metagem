@@ -106,6 +106,8 @@ module RSpec
       # Notify reporter of filters.
       def announce_filters
         fail_if_config_and_cli_options_invalid
+        return if @configuration.silence_filter_announcements?
+
         filter_announcements = []
 
         announce_inclusion_filter filter_announcements
