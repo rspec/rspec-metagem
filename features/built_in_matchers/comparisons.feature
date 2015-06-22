@@ -7,6 +7,7 @@ Feature: Comparison matchers
     expect(9).to be > 6
     expect(3).to be <= 3
     expect(1).to be < 6
+    expect('a').to be < 'b'
     ```
 
   Scenario: numeric operator matchers
@@ -23,10 +24,18 @@ Feature: Comparison matchers
         it { is_expected.to be > 20 }
         it { is_expected.to be <= 17 }
         it { is_expected.to be >= 19 }
+        it { is_expected.to be < 'a' }
+      end
+
+      RSpec.describe 'a' do
+        it { is_expected.to be < 'b' }
+
+        # deliberate failures
+        it { is_expected.to be < 18 }
       end
       """
      When I run `rspec numeric_operator_matchers_spec.rb`
-     Then the output should contain "8 examples, 4 failures"
+     Then the output should contain "11 examples, 6 failures"
       And the output should contain:
       """
            Failure/Error: it { is_expected.to be < 15 }
@@ -51,6 +60,19 @@ Feature: Comparison matchers
              expected: >= 19
                   got:    18
       """
+      And the output should contain:
+      """
+           Failure/Error: it { is_expected.to be < 'a' }
+             expected: < "a"
+                  got:   18
+      """
+      And the output should contain:
+      """
+           Failure/Error: it { is_expected.to be < 18 }
+             expected: < 18
+                  got:   "a"
+      """
+
 
   Scenario: string operator matchers
     Given a file named "string_operator_matchers_spec.rb" with:

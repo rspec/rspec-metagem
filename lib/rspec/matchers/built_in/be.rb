@@ -144,6 +144,8 @@ module RSpec
         def matches?(actual)
           @actual = actual
           @actual.__send__ @operator, @expected
+        rescue ArgumentError
+          false
         end
 
         # @api private
