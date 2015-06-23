@@ -1,4 +1,4 @@
-require 'rspec/core/reentrant_mutex'
+require 'rspec/support/reentrant_mutex'
 
 module RSpec
   module Core
@@ -148,7 +148,7 @@ module RSpec
       class ThreadsafeMemoized
         def initialize
           @memoized = {}
-          @mutex = ReentrantMutex.new
+          @mutex = Support::ReentrantMutex.new
         end
 
         def fetch_or_store(key)
