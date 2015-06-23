@@ -262,13 +262,15 @@ module RSpec
         attr_reader :example
 
         Example.public_instance_methods(false).each do |name|
-          next if name.to_sym == :run || name.to_sym == :inspect || name.to_sym == :to_s
+          name_sym = name.to_sym
+          next if name_sym == :run || name_sym == :inspect || name_sym == :to_s
 
           define_method(name) { |*a, &b| @example.__send__(name, *a, &b) }
         end
 
         Proc.public_instance_methods(false).each do |name|
-          next if name.to_sym == :call || name.to_sym == :inspect || name.to_sym == :to_s || name.to_sym == :to_proc
+          name_sym = name.to_sym
+          next if name_sym == :call || name_sym == :inspect || name_sym == :to_s || name_sym == :to_proc
 
           define_method(name) { |*a, &b| @proc.__send__(name, *a, &b) }
         end
