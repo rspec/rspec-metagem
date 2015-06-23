@@ -36,6 +36,8 @@ Enhancements:
   than the example aborting on the first failure. (Myron Marston, #776)
 * Improve `raise_error` matcher so that it can accept a matcher as a single argument
   that matches the message. (Time Wade, #782)
+* The built in `be` matcher now treats an `ArgumentError` as a failed expectation.
+  (Dennis Günnewig, #809)
 
 Bug Fixes:
 
