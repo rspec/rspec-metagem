@@ -1,7 +1,6 @@
 Feature: `all` matcher
 
-  Use the `all` matcher to specify that a collection's objects all pass an expected matcher.
-  This works on any enumerable object.
+  Use the `all` matcher to specify that a collection's objects all pass an expected matcher. This works on any enumerable object.
 
     ```ruby
     expect([1, 3, 5]).to all( be_odd )
@@ -16,6 +15,8 @@ Feature: `all` matcher
     expect([1, 3, 5]).to all( be_odd.and be < 10 )
     expect([1, 4, 21]).to all( be_odd.or be < 10 )
     ```
+
+  If you are looking for "any" member of a collection that passes an expectation, look at the `include`-matcher.
 
   Scenario: array usage
     Given a file named "array_all_matcher_spec.rb" with:

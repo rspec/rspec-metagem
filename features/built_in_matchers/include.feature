@@ -1,7 +1,6 @@
 Feature: `include` matcher
 
-  Use the `include` matcher to specify that a collection includes one or more expected objects.
-  This works on any object that responds to `#include?` (such as a string or array):
+  Use the `include` matcher to specify that a collection includes one or more expected objects. It succeeds if any object of the given collection passes the specified matcher.. This works on any object that responds to `#include?` (such as a string or array):
 
     ```ruby
     expect("a string").to include("a")
@@ -11,6 +10,9 @@ Feature: `include` matcher
 
     expect([1, 2]).to include(1)
     expect([1, 2]).to include(1, 2)
+    expect([1, 2]).to include(a_kind_of(Integer))
+    expect([1, 2]).to include(be_odd.and be < 10 )
+    expect([1, 2]).to include(be_odd)
     expect([1, 2]).not_to include(17)
     ```
 
@@ -35,11 +37,16 @@ Feature: `include` matcher
         it { is_expected.to include(7) }
         it { is_expected.to include(1, 7) }
         it { is_expected.to include(1, 3, 7) }
+        it { is_expected.to include(a_kind_of(Integer)) }
+        it { is_expected.to include(be_odd.and be < 10) }
+        it { is_expected.to include(be_odd) }
+        it { is_expected.not_to include(be_even) }
         it { is_expected.not_to include(17) }
         it { is_expected.not_to include(43, 100) }
 
         # deliberate failures
         it { is_expected.to include(4) }
+        it { is_expected.to include(be_even) }
         it { is_expected.not_to include(1) }
         it { is_expected.not_to include(3) }
         it { is_expected.not_to include(7) }
@@ -52,7 +59,7 @@ Feature: `include` matcher
       """
     When I run `rspec array_include_matcher_spec.rb`
     Then the output should contain all of these:
-      | 14 examples, 7 failures                       |
+      | 19 examples, 8 failures                       |
       | expected [1, 3, 7] to include 4               |
       | expected [1, 3, 7] not to include 1           |
       | expected [1, 3, 7] not to include 3           |
