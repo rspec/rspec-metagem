@@ -7,6 +7,8 @@ Enhancements:
   `--pattern=1,2,...,n`. (Jon Rowe, #2002)
 * Improve `inspect` and `to_s` output for `RSpec::Core::Example`
   objects, replacing Ruby's excessively verbose output. (Gavin Miller, #1922)
+* Add `silence_filter_announcements` configuration option.
+  (David Raffensperger, #2007)
 
 ### 3.3.1 / 2015-06-18
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.3.0...v3.3.1)
