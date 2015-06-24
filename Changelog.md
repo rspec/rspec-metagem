@@ -1,3 +1,13 @@
+### 3.4.0 Development
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.3.0...master)
+
+Bug Fixes:
+
+* Fix `be >`, `be <`, etc so that it fails rather than allowing an
+  argument error to be raised when compared against an object of the
+  wrong type. This allows it to be used in composed matcher expressions
+  against heterogeneous objects. (Dennis Günnewig, #809)
+
 ### 3.3.0 / 2015-06-12
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.2.1...v3.3.0)
 
@@ -36,8 +46,6 @@ Enhancements:
   than the example aborting on the first failure. (Myron Marston, #776)
 * Improve `raise_error` matcher so that it can accept a matcher as a single argument
   that matches the message. (Time Wade, #782)
-* The built in `be` matcher now treats an `ArgumentError` as a failed expectation.
-  (Dennis Günnewig, #809)
 
 Bug Fixes:
 
