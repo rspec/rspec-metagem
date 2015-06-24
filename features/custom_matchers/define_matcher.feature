@@ -1,9 +1,8 @@
-Feature: define matcher
+Feature: Define a custom matcher
 
-  rspec-expectations provides a DSL for defining custom matchers. These are often useful for
-  expressing expectations in the domain of your application.
+  rspec-expectations provides a DSL for defining custom matchers. These are often useful for expressing expectations in the domain of your application.
 
-  Scenario: define a matcher with default messages
+  Scenario: Define a matcher with default messages
     Given a file named "matcher_with_default_message_spec.rb" with:
       """ruby
       require 'rspec/expectations'
@@ -44,7 +43,7 @@ Feature: define matcher
     And the output should contain "expected 9 to be a multiple of 4"
     And the output should contain "expected 9 not to be a multiple of 3"
 
-  Scenario: overriding the failure_message
+  Scenario: Overriding the failure_message
     Given a file named "matcher_with_failure_message_spec.rb" with:
       """ruby
       require 'rspec/expectations'
@@ -68,7 +67,7 @@ Feature: define matcher
     And the stdout should contain "1 example, 1 failure"
     And the stdout should contain "expected that 9 would be a multiple of 4"
 
-  Scenario: overriding the failure_message_when_negated
+  Scenario: Overriding the failure_message_when_negated
     Given a file named "matcher_with_failure_for_message_spec.rb" with:
       """ruby
       require 'rspec/expectations'
@@ -92,7 +91,7 @@ Feature: define matcher
     And the stdout should contain "1 example, 1 failure"
     And the stdout should contain "expected that 9 would not be a multiple of 3"
 
-  Scenario: overriding the description
+  Scenario: Overriding the description
     Given a file named "matcher_overriding_description_spec.rb" with:
       """ruby
       require 'rspec/expectations'
@@ -120,7 +119,7 @@ Feature: define matcher
     And the stdout should contain "should be multiple of 3"
     And the stdout should contain "should not be multiple of 4"
 
-  Scenario: with no args
+  Scenario: With no args
     Given a file named "matcher_with_no_args_spec.rb" with:
       """ruby
       require 'rspec/expectations'
@@ -144,7 +143,7 @@ Feature: define matcher
     And the stdout should contain "1 example, 0 failures"
     And the stdout should contain "should have 7 fingers"
 
-  Scenario: with multiple args
+  Scenario: With multiple args
     Given a file named "matcher_with_multiple_args_spec.rb" with:
       """ruby
       require 'rspec/expectations'
@@ -164,7 +163,7 @@ Feature: define matcher
     And the stdout should contain "1 example, 0 failures"
     And the stdout should contain "should be the sum of 1, 2, 3, and 4"
 
-  Scenario: with helper methods
+  Scenario: With helper methods
     Given a file named "matcher_with_internal_helper_spec.rb" with:
       """ruby
       require 'rspec/expectations'
@@ -189,7 +188,7 @@ Feature: define matcher
     Then the exit status should be 0
     And the stdout should contain "1 example, 0 failures"
 
-  Scenario: scoped in a module
+  Scenario: Scoped in a module
     Given a file named "scoped_matcher_spec.rb" with:
       """ruby
       require 'rspec/expectations'
@@ -221,7 +220,7 @@ Feature: define matcher
     When I run `rspec ./scoped_matcher_spec.rb`
     Then the stdout should contain "2 examples, 0 failures"
 
-  Scenario: scoped in an example group
+  Scenario: Scoped in an example group
     Given a file named "scoped_matcher_spec.rb" with:
       """ruby
       require 'rspec/expectations'
@@ -254,7 +253,7 @@ Feature: define matcher
     When I run `rspec scoped_matcher_spec.rb`
     Then the output should contain "3 examples, 0 failures"
 
-  Scenario: matcher with separate logic for should and should_not
+  Scenario: Matcher with separate logic for expect().to and expect().not_to
     Given a file named "matcher_with_separate_should_not_logic_spec.rb" with:
       """ruby
       RSpec::Matchers.define :contain do |*expected|
@@ -282,7 +281,7 @@ Feature: define matcher
       | expected [1, 2, 3] to contain 1 and 4     |
       | expected [1, 2, 3] not to contain 1 and 4 |
 
-  Scenario: use define_method to create a helper method with access to matcher params
+  Scenario: Use define_method to create a helper method with access to matcher params
     Given a file named "define_method_spec.rb" with:
       """ruby
       RSpec::Matchers.define :be_a_multiple_of do |expected|
@@ -307,7 +306,7 @@ Feature: define matcher
       | expected 9 to be a multiple of 2     |
       | expected 9 not to be a multiple of 3 |
 
-  Scenario: include a module with helper methods in the matcher
+  Scenario: Include a module with helper methods in the matcher
     Given a file named "include_module_spec.rb" with:
       """ruby
       module MatcherHelpers
@@ -335,3 +334,99 @@ Feature: define matcher
       | 4 examples, 2 failures               |
       | expected 9 to be a multiple of 2     |
       | expected 9 not to be a multiple of 3 |
+
+  Scenario: Using values_match? to compare values and/or compound matchers.
+
+    Given a file named "compare_values_spec.rb" with:
+      """ruby
+      RSpec::Matchers.define :have_content do |expected|
+        match do |actual|
+          # The order of arguments is important for `values_match?`, e.g.
+          # especially if your matcher should handle `Regexp`-objects
+          # (`/regex/`): First comes the `expected` value, second the `actual`
+          # one.
+          values_match? expected, actual
+        end
+      end
+
+      RSpec.describe 'a' do
+        it { is_expected.to have_content 'a' }
+      end
+
+      RSpec.describe 'a' do
+        it { is_expected.to have_content /a/ }
+      end
+
+      RSpec.describe 'a' do
+        it { is_expected.to have_content a_string_starting_with('a') }
+      end
+      """
+    When I run `rspec ./compare_values_spec.rb --format documentation`
+    Then the exit status should be 0
+
+  Scenario: Error handling
+
+    Make sure your matcher returns either `true` or `false`. Take care to handle exceptions appropriately in your matcher, e.g. most cases you might want your matcher to return `false` if an exception - e.g. ArgumentError - occures, but there might be edge cases where you want to pass the exception to the user.
+
+    You should handle each `StandardError` with care! Do not handle them all in one.
+
+    ```ruby
+    match do |actual|
+      begin
+        '[...] Some code'
+      rescue ArgumentError
+        false
+      end
+    end
+    ```
+
+    Given a file named "error_handling_spec.rb" with:
+      """ruby
+      class CustomClass; end
+
+      RSpec::Matchers.define :is_lower_than do |expected|
+        match do |actual|
+          begin
+            actual < expected
+          rescue ArgumentError
+            false
+          end
+        end
+      end
+
+      RSpec.describe 1 do
+        it { is_expected.to is_lower_than 2 }
+      end
+
+      RSpec.describe 1 do
+        it { is_expected.not_to is_lower_than 'a' }
+      end
+
+      RSpec.describe CustomClass do
+        it { expect { is_expected.not_to is_lower_than 2 }.to raise_error NoMethodError }
+      end
+
+      """
+    When I run `rspec ./error_handling_spec.rb --format documentation`
+    Then the exit status should be 0
+
+  Scenario: Define aliases for your matcher
+
+    If you want your matcher to be readable in different contexts, you can use the `.alias_matcher`-method to provide an alias for your matcher.
+
+    Given a file named "alias_spec.rb" with:
+      """ruby
+      RSpec::Matchers.define :be_a_multiple_of do |expected|
+        match do |actual|
+          actual % expected == 0
+        end
+      end
+
+      RSpec::Matchers.alias_matcher :be_n_of , :be_a_multiple_of
+
+      RSpec.describe 9 do
+        it { is_expected.to be_n_of(3) }
+      end
+      """
+    When I run `rspec ./alias_spec.rb --format documentation`
+    Then the exit status should be 0
