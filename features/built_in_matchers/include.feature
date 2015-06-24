@@ -1,6 +1,6 @@
 Feature: `include` matcher
 
-  Use the `include` matcher to specify that a collection includes one or more expected objects. It succeeds if any object of the given collection passes the specified matcher.. This works on any object that responds to `#include?` (such as a string or array):
+  Use the `include` matcher to specify that a collection includes one or more expected objects. It succeeds if any object of the given collection passes the specified matcher. This works on any object that responds to `#include?` (such as a string or array):
 
     ```ruby
     expect("a string").to include("a")
