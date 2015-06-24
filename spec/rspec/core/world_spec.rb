@@ -224,6 +224,15 @@ module RSpec::Core
             world.announce_filters
           end
         end
+
+        context "with a filter but with silence_filter_announcements" do
+          it "does not announce" do
+            configuration.silence_filter_announcements = true
+            configuration.filter_run_including :foo => 'bar'
+            expect(reporter).to_not receive(:message)
+            world.announce_filters
+          end
+        end
       end
 
       context "with examples" do

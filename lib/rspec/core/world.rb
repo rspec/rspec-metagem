@@ -113,14 +113,14 @@ module RSpec
 
         unless filter_manager.empty?
           if filter_announcements.length == 1
-            reporter.message("Run options: #{filter_announcements[0]}")
+            report_filter_message("Run options: #{filter_announcements[0]}")
           else
-            reporter.message("Run options:\n  #{filter_announcements.join("\n  ")}")
+            report_filter_message("Run options:\n  #{filter_announcements.join("\n  ")}")
           end
         end
 
         if @configuration.run_all_when_everything_filtered? && example_count.zero? && !@configuration.only_failures?
-          reporter.message("#{everything_filtered_message}; ignoring #{inclusion_filter.description}")
+          report_filter_message("#{everything_filtered_message}; ignoring #{inclusion_filter.description}")
           filtered_examples.clear
           inclusion_filter.clear
         end
@@ -129,10 +129,15 @@ module RSpec
 
         example_groups.clear
         if filter_manager.empty?
-          reporter.message("No examples found.")
+          report_filter_message("No examples found.")
         elsif exclusion_filter.empty? || inclusion_filter.empty?
-          reporter.message(everything_filtered_message)
+          report_filter_message(everything_filtered_message)
         end
+      end
+
+      # @private
+      def report_filter_message(message)
+        reporter.message(message) unless @configuration.silence_filter_announcements?
       end
 
       # @private

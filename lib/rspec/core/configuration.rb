@@ -293,6 +293,11 @@ module RSpec
       #   :cyan]`
       add_setting :detail_color
 
+      # @macro add_setting
+      # Don't print filter info i.e. "Run options: include {:focus=>true}"
+      # (default `false`).
+      add_setting :silence_filter_announcements
+
       # Deprecated. This config option was added in RSpec 2 to pave the way
       # for this being the default behavior in RSpec 3. Now this option is
       # a no-op.
