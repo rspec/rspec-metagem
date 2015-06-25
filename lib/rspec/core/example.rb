@@ -406,6 +406,7 @@ module RSpec
       def finish(reporter)
         pending_message = execution_result.pending_message
 
+        reporter.example_finished(self)
         if @exception
           record_finished :failed
           execution_result.exception = @exception
