@@ -76,21 +76,29 @@ module RSpec::Core
         reporter.example_started(example)
       end
 
-      it "passes example_group_started and example_group_finished messages to that formatter in that order" do
+      it "passes messages to the formatter in the correct order" do
         order = []
 
         formatter = double("formatter")
         allow(formatter).to receive(:example_group_started)  { |n| order << "Started: #{n.group.description}" }
+        allow(formatter).to receive(:example_started)        { |n| order << "Started Example" }
+        allow(formatter).to receive(:example_finished)       { |n| order << "Finished Example" }
+        allow(formatter).to receive(:example_passed)         { |n| order << "Passed" }
+        allow(formatter).to receive(:example_pending)        { |n| order << "Pending" }
+        allow(formatter).to receive(:example_failed)         { |n| order << "Failed" }
         allow(formatter).to receive(:example_group_finished) { |n| order << "Finished: #{n.group.description}" }
 
-        reporter.register_listener formatter, :example_group_started, :example_group_finished
+        reporter.register_listener formatter, :example_group_started, :example_group_finished,
+                                              :example_started, :example_finished,
+                                              :example_passed, :example_failed, :example_pending
 
         group = RSpec.describe("root")
         group.describe("context 1") do
-          example("ignore") {}
+          example("passing example") {}
+          example("pending example", :skip => true) { }
         end
         group.describe("context 2") do
-          example("ignore") {}
+          example("failed example") { fail }
         end
 
         group.run(reporter)
@@ -98,8 +106,17 @@ module RSpec::Core
         expect(order).to eq([
            "Started: root",
            "Started: context 1",
+           "Started Example",
+           "Finished Example",
+           "Passed",
+           "Started Example",
+           "Finished Example",
+           "Pending",
            "Finished: context 1",
            "Started: context 2",
+           "Started Example",
+           "Finished Example",
+           "Failed",
            "Finished: context 2",
            "Finished: root"
         ])

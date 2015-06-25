@@ -66,6 +66,15 @@ module RSpec
         # @param notification [ExampleNotification] containing example subclass
         #   of `RSpec::Core::Example`
 
+        # @method example_finished
+        # @api public
+        # @group Example Notifications
+        #
+        # Invoked at the end of the execution of each example.
+        #
+        # @param notification [ExampleNotification] containing example subclass
+        #   of `RSpec::Core::Example`
+
         # @method example_passed
         # @api public
         # @group Example Notifications
