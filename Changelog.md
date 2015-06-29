@@ -11,6 +11,11 @@ Enhancements:
   (David Raffensperger, #2007)
 * Add optional `example_finished` notification to the reporter protocol for
   when you don't care about the example outcome. (Jon Rowe, #2013)
+* Switch `--bisect` to a recursion-based bisection algorithm rather than
+  a permutation-based one. This better handles cases where an example
+  depends upon multiple other examples instead of just one and minimizes
+  the number of runs necessary to determine that an example set cannot be
+  minimized further. (Simon Coffey, #1997)
 
 ### 3.3.1 / 2015-06-18
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.3.0...v3.3.1)
