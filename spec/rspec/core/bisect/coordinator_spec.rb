@@ -10,7 +10,7 @@ module RSpec::Core
       FakeBisectRunner.new(
         1.upto(8).map { |i| "#{i}.rb[1:1]" },
         %w[ 2.rb[1:1] ],
-        { "5.rb[1:1]" => "4.rb[1:1]" }
+        { "5.rb[1:1]" => %w[ 1.rb[1:1] 4.rb[1:1] ] }
       )
     end
 
@@ -34,14 +34,15 @@ module RSpec::Core
         |Bisect started using options: ""
         |Running suite to find failures... (n.nnnn seconds)
         |Starting bisect with 2 failing examples and 6 non-failing examples.
+        |Checking that failure(s) are order-dependent... failure appears to be order-dependent
         |
-        |Round 1: searching for 3 non-failing examples (of 6) to ignore: .. (n.nnnn seconds)
-        |Round 2: searching for 2 non-failing examples (of 3) to ignore: . (n.nnnn seconds)
-        |Round 3: searching for 1 non-failing example (of 1) to ignore: . (n.nnnn seconds)
-        |Bisect complete! Reduced necessary non-failing examples from 6 to 1 in n.nnnn seconds.
+        |Round 1: bisecting over non-failing examples 1-6 .. ignoring examples 4-6 (n.nnnn seconds)
+        |Round 2: bisecting over non-failing examples 1-3 .. multiple culprits detected - splitting candidates (n.nnnn seconds)
+        |Round 3: bisecting over non-failing examples 1-2 .. ignoring example 2 (n.nnnn seconds)
+        |Bisect complete! Reduced necessary non-failing examples from 6 to 2 in n.nnnn seconds.
         |
         |The minimal reproduction command is:
-        |  rspec 2.rb[1:1] 4.rb[1:1] 5.rb[1:1]
+        |  rspec 1.rb[1:1] 2.rb[1:1] 4.rb[1:1] 5.rb[1:1]
       EOS
     end
 
@@ -63,8 +64,10 @@ module RSpec::Core
         |    - 6.rb[1:1]
         |    - 7.rb[1:1]
         |    - 8.rb[1:1]
-        |
-        |Round 1: searching for 3 non-failing examples (of 6) to ignore:
+        |Checking that failure(s) are order-dependent..
+        | - Running: rspec 2.rb[1:1] 5.rb[1:1] (n.nnnn seconds)
+        | - Failure appears to be order-dependent
+        |Round 1: bisecting over non-failing examples 1-6
         | - Running: rspec 2.rb[1:1] 5.rb[1:1] 6.rb[1:1] 7.rb[1:1] 8.rb[1:1] (n.nnnn seconds)
         | - Running: rspec 1.rb[1:1] 2.rb[1:1] 3.rb[1:1] 4.rb[1:1] 5.rb[1:1] (n.nnnn seconds)
         | - Examples we can safely ignore (3):
@@ -75,23 +78,73 @@ module RSpec::Core
         |    - 1.rb[1:1]
         |    - 3.rb[1:1]
         |    - 4.rb[1:1]
-        | - Round finished (n.nnnn seconds)
-        |Round 2: searching for 2 non-failing examples (of 3) to ignore:
+        |Round 2: bisecting over non-failing examples 1-3
         | - Running: rspec 2.rb[1:1] 4.rb[1:1] 5.rb[1:1] (n.nnnn seconds)
-        | - Examples we can safely ignore (2):
-        |    - 1.rb[1:1]
+        | - Running: rspec 1.rb[1:1] 2.rb[1:1] 3.rb[1:1] 5.rb[1:1] (n.nnnn seconds)
+        | - Multiple culprits detected - splitting candidates
+        |Round 3: bisecting over non-failing examples 1-2
+        | - Running: rspec 2.rb[1:1] 3.rb[1:1] 4.rb[1:1] 5.rb[1:1] (n.nnnn seconds)
+        | - Running: rspec 1.rb[1:1] 2.rb[1:1] 4.rb[1:1] 5.rb[1:1] (n.nnnn seconds)
+        | - Examples we can safely ignore (1):
         |    - 3.rb[1:1]
-        | - Remaining non-failing examples (1):
+        | - Remaining non-failing examples (2):
+        |    - 1.rb[1:1]
         |    - 4.rb[1:1]
-        | - Round finished (n.nnnn seconds)
-        |Round 3: searching for 1 non-failing example (of 1) to ignore:
-        | - Running: rspec 2.rb[1:1] 5.rb[1:1] (n.nnnn seconds)
-        | - Round finished (n.nnnn seconds)
-        |Bisect complete! Reduced necessary non-failing examples from 6 to 1 in n.nnnn seconds.
+        |Bisect complete! Reduced necessary non-failing examples from 6 to 2 in n.nnnn seconds.
         |
         |The minimal reproduction command is:
-        |  rspec 2.rb[1:1] 4.rb[1:1] 5.rb[1:1]
+        |  rspec 1.rb[1:1] 2.rb[1:1] 4.rb[1:1] 5.rb[1:1]
       EOS
+    end
+
+    context "with an order-independent failure" do
+      it "detects the independent case and prints the minimal reproduction" do
+        fake_runner.dependent_failures = {}
+        output = StringIO.new
+        find_minimal_repro(output)
+        output = normalize_durations(output.string)
+
+        expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
+          |Bisect started using options: ""
+          |Running suite to find failures... (n.nnnn seconds)
+          |Starting bisect with 1 failing example and 7 non-failing examples.
+          |Checking that failure(s) are order-dependent... failure is not order-dependent
+          |
+          |Bisect complete! Reduced necessary non-failing examples from 7 to 0 in n.nnnn seconds.
+          |
+          |The minimal reproduction command is:
+          |  rspec 2.rb[1:1]
+        EOS
+      end
+
+      it "can use the debug formatter for detailed output" do
+        fake_runner.dependent_failures = {}
+        output = StringIO.new
+        find_minimal_repro(output, Formatters::BisectDebugFormatter)
+        output = normalize_durations(output.string)
+
+        expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
+          |Bisect started using options: ""
+          |Running suite to find failures... (n.nnnn seconds)
+          | - Failing examples (1):
+          |    - 2.rb[1:1]
+          | - Non-failing examples (7):
+          |    - 1.rb[1:1]
+          |    - 3.rb[1:1]
+          |    - 4.rb[1:1]
+          |    - 5.rb[1:1]
+          |    - 6.rb[1:1]
+          |    - 7.rb[1:1]
+          |    - 8.rb[1:1]
+          |Checking that failure(s) are order-dependent..
+          | - Running: rspec 2.rb[1:1] (n.nnnn seconds)
+          | - Failure is not order-dependent
+          |Bisect complete! Reduced necessary non-failing examples from 7 to 0 in n.nnnn seconds.
+          |
+          |The minimal reproduction command is:
+          |  rspec 2.rb[1:1]
+        EOS
+      end
     end
 
     context "when the user aborst the bisect with ctrl-c" do
@@ -99,8 +152,8 @@ module RSpec::Core
         Class.new(Formatters::BisectProgressFormatter) do
           Formatters.register self
 
-          def bisect_round_finished(notification)
-            return super unless notification.round == 2
+          def bisect_round_started(notification)
+            return super unless @round_count == 1
 
             Process.kill("INT", Process.pid)
             # Process.kill is not a synchronous call, so to ensure the output
@@ -128,14 +181,14 @@ module RSpec::Core
           |Bisect started using options: ""
           |Running suite to find failures... (n.nnnn seconds)
           |Starting bisect with 2 failing examples and 6 non-failing examples.
+          |Checking that failure(s) are order-dependent... failure appears to be order-dependent
           |
-          |Round 1: searching for 3 non-failing examples (of 6) to ignore: .. (n.nnnn seconds)
-          |Round 2: searching for 2 non-failing examples (of 3) to ignore: .
+          |Round 1: bisecting over non-failing examples 1-6 .. ignoring examples 4-6 (n.nnnn seconds)
           |
           |Bisect aborted!
           |
           |The most minimal reproduction command discovered so far is:
-          |  rspec 2.rb[1:1] 4.rb[1:1] 5.rb[1:1]
+          |  rspec 1.rb[1:1] 2.rb[1:1] 3.rb[1:1] 4.rb[1:1] 5.rb[1:1]
         EOS
       end
     end

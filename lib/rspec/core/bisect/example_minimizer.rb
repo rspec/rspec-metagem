@@ -1,5 +1,3 @@
-RSpec::Support.require_rspec_core "bisect/subset_enumerator"
-
 module RSpec
   module Core
     module Bisect
@@ -18,20 +16,65 @@ module RSpec
         def find_minimal_repro
           prep
 
-          self.remaining_ids = non_failing_example_ids
-
-          each_bisect_round do |subsets|
-            ids_to_ignore = subsets.find do |ids|
-              get_expected_failures_for?(remaining_ids - ids)
-            end
-
-            next :done unless ids_to_ignore
-
-            self.remaining_ids -= ids_to_ignore
-            notify(:bisect_ignoring_ids, :ids_to_ignore => ids_to_ignore, :remaining_ids => remaining_ids)
+          _, duration = track_duration do
+            bisect(non_failing_example_ids)
           end
 
-          currently_needed_ids
+          notify(:bisect_complete, :duration => duration,
+                                   :original_non_failing_count => non_failing_example_ids.size,
+                                   :remaining_count => remaining_ids.size)
+
+          remaining_ids + failed_example_ids
+        end
+
+        def bisect(candidate_ids)
+          notify(:bisect_dependency_check_started)
+          if get_expected_failures_for?([])
+            notify(:bisect_dependency_check_failed)
+            self.remaining_ids = []
+            return
+          end
+          notify(:bisect_dependency_check_passed)
+
+          bisect_over(candidate_ids)
+        end
+
+        def bisect_over(candidate_ids)
+          return if candidate_ids.one?
+
+          notify(
+            :bisect_round_started,
+            :candidate_range => example_range(candidate_ids),
+            :candidates_count => candidate_ids.size
+          )
+
+          slice_size = (candidate_ids.length / 2.0).ceil
+          lhs, rhs = candidate_ids.each_slice(slice_size).to_a
+
+          ids_to_ignore, duration = track_duration do
+            [lhs, rhs].find do |ids|
+              get_expected_failures_for?(remaining_ids - ids)
+            end
+          end
+
+          if ids_to_ignore
+            self.remaining_ids -= ids_to_ignore
+            notify(
+              :bisect_round_ignoring_ids,
+              :ids_to_ignore => ids_to_ignore,
+              :ignore_range => example_range(ids_to_ignore),
+              :remaining_ids => remaining_ids,
+              :duration => duration
+            )
+            bisect_over(candidate_ids - ids_to_ignore)
+          else
+            notify(
+              :bisect_round_detected_multiple_culprits,
+              :duration => duration
+            )
+            bisect_over(lhs)
+            bisect_over(rhs)
+          end
         end
 
         def currently_needed_ids
@@ -43,7 +86,26 @@ module RSpec
           "(Not yet enough information to provide any repro command)"
         end
 
+        # @private
+        # Convenience class for describing a subset of the candidate examples
+        ExampleRange = Struct.new(:start, :finish) do
+          def description
+            if start == finish
+              "example #{start}"
+            else
+              "examples #{start}-#{finish}"
+            end
+          end
+        end
+
       private
+
+        def example_range(ids)
+          ExampleRange.new(
+            non_failing_example_ids.find_index(ids.first) + 1,
+            non_failing_example_ids.find_index(ids.last) + 1
+          )
+        end
 
         def prep
           notify(:bisect_starting, :original_cli_args => runner.original_cli_args)
@@ -52,6 +114,7 @@ module RSpec
             original_results    = runner.original_results
             @all_example_ids    = original_results.all_example_ids
             @failed_example_ids = original_results.failed_example_ids
+            @remaining_ids      = non_failing_example_ids
           end
 
           if @failed_example_ids.empty?
@@ -70,41 +133,17 @@ module RSpec
 
         def get_expected_failures_for?(ids)
           ids_to_run = ids + failed_example_ids
-          notify(:bisect_individual_run_start, :command => runner.repro_command_from(ids_to_run))
+          notify(
+            :bisect_individual_run_start,
+            :command => runner.repro_command_from(ids_to_run),
+            :ids_to_run => ids_to_run
+          )
 
           results, duration = track_duration { runner.run(ids_to_run) }
           notify(:bisect_individual_run_complete, :duration => duration, :results => results)
 
           abort_if_ordering_inconsistent(results)
           (failed_example_ids & results.failed_example_ids) == failed_example_ids
-        end
-
-        INFINITY = (1.0 / 0) # 1.8.7 doesn't define Float::INFINITY so we define our own...
-
-        def each_bisect_round(&block)
-          last_round, duration = track_duration do
-            1.upto(INFINITY) do |round|
-              break if :done == bisect_round(round, &block)
-            end
-          end
-
-          notify(:bisect_complete, :round => last_round, :duration => duration,
-                                   :original_non_failing_count => non_failing_example_ids.size,
-                                   :remaining_count => remaining_ids.size)
-        end
-
-        def bisect_round(round)
-          value, duration = track_duration do
-            subsets = SubsetEnumerator.new(remaining_ids)
-            notify(:bisect_round_started, :round => round,
-                                          :subset_size => subsets.subset_size,
-                                          :remaining_count => remaining_ids.size)
-
-            yield subsets
-          end
-
-          notify(:bisect_round_finished, :duration => duration, :round => round)
-          value
         end
 
         def track_duration
