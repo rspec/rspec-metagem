@@ -1,4 +1,5 @@
 require 'pathname'
+require 'rspec/core/resources/a_custom_formatter'
 
 module RSpec::Core::Formatters
   RSpec.describe Loader do
@@ -134,6 +135,16 @@ module RSpec::Core::Formatters
         it "adds the formatter for different output targets" do
           expect {
             loader.add :documentation, path
+          }.to change { loader.formatters.length }
+        end
+      end
+
+      context "When a custom formatter exists" do
+        before { loader.add Custom::AGeneralFormatter, output }
+
+        it "adds a subclass of that formatter for the same output target" do
+          expect {
+            loader.add Custom::AMoreSpecificFormatter, output
           }.to change { loader.formatters.length }
         end
       end
