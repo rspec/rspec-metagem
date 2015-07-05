@@ -39,6 +39,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'rake',     '~> 10.0.0'
   s.add_development_dependency 'cucumber', '~> 1.3'
-  s.add_development_dependency "aruba",    "~> 0.6"
+  s.add_development_dependency "aruba",    "~> 0.6.2" # 0.7 is broken on ruby 1.8.7
   s.add_development_dependency 'minitest', '~> 5.2'
 end
