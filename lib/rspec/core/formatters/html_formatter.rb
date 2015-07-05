@@ -138,7 +138,7 @@ module RSpec
         # produced during the specs.
         def extra_failure_content(failure)
           RSpec::Support.require_rspec_core "formatters/snippet_extractor"
-          backtrace = failure.exception.backtrace.map do |line|
+          backtrace = (failure.exception.backtrace || []).map do |line|
             RSpec.configuration.backtrace_formatter.backtrace_line(line)
           end
           backtrace.compact!

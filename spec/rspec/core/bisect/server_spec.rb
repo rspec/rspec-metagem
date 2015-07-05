@@ -63,8 +63,8 @@ module RSpec::Core
           run_formatter_specs
         end
 
-        expect(results).to have_attributes(
-          :all_example_ids => %w[
+        aggregate_failures "checking results" do
+          expect(results.all_example_ids).to eq %w[
             ./spec/rspec/core/resources/formatter_specs.rb[1:1]
             ./spec/rspec/core/resources/formatter_specs.rb[2:1:1]
             ./spec/rspec/core/resources/formatter_specs.rb[2:2:1]
@@ -72,14 +72,17 @@ module RSpec::Core
             ./spec/rspec/core/resources/formatter_specs.rb[4:1]
             ./spec/rspec/core/resources/formatter_specs.rb[5:1]
             ./spec/rspec/core/resources/formatter_specs.rb[5:2]
-          ],
-          :failed_example_ids => %w[
+            ./spec/rspec/core/resources/formatter_specs.rb[5:3:1]
+          ]
+
+          expect(results.failed_example_ids).to eq %w[
             ./spec/rspec/core/resources/formatter_specs.rb[2:2:1]
             ./spec/rspec/core/resources/formatter_specs.rb[4:1]
             ./spec/rspec/core/resources/formatter_specs.rb[5:1]
             ./spec/rspec/core/resources/formatter_specs.rb[5:2]
+            ./spec/rspec/core/resources/formatter_specs.rb[5:3:1]
           ]
-        )
+        end
       end
 
       describe "aborting the run early" do
