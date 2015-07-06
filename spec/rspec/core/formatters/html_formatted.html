@@ -280,7 +280,7 @@ a {
 <div id="div_group_1" class="example_group passed">
   <dl style="margin-left: 0px;">
 <dt id="example_group_1" class="passed">pending spec with no implementation</dt>
-    <script type="text/javascript">makeYellow('rspec-header');</script><script type="text/javascript">makeYellow('div_group_1');</script><script type="text/javascript">makeYellow('example_group_1');</script><script type="text/javascript">moveProgressBar('14.2');</script><dd class="example not_implemented"><span class="not_implemented_spec_name">is pending (PENDING: Not yet implemented)</span></dd>
+    <script type="text/javascript">makeYellow('rspec-header');</script><script type="text/javascript">makeYellow('div_group_1');</script><script type="text/javascript">makeYellow('example_group_1');</script><script type="text/javascript">moveProgressBar('12.5');</script><dd class="example not_implemented"><span class="not_implemented_spec_name">is pending (PENDING: Not yet implemented)</span></dd>
   </dl>
 </div>
 <div id="div_group_2" class="example_group passed">
@@ -291,13 +291,13 @@ a {
 <div id="div_group_3" class="example_group passed">
   <dl style="margin-left: 15px;">
 <dt id="example_group_3" class="passed">with content that would fail</dt>
-    <script type="text/javascript">makeYellow('rspec-header');</script><script type="text/javascript">makeYellow('div_group_3');</script><script type="text/javascript">makeYellow('example_group_3');</script><script type="text/javascript">moveProgressBar('28.5');</script><dd class="example not_implemented"><span class="not_implemented_spec_name">is pending (PENDING: No reason given)</span></dd>
+    <script type="text/javascript">makeYellow('rspec-header');</script><script type="text/javascript">makeYellow('div_group_3');</script><script type="text/javascript">makeYellow('example_group_3');</script><script type="text/javascript">moveProgressBar('25.0');</script><dd class="example not_implemented"><span class="not_implemented_spec_name">is pending (PENDING: No reason given)</span></dd>
   </dl>
 </div>
 <div id="div_group_4" class="example_group passed">
   <dl style="margin-left: 15px;">
 <dt id="example_group_4" class="passed">behaves like shared</dt>
-    <script type="text/javascript">makeRed('rspec-header');</script><script type="text/javascript">makeRed('div_group_4');</script><script type="text/javascript">makeRed('example_group_4');</script><script type="text/javascript">moveProgressBar('42.8');</script><dd class="example pending_fixed">
+    <script type="text/javascript">makeRed('rspec-header');</script><script type="text/javascript">makeRed('div_group_4');</script><script type="text/javascript">makeRed('example_group_4');</script><script type="text/javascript">moveProgressBar('37.5');</script><dd class="example pending_fixed">
       <span class="failed_spec_name">is marked as pending but passes</span>
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_1">
@@ -315,7 +315,7 @@ a {
 <div id="div_group_5" class="example_group passed">
   <dl style="margin-left: 0px;">
 <dt id="example_group_5" class="passed">passing spec</dt>
-    <script type="text/javascript">moveProgressBar('57.1');</script><dd class="example passed">
+    <script type="text/javascript">moveProgressBar('50.0');</script><dd class="example passed">
 <span class="passed_spec_name">passes</span><span class="duration">n.nnnns</span>
 </dd>
   </dl>
@@ -323,7 +323,7 @@ a {
 <div id="div_group_6" class="example_group passed">
   <dl style="margin-left: 0px;">
 <dt id="example_group_6" class="passed">failing spec</dt>
-    <script type="text/javascript">makeRed('div_group_6');</script><script type="text/javascript">makeRed('example_group_6');</script><script type="text/javascript">moveProgressBar('71.4');</script><dd class="example failed">
+    <script type="text/javascript">makeRed('div_group_6');</script><script type="text/javascript">makeRed('example_group_6');</script><script type="text/javascript">moveProgressBar('62.5');</script><dd class="example failed">
       <span class="failed_spec_name">fails</span>
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_2">
@@ -346,7 +346,7 @@ expected: 2
 <div id="div_group_7" class="example_group passed">
   <dl style="margin-left: 0px;">
 <dt id="example_group_7" class="passed">a failing spec with odd backtraces</dt>
-    <script type="text/javascript">makeRed('div_group_7');</script><script type="text/javascript">makeRed('example_group_7');</script><script type="text/javascript">moveProgressBar('85.7');</script><dd class="example failed">
+    <script type="text/javascript">makeRed('div_group_7');</script><script type="text/javascript">makeRed('example_group_7');</script><script type="text/javascript">moveProgressBar('75.0');</script><dd class="example failed">
       <span class="failed_spec_name">fails with a backtrace that has no file</span>
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_3">
@@ -355,7 +355,7 @@ expected: 2
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for (erb)</span></code></pre>
       </div>
     </dd>
-    <script type="text/javascript">moveProgressBar('100.0');</script><dd class="example failed">
+    <script type="text/javascript">moveProgressBar('87.5');</script><dd class="example failed">
       <span class="failed_spec_name">fails with a backtrace containing an erb file</span>
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_4">
@@ -366,7 +366,21 @@ expected: 2
     </dd>
   </dl>
 </div>
-<script type="text/javascript">document.getElementById('duration').innerHTML = "Finished in <strong>n.nnnn seconds</strong>";</script><script type="text/javascript">document.getElementById('totals').innerHTML = "7 examples, 4 failures, 2 pending";</script>
+<div id="div_group_8" class="example_group passed">
+  <dl style="margin-left: 15px;">
+<dt id="example_group_8" class="passed">with a `nil` backtrace</dt>
+    <script type="text/javascript">makeRed('div_group_8');</script><script type="text/javascript">makeRed('example_group_8');</script><script type="text/javascript">moveProgressBar('100.0');</script><dd class="example failed">
+      <span class="failed_spec_name">raises</span>
+      <span class="duration">n.nnnns</span>
+      <div class="failure" id="failure_5">
+        <div class="message"><pre>boom</pre></div>
+        <div class="backtrace"><pre></pre></div>
+    <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for </span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<script type="text/javascript">document.getElementById('duration').innerHTML = "Finished in <strong>n.nnnn seconds</strong>";</script><script type="text/javascript">document.getElementById('totals').innerHTML = "8 examples, 5 failures, 2 pending";</script>
 </div>
 </div>
 </body>

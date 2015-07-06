@@ -90,8 +90,13 @@ module FormatterSupport
         |       Exception
         |     # /foo.html.erb:1:in `<main>': foo (RuntimeError)
         |
+        |  5) a failing spec with odd backtraces with a `nil` backtrace raises
+        |     Failure/Error: Unable to find matching line from backtrace
+        |     RuntimeError:
+        |       boom
+        |
         |Finished in n.nnnn seconds (files took n.nnnn seconds to load)
-        |7 examples, 4 failures, 2 pending
+        |8 examples, 5 failures, 2 pending
         |
         |Failed examples:
         |
@@ -99,6 +104,7 @@ module FormatterSupport
         |rspec ./spec/rspec/core/resources/formatter_specs.rb:32 # failing spec fails
         |rspec ./spec/rspec/core/resources/formatter_specs.rb:38 # a failing spec with odd backtraces fails with a backtrace that has no file
         |rspec ./spec/rspec/core/resources/formatter_specs.rb:44 # a failing spec with odd backtraces fails with a backtrace containing an erb file
+        |rspec ./spec/rspec/core/resources/formatter_specs.rb:62 # a failing spec with odd backtraces with a `nil` backtrace raises
       EOS
     end
   else
@@ -158,8 +164,13 @@ module FormatterSupport
         |       Exception
         |     # /foo.html.erb:1:in `<main>': foo (RuntimeError)
         |
+        |  5) a failing spec with odd backtraces with a `nil` backtrace raises
+        |     Failure/Error: Unable to find matching line from backtrace
+        |     RuntimeError:
+        |       boom
+        |
         |Finished in n.nnnn seconds (files took n.nnnn seconds to load)
-        |7 examples, 4 failures, 2 pending
+        |8 examples, 5 failures, 2 pending
         |
         |Failed examples:
         |
@@ -167,6 +178,7 @@ module FormatterSupport
         |rspec ./spec/rspec/core/resources/formatter_specs.rb:32 # failing spec fails
         |rspec ./spec/rspec/core/resources/formatter_specs.rb:38 # a failing spec with odd backtraces fails with a backtrace that has no file
         |rspec ./spec/rspec/core/resources/formatter_specs.rb:44 # a failing spec with odd backtraces fails with a backtrace containing an erb file
+        |rspec ./spec/rspec/core/resources/formatter_specs.rb:62 # a failing spec with odd backtraces with a `nil` backtrace raises
       EOS
     end
   end
