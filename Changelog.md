@@ -1,6 +1,12 @@
 ### 3.4.0 Development
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.3.0...master)
 
+Enhancements:
+
+* Warn when `RSpec::Matchers` is included in a superclass after it has
+  already been included in a subclass on MRI 1.9, since that situation
+  can cause uses of `super` to trigger infinite recursion. (Myron Marston, #816)
+
 Bug Fixes:
 
 * Fix `be >`, `be <`, etc so that it fails rather than allowing an

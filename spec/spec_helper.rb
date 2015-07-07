@@ -129,3 +129,5 @@ module MinitestIntegration
     end
   end
 end
+
+RSpec::Matchers.define_negated_matcher :avoid_outputting, :output
