@@ -1005,5 +1005,33 @@ module RSpec
     def self.is_a_describable_matcher?(obj)
       is_a_matcher?(obj) && obj.respond_to?(:description)
     end
+
+    if RSpec::Support::Ruby.mri? && RUBY_VERSION[0, 3] == '1.9'
+      # @api private
+      # Note that `included` doesn't work for this because it is triggered
+      # _after_ `RSpec::Matchers` is an ancestor of the inclusion host, rather
+      # than _before_, like `append_features`. It's important we check this before
+      # in order to find the cases where it was already previously included.
+      def self.append_features(mod)
+        return super if mod < self # `mod < self` indicates a re-inclusion.
+
+        subclasses = ObjectSpace.each_object(Class).select { |c| c < mod && c < self }
+        return super unless subclasses.any?
+
+        subclasses.reject! { |s| subclasses.any? { |s2| s < s2 } } # Filter to the root ancestor.
+        subclasses = subclasses.map { |s| "`#{s}`" }.join(", ")
+
+        RSpec.warning "`#{self}` has been included in a superclass (`#{mod}`) " \
+                      "after previously being included in subclasses (#{subclasses}), " \
+                      "which can trigger infinite recursion from `super` due to an MRI 1.9 bug " \
+                      "(https://redmine.ruby-lang.org/issues/3351). To work around this, " \
+                      "either upgrade to MRI 2.0+, include a dup of the module (e.g. " \
+                      "`include #{self}.dup`), or find a way to include `#{self}` in `#{mod}` " \
+                      "before it is included in subclasses (#{subclasses}). See " \
+                      "https://github.com/rspec/rspec-expectations/issues/814 for more info"
+
+        super
+      end
+    end
   end
 end

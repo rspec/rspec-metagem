@@ -11,6 +11,8 @@ RSpec.describe RSpec::Matchers do
 
   it 'can be mixed into `main`' do
     in_sub_process do
+      allow_warning if RSpec::Support::Ruby.mri? && RUBY_VERSION[0, 3] == '1.9'
+
       main.instance_eval do
         include RSpec::Matchers
         include RSpec::Matchers::FailMatchers
@@ -22,6 +24,36 @@ RSpec.describe RSpec::Matchers do
           expect(4).to be_zero
         }.to fail_with("expected `4.zero?` to return true, got false")
       end
+    end
+  end
+
+  context "when included into a superclass after a subclass has already included it" do
+    if RSpec::Support::Ruby.mri? && RUBY_VERSION[0, 3] == '1.9'
+      desc_start = "print"
+      matcher_method = :output
+    else
+      desc_start = "does not print"
+      matcher_method = :avoid_outputting
+    end
+
+    it "#{desc_start} a warning so the user is made aware of the MRI 1.9 bug that can cause infinite recursion" do
+      superclass = stub_const("Superclass", Class.new)
+      stub_const("Subclass", Class.new(superclass) { include RSpec::Matchers })
+
+      expect {
+        superclass.send(:include, RSpec::Matchers)
+      }.to send(matcher_method, a_string_including(
+        "Superclass", "Subclass", "has been included"
+      )).to_stderr
+    end
+
+    it "does not warn when this is a re-inclusion" do
+      superclass = stub_const("Superclass", Class.new { include RSpec::Matchers })
+      stub_const("Subclass", Class.new(superclass) { include RSpec::Matchers })
+
+      expect {
+        superclass.send(:include, RSpec::Matchers)
+      }.to avoid_outputting.to_stderr
     end
   end
 
