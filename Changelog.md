@@ -21,6 +21,8 @@ Bug Fixes:
 
 * Fix formatters to handle exceptions for which `backtrace` returns `nil`.
   (Myron Marston, #2023)
+* Fix duplicate formatter detection so that it allowes subclasses of formatters
+  to be added. (Sebastián Tello, #2019)
 
 ### 3.3.1 / 2015-06-18
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.3.0...v3.3.1)
