@@ -20,3 +20,4 @@ Gemfile-custom
 bundle
 .rspec-local
 spec/examples.txt
+specs.out
