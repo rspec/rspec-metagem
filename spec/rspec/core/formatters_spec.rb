@@ -137,6 +137,19 @@ module RSpec::Core::Formatters
           }.to change { loader.formatters.length }
         end
       end
+
+      context "When a custom formatter exists" do
+        specific_formatter = RSpec::Core::Formatters::JsonFormatter
+        generic_formatter = specific_formatter.superclass
+
+        before { loader.add generic_formatter, output }
+
+        it "adds a subclass of that formatter for the same output target" do
+          expect {
+            loader.add specific_formatter, output
+          }.to change { loader.formatters.length }
+        end
+      end
     end
 
     describe "#setup_default" do
