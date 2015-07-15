@@ -72,7 +72,7 @@ module RSpec
         def matches_arity?(actual, name)
           return true unless @expected_arity
 
-          signature = Support::MethodSignature.new(actual.method(name))
+          signature = Support::MethodSignature.new(get_method_on_object(actual, name))
           Support::StrictSignatureVerifier.new(signature, Array.new(@expected_arity)).valid?
         end
 
@@ -83,6 +83,11 @@ module RSpec
 
         def pp_names
           @names.length == 1 ? "##{@names.first}" : description_of(@names)
+        end
+
+        def get_method_on_object(object, method_name)
+          # Can't use object.method since it might be overridden
+          Kernel.instance_method(:method).bind(object).call(method_name)
         end
       end
     end
