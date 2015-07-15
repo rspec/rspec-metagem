@@ -58,6 +58,36 @@ module RSpec::Core
         )
       end
 
+      it 'prevents simultaneous access to the file' do
+        # This tests whether a certain race condition is prevented:
+        #  - read 1
+        #  - read 2
+        #  - write 1
+        #  - write 2 - write 1 is lost
+        ex_1 = new_example("#{existing_spec_file}[1:1]", :status => :passed)
+        ex_2 = new_example("spec_1.rb[1:1]", :status => :failed)
+
+        persister_1 = ExampleStatusPersister.new([ex_1], file.path)
+        persister_2 = ExampleStatusPersister.new([ex_2], file.path)
+        persister_2_thread = nil
+
+        # dumped_statuses is called after the file is locked but
+        # before the output is written
+        allow(persister_1).to receive(:dumped_statuses).and_wrap_original do |m, *args|
+          persister_2_thread = Thread.new { persister_2.persist }
+          m.call(*args)
+        end
+        persister_1.persist
+        persister_2_thread.join
+
+        loaded = ExampleStatusPersister.load_from(file.path)
+
+        expect(loaded).to contain_exactly(
+          a_hash_including(:example_id => ex_1.id, :status => "passed"),
+          a_hash_including(:example_id => ex_2.id, :status => "failed")
+        )
+      end
+
       it 'merges the example statuses with the existing records in the named file' do
         ex_1 = new_example("#{existing_spec_file}[1:1]", :status => :passed)
         ex_2 = new_example("spec_1.rb[1:1]", :status => :failed)

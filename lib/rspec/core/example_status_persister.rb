@@ -21,15 +21,21 @@ module RSpec
       end
 
       def persist
-        write dumped_statuses
+        RSpec::Support::DirectoryMaker.mkdir_p(File.dirname(@file_name))
+        File.open(@file_name, File::RDWR | File::CREAT) do |f|
+          # lock the file while reading / persisting to avoid a race
+          # condition where parallel or unrelated spec runs race to
+          # update the same file
+          f.flock(File::LOCK_EX)
+          @previous_runs = f.read
+          f.rewind
+          f.write(dumped_statuses)
+          f.flush
+          f.truncate(f.pos)
+        end
       end
 
     private
-
-      def write(statuses)
-        RSpec::Support::DirectoryMaker.mkdir_p(File.dirname(@file_name))
-        File.open(@file_name, "w") { |f| f.write(statuses) }
-      end
 
       def dumped_statuses
         ExampleStatusDumper.dump(merged_statuses)
@@ -52,7 +58,7 @@ module RSpec
       end
 
       def statuses_from_previous_runs
-        self.class.load_from(@file_name)
+        ExampleStatusParser.parse(@previous_runs)
       end
     end
 
