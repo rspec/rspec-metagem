@@ -63,6 +63,13 @@ RSpec.describe "expect(...).to respond_to(:sym).with(1).argument" do
       expect(obj).to respond_to(:foo).with(1).argument
     }.to fail_with(/expected #<Object.*> to respond to :foo with 1 argument/)
   end
+
+  it "still works if target has overridden the method method" do
+    obj = Object.new
+    def obj.method; end
+    def obj.other_method(arg); end
+    expect(obj).to respond_to(:other_method).with(1).argument
+  end
 end
 
 RSpec.describe "expect(...).to respond_to(message1, message2)" do

@@ -72,7 +72,7 @@ module RSpec
         def matches_arity?(actual, name)
           return true unless @expected_arity
 
-          signature = Support::MethodSignature.new(actual.method(name))
+          signature = Support::MethodSignature.new(Support.method_handle_for(actual, name))
           Support::StrictSignatureVerifier.new(signature, Array.new(@expected_arity)).valid?
         end
 
