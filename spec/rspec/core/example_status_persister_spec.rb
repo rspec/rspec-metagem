@@ -73,7 +73,7 @@ module RSpec::Core
 
         # dumped_statuses is called after the file is locked but
         # before the output is written
-        allow(persister_1).to receive(:dumped_statuses).and_wrap_original do |m, *args|
+        allow(persister_1).to receive(:dump_statuses).and_wrap_original do |m, *args|
           persister_2_thread = Thread.new { persister_2.persist }
           m.call(*args)
         end

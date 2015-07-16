@@ -27,9 +27,9 @@ module RSpec
           # condition where parallel or unrelated spec runs race to
           # update the same file
           f.flock(File::LOCK_EX)
-          @previous_runs = f.read
+          unparsed_previous_runs = f.read
           f.rewind
-          f.write(dumped_statuses)
+          f.write(dump_statuses(unparsed_previous_runs))
           f.flush
           f.truncate(f.pos)
         end
@@ -37,12 +37,10 @@ module RSpec
 
     private
 
-      def dumped_statuses
+      def dump_statuses(unparsed_previous_runs)
+        statuses_from_previous_runs = ExampleStatusParser.parse(unparsed_previous_runs)
+        merged_statuses = ExampleStatusMerger.merge(statuses_from_this_run, statuses_from_previous_runs)
         ExampleStatusDumper.dump(merged_statuses)
-      end
-
-      def merged_statuses
-        ExampleStatusMerger.merge(statuses_from_this_run, statuses_from_previous_runs)
       end
 
       def statuses_from_this_run
@@ -55,10 +53,6 @@ module RSpec
             :run_time   => result.run_time ? Formatters::Helpers.format_duration(result.run_time) : ""
           }
         end
-      end
-
-      def statuses_from_previous_runs
-        ExampleStatusParser.parse(@previous_runs)
       end
     end
 
