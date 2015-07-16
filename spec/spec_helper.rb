@@ -95,6 +95,10 @@ RSpec.configure do |c|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 
+  c.mock_with :rspec do |mocks|
+    mocks.verify_partial_doubles = true
+  end
+
   c.around(:example, :simulate_shell_allowing_unquoted_ids) do |ex|
     with_env_vars('SHELL' => '/usr/local/bin/bash', &ex)
   end

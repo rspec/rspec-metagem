@@ -164,15 +164,14 @@ module RSpec::Core
 
     shared_examples "a configurable framework adapter" do |m|
       it "yields a config object if the framework_module supports it" do
-        custom_config = Struct.new(:custom_setting).new
         mod = Module.new
-        allow(mod).to receive_messages(:configuration => custom_config)
+        def mod.configuration; @config ||= Struct.new(:custom_setting).new; end
 
         config.send m, mod do |mod_config|
           mod_config.custom_setting = true
         end
 
-        expect(custom_config.custom_setting).to be_truthy
+        expect(mod.configuration.custom_setting).to be_truthy
       end
 
       it "raises if framework module doesn't support configuration" do
@@ -236,8 +235,7 @@ module RSpec::Core
 
         it 'raises an error since this setting must be applied before any groups are defined' do
           allow(RSpec.world).to receive(:example_groups).and_return([double.as_null_object])
-          mocha = stub_const("RSpec::Core::MockingAdapters::Mocha", Module.new)
-          allow(mocha).to receive_messages(:framework_name => :mocha)
+          class_double("RSpec::Core::MockingAdapters::Mocha", :framework_name => :mocha).as_stubbed_const
 
           expect {
             config.mock_with :mocha
@@ -251,8 +249,7 @@ module RSpec::Core
         end
 
         it 'does not raise an error if re-setting the same config' do
-          mocha = stub_const("RSpec::Core::MockingAdapters::Mocha", Module.new)
-          allow(mocha).to receive_messages(:framework_name => :mocha)
+          class_double("RSpec::Core::MockingAdapters::Mocha", :framework_name => :mocha).as_stubbed_const
 
           groups = []
           allow(RSpec.world).to receive_messages(:example_groups => groups)

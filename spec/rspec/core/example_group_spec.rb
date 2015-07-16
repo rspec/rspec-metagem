@@ -494,7 +494,6 @@ module RSpec::Core
       context "with no filters" do
         it "returns all" do
           group = RSpec.describe
-          allow(group).to receive(:world) { self.world }
           example = group.example("does something")
           expect(group.filtered_examples).to eq([example])
         end
@@ -506,7 +505,6 @@ module RSpec::Core
           filter_manager.include :awesome => false
           allow(self.world).to receive_messages(:filter_manager => filter_manager)
           group = RSpec.describe
-          allow(group).to receive(:world) { self.world }
           group.example("does something")
           expect(group.filtered_examples).to eq([])
         end
