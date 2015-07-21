@@ -113,18 +113,14 @@ module RSpec::Core
       [false, nil].each do |falsy_value|
         context "with a value of #{falsy_value.inspect}" do
           it "is evaluated once per example" do
-            example_group = RSpec.describe(Array)
-            example_group.before do
-              expect(Object).to receive(:this_question?).once.and_return(falsy_value)
+            subject_calls = 0
+
+            describe_successfully do
+              subject { subject_calls += 1; falsy_value }
+              example { subject; subject }
             end
-            example_group.subject do
-              Object.this_question?
-            end
-            example_group.example do
-              subject
-              subject
-            end
-            expect(example_group.run).to be_truthy, "expected subject block to be evaluated only once"
+
+            expect(subject_calls).to eq(1)
           end
         end
       end
