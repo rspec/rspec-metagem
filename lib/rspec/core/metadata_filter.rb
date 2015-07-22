@@ -27,11 +27,7 @@ module RSpec
             when Regexp
               metadata[key] =~ value
             when Proc
-              case value.arity
-              when 0 then value.call
-              when 2 then value.call(metadata[key], metadata)
-              else value.call(metadata[key])
-              end
+              proc_filter_applies?(key, value, metadata)
             else
               metadata[key].to_s == value.to_s
             end
@@ -60,6 +56,14 @@ module RSpec
         def line_number_filter_applies?(line_numbers, metadata)
           preceding_declaration_lines = line_numbers.map { |n| RSpec.world.preceding_declaration_line(n) }
           !(relevant_line_numbers(metadata) & preceding_declaration_lines).empty?
+        end
+
+        def proc_filter_applies?(key, proc, metadata)
+          case proc.arity
+          when 0 then proc.call
+          when 2 then proc.call(metadata[key], metadata)
+          else proc.call(metadata[key])
+          end
         end
 
         def relevant_line_numbers(metadata)
