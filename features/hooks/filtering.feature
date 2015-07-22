@@ -244,3 +244,42 @@ Feature: filters
       .after context
       """
 
+  Scenario: Filtering hooks using symbols
+    Given a file named "filter_example_hooks_with_symbol_spec.rb" with:
+      """ruby
+      RSpec.configure do |config|
+        config.before(:example, :foo) do
+          invoked_hooks << :before_example_foo_bar
+        end
+      end
+
+      RSpec.describe "a filtered before :example hook" do
+        let(:invoked_hooks) { [] }
+
+        describe "group without a matching metadata key" do
+          it "does not run the hook" do
+            expect(invoked_hooks).to be_empty
+          end
+
+          it "does not run the hook for an example with metadata hash containing the key with a falsey value", :foo => nil do
+            expect(invoked_hooks).to be_empty
+          end
+
+          it "runs the hook for an example with metadata hash containing the key with a truthy value", :foo => :bar do
+            expect(invoked_hooks).to eq([:before_example_foo_bar])
+          end
+
+          it "runs the hook for an example with only the key defined", :foo do
+            expect(invoked_hooks).to eq([:before_example_foo_bar])
+          end
+        end
+
+        describe "group with matching metadata key", :foo do
+          it "runs the hook" do
+            expect(invoked_hooks).to eq([:before_example_foo_bar])
+          end
+        end
+      end
+      """
+    When I run `rspec filter_example_hooks_with_symbol_spec.rb`
+    Then the examples should all pass
