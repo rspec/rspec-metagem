@@ -19,6 +19,12 @@ Enhancements:
 * Allow simple filters (e.g. `:symbol` key only) to be triggered by truthey
   values. (Tim Mertens, #2035)
 
+Bug Fixes:
+
+* Lock `example_status_persistence_file` when reading from and writing
+  to it to prevent race conditions when multiple processes try to use
+  it. (Ben Woosley, #2029)
+
 ### 3.3.2 / 2015-07-15
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.3.1...v3.3.2)
 
