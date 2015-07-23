@@ -157,6 +157,11 @@ module RSpec
             metadata = { :foo => "words" }
             expect(filter_applies?(:foo, { :bar => /word/ }, metadata)).to be_falsey
           end
+
+          it 'matches when a metadata key is specified without a value and exists in the metadata hash' do
+            metadata = { :foo => "words" }
+            expect(filter_applies?(:foo, true, metadata)).to be_truthy
+          end
         end
 
         context "with an Array" do
@@ -198,6 +203,10 @@ module RSpec
 
           it "does not match a proc that evaluates to false" do
             expect(filter_applies?(:tag, lambda { |values| values.include? 'nothing' }, metadata_with_array)).to be_falsey
+          end
+
+          it 'matches when a metadata key is specified without a value and exists in the metadata hash' do
+            expect(filter_applies?(:tag, true, metadata_with_array)).to be_truthy
           end
         end
       end
