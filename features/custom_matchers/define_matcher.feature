@@ -2,7 +2,7 @@ Feature: Define a custom matcher
 
   rspec-expectations provides a DSL for defining custom matchers. These are often useful for expressing expectations in the domain of your application.
 
-  Behind the scenes `RSpec::Matchers.define` creates a Singleton-class for you. If you need to write a more complex matcher and would like to use the `Class`-approach yourself, please head over to our `API`-documentation and read the docs about our `MatcherProtocol`: http://rspec.info/documentation/latest/rspec-expectations/RSpec/Matchers/MatcherProtocol.html.
+  Behind the scenes `RSpec::Matchers.define` evaluates the `define` block in the context of a singleton class. If you need to write a more complex matcher and would like to use the `Class`-approach yourself, please head over to our `API`-documentation and read [the docs](http://rspec.info/documentation/latest/rspec-expectations/RSpec/Matchers/MatcherProtocol.html) about the `MatcherProtocol`.
 
   Scenario: Define a matcher with default messages
     Given a file named "matcher_with_default_message_spec.rb" with:
