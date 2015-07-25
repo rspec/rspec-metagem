@@ -695,9 +695,7 @@ module RSpec
       #
       # @see color_enabled?
       # @return [Boolean]
-      def color
-        value_for(:color) { @color }
-      end
+      attr_writer :color
 
       # Check if color is enabled for a particular output.
       # @param output [IO] an output stream to use, defaults to the current
@@ -711,15 +709,7 @@ module RSpec
       # @attr true_or_false [Boolean] toggle color enabled
       def color=(true_or_false)
         return unless true_or_false
-
-        if RSpec::Support::OS.windows? && !ENV['ANSICON']
-          RSpec.warning "You must use ANSICON 1.31 or later " \
-                        "(http://adoxa.3eeweb.com/ansicon/) to use colour " \
-                        "on Windows"
-          @color = false
-        else
-          @color = true
-        end
+        @color = !!true_or_false
       end
 
       # @private
