@@ -695,7 +695,9 @@ module RSpec
       #
       # @see color_enabled?
       # @return [Boolean]
-      attr_writer :color
+      def color
+        value_for(:color) { @color }
+      end
 
       # Check if color is enabled for a particular output.
       # @param output [IO] an output stream to use, defaults to the current
@@ -706,11 +708,7 @@ module RSpec
       end
 
       # Toggle output color.
-      # @attr true_or_false [Boolean] toggle color enabled
-      def color=(true_or_false)
-        return unless true_or_false
-        @color = !!true_or_false
-      end
+      attr_writer :color
 
       # @private
       def libs=(libs)
