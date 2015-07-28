@@ -793,6 +793,14 @@ module RSpec::Core
       end
     end
 
+    it "allows file names with brackets" do
+      assign_files_or_directories_to_run "./path/to/a_[1:2]spec.rb"
+      expect(config.files_to_run).to eq(["./path/to/a_[1:2]spec.rb"])
+
+      assign_files_or_directories_to_run "./path/to/a_spec.rb[foo]"
+      expect(config.files_to_run).to eq(["./path/to/a_spec.rb[foo]"])
+    end
+
     context "with an example id" do
       it "assigns the file and id as an ids filter" do
         assign_files_or_directories_to_run "./path/to/a_spec.rb[1:2]"

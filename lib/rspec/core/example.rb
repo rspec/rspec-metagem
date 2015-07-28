@@ -120,7 +120,8 @@ module RSpec
 
       # @private
       def self.parse_id(id)
-        id.split(/[\[\]]/)
+        # http://rubular.com/r/OMZSAPcAfn
+        id.match(/\A(.*?)(?:\[([\d\s:,]+)\])?\z/).captures
       end
 
       # @attr_reader
