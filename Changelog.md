@@ -18,6 +18,8 @@ Enhancements:
   minimized further. (Simon Coffey, #1997)
 * Allow simple filters (e.g. `:symbol` key only) to be triggered by truthey
   values. (Tim Mertens, #2035)
+* Remove unneeded warning about need for `ansicon` on Windows when using
+  RSpec's `--color` option. (Ashley Engelund, #2038)
 
 Bug Fixes:
 
