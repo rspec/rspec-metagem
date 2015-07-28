@@ -92,7 +92,7 @@ module RSpec
         # Given a list of example ids, organizes them into a compact, ordered list.
         def self.organize_ids(ids)
           grouped = ids.inject(Hash.new { |h, k| h[k] = [] }) do |hash, id|
-            file, id = id.split(Configuration::ON_SQUARE_BRACKETS)
+            file, id = Example.parse_id(id)
             hash[file] << id
             hash
           end
