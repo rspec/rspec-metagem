@@ -118,6 +118,12 @@ module RSpec
         @id ||= Metadata.id_from(metadata)
       end
 
+      # @private
+      def self.parse_id(id)
+        # http://rubular.com/r/OMZSAPcAfn
+        id.match(/\A(.*?)(?:\[([\d\s:,]+)\])?\z/).captures
+      end
+
       # @attr_reader
       #
       # Returns the first exception raised in the context of running this

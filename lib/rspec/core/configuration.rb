@@ -874,7 +874,7 @@ module RSpec
       # @private
       def spec_files_with_failures
         @spec_files_with_failures ||= last_run_statuses.inject(Set.new) do |files, (id, status)|
-          files << id.split(ON_SQUARE_BRACKETS).first if status == FAILED_STATUS
+          files << Example.parse_id(id).first if status == FAILED_STATUS
           files
         end.to_a
       end
@@ -1707,9 +1707,6 @@ module RSpec
         end
       end
 
-      # @private
-      ON_SQUARE_BRACKETS = /[\[\]]/
-
       def extract_location(path)
         match = /^(.*?)((?:\:\d+)+)$/.match(path)
 
@@ -1718,7 +1715,7 @@ module RSpec
           path, lines = captures[0], captures[1][1..-1].split(":").map { |n| n.to_i }
           filter_manager.add_location path, lines
         else
-          path, scoped_ids = path.split(ON_SQUARE_BRACKETS)
+          path, scoped_ids = Example.parse_id(path)
           filter_manager.add_ids(path, scoped_ids.split(/\s*,\s*/)) if scoped_ids
         end
 

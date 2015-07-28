@@ -130,7 +130,7 @@ module RSpec
       end
 
       def sort_value_from(example)
-        file, scoped_id = example.fetch(:example_id).split(Configuration::ON_SQUARE_BRACKETS)
+        file, scoped_id = Example.parse_id(example.fetch(:example_id))
         [file, *scoped_id.split(":").map(&method(:Integer))]
       end
     end
