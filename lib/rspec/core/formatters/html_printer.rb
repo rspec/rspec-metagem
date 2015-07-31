@@ -139,7 +139,6 @@ module RSpec
 EOF
         # rubocop:enable LineLength
 
-        # rubocop:disable LineLength
         GLOBAL_SCRIPTS = <<-EOF
 
 function addClass(element_id, classname) {
