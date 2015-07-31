@@ -26,10 +26,10 @@ specs and cucumber features, and make patches.
 
 NOTE: You do not need to use rspec-dev to work on a specific RSpec repo. You
 can treat each RSpec repo as an independent project.
-* Build Detail[BUILD_DETAIL.md]
-* Code of Conduct[CODE_OF_CONDUCT.md]
-* Contributing[CONTRIBUTING.md]
-* Development[DEVELOPMENT.md]
+* [Build Detail](BUILD_DETAIL.md)
+* [Code of Conduct](CODE_OF_CONDUCT.md)
+* [Contributing](CONTRIBUTING.md)
+* [Development](DEVELOPMENT.md)
 
 ## Basic Structure
 
