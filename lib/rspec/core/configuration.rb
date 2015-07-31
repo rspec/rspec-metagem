@@ -4,7 +4,7 @@ RSpec::Support.require_rspec_core "formatters/deprecation_formatter"
 
 module RSpec
   module Core
-    # rubocop:disable Style/ClassLength
+    # rubocop:disable Metrics/ClassLength
 
     # Stores runtime configuration information.
     #
@@ -1811,6 +1811,6 @@ module RSpec
         @spec_files_with_failures = nil
       end
     end
-    # rubocop:enable Style/ClassLength
+    # rubocop:enable Metrics/ClassLength
   end
 end
