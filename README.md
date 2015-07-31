@@ -26,7 +26,7 @@ If you want to use rspec-expectations with another tool, like Test::Unit,
 Minitest, or Cucumber, you can install it directly:
 
     gem install rspec-expectations
-    
+
 ## Contributing
 
 Once you've set up the environment, you'll need to cd into the working
