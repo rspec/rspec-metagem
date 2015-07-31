@@ -36,7 +36,7 @@ specs and cucumber features, and make patches.
 NOTE: You do not need to use rspec-dev to work on a specific RSpec repo. You
 can treat each RSpec repo as an independent project.
 
-- [Build details](BUILD_DETAILS.md)
+- [Build details](BUILD_DETAIL.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Detailed contributing guide](CONTRIBUTING.md)
 - [Development setup guide](DEVELOPMENT.md)
