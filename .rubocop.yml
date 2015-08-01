@@ -36,6 +36,14 @@ Lint/HandleExceptions:
 Lint/LiteralInInterpolation:
   Enabled: false
 
+Style/SpaceAroundOperators:
+  MultiSpaceAllowedForOperators:
+      - '='
+      - '||='
+      - '==='
+      - '=>'
+      - '<<'
+
 Style/AccessModifierIndentation:
   Enabled: false
 
