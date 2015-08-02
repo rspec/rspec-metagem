@@ -36,6 +36,16 @@ Lint/HandleExceptions:
 Lint/LiteralInInterpolation:
   Enabled: false
 
+Lint/NonLocalExitFromIterator:
+  Enabled: false
+
+# We don't care about single vs double qoutes.
+Style/StringLiteralsInInterpolation:
+  Enabled: false
+
+Style/SymbolProc:
+  Enabled: false
+
 Style/SpaceAroundOperators:
   MultiSpaceAllowedForOperators:
       - '='
