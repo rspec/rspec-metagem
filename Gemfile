@@ -29,7 +29,14 @@ platforms :jruby do
 end
 
 gem 'simplecov', '~> 0.8'
-gem 'rubocop', "~> 0.32.1", :platform => [:ruby_19, :ruby_20, :ruby_21, :ruby_22]
+
+# There is no platform :ruby_193 and Rubocop only supports >= 1.9.3
+unless RUBY_VERSION == "1.9.2"
+  gem "rubocop",
+      "~> 0.32.1",
+      :platform => [:ruby_19, :ruby_20, :ruby_21, :ruby_22]
+end
+
 gem 'test-unit', '~> 3.0' if RUBY_VERSION.to_f >= 2.2
 
 eval File.read('Gemfile-custom') if File.exist?('Gemfile-custom')

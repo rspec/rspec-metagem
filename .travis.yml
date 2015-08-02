@@ -8,9 +8,8 @@ cache:
     - ../bundle
 before_install:
   - "script/clone_all_rspec_repos"
-  # Downgrade bundler to work around https://github.com/bundler/bundler/issues/3004
   # Note this doesn't work on JRUBY 2.0.0 mode so we don't do it
-  - if [ -z "$JRUBY_OPTS" ]; then gem install bundler -v=1.5.3 && alias bundle="bundle _1.5.3_"; fi
+  - if [ "jruby" != "$TRAVIS_RUBY_VERSION"  ]; then gem install bundler; fi
 bundler_args: "--binstubs --standalone --without documentation --path ../bundle"
 script: "script/run_build"
 rvm:
