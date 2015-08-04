@@ -1963,6 +1963,27 @@ module RSpec::Core
       end
     end
 
+    describe '#raise_on_warning=(value)' do
+      around do |example|
+        original_setting = RSpec::Support.warning_notifier
+        example.run
+        RSpec::Support.warning_notifier = original_setting
+      end
+
+      it 'causes warnings to raise errors when true' do
+        config.raise_on_warning = true
+        expect {
+          RSpec.warning 'All hell breaks loose'
+        }.to raise_error a_string_including('WARNING: All hell breaks loose')
+      end
+
+      it 'causes warnings to default to warning when false' do
+        config.raise_on_warning = false
+        expect_warning_with_call_site(__FILE__, __LINE__ + 1)
+        RSpec.warning 'doesnt raise'
+      end
+    end
+
     describe "#raise_errors_for_deprecations!" do
       it 'causes deprecations to raise errors rather than printing to the deprecation stream' do
         config.deprecation_stream = stream = StringIO.new
