@@ -1,4 +1,4 @@
-# This file was generated on 2015-08-01T02:04:28-04:00 from the rspec-dev repo.
+# This file was generated on 2015-08-13T10:40:53+01:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -10,6 +10,12 @@ source $SCRIPT_DIR/predicate_functions.sh
 export JRUBY_OPTS=${JRUBY_OPTS:-"--server -Xcompile.invokedynamic=false"}
 SPECS_HAVE_RUN_FILE=specs.out
 MAINTENANCE_BRANCH=`cat maintenance-branch`
+
+# Don't allow rubygems to pollute what's loaded. Also, things boot faster
+# without the extra load time of rubygems. Only works on MRI Ruby 1.9+
+if is_mri_192_plus; then
+  export RUBYOPT="--disable=gem"
+fi
 
 function clone_repo {
   if [ ! -d $1 ]; then # don't clone if the dir is already there
@@ -46,10 +52,15 @@ function run_cukes {
       # the bin/cucumber approach below. That approach is faster
       # (as it avoids the bundler tax), so we use it on rubies where we can.
       bundle exec cucumber --strict
+    elif is_jruby; then
+      # For some reason JRuby doesn't like our improved bundler setup
+      RUBYOPT="-I${PWD}/../bundle -rbundler/setup" \
+         PATH="${PWD}/bin:$PATH" \
+         bin/cucumber --strict
     else
       # Prepare RUBYOPT for scenarios that are shelling out to ruby,
       # and PATH for those that are using `rspec` or `rake`.
-      RUBYOPT="-I${PWD}/../bundle -rbundler/setup" \
+      RUBYOPT="${RUBYOPT} -I${PWD}/../bundle -rbundler/setup" \
          PATH="${PWD}/bin:$PATH" \
          bin/cucumber --strict
     fi
