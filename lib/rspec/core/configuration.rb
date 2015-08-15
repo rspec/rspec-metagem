@@ -186,7 +186,8 @@ module RSpec
       end
 
       # @macro add_setting
-      # Clean up and exit after the first failure (default: `false`).
+      # If specified, indicates the number of failures required before cleaning
+      # up and exit (default: `false`).
       add_setting :fail_fast
 
       # @macro add_setting
