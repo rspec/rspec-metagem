@@ -1342,13 +1342,18 @@ module RSpec::Core
     end
 
     describe "#run" do
-      let(:reporter) { double("reporter").as_null_object }
 
-      context "with fail_fast? => true" do
+      context "with fail_fast and failures_required == 1" do
         let(:group) do
-          group = RSpec.describe
-          allow(group).to receive(:fail_fast?) { true }
-          group
+          the_group = RSpec.describe
+          allow(the_group).to receive(:fail_fast?) { true }
+          the_group
+        end
+        let(:config)   { Configuration.new }
+        let(:reporter) do
+          the_reporter = Reporter.new config
+          allow(the_reporter).to receive(:failures_required) { 1 }
+          the_reporter
         end
 
         it "does not run examples after the failed example" do
@@ -1357,7 +1362,7 @@ module RSpec::Core
           self.group.example('example 2') { examples_run << self; fail; }
           self.group.example('example 3') { examples_run << self }
 
-          self.group.run
+          self.group.run(reporter)
 
           expect(examples_run.length).to eq(2)
         end
@@ -1369,6 +1374,43 @@ module RSpec::Core
           expect(RSpec.world.wants_to_quit).to be_truthy
         end
       end
+
+      context "with fail_fast and failures_required = 3" do
+        let(:group) do
+          the_group = RSpec.describe
+          allow(the_group).to receive(:fail_fast?) { true }
+          the_group
+        end
+        let(:config) { Configuration.new }
+
+        let(:reporter) do
+          the_reporter = Reporter.new config
+          allow(the_reporter).to receive(:failures_required) { 3 }
+          the_reporter
+        end
+
+        it "does not run examples after 3 failed examples" do
+          examples_run = []
+          self.group.example('example 1') { examples_run << self }
+          self.group.example('example 2') { examples_run << self; fail; }
+          self.group.example('example 3') { examples_run << self; fail; }
+          self.group.example('example 4') { examples_run << self; fail; }
+          self.group.example('example 5') { examples_run << self }
+
+          self.group.run(reporter)
+
+          expect(examples_run.length).to eq(4)
+        end
+
+        it "sets RSpec.world.wants_to_quit flag if encountering an exception in before(:all)" do
+          self.group.before(:all) { raise "error in before all" }
+          self.group.example("equality") { expect(1).to eq(2) }
+          expect(self.group.run).to be_falsey
+          expect(RSpec.world.wants_to_quit).to be_truthy
+        end
+      end
+
+      let(:reporter) { double("reporter").as_null_object }
 
       context "with RSpec.world.wants_to_quit=true" do
         let(:group) { RSpec.describe }
