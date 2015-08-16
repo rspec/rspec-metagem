@@ -524,7 +524,7 @@ module RSpec
         rescue Pending::SkipDeclaredInExample => ex
           for_filtered_examples(reporter) { |example| example.skip_with_exception(reporter, ex) }
           true
-        rescue Exception => ex
+        rescue Support::AllExceptionsExceptOnesWeMustNotRescue => ex
           RSpec.world.wants_to_quit = true if fail_fast?
           for_filtered_examples(reporter) { |example| example.fail_with_exception(reporter, ex) }
           false

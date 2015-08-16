@@ -227,14 +227,14 @@ module RSpec
               rescue Pending::SkipDeclaredInExample
                 # no-op, required metadata has already been set by the `skip`
                 # method.
-              rescue Exception => e
+              rescue Support::AllExceptionsExceptOnesWeMustNotRescue => e
                 set_exception(e)
               ensure
                 run_after_example
               end
             end
           end
-        rescue Exception => e
+        rescue Support::AllExceptionsExceptOnesWeMustNotRescue => e
           set_exception(e)
         ensure
           @example_group_instance = nil # if you love something... let it go
@@ -400,7 +400,7 @@ module RSpec
 
       def with_around_example_hooks
         hooks.run(:around, :example, self) { yield }
-      rescue Exception => e
+      rescue Support::AllExceptionsExceptOnesWeMustNotRescue => e
         set_exception(e)
       end
 
@@ -457,7 +457,7 @@ module RSpec
 
       def verify_mocks
         @example_group_instance.verify_mocks_for_rspec if mocks_need_verification?
-      rescue Exception => e
+      rescue Support::AllExceptionsExceptOnesWeMustNotRescue => e
         set_exception(e)
       end
 
@@ -476,7 +476,7 @@ module RSpec
 
       def generate_description
         RSpec::Matchers.generated_description
-      rescue Exception => e
+      rescue Support::AllExceptionsExceptOnesWeMustNotRescue => e
         location_description + " (Got an error when generating description " \
           "from matcher: #{e.class}: #{e.message} -- #{e.backtrace.first})"
       end
