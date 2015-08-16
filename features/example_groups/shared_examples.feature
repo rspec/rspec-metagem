@@ -34,8 +34,8 @@ Feature: shared examples
   end
 
   RSpec.describe SomeClass do
-    include_example "some example", "parameter1"
-    include_example "some example", "parameter2"
+    include_examples "some example", "parameter1"
+    include_examples "some example", "parameter2"
   end
   ```
 
@@ -60,7 +60,7 @@ Feature: shared examples
 
   To prevent this kind of subtle error a warning is emitted if you declare multiple
   methods with the same name in the same context. Should you get this warning
-  the simplest solution is to replace `include_example` with `it_behaves_like`, in this
+  the simplest solution is to replace `include_examples` with `it_behaves_like`, in this
   way method overriding is avoided because of the nested context created by `it_behaves_like`
 
   Conventions:
