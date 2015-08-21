@@ -267,7 +267,7 @@ module RSpec
         def validity_message
           return nil if predicate_accessible?
 
-          msg = "expected #{@actual} to respond to `#{predicate}`"
+          msg = "expected #{actual_formatted} to respond to `#{predicate}`"
 
           if private_predicate?
             msg << " but `#{predicate}` is a private method"
