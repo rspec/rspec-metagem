@@ -64,6 +64,12 @@ RSpec.describe "expect(...).to be_predicate" do
     }.to fail_including("to respond to `happy?`")
   end
 
+  it "indicates when a predicate was attempted to be matched against an unexpected `nil`" do
+    expect {
+      expect(nil).to be_happy
+    }.to fail_including("expected nil to respond to `happy?`")
+  end
+
   it 'falls back to a present-tense form of the predicate when needed' do
     mouth = Object.new
     def mouth.frowns?(return_val); return_val; end

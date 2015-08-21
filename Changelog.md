@@ -7,6 +7,13 @@ Enhancements:
   already been included in a subclass on MRI 1.9, since that situation
   can cause uses of `super` to trigger infinite recursion. (Myron Marston, #816)
 
+Bug Fixes:
+
+* Fix failure message from dynamic predicate matchers when the object
+  does not respond to the predicate so that it is inspected rather
+  than relying upon it's `to_s` -- that way for `nil`, `"nil"` is
+  printed rather than an empty string. (Myron Marston, #841)
+
 ### 3.3.1 / 2015-07-15
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.3.0...v3.3.1)
 
