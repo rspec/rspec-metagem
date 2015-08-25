@@ -1421,6 +1421,25 @@ module RSpec
         $VERBOSE
       end
 
+      # @private
+      RAISE_ERROR_WARNING_NOTIFIER = lambda { |message| raise message }
+
+      # Turns warnings into errors. This can be useful when
+      # you want RSpec to run in a 'strict' no warning situation.
+      #
+      # @example
+      #
+      #   RSpec.configure do |rspec|
+      #     rspec.raise_on_warning = true
+      #   end
+      def raise_on_warning=(value)
+        if value
+          RSpec::Support.warning_notifier = RAISE_ERROR_WARNING_NOTIFIER
+        else
+          RSpec::Support.warning_notifier = RSpec::Support::DEFAULT_WARNING_NOTIFIER
+        end
+      end
+
       # Exposes the current running example via the named
       # helper method. RSpec 2.x exposed this via `example`,
       # but in RSpec 3.0, the example is instead exposed via
