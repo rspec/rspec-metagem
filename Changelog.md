@@ -20,6 +20,8 @@ Enhancements:
   values. (Tim Mertens, #2035)
 * Remove unneeded warning about need for `ansicon` on Windows when using
   RSpec's `--color` option. (Ashley Engelund, #2038)
+* Add option to configure RSpec to raise errors when issuing warnings.
+  (Jon Rowe, #2052)
 
 Bug Fixes:
 
