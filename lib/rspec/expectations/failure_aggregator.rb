@@ -15,7 +15,7 @@ module RSpec
             # of `failures` rather than letting it fall through and be categorized as part of
             # `other_errors`.
             failures << e
-          rescue Exception => e
+          rescue Support::AllExceptionsExceptOnesWeMustNotRescue => e
             # While it is normally a bad practice to rescue `Exception`, it's important we do
             # so here. It's low risk (`notify_aggregated_failures` below will re-raise the exception,
             # or raise a `MultipleExpectationsNotMetError` that includes the exception), and it's
