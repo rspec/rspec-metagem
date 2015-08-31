@@ -61,7 +61,7 @@ module RSpec
 
         def safe_sort(array)
           array.sort
-        rescue Exception
+        rescue Support::AllExceptionsExceptOnesWeMustNotRescue
           array
         end
 

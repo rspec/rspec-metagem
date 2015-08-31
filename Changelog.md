@@ -6,6 +6,8 @@ Enhancements:
 * Warn when `RSpec::Matchers` is included in a superclass after it has
   already been included in a subclass on MRI 1.9, since that situation
   can cause uses of `super` to trigger infinite recursion. (Myron Marston, #816)
+* Stop rescuing `NoMemoryError`, `SignalExcepetion`, `Interrupt` and
+  `SystemExit`. It is dangerous to interfere with these. (Myron Marston, #845)
 
 Bug Fixes:
 
