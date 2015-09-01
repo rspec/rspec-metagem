@@ -227,7 +227,7 @@ module RSpec
               rescue Pending::SkipDeclaredInExample
                 # no-op, required metadata has already been set by the `skip`
                 # method.
-              rescue Support::AllExceptionsExceptOnesWeMustNotRescue => e
+              rescue AllExceptionsExcludingDangerousOnesOnRubiesThatAllowIt => e
                 set_exception(e)
               ensure
                 run_after_example
@@ -243,6 +243,20 @@ module RSpec
         finish(reporter)
       ensure
         RSpec.current_example = nil
+      end
+
+      if RSpec::Support::Ruby.jruby? || RUBY_VERSION.to_f < 1.9
+        # :nocov:
+        # For some reason, rescuing `Support::AllExceptionsExceptOnesWeMustNotRescue`
+        # in place of `Exception` above can cause the exit status to be the wrong
+        # thing. I have no idea why. See:
+        # https://github.com/rspec/rspec-core/pull/2063#discussion_r38284978
+        # @private
+        AllExceptionsExcludingDangerousOnesOnRubiesThatAllowIt = Exception
+        # :nocov:
+      else
+        # @private
+        AllExceptionsExcludingDangerousOnesOnRubiesThatAllowIt = Support::AllExceptionsExceptOnesWeMustNotRescue
       end
 
       # Wraps both a `Proc` and an {Example} for use in {Hooks#around
