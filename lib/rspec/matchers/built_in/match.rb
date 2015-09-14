@@ -5,10 +5,19 @@ module RSpec
       # Provides the implementation for `match`.
       # Not intended to be instantiated directly.
       class Match < BaseMatcher
+        def initialize(expected)
+          super(expected)
+
+          @expected_captures = nil
+        end
         # @api private
         # @return [String]
         def description
-          "match #{surface_descriptions_in(expected).inspect}"
+          if @expected_captures && @expected.match(actual)
+            "match with string #{@expected} have captures #{surface_descriptions_in(@expected_captures).inspect}"
+          else
+            "match #{surface_descriptions_in(expected).inspect}"
+          end
         end
 
         # @api private
@@ -17,9 +26,21 @@ module RSpec
           true
         end
 
+        # Used to specify the captures we match against
+        # @return [self]
+        def with_captures(*captures)
+          @expected_captures = captures
+          self
+        end
+
       private
 
+        def captures_error
+          ArgumentError.new("`with_captures` must be called with a regular expression, multiple strings, or a hash of named captures")
+        end
+
         def match(expected, actual)
+          return match_captures(expected, actual) if @expected_captures
           return true if values_match?(expected, actual)
           return false unless can_safely_call_match?(expected, actual)
           actual.match(expected)
@@ -31,6 +52,58 @@ module RSpec
           !(RSpec::Matchers.is_a_matcher?(expected) &&
             (String === actual || Regexp === actual))
         end
+
+        def match_captures(expected, actual)
+          match = actual.match(expected)
+          if match
+            match = ReliableMatchData.new(match)
+            if match.names.empty?
+              values_match?(@expected_captures, match.captures)
+            else
+              expected_matcher = @expected_captures.last
+              values_match?(expected_matcher, Hash[match.names.zip(match.captures)]) ||
+                values_match?(expected_matcher, Hash[match.names.map(&:to_sym).zip(match.captures)]) ||
+                values_match?(@expected_captures, match.captures)
+            end
+          else
+            false
+          end
+        end
+      end
+
+      # @api private
+      # Used to wrap match data and make it reliable for 1.8.7
+      class ReliableMatchData
+        def initialize(match_data)
+          @match_data = match_data
+        end
+
+        if RUBY_VERSION == "1.8.7"
+          # @api private
+          # Returns match data names for named captures
+          # @return Array
+          def names
+            []
+          end
+        else
+          # @api private
+          # Returns match data names for named captures
+          # @return Array
+          def names
+            match_data.names
+          end
+        end
+
+        # @api private
+        # returns an array of captures from the match data
+        # @return Array
+        def captures
+          match_data.captures
+        end
+
+      protected
+
+        attr_reader :match_data
       end
     end
   end
