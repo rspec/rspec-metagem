@@ -14,7 +14,7 @@ module RSpec
         # @return [String]
         def description
           if @expected_captures && @expected.match(actual)
-            "match with string #{@expected} have captures #{surface_descriptions_in(@expected_captures).inspect}"
+            "match #{surface_descriptions_in(expected).inspect} with captures #{surface_descriptions_in(@expected_captures).inspect}"
           else
             "match #{surface_descriptions_in(expected).inspect}"
           end
