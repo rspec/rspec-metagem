@@ -8,6 +8,11 @@ Enhancements:
   can cause uses of `super` to trigger infinite recursion. (Myron Marston, #816)
 * Stop rescuing `NoMemoryError`, `SignalExcepetion`, `Interrupt` and
   `SystemExit`. It is dangerous to interfere with these. (Myron Marston, #845)
+* Add `#with_captures` to the
+  [match matcher](https://www.relishapp.com/rspec/rspec-expectations/docs/built-in-matchers/match-matcher)
+  which allows a user to specify expected captures when matching a regex
+  against a string. (Sam Phippen, #848)
+
 
 Bug Fixes:
 
@@ -15,11 +20,6 @@ Bug Fixes:
   does not respond to the predicate so that it is inspected rather
   than relying upon it's `to_s` -- that way for `nil`, `"nil"` is
   printed rather than an empty string. (Myron Marston, #841)
-
-* Add `#with_captures` to the
-  [match matcher](https://www.relishapp.com/rspec/rspec-expectations/docs/built-in-matchers/match-matcher)
-  which allows a user to specify expected captures when matching a regex
-  against a string. (Sam Phippen, #848)
 
 ### 3.3.1 / 2015-07-15
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.3.0...v3.3.1)
