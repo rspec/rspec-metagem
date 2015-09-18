@@ -22,8 +22,9 @@ RSpec.describe "expect(regex).to match(string).with_captures" do
       it "matches a regex with named captures" do
         expect("a123a").to match(Regexp.new("(?<num>123)")).with_captures(:num => "123")
       end
+
       it "matches a regex with a nested matcher" do
-        expect("a123a").to match(Regexp.new("(?<num>123)(asdf)?")).with_captures(hash_including(:num => "123"))
+        expect("a123a").to match(Regexp.new("(?<num>123)(asdf)?")).with_captures(a_hash_including(:num => "123"))
       end
 
       it "does not match a regex with an incorrect named group match" do
@@ -65,8 +66,9 @@ RSpec.describe "expect(regex).to match(string).with_captures" do
       it "matches a regex with named captures" do
         expect(Regexp.new("(?<num>123)")).to match("a123a").with_captures(:num => "123")
       end
+
       it "matches a regex with a nested matcher" do
-        expect(Regexp.new("(?<num>123)(asdf)?")).to match("a123a").with_captures(hash_including(:num => "123"))
+        expect(Regexp.new("(?<num>123)(asdf)?")).to match("a123a").with_captures(a_hash_including(:num => "123"))
       end
 
       it "does not match a regex with an incorrect named group match" do

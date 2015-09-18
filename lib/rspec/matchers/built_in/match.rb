@@ -35,10 +35,6 @@ module RSpec
 
       private
 
-        def captures_error
-          ArgumentError.new("`with_captures` must be called with a regular expression, multiple strings, or a hash of named captures")
-        end
-
         def match(expected, actual)
           return match_captures(expected, actual) if @expected_captures
           return true if values_match?(expected, actual)
