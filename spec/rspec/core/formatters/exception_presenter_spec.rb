@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'pathname'
 
 module RSpec::Core
@@ -15,13 +16,13 @@ module RSpec::Core
     describe "#fully_formatted" do
       line_num = __LINE__ + 2
       let(:exception) { instance_double(Exception, :message => "Boom\nBam", :backtrace => [ "#{__FILE__}:#{line_num}"]) }
-      # The failure happened here!
+      # The failure happened here! Handles encoding too! ЙЦ
 
       it "formats the exception with all the normal details" do
         expect(presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
           |
           |  1) Example
-          |     Failure/Error: # The failure happened here!
+          |     Failure/Error: # The failure happened here! Handles encoding too! ЙЦ
           |       Boom
           |       Bam
           |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
@@ -32,7 +33,7 @@ module RSpec::Core
         expect(presenter.fully_formatted(100)).to eq(<<-EOS.gsub(/^ +\|/, ''))
           |
           |  100) Example
-          |       Failure/Error: # The failure happened here!
+          |       Failure/Error: # The failure happened here! Handles encoding too! ЙЦ
           |         Boom
           |         Bam
           |       # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
@@ -45,7 +46,7 @@ module RSpec::Core
         expect(presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
           |
           |    1) Example
-          |       Failure/Error: # The failure happened here!
+          |       Failure/Error: # The failure happened here! Handles encoding too! ЙЦ
           |         Boom
           |         Bam
           |       # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
@@ -61,7 +62,7 @@ module RSpec::Core
           |
           |    1) Example
           |       Some Detail
-          |       Failure/Error: # The failure happened here!
+          |       Failure/Error: # The failure happened here! Handles encoding too! ЙЦ
           |         Boom
           |         Bam
           |       # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
@@ -76,7 +77,7 @@ module RSpec::Core
         expect(presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
           |
           |  1) Detail!
-          |     Failure/Error: # The failure happened here!
+          |     Failure/Error: # The failure happened here! Handles encoding too! ЙЦ
           |       Boom
           |       Bam
           |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
@@ -88,7 +89,7 @@ module RSpec::Core
 
         expect(presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
           |
-          |  1) Failure/Error: # The failure happened here!
+          |  1) Failure/Error: # The failure happened here! Handles encoding too! ЙЦ
           |       Boom
           |       Bam
           |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
@@ -105,7 +106,7 @@ module RSpec::Core
         expect(presenter.fully_formatted(2)).to eq(<<-EOS.gsub(/^ +\|/, ''))
           |
           |  2) Example
-          |     Failure/Error: # The failure happened here!
+          |     Failure/Error: # The failure happened here! Handles encoding too! ЙЦ
           |       Boom
           |       Bam
           |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
