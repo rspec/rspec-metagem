@@ -9,6 +9,11 @@ AllCops:
 ClassLength:
   Max: 330
 
+Encoding:
+  EnforcedStyle: when_needed
+  Exclude:
+    - lib/rspec/core/formatters/exception_presenter.rb
+
 # This should go down over time.
 LineLength:
   Max: 130
