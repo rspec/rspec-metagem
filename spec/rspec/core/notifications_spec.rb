@@ -18,6 +18,7 @@ RSpec.describe "FailedExampleNotification" do
   end
 
   it 'provides `colorized_formatted_backtrace`, which formats the backtrace and colorizes it' do
+    allow(exception).to receive(:cause) if RSpec::Support::RubyFeatures.supports_exception_cause?
     allow(RSpec.configuration).to receive(:color_enabled?).and_return(true)
     expect(notification.colorized_formatted_backtrace).to eq(["\e[36m# #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{exception_line}\e[0m"])
   end
