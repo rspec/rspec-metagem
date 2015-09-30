@@ -29,6 +29,7 @@ See http://rspec.info/documentation/ for links to documentation for all gems.
 
 ## Also see
 
-* <http://github.com/rspec/rspec-core>
-* <http://github.com/rspec/rspec-expectations>
-* <http://github.com/rspec/rspec-mocks>
+* [https://github.com/rspec/rspec-core](https://github.com/rspec/rspec-core)
+* [https://github.com/rspec/rspec-expectations](https://github.com/rspec/rspec-expectations)
+* [https://github.com/rspec/rspec-mocks](https://github.com/rspec/rspec-mocks)
+* [https://github.com/rspec/rspec-rails](https://github.com/rspec/rspec-rails)
