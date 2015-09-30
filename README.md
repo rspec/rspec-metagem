@@ -297,7 +297,7 @@ end
 
 ## Also see
 
-* [http://github.com/rspec/rspec](http://github.com/rspec/rspec)
-* [http://github.com/rspec/rspec-core](http://github.com/rspec/rspec-core)
-* [http://github.com/rspec/rspec-mocks](http://github.com/rspec/rspec-mocks)
-* [http://github.com/rspec/rspec-collection_matchers](https://github.com/rspec/rspec-collection_matchers)
+* [https://github.com/rspec/rspec](https://github.com/rspec/rspec)
+* [https://github.com/rspec/rspec-core](https://github.com/rspec/rspec-core)
+* [https://github.com/rspec/rspec-mocks](https://github.com/rspec/rspec-mocks)
+* [https://github.com/rspec/rspec-rails](https://github.com/rspec/rspec-rails)
