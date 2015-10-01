@@ -10,6 +10,7 @@ module RSpec
         def initialize(*names)
           @names = names
           @expected_arity = nil
+          @expected_keywords = []
         end
 
         # @api public
@@ -21,6 +22,12 @@ module RSpec
           @expected_arity = n
           self
         end
+
+        def with_keywords(*keywords)
+          @expected_keywords = keywords
+          self
+        end
+        alias :and_keywords :with_keywords
 
         # @api public
         # No-op. Intended to be used as syntactic sugar when using `with`.
@@ -67,18 +74,42 @@ module RSpec
           @failing_method_names = @names.__send__(filter_method) do |name|
             @actual.respond_to?(name) && matches_arity?(actual, name)
           end
+          @failing_method_names
         end
 
         def matches_arity?(actual, name)
-          return true unless @expected_arity
+          expectation = Support::MethodSignatureExpectation.new
+          expectation.count    = @expected_arity
+          expectation.keywords = @expected_keywords
+
+          return true if expectation.empty?
 
           signature = Support::MethodSignature.new(Support.method_handle_for(actual, name))
-          Support::StrictSignatureVerifier.new(signature, Array.new(@expected_arity)).valid?
+
+          Support::StrictSignatureVerifier.new(signature, []).with_expectation(expectation).valid?
         end
 
         def with_arity
-          return "" unless @expected_arity
-          " with #{@expected_arity} argument#{@expected_arity == 1 ? '' : 's'}"
+          str = ""
+
+          if @expected_arity
+            str << " with #{@expected_arity} argument#{@expected_arity == 1 ? '' : 's'}"
+          end
+
+          if @expected_keywords && @expected_keywords.count > 0
+            kw_str = case @expected_keywords.count
+            when 1
+              @expected_keywords.first.inspect
+            when 2
+              @expected_keywords.map(&:inspect).join(' and ')
+            else
+              "#{@expected_keywords[0...-1].map(&:inspect).join(' and ')}, and #{@expected_keywords.first.inspect}"
+            end
+
+            str << " #{str.length == 0 ? 'with' : 'and'} keyword#{@expected_keywords.count == 1 ? '' : 's'} #{kw_str}"
+          end
+
+          return str
         end
 
         def pp_names
