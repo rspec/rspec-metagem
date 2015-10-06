@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.description = "BDD for Ruby"
 
   s.files            = `git ls-files -- lib/*`.split("\n")
-  s.files           += ["License.txt"]
+  s.files           += ["LICENSE.md"]
   s.test_files       = `git ls-files -- {spec,features}/*`.split("\n")
   s.executables      = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.extra_rdoc_files = [ "README.md" ]
