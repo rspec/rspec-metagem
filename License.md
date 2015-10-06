@@ -1,9 +1,9 @@
-(The MIT License)
-=================
+The MIT License (MIT)
+=====================
 
-* Copyright (c) 2012 David Chelimsky, Myron Marston
-* Copyright (c) 2006 David Chelimsky, The RSpec Development Team
-* Copyright (c) 2005 Steven Baker
+Copyright © 2012 David Chelimsky, Myron Marston  
+Copyright © 2006 David Chelimsky, The RSpec Development Team  
+Copyright © 2005 Steven Baker
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
