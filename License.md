@@ -1,4 +1,4 @@
-(The MIT License)
+The MIT License (MIT)
 ==================
 
 Copyright © 2012 Chad Humphries, David Chelimsky, Myron Marston    
