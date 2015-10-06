@@ -1,9 +1,9 @@
 The MIT License (MIT)
 =====================
 
-Copyright © `2009` `Chad Humphries, David Chelimsky`  
-Copyright © `2006` `David Chelimsky, The RSpec Development Team`  
-Copyright © `2005` `Steven Baker`
+Copyright © 2009 Chad Humphries, David Chelimsky  
+Copyright © 2006 David Chelimsky, The RSpec Development Team  
+Copyright © 2005 Steven Baker
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
@@ -25,4 +25,3 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
-
