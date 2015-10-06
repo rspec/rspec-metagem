@@ -1,4 +1,5 @@
 (The MIT License)
+=================
 
 Copyright (c) 2012 David Chelimsky, Myron Marston
 Copyright (c) 2006 David Chelimsky, The RSpec Development Team
