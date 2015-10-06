@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.description = "BDD for Ruby. RSpec runner and example groups."
 
   s.files            = `git ls-files -- lib/*`.split("\n")
-  s.files           += %w[README.md License.txt Changelog.md .yardopts .document]
+  s.files           += %w[README.md LICENSE.md Changelog.md .yardopts .document]
   s.test_files       = []
   s.bindir           = 'exe'
   s.executables      = `git ls-files -- exe/*`.split("\n").map{ |f| File.basename(f) }
