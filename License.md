@@ -1,4 +1,5 @@
 (The MIT License)
+==================
 
 Copyright (c) 2012 Chad Humphries, David Chelimsky, Myron Marston
 Copyright (c) 2009 Chad Humphries, David Chelimsky
