@@ -1,8 +1,8 @@
 The MIT License (MIT)
 =====================
 
-Copyright © 2012 David Chelimsky, Myron Marston  
-Copyright © 2006 David Chelimsky, The RSpec Development Team  
+Copyright © 2012 David Chelimsky, Myron Marston
+Copyright © 2006 David Chelimsky, The RSpec Development Team
 Copyright © 2005 Steven Baker
 
 Permission is hereby granted, free of charge, to any person obtaining
