@@ -227,14 +227,14 @@ module RSpec
               rescue Pending::SkipDeclaredInExample
                 # no-op, required metadata has already been set by the `skip`
                 # method.
-              rescue Exception => e
+              rescue AllExceptionsExcludingDangerousOnesOnRubiesThatAllowIt => e
                 set_exception(e)
               ensure
                 run_after_example
               end
             end
           end
-        rescue Exception => e
+        rescue Support::AllExceptionsExceptOnesWeMustNotRescue => e
           set_exception(e)
         ensure
           @example_group_instance = nil # if you love something... let it go
@@ -243,6 +243,20 @@ module RSpec
         finish(reporter)
       ensure
         RSpec.current_example = nil
+      end
+
+      if RSpec::Support::Ruby.jruby? || RUBY_VERSION.to_f < 1.9
+        # :nocov:
+        # For some reason, rescuing `Support::AllExceptionsExceptOnesWeMustNotRescue`
+        # in place of `Exception` above can cause the exit status to be the wrong
+        # thing. I have no idea why. See:
+        # https://github.com/rspec/rspec-core/pull/2063#discussion_r38284978
+        # @private
+        AllExceptionsExcludingDangerousOnesOnRubiesThatAllowIt = Exception
+        # :nocov:
+      else
+        # @private
+        AllExceptionsExcludingDangerousOnesOnRubiesThatAllowIt = Support::AllExceptionsExceptOnesWeMustNotRescue
       end
 
       # Wraps both a `Proc` and an {Example} for use in {Hooks#around
@@ -400,7 +414,7 @@ module RSpec
 
       def with_around_example_hooks
         hooks.run(:around, :example, self) { yield }
-      rescue Exception => e
+      rescue Support::AllExceptionsExceptOnesWeMustNotRescue => e
         set_exception(e)
       end
 
@@ -457,7 +471,7 @@ module RSpec
 
       def verify_mocks
         @example_group_instance.verify_mocks_for_rspec if mocks_need_verification?
-      rescue Exception => e
+      rescue Support::AllExceptionsExceptOnesWeMustNotRescue => e
         set_exception(e)
       end
 
@@ -476,7 +490,7 @@ module RSpec
 
       def generate_description
         RSpec::Matchers.generated_description
-      rescue Exception => e
+      rescue Support::AllExceptionsExceptOnesWeMustNotRescue => e
         location_description + " (Got an error when generating description " \
           "from matcher: #{e.class}: #{e.message} -- #{e.backtrace.first})"
       end

@@ -24,6 +24,8 @@ Enhancements:
   (Jon Rowe, #2052)
 * Append the root `cause` of a failure or error to the printed failure
   output when a `cause` is available. (Adam Magan)
+* Stop rescuing `NoMemoryError`, `SignalExcepetion`, `Interrupt` and
+  `SystemExit`. It is dangerous to interfere with these. (Myron Marston, #2063)
 
 Bug Fixes:
 

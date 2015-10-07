@@ -1754,7 +1754,7 @@ module RSpec
         around(:example, :aggregate_failures => true) do |procsy|
           begin
             aggregate_failures(nil, :hide_backtrace => true, &procsy)
-          rescue Exception => exception
+          rescue Support::AllExceptionsExceptOnesWeMustNotRescue => exception
             procsy.example.set_aggregate_failures_exception(exception)
           end
         end
