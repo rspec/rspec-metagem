@@ -11,6 +11,7 @@ module RSpec::Core
     before do
       allow(example.execution_result).to receive(:exception) { exception }
       example.metadata[:absolute_file_path] = __FILE__
+      allow(exception).to receive(:cause) if RSpec::Support::RubyFeatures.supports_exception_cause?
     end
 
     describe "#fully_formatted" do
@@ -49,9 +50,9 @@ module RSpec::Core
       end
 
       it "allows the caller to specify additional indentation" do
-        presenter = Formatters::ExceptionPresenter.new(exception, example, :indentation => 4)
+        the_presenter = Formatters::ExceptionPresenter.new(exception, example, :indentation => 4)
 
-        expect(presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
+        expect(the_presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
           |
           |    1) Example
           |       Failure/Error: # The failure happened here!#{ encoding_check }
@@ -64,9 +65,9 @@ module RSpec::Core
       it 'passes the indentation on to the `:detail_formatter` lambda so it can align things' do
         detail_formatter = Proc.new { "Some Detail" }
 
-        presenter = Formatters::ExceptionPresenter.new(exception, example, :indentation => 4,
+        the_presenter = Formatters::ExceptionPresenter.new(exception, example, :indentation => 4,
                                                        :detail_formatter => detail_formatter)
-        expect(presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
+        expect(the_presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
           |
           |    1) Example
           |       Some Detail
@@ -78,11 +79,11 @@ module RSpec::Core
       end
 
       it 'allows the caller to omit the description' do
-        presenter = Formatters::ExceptionPresenter.new(exception, example,
+        the_presenter = Formatters::ExceptionPresenter.new(exception, example,
                                                        :detail_formatter => Proc.new { "Detail!" },
                                                        :description_formatter => Proc.new { })
 
-        expect(presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
+        expect(the_presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
           |
           |  1) Detail!
           |     Failure/Error: # The failure happened here!#{ encoding_check }
@@ -93,9 +94,9 @@ module RSpec::Core
       end
 
       it 'allows the failure/error line to be used as the description' do
-        presenter = Formatters::ExceptionPresenter.new(exception, example, :description_formatter => lambda { |p| p.failure_slash_error_line })
+        the_presenter = Formatters::ExceptionPresenter.new(exception, example, :description_formatter => lambda { |p| p.failure_slash_error_line })
 
-        expect(presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
+        expect(the_presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
           |
           |  1) Failure/Error: # The failure happened here!#{ encoding_check }
           |       Boom
@@ -105,13 +106,13 @@ module RSpec::Core
       end
 
       it 'allows a caller to specify extra details that are added to the bottom' do
-        presenter = Formatters::ExceptionPresenter.new(
+        the_presenter = Formatters::ExceptionPresenter.new(
           exception, example, :extra_detail_formatter => lambda do |failure_number, colorizer, indentation|
             "#{indentation}extra detail for failure: #{failure_number}\n"
           end
         )
 
-        expect(presenter.fully_formatted(2)).to eq(<<-EOS.gsub(/^ +\|/, ''))
+        expect(the_presenter.fully_formatted(2)).to eq(<<-EOS.gsub(/^ +\|/, ''))
           |
           |  2) Example
           |     Failure/Error: # The failure happened here!#{ encoding_check }
@@ -121,8 +122,35 @@ module RSpec::Core
           |     extra detail for failure: 2
         EOS
       end
-    end
 
+      let(:the_exception) { instance_double(Exception, :cause => second_exception, :message => "Boom\nBam", :backtrace => [ "#{__FILE__}:#{line_num}"]) }
+
+      let(:second_exception) do
+        instance_double(Exception, :cause => first_exception, :message => "Second\nexception", :backtrace => ["#{__FILE__}:#{__LINE__}"])
+      end
+
+      let(:first_exception) do
+        instance_double(Exception, :cause => nil, :message => "Real\nculprit", :backtrace => ["#{__FILE__}:#{__LINE__}"])
+      end
+
+      it 'includes the first exception that caused the failure', :if => RSpec::Support::RubyFeatures.supports_exception_cause? do
+        the_presenter = Formatters::ExceptionPresenter.new(the_exception, example)
+
+        expect(the_presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
+          |
+          |  1) Example
+          |     Failure/Error: # The failure happened here!#{ encoding_check }
+          |       Boom
+          |       Bam
+          |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
+          |     # ------------------
+          |     # --- Caused by: ---
+          |     #   Real
+          |     #   culprit
+          |     #   ./spec/rspec/core/formatters/exception_presenter_spec.rb:133
+        EOS
+      end
+    end
     describe "#read_failed_line" do
       def read_failed_line
         presenter.send(:read_failed_line)

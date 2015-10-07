@@ -31,8 +31,36 @@ module RSpec
           end
         end
 
-        def formatted_backtrace
-          backtrace_formatter.format_backtrace(exception_backtrace, example.metadata)
+        def formatted_backtrace(exception=@exception)
+          backtrace_formatter.format_backtrace((exception.backtrace || []), example.metadata) +
+            formatted_cause(exception)
+        end
+
+        if RSpec::Support::RubyFeatures.supports_exception_cause?
+          def formatted_cause(exception)
+            last_cause = final_exception(exception)
+            cause = []
+
+            if exception.cause
+              cause << '------------------'
+              cause << '--- Caused by: ---'
+              cause << "#{exception_class_name(last_cause)}:" unless exception_class_name(last_cause) =~ /RSpec/
+
+              encoded_string(last_cause.message.to_s).split("\n").each do |line|
+                cause << "  #{line}"
+              end
+
+              cause << ("  #{backtrace_formatter.format_backtrace(last_cause.backtrace, example.metadata).first}")
+            end
+
+            cause
+          end
+        else
+          # :nocov:
+          def formatted_cause(_)
+            []
+          end
+          # :nocov:
         end
 
         def colorized_formatted_backtrace(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
@@ -55,6 +83,14 @@ module RSpec
         end
 
       private
+
+        def final_exception(exception)
+          if exception.cause
+            final_exception(exception.cause)
+          else
+            exception
+          end
+        end
 
         def description_and_detail(colorizer, indentation)
           detail = detail_formatter.call(example, colorizer, indentation)
@@ -81,7 +117,7 @@ module RSpec
           # :nocov:
         end
 
-        def exception_class_name
+        def exception_class_name(exception=@exception)
           name = exception.class.name.to_s
           name = "(anonymous error class)" if name == ''
           name
