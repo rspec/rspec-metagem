@@ -100,14 +100,10 @@ module RSpec
           DescribableItem.new(item)
         elsif Hash === item
           Hash[surface_descriptions_in(item.to_a)]
-        elsif Struct === item
+        elsif Struct === item || unreadable_io?(item)
           RSpec::Support::ObjectFormatter.format(item)
         elsif should_enumerate?(item)
-          begin
-            item.map { |subitem| surface_descriptions_in(subitem) }
-          rescue IOError # STDOUT is enumerable but `map` raises an error
-            RSpec::Support::ObjectFormatter.format(item)
-          end
+          item.map { |subitem| surface_descriptions_in(subitem) }
         else
           item
         end
@@ -134,14 +130,10 @@ module RSpec
           object.clone
         elsif Hash === object
           Hash[with_matchers_cloned(object.to_a)]
-        elsif Struct === object
+        elsif Struct === object || unreadable_io?(object)
           object
         elsif should_enumerate?(object)
-          begin
-            object.map { |subobject| with_matchers_cloned(subobject) }
-          rescue IOError # STDOUT is enumerable but `map` raises an error
-            object
-          end
+          object.map { |subobject| with_matchers_cloned(subobject) }
         else
           object
         end
@@ -157,16 +149,25 @@ module RSpec
         # @api private
         def should_enumerate?(item)
           return false if String === item
-          Enumerable === item && !(Range === item)
+          Enumerable === item && !(Range === item) && item.none? { |subitem| subitem.equal?(item) }
         end
         # :nocov:
       else
         # @api private
         def should_enumerate?(item)
-          Enumerable === item && !(Range === item)
+          Enumerable === item && !(Range === item) && item.none? { |subitem| subitem.equal?(item) }
         end
       end
-      module_function :surface_descriptions_in, :should_enumerate?
+
+      # @api private
+      def unreadable_io?(object)
+        return false unless IO === object
+        object.each {} # STDOUT is enumerable but raises an error
+        false
+      rescue IOError
+        true
+      end
+      module_function :surface_descriptions_in, :should_enumerate?, :unreadable_io?
 
       # Wraps an item in order to surface its `description` via `inspect`.
       # @api private
