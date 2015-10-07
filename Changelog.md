@@ -22,6 +22,8 @@ Enhancements:
   RSpec's `--color` option. (Ashley Engelund, #2038)
 * Add option to configure RSpec to raise errors when issuing warnings.
   (Jon Rowe, #2052)
+* Append the root `cause` of a failure or error to the printed failure
+  output when a `cause` is available. (Adam Magan)
 
 Bug Fixes:
 
