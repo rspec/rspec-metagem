@@ -20,6 +20,14 @@ module RSpec
         }.to fail_with(infinite_range.inspect)
       end
 
+      it "does not blow up when surfacing descriptions from an Enumerable object whose #each includes the object itself" do
+        array = ['something']
+        array << array
+        expect {
+          expect(1).to matcher_using_surface_descriptions_in(array)
+        }.to fail_with(array.to_s)
+      end
+
       it "does not enumerate normal ranges" do
         range = 1..3
         expect {

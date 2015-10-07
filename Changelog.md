@@ -20,6 +20,8 @@ Bug Fixes:
   does not respond to the predicate so that it is inspected rather
   than relying upon it's `to_s` -- that way for `nil`, `"nil"` is
   printed rather than an empty string. (Myron Marston, #841)
+* Fix SystemStackError raised when diffing an Enumerable object
+  whose `#each` includes the object itself. (Yuji Nakayama, #857)
 
 ### 3.3.1 / 2015-07-15
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.3.0...v3.3.1)
