@@ -1,4 +1,4 @@
-require 'rspec/support/reentrant_mutex'
+RSpec::Support.require_rspec_support 'reentrant_mutex'
 
 module RSpec
   module Core
