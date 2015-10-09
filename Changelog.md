@@ -12,7 +12,8 @@ Enhancements:
   [match matcher](https://www.relishapp.com/rspec/rspec-expectations/docs/built-in-matchers/match-matcher)
   which allows a user to specify expected captures when matching a regex
   against a string. (Sam Phippen, #848)
-
+* Always print compound failure messages in the multi-line form. Trying
+  to print it all on a single line didn't read very well. (Myron Marston, #859)
 
 Bug Fixes:
 
