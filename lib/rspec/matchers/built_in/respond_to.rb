@@ -90,26 +90,27 @@ module RSpec
         end
 
         def with_arity
-          str = ""
+          str = ''
+          str << " with #{with_arity_string}" if @expected_arity
+          str << " #{str.length == 0 ? 'with' : 'and'} #{with_keywords_string}" if @expected_keywords && @expected_keywords.count > 0
+          str
+        end
 
-          if @expected_arity
-            str << " with #{@expected_arity} argument#{@expected_arity == 1 ? '' : 's'}"
+        def with_arity_string
+          "#{@expected_arity} argument#{@expected_arity == 1 ? '' : 's'}"
+        end
+
+        def with_keywords_string
+          kw_str = case @expected_keywords.count
+                   when 1
+                     @expected_keywords.first.inspect
+                   when 2
+                     @expected_keywords.map(&:inspect).join(' and ')
+                   else
+                     "#{@expected_keywords[0...-1].map(&:inspect).join(' and ')}, and #{@expected_keywords.first.inspect}"
           end
 
-          if @expected_keywords && @expected_keywords.count > 0
-            kw_str = case @expected_keywords.count
-            when 1
-              @expected_keywords.first.inspect
-            when 2
-              @expected_keywords.map(&:inspect).join(' and ')
-            else
-              "#{@expected_keywords[0...-1].map(&:inspect).join(' and ')}, and #{@expected_keywords.first.inspect}"
-            end
-
-            str << " #{str.length == 0 ? 'with' : 'and'} keyword#{@expected_keywords.count == 1 ? '' : 's'} #{kw_str}"
-          end
-
-          return str
+          "keyword#{@expected_keywords.count == 1 ? '' : 's'} #{kw_str}"
         end
 
         def pp_names
