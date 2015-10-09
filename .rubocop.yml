@@ -15,6 +15,10 @@ Encoding:
     - lib/rspec/core/formatters/exception_presenter.rb
 
 # This should go down over time.
+Metrics/AbcSize:
+  Max: 40
+
+# This should go down over time.
 Metrics/LineLength:
   Max: 130
 
@@ -25,6 +29,9 @@ Metrics/MethodLength:
 # This should go down over time.
 Metrics/CyclomaticComplexity:
   Max: 12
+
+Metrics/PerceivedComplexity:
+  Max: 15
 
 Lint/HandleExceptions:
   Exclude:
@@ -53,12 +60,19 @@ Style/SpaceAroundOperators:
       - '==='
       - '=>'
       - '<<'
+      - '||'
 
 Style/AccessModifierIndentation:
   Enabled: false
 
+Style/RegexpLiteral:
+  Enabled: false
+
 # This could change depending of the style used
 Style/MultilineOperationIndentation:
+  Enabled: false
+
+Style/BarePercentLiterals:
   Enabled: false
 
 # Exclude the default spec_helper to make it easier to uncomment out

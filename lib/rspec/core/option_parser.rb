@@ -252,7 +252,6 @@ FILTERING
             raise OptionParser::InvalidOption.new
           end
         end
-
       end
     end
     # rubocop:enable Metrics/AbcSize

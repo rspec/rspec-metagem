@@ -64,7 +64,7 @@ module RSpec
       end
 
       def order(keys)
-        OPTIONS_ORDER.reverse.each do |key|
+        OPTIONS_ORDER.reverse_each do |key|
           keys.unshift(key) if keys.delete(key)
         end
         keys

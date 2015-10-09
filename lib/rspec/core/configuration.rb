@@ -580,7 +580,7 @@ module RSpec
           end
 
         new_name, old_name = [framework_module, @mock_framework].map do |mod|
-          mod.respond_to?(:framework_name) ?  mod.framework_name : :unnamed
+          mod.respond_to?(:framework_name) ? mod.framework_name : :unnamed
         end
 
         unless new_name == old_name
@@ -1731,7 +1731,8 @@ module RSpec
 
         if match
           captures = match.captures
-          path, lines = captures[0], captures[1][1..-1].split(":").map { |n| n.to_i }
+          path = captures[0]
+          lines = captures[1][1..-1].split(":").map(&:to_i)
           filter_manager.add_location path, lines
         else
           path, scoped_ids = Example.parse_id(path)
