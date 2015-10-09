@@ -11,6 +11,8 @@ module RSpec
           @names = names
           @expected_arity = nil
           @expected_keywords = []
+          @unlimited_arguments = nil
+          @arbitrary_keywords = nil
         end
 
         # @api public
@@ -23,11 +25,42 @@ module RSpec
           self
         end
 
+        # @api public
+        # Specifies keyword arguments, if any.
+        #
+        # @example
+        #   expect(obj).to respond_to(:message).with_keywords(:color, :shape)
+        # @example with an expected number of arguments
+        #   expect(obj).to respond_to(:message).with(3).arguments.and_keywords(:color, :shape)
         def with_keywords(*keywords)
           @expected_keywords = keywords
           self
         end
         alias :and_keywords :with_keywords
+
+        # @api public
+        # Specifies that the method accepts any keyword, i.e. the method has
+        #   a splatted keyword parameter of the form **kw_args.
+        #
+        # @example
+        #   expect(obj).to respond_to(:message).with_any_keywords
+        def with_any_keywords
+          @arbitrary_keywords = true
+          self
+        end
+        alias :and_any_keywords :with_any_keywords
+
+        # @api public
+        # Specifies that the number of arguments has no upper limit, i.e. the
+        #   method has a splatted parameter of the form *args.
+        #
+        # @example
+        #   expect(obj).to respond_to(:message).with_unlimited_arguments
+        def with_unlimited_arguments
+          @unlimited_arguments = true
+          self
+        end
+        alias :and_unlimited_arguments :with_unlimited_arguments
 
         # @api public
         # No-op. Intended to be used as syntactic sugar when using `with`.
@@ -81,6 +114,8 @@ module RSpec
           expectation = Support::MethodSignatureExpectation.new
           expectation.count    = @expected_arity
           expectation.keywords = @expected_keywords
+          expectation.expect_unlimited_arguments = @unlimited_arguments
+          expectation.expect_arbitrary_keywords  = @arbitrary_keywords
 
           return true if expectation.empty?
 
@@ -93,6 +128,8 @@ module RSpec
           str = ''
           str << " with #{with_arity_string}" if @expected_arity
           str << " #{str.length == 0 ? 'with' : 'and'} #{with_keywords_string}" if @expected_keywords && @expected_keywords.count > 0
+          str << " #{str.length == 0 ? 'with' : 'and'} unlimited arguments" if @unlimited_arguments
+          str << " #{str.length == 0 ? 'with' : 'and'} any keywords" if @arbitrary_keywords
           str
         end
 
