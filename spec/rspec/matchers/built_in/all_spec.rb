@@ -108,7 +108,11 @@ module RSpec::Matchers::BuiltIn
               |expected [3, 4, 7, 28] to all be between 2 and 5 (inclusive) or be between 6 and 9 (inclusive)
               |
               |   object at index 3 failed to match:
-              |      expected 28 to be between 2 and 5 (inclusive) or expected 28 to be between 6 and 9 (inclusive)
+              |         expected 28 to be between 2 and 5 (inclusive)
+              |
+              |      ...or:
+              |
+              |         expected 28 to be between 6 and 9 (inclusive)
             EOS
           end
         end
@@ -121,10 +125,18 @@ module RSpec::Matchers::BuiltIn
               |expected [3, 4, 27, 22] to all be between 2 and 5 (inclusive) or be between 6 and 9 (inclusive)
               |
               |   object at index 2 failed to match:
-              |      expected 27 to be between 2 and 5 (inclusive) or expected 27 to be between 6 and 9 (inclusive)
+              |         expected 27 to be between 2 and 5 (inclusive)
+              |
+              |      ...or:
+              |
+              |         expected 27 to be between 6 and 9 (inclusive)
               |
               |   object at index 3 failed to match:
-              |      expected 22 to be between 2 and 5 (inclusive) or expected 22 to be between 6 and 9 (inclusive)
+              |         expected 22 to be between 2 and 5 (inclusive)
+              |
+              |      ...or:
+              |
+              |         expected 22 to be between 6 and 9 (inclusive)
             EOS
           end
         end

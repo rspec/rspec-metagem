@@ -340,10 +340,16 @@ module RSpec::Matchers::BuiltIn
         end
 
         context "when both matchers have single-line failure messages" do
-          it 'fails with a single-line failure message' do
+          it 'still fails with a multi-line failure message because it reads better than keeping it on a single line' do
             expect {
               expect("foo").to start_with("a").and end_with("z")
-            }.to fail_with('expected "foo" to start with "a" and expected "foo" to end with "z"')
+            }.to fail_with(dedent <<-EOS)
+              |   expected "foo" to start with "a"
+              |
+              |...and:
+              |
+              |   expected "foo" to end with "z"
+            EOS
           end
         end
 
@@ -511,7 +517,11 @@ module RSpec::Matchers::BuiltIn
 
           it 'fails with a message containing diffs for both matcher' do
             expected_failure = dedent(<<-EOS)
-              |expected "baz\\nbug" to include "bar" and expected "baz\\nbug" to include "foo"
+              |   expected "baz\\nbug" to include "bar"
+              |
+              |...and:
+              |
+              |   expected "baz\\nbug" to include "foo"
               |Diff for (include "bar"):
               |@@ -1,2 +1,3 @@
               |-bar
@@ -530,7 +540,9 @@ module RSpec::Matchers::BuiltIn
                 |baz
                 |bug
               EOS
-            }.to fail_including(expected_failure)
+            }.to fail do |error|
+              expect(error.message).to include(expected_failure)
+            end
           end
         end
 
@@ -618,10 +630,16 @@ module RSpec::Matchers::BuiltIn
         end
 
         context "when both matchers have single-line failure messages" do
-          it 'fails with a single-line failure message' do
+          it 'still fails with a multi-line failure message because it reads better than keeping it on a single line' do
             expect {
               expect("foo").to start_with("a").or end_with("z")
-            }.to fail_with('expected "foo" to start with "a" or expected "foo" to end with "z"')
+            }.to fail_with(dedent <<-EOS)
+              |   expected "foo" to start with "a"
+              |
+              |...or:
+              |
+              |   expected "foo" to end with "z"
+            EOS
           end
         end
 
@@ -738,7 +756,11 @@ module RSpec::Matchers::BuiltIn
 
         it 'fails with a message containing diffs for both matcher' do
           expected_failure = dedent(<<-EOS)
-            |expected "baz\\nbug" to include "foo" or expected "baz\\nbug" to include "buzz"
+            |   expected "baz\\nbug" to include "foo"
+            |
+            |...or:
+            |
+            |   expected "baz\\nbug" to include "buzz"
             |Diff for (include "foo"):
             |@@ -1,2 +1,3 @@
             |-foo
@@ -787,7 +809,15 @@ module RSpec::Matchers::BuiltIn
         matcher = include("bar").and include("buzz").or include("foo")
 
         expected_failure = dedent(<<-EOS)
-          |expected "bug\\nsquash" to include "bar" and expected "bug\\nsquash" to include "buzz" or expected "bug\\nsquash" to include "foo"
+          |   expected "bug\\nsquash" to include "bar"
+          |
+          |...and:
+          |
+          |      expected "bug\\nsquash" to include "buzz"
+          |
+          |   ...or:
+          |
+          |      expected "bug\\nsquash" to include "foo"
           |Diff for (include "bar"):
           |@@ -1,2 +1,3 @@
           |-bar
@@ -812,7 +842,9 @@ module RSpec::Matchers::BuiltIn
             |bug
             |squash
           EOS
-        }.to fail_including(expected_failure)
+        }.to fail do |error|
+          expect(error.message).to include(expected_failure)
+        end
       end
 
       it 'fails with a complete message' do

@@ -21,7 +21,6 @@ install:
   - gem install bundler
   - bundler --version
   - bundle install
-  - cinst ansicon
 
 test_script:
   - bundle exec rspec --backtrace

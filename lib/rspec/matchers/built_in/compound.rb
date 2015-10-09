@@ -24,7 +24,7 @@ module RSpec
         # @api private
         # @return [String]
         def description
-          singleline_message(matcher_1.description, matcher_2.description)
+          "#{matcher_1.description} #{conjunction} #{matcher_2.description}"
         end
 
         def supports_block_expectations?
@@ -84,30 +84,9 @@ module RSpec
         end
 
         def compound_failure_message
-          message_1 = matcher_1.failure_message
-          message_2 = matcher_2.failure_message
-
-          if multiline?(message_1) || multiline?(message_2)
-            multiline_message(message_1, message_2)
-          else
-            singleline_message(message_1, message_2)
-          end
-        end
-
-        def multiline_message(message_1, message_2)
-          [
-            indent_multiline_message(message_1.sub(/\n+\z/, '')),
-            "...#{conjunction}:",
-            indent_multiline_message(message_2.sub(/\A\n+/, ''))
-          ].join("\n\n")
-        end
-
-        def multiline?(message)
-          message.lines.count > 1
-        end
-
-        def singleline_message(message_1, message_2)
-          [message_1, conjunction, message_2].join(' ')
+          "#{indent_multiline_message(matcher_1.failure_message.sub(/\n+\z/, ''))}" \
+          "\n\n...#{conjunction}:" \
+          "\n\n#{indent_multiline_message(matcher_2.failure_message.sub(/\A\n+/, ''))}"
         end
 
         def matcher_1_matches?
