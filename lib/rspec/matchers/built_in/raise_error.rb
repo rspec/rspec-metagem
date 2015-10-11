@@ -16,11 +16,14 @@ module RSpec
 
           case expected_error_or_message
           when nil
-            @expected_error, @expected_message = Exception, expected_message
+            @expected_error = Exception
+            @expected_message = expected_message
           when String
-            @expected_error, @expected_message = Exception, expected_error_or_message
+            @expected_error = Exception
+            @expected_message = expected_error_or_message
           else
-            @expected_error, @expected_message = expected_error_or_message, expected_message
+            @expected_error = expected_error_or_message
+            @expected_message = expected_message
           end
         end
 
@@ -208,7 +211,8 @@ module RSpec
         end
 
         def raise_message_already_set
-          raise "`expect { }.to raise_error(message).with_message(message)` is not valid. The matcher only allows the expected message to be specified once"
+          raise "`expect { }.to raise_error(message).with_message(message)` is not valid. " \
+                'The matcher only allows the expected message to be specified once'
         end
       end
       # rubocop:enable RescueException
