@@ -10,6 +10,7 @@ module RSpec::Core
     # @private
     module NullColorizer
       module_function
+
       def wrap(line, _code_or_symbol)
         line
       end
