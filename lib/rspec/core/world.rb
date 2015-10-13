@@ -40,6 +40,11 @@ module RSpec
         @configuration.filter_manager
       end
 
+      # @private
+      def registered_example_group_files
+        @example_group_counts_by_spec_file.keys
+      end
+
       # @api private
       #
       # Register an example group.

@@ -79,13 +79,13 @@ module FormatterSupport
         |     # ./spec/support/sandboxing.rb:7
         |
         |  3) a failing spec with odd backtraces fails with a backtrace that has no file
-        |     Failure/Error: Unable to find matching line from backtrace
+        |     Failure/Error: Unable to find (erb) to read failed line
         |     RuntimeError:
         |       foo
         |     # (erb):1
         |
         |  4) a failing spec with odd backtraces fails with a backtrace containing an erb file
-        |     Failure/Error: Unable to find matching line from backtrace
+        |     Failure/Error: Unable to find /foo.html.erb to read failed line
         |     Exception:
         |       Exception
         |     # /foo.html.erb:1:in `<main>': foo (RuntimeError)
@@ -159,7 +159,7 @@ module FormatterSupport
         |     # ./spec/support/sandboxing.rb:7:in `block (2 levels) in <top (required)>'
         |
         |  4) a failing spec with odd backtraces fails with a backtrace containing an erb file
-        |     Failure/Error: Unable to find matching line from backtrace
+        |     Failure/Error: Unable to find /foo.html.erb to read failed line
         |     Exception:
         |       Exception
         |     # /foo.html.erb:1:in `<main>': foo (RuntimeError)

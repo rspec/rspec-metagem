@@ -26,6 +26,16 @@ Enhancements:
   output when a `cause` is available. (Adam Magan)
 * Stop rescuing `NoMemoryError`, `SignalExcepetion`, `Interrupt` and
   `SystemExit`. It is dangerous to interfere with these. (Myron Marston, #2063)
+* Add `config.project_source_dirs` setting which RSpec uses to determine
+  if a backtrace line comes from your project source or from some
+  external library. It defaults to `spec`, `lib` and `app` but can be
+  configured differently. (Myron Marston, #2088)
+* Improve failure line detection so that it looks for the failure line
+  in any project source directory instead of just in the spec file.
+  In addition, if no backtrace lines can be found from a project source
+  file, we fall back to displaying the source of the first backtrace
+  line. This should virtually eliminate the "Unable to find matching
+  line from backtrace" messages. (Myron Marston, #2088)
 
 Bug Fixes:
 

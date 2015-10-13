@@ -856,6 +856,12 @@ module RSpec::Core
       it 'defaults to "spec"' do
         expect(config.default_path).to eq('spec')
       end
+
+      it 'adds to the `project_source_dirs`' do
+        expect {
+          config.default_path = 'test'
+        }.to change { config.project_source_dirs.include?('test') }.from(false).to(true)
+      end
     end
 
     describe "#include" do
