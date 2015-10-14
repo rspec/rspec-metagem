@@ -1346,7 +1346,7 @@ module RSpec
         # isn't loaded by us here so we only know about it because
         # of an example group being registered in it.
         RSpec.world.registered_example_group_files.each do |f|
-          loaded_spec_files << File.expand_path(f)
+          loaded_spec_files << f # the registered files are already expended absolute paths
         end
 
         files_to_run.uniq.each do |f|

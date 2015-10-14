@@ -50,7 +50,7 @@ module RSpec
       # Register an example group.
       def register(example_group)
         example_groups << example_group
-        @example_group_counts_by_spec_file[example_group.metadata[:file_path]] += 1
+        @example_group_counts_by_spec_file[example_group.metadata[:absolute_file_path]] += 1
         example_group
       end
 

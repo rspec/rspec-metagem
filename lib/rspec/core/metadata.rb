@@ -147,12 +147,13 @@ module RSpec
                                    end
 
           relative_file_path            = Metadata.relative_path(file_path)
+          absolute_file_path            = File.expand_path(relative_file_path)
           metadata[:file_path]          = relative_file_path
           metadata[:line_number]        = line_number.to_i
           metadata[:location]           = "#{relative_file_path}:#{line_number}"
-          metadata[:absolute_file_path] = File.expand_path(relative_file_path)
+          metadata[:absolute_file_path] = absolute_file_path
           metadata[:rerun_file_path]  ||= relative_file_path
-          metadata[:scoped_id]          = build_scoped_id_for(relative_file_path)
+          metadata[:scoped_id]          = build_scoped_id_for(absolute_file_path)
         end
 
         def file_path_and_line_number_from(backtrace)
