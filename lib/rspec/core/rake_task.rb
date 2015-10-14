@@ -1,5 +1,6 @@
 require 'rake'
 require 'rake/tasklib'
+require 'rspec/support'
 require 'rspec/support/ruby_features'
 require 'rspec/core/shell_escape'
 
