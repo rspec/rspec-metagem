@@ -1,19 +1,20 @@
 Feature: `--tag` option
 
-  Use the `--tag` (or `-t`) option to filter the examples by tags.
+  Use the `--tag` (or `-t`) option to run examples that match a specified tag.
+  The tag can be a simple `name` or a `name:value` pair.
 
-  The tag can be a simple `name` or a `name:value` pair. In the first case,
-  examples with `:name => true` will be filtered. In the second case, examples
-  with `:name => value` will be filtered, where `value` is always a string. In
-  both cases, `name` is converted to a symbol.
-
-  Filters are represented internally as a hash, which means that you can't
-  specify multiple filters for the same key. If you try to exclude `:name => 'foo'`
-  and `:name => 'bar'`, you will only end up excluding `:name => 'bar'`.
+  If a simple `name` is supplied, only examples with `:name => true` will run.
+  If a `name:value` pair is given, examples with `name => value` will run,
+  where `value` is always a string. In both cases, `name` is converted to a symbol.
 
   Tags can also be used to exclude examples by adding a `~` before the tag. For
-  example `~tag` will exclude all examples marked with `:tag => true` and
+  example, `~tag` will exclude all examples marked with `:tag => true` and
   `~tag:value` will exclude all examples marked with `:tag => value`.
+
+  Filtering by tag uses a hash internally, which means that you can't specify
+  multiple filters for the same key. For instance, if you try to exclude
+  `:name => 'foo'` and `:name => 'bar'`, you will only end up excluding
+  `:name => 'bar'`.
 
   To be compatible with the Cucumber syntax, tags can optionally start with an
   `@` symbol, which will be ignored.
