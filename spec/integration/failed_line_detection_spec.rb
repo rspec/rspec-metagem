@@ -32,7 +32,8 @@ RSpec.describe 'Failed line detection' do
       end
     "
 
-    in_current_dir { load "failing_spec.rb" }
+    file = in_current_dir { "#{Dir.pwd}/failing_spec.rb" }
+    load file
     run_command "passing_spec.rb"
 
     expect(last_cmd_stdout).to include("expect(1).to eq(2)")
