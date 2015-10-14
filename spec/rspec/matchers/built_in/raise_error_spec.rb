@@ -13,6 +13,11 @@ RSpec.describe "expect { ... }.to raise_error" do
     expect { raise }.to raise_error
   end
 
+  it 'issues a warning that includes the current error when used without an error class or message' do
+    expect_warning_with_call_site __FILE__, __LINE__+1, /Actual error raised was #<StandardError: boom>/
+    expect { raise StandardError.new, 'boom'}.to raise_error
+  end
+
   it "can supresses the warning when configured to do so", :warn_about_potential_false_positives do
     RSpec::Expectations.configuration.warn_about_potential_false_positives = false
     expect_no_warnings

@@ -46,7 +46,6 @@ module RSpec
           @eval_block = false
           @eval_block_passed = false
 
-          warn_about_bare_error if warning_about_bare_error && !negative_expectation
           return false unless Proc === given_proc
 
           begin
@@ -59,6 +58,7 @@ module RSpec
             end
           end
 
+          warn_about_bare_error if warning_about_bare_error && !negative_expectation
           eval_block if !negative_expectation && ready_to_eval_block?
 
           expectation_matched?
@@ -160,6 +160,7 @@ module RSpec
                         "will match when Ruby raises a `NoMethodError`, `NameError` or " \
                         "`ArgumentError`, potentially allowing the expectation to pass " \
                         "without even executing the method you are intending to call. " \
+                        "Actual error raised was #{description_of(@actual_error)}. "\
                         "Instead consider providing a specific error class or message. " \
                         "This message can be supressed by setting: " \
                         "`RSpec::Expectations.configuration.warn_about_potential_false_positives = false`")
