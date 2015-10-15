@@ -81,7 +81,7 @@ module RSpec::Core
       it 'allows the caller to omit the description' do
         the_presenter = Formatters::ExceptionPresenter.new(exception, example,
                                                        :detail_formatter => Proc.new { "Detail!" },
-                                                       :description_formatter => Proc.new { })
+                                                       :description => nil)
 
         expect(the_presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
           |
@@ -94,7 +94,7 @@ module RSpec::Core
       end
 
       it 'allows the failure/error line to be used as the description' do
-        the_presenter = Formatters::ExceptionPresenter.new(exception, example, :description_formatter => lambda { |p| p.failure_slash_error_line })
+        the_presenter = Formatters::ExceptionPresenter.new(exception, example, :description => nil)
 
         expect(the_presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
           |
