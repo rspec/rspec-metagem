@@ -5,7 +5,7 @@ module RSpec
       #
       # Extracts code snippets by looking at the backtrace of the passed error
       # and applies synax highlighting and line numbers using html.
-      class SnippetExtractor
+      class HtmlSnippetExtractor
         # @private
         module NullConverter
           def self.convert(code)
