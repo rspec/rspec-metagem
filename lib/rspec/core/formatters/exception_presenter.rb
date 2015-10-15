@@ -192,8 +192,9 @@ module RSpec
           end
 
           file_path, line_number = matching_line.match(/(.+?):(\d+)(|:\d+)/)[1..2]
+          max_line_count = RSpec.configuration.max_displayed_failure_line_count
           RSpec::Support.require_rspec_core "formatters/snippet_extractor"
-          SnippetExtractor.extract_expression_lines_at(file_path, line_number.to_i)
+          SnippetExtractor.extract_expression_lines_at(file_path, line_number.to_i, max_line_count)
         rescue SnippetExtractor::NoSuchFileError
           ["Unable to find #{file_path} to read failed line"]
         rescue SnippetExtractor::NoSuchLineError

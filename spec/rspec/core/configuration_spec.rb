@@ -2172,6 +2172,17 @@ module RSpec::Core
       end
     end
 
+    describe '#max_displayed_failure_line_count' do
+      it 'defaults to 10' do
+        expect(config.max_displayed_failure_line_count).to eq 10
+      end
+
+      it 'is configurable' do
+        config.max_displayed_failure_line_count = 5
+        expect(config.max_displayed_failure_line_count).to eq 5
+      end
+    end
+
     # assigns files_or_directories_to_run and triggers post-processing
     # via `files_to_run`.
     def assign_files_or_directories_to_run(*value)

@@ -332,6 +332,11 @@ module RSpec
       # Currently this will place a mutex around memoized values such as let blocks.
       add_setting :threadsafe
 
+      # @macro add_setting
+      # Maximum count of failed source lines to display in the failure reports.
+      # (default `10`).
+      add_setting :max_displayed_failure_line_count
+
       # @private
       add_setting :tty
       # @private
@@ -387,6 +392,7 @@ module RSpec
         @libs = []
         @derived_metadata_blocks = FilterableItemRepository::QueryOptimized.new(:any?)
         @threadsafe = true
+        @max_displayed_failure_line_count = 10
 
         define_built_in_hooks
       end

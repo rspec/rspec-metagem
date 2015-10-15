@@ -30,20 +30,30 @@ module RSpec
             :on_heredoc_beg => :on_heredoc_end
           }
 
-          attr_reader :source, :beginning_line_number
+          attr_reader :source, :beginning_line_number, :max_line_count
 
-          def self.extract_expression_lines_at(file_path, beginning_line_number)
-            source = source_from_file(file_path)
-            new(source, beginning_line_number).expression_lines
+          def self.extract_expression_lines_at(file_path, beginning_line_number, max_line_count=nil)
+            if max_line_count == 1
+              [extract_line_at(file_path, beginning_line_number)]
+            else
+              source = source_from_file(file_path)
+              new(source, beginning_line_number, max_line_count).expression_lines
+            end
           end
 
-          def initialize(source, beginning_line_number)
+          def initialize(source, beginning_line_number, max_line_count=nil)
             @source = source
             @beginning_line_number = beginning_line_number
+            @max_line_count = max_line_count
           end
 
           def expression_lines
             line_range = line_range_of_expression
+
+            if max_line_count && line_range.count > max_line_count
+              line_range = (line_range.begin)..(line_range.begin + max_line_count - 1)
+            end
+
             source.lines[(line_range.begin - 1)..(line_range.end - 1)]
           rescue NoExpressionAtLineError
             [self.class.extract_line_at(source.path, beginning_line_number)]
@@ -118,7 +128,7 @@ module RSpec
           end
         else
           # :nocov:
-          def self.extract_expression_lines_at(file_path, beginning_line_number)
+          def self.extract_expression_lines_at(file_path, beginning_line_number, *)
             [extract_line_at(file_path, beginning_line_number)]
           end
           # :nocov:

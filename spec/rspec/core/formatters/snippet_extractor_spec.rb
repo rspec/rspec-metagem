@@ -3,7 +3,7 @@ require 'rspec/core/formatters/snippet_extractor'
 module RSpec::Core::Formatters
   RSpec.describe SnippetExtractor do
     subject(:expression_lines) do
-      SnippetExtractor.extract_expression_lines_at(file_path, line_number)
+      SnippetExtractor.extract_expression_lines_at(file_path, line_number, max_line_count)
     end
 
     let(:file_path) do
@@ -22,6 +22,10 @@ module RSpec::Core::Formatters
       location = Regexp.last_match.captures
       location[1] = location[1].to_i
       location
+    end
+
+    let(:max_line_count) do
+      nil
     end
 
     let(:error) do
@@ -242,6 +246,51 @@ module RSpec::Core::Formatters
         it 'returns the line by falling back to the simple single line extraction' do
           expect(expression_lines).to eq([
             '          # The failure happened here without expression'
+          ])
+        end
+      end
+
+      context 'when max line count is given' do
+        let(:max_line_count) do
+          2
+        end
+
+        let(:source) do
+          do_something_fail "line1", [
+            "line2",
+            "line3"
+          ]
+        end
+
+        it 'returns the lines without exceeding the given count' do
+          expect(expression_lines).to eq([
+            '          do_something_fail "line1", [',
+            '            "line2",'
+          ])
+        end
+      end
+
+      context 'when max line count is 1' do
+        let(:max_line_count) do
+          1
+        end
+
+        let(:source) do
+          do_something_fail "line1", [
+            "line2",
+            "line3"
+          ]
+        end
+
+        before do
+          RSpec.reset # Clear source cache
+        end
+
+        it 'returns the line without parsing the source for efficiency' do
+          require 'ripper'
+          expect(Ripper).not_to receive(:sexp)
+          expect(expression_lines).to eq([
+            '          do_something_fail "line1", ['
           ])
         end
       end

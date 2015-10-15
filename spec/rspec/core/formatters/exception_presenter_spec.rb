@@ -177,18 +177,35 @@ module RSpec::Core
       context 'when the failed expression spans multiple lines', :if => RSpec::Support::RubyFeatures.ripper_supported? do
         let(:exception) do
           begin
-            expect('RSpec').to start_with('R').
+            expect('RSpec').to be_a(String).
+                           and start_with('R').
                            and end_with('z')
           rescue RSpec::Expectations::ExpectationNotMetError => exception
             exception
           end
         end
 
-        it 'returns all the lines' do
-          expect(read_failed_lines).to eq([
-            "            expect('RSpec').to start_with('R').",
-            "                           and end_with('z')"
-          ])
+        context 'and the line count does not exceed RSpec.configuration.max_displayed_failure_line_count' do
+          it 'returns all the lines' do
+            expect(read_failed_lines).to eq([
+              "            expect('RSpec').to be_a(String).",
+              "                           and start_with('R').",
+              "                           and end_with('z')"
+            ])
+          end
+        end
+
+        context 'and the line count exceeds RSpec.configuration.max_displayed_failure_line_count' do
+          before do
+            RSpec.configuration.max_displayed_failure_line_count = 2
+          end
+
+          it 'returns the lines without exceeding the max count' do
+            expect(read_failed_lines).to eq([
+              "            expect('RSpec').to be_a(String).",
+              "                           and start_with('R')."
+            ])
+          end
         end
       end
 
