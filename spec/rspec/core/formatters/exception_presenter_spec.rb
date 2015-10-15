@@ -32,6 +32,7 @@ module RSpec::Core
           |
           |  1) Example
           |     Failure/Error: # The failure happened here!#{ encoding_check }
+          |
           |       Boom
           |       Bam
           |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
@@ -43,6 +44,7 @@ module RSpec::Core
           |
           |  100) Example
           |       Failure/Error: # The failure happened here!#{ encoding_check }
+          |
           |         Boom
           |         Bam
           |       # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
@@ -56,6 +58,7 @@ module RSpec::Core
           |
           |    1) Example
           |       Failure/Error: # The failure happened here!#{ encoding_check }
+          |
           |         Boom
           |         Bam
           |       # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
@@ -72,6 +75,7 @@ module RSpec::Core
           |    1) Example
           |       Some Detail
           |       Failure/Error: # The failure happened here!#{ encoding_check }
+          |
           |         Boom
           |         Bam
           |       # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
@@ -87,6 +91,7 @@ module RSpec::Core
           |
           |  1) Detail!
           |     Failure/Error: # The failure happened here!#{ encoding_check }
+          |
           |       Boom
           |       Bam
           |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
@@ -99,6 +104,7 @@ module RSpec::Core
         expect(the_presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
           |
           |  1) Failure/Error: # The failure happened here!#{ encoding_check }
+          |
           |       Boom
           |       Bam
           |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
@@ -116,6 +122,7 @@ module RSpec::Core
           |
           |  2) Example
           |     Failure/Error: # The failure happened here!#{ encoding_check }
+          |
           |       Boom
           |       Bam
           |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
@@ -140,6 +147,7 @@ module RSpec::Core
           |
           |  1) Example
           |     Failure/Error: # The failure happened here!#{ encoding_check }
+          |
           |       Boom
           |       Bam
           |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
@@ -147,7 +155,7 @@ module RSpec::Core
           |     # --- Caused by: ---
           |     #   Real
           |     #   culprit
-          |     #   ./spec/rspec/core/formatters/exception_presenter_spec.rb:133
+          |     #   ./spec/rspec/core/formatters/exception_presenter_spec.rb:140
         EOS
       end
 
@@ -160,6 +168,7 @@ module RSpec::Core
           |
           |    1) Example
           |       Failure/Error: # The failure happened here!#{ encoding_check }
+          |
           |         Boom
           |         Bam
           |
@@ -168,7 +177,175 @@ module RSpec::Core
           |       # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
         EOS
       end
+
+      describe 'line format' do
+        let(:exception) do
+          begin
+            expression
+          rescue RSpec::Support::AllExceptionsExceptOnesWeMustNotRescue => exception
+            exception
+          end
+        end
+
+        context 'with single line expression and single line RSpec exception message' do
+          let(:expression) do
+            expect('RSpec').to be_a(Integer)
+          end
+
+          it 'crams them without blank line' do
+            expect(presenter.fully_formatted(1)).to start_with(<<-EOS.gsub(/^ +\|/, '').chomp)
+              |
+              |  1) Example
+              |     Failure/Error: expect('RSpec').to be_a(Integer)
+              |       expected "RSpec" to be a kind of Integer
+              |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:
+            EOS
+          end
+        end
+
+        context 'with multiline expression and single line RSpec exception message', :if => RSpec::Support::RubyFeatures.ripper_supported? do
+          let(:expression) do
+            expect('RSpec').
+              to be_a(Integer)
+          end
+
+          it 'inserts a blank line between the expression and the message' do
+            expect(presenter.fully_formatted(1)).to start_with(<<-EOS.gsub(/^ +\|/, '').chomp)
+              |
+              |  1) Example
+              |     Failure/Error:
+              |       expect('RSpec').
+              |         to be_a(Integer)
+              |
+              |       expected "RSpec" to be a kind of Integer
+              |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:
+            EOS
+          end
+        end
+
+        context 'with single line expression and multiline RSpec exception message' do
+          let(:expression) do
+            expect('RSpec').to be_falsey
+          end
+
+          it 'inserts a blank line between the expression and the message' do
+            expect(presenter.fully_formatted(1)).to start_with(<<-EOS.gsub(/^ +\|/, '').chomp)
+              |
+              |  1) Example
+              |     Failure/Error: expect('RSpec').to be_falsey
+              |
+              |       expected: falsey value
+              |            got: "RSpec"
+              |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:
+            EOS
+          end
+        end
+
+        context 'with multiline expression and multiline RSpec exception message', :if => RSpec::Support::RubyFeatures.ripper_supported? do
+          let(:expression) do
+            expect('RSpec').
+              to be_falsey
+          end
+
+          it 'inserts a blank line between the expression and the message' do
+            expect(presenter.fully_formatted(1)).to start_with(<<-EOS.gsub(/^ +\|/, '').chomp)
+              |
+              |  1) Example
+              |     Failure/Error:
+              |       expect('RSpec').
+              |         to be_falsey
+              |
+              |       expected: falsey value
+              |            got: "RSpec"
+              |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:
+            EOS
+          end
+        end
+
+        context 'with single line expression and RSpec exception message starting with linefeed (like `eq` matcher)' do
+          let(:expression) do
+            expect('Rspec').to eq('RSpec')
+          end
+
+          it 'does not insert a superfluous blank line' do
+            expect(presenter.fully_formatted(1)).to start_with(<<-EOS.gsub(/^ +\|/, '').chomp)
+              |
+              |  1) Example
+              |     Failure/Error: expect('Rspec').to eq('RSpec')
+              |
+              |       expected: "RSpec"
+              |            got: "Rspec"
+              |
+              |       (compared using ==)
+              |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:
+            EOS
+          end
+        end
+
+        context 'with multiline expression and RSpec exception message starting with linefeed (like `eq` matcher)', :if => RSpec::Support::RubyFeatures.ripper_supported? do
+          let(:expression) do
+            expect('Rspec').
+              to eq('RSpec')
+          end
+
+          it 'does not insert a superfluous blank line' do
+            expect(presenter.fully_formatted(1)).to start_with(<<-EOS.gsub(/^ +\|/, '').chomp)
+              |
+              |  1) Example
+              |     Failure/Error:
+              |       expect('Rspec').
+              |         to eq('RSpec')
+              |
+              |       expected: "RSpec"
+              |            got: "Rspec"
+              |
+              |       (compared using ==)
+              |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:
+            EOS
+          end
+        end
+
+        context 'with single line expression and single line non-RSpec exception message' do
+          let(:expression) do
+            expect { fail 'Something is wrong!' }.to change { RSpec }
+          end
+
+          it 'inserts a blank line between the expression and the message' do
+            expect(presenter.fully_formatted(1)).to start_with(<<-EOS.gsub(/^ +\|/, '').chomp)
+              |
+              |  1) Example
+              |     Failure/Error: expect { fail 'Something is wrong!' }.to change { RSpec }
+              |
+              |     RuntimeError:
+              |       Something is wrong!
+              |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:
+            EOS
+          end
+        end
+
+        context 'with multiline expression and single line non-RSpec exception message', :if => RSpec::Support::RubyFeatures.ripper_supported? do
+          let(:expression) do
+            expect { fail 'Something is wrong!' }.
+              to change { RSpec }
+          end
+
+          it 'inserts a blank line between the expression and the message' do
+            expect(presenter.fully_formatted(1)).to start_with(<<-EOS.gsub(/^ +\|/, '').chomp)
+              |
+              |  1) Example
+              |     Failure/Error:
+              |       expect { fail 'Something is wrong!' }.
+              |         to change { RSpec }
+              |
+              |     RuntimeError:
+              |       Something is wrong!
+              |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:
+            EOS
+          end
+        end
+      end
     end
+
     describe "#read_failed_lines" do
       def read_failed_lines
         presenter.send(:read_failed_lines)
