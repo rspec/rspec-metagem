@@ -125,21 +125,20 @@ module RSpec
         end
 
         def failure_lines
-          @failure_lines ||=
-            begin
-              lines = []
-              lines << failure_slash_error_line unless (description == failure_slash_error_line)
-              lines << "#{exception_class_name}:" unless exception_class_name =~ /RSpec/
-              encoded_string(exception.message.to_s).split("\n").each do |line|
-                lines << "  #{line}"
-              end
-              unless @extra_failure_lines.empty?
-                lines << ''
-                lines.concat(@extra_failure_lines)
-                lines << ''
-              end
-              lines
+          @failure_lines ||= begin
+            lines = []
+            lines << failure_slash_error_line unless (description == failure_slash_error_line)
+            lines << "#{exception_class_name}:" unless exception_class_name =~ /RSpec/
+            encoded_string(exception.message.to_s).split("\n").each do |line|
+              lines << "  #{line}"
             end
+            unless @extra_failure_lines.empty?
+              lines << ''
+              lines.concat(@extra_failure_lines)
+              lines << ''
+            end
+            lines
+          end
         end
 
         def add_shared_group_lines(lines, colorizer)
