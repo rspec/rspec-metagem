@@ -107,8 +107,8 @@ module RSpec::Core
 
       it 'allows a caller to specify extra details that are added to the bottom' do
         the_presenter = Formatters::ExceptionPresenter.new(
-          exception, example, :extra_detail_formatter => lambda do |failure_number, colorizer, indentation|
-            "#{indentation}extra detail for failure: #{failure_number}\n"
+          exception, example, :extra_detail_formatter => lambda do |failure_number, colorizer|
+            "extra detail for failure: #{failure_number}"
           end
         )
 
@@ -156,16 +156,15 @@ module RSpec::Core
         failure_line = 'http://www.example.com/job_details/123'
         extra_example.metadata[:extra_failure_lines] = [failure_line]
         the_presenter = Formatters::ExceptionPresenter.new(exception, extra_example, :indentation => 4)
-        indent = ' ' * 7 # work around: RSpec behaves like library wide checks has no malformed whitespace
         expect(the_presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
           |
           |    1) Example
           |       Failure/Error: # The failure happened here!#{ encoding_check }
           |         Boom
           |         Bam
-          |#{indent}
+          |
           |       #{failure_line}
-          |#{indent}
+          |
           |       # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
         EOS
       end
