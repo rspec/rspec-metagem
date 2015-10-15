@@ -129,6 +129,18 @@ module RSpec::Core
       end
     end
 
+    describe '#source_cache' do
+      def source_from_file(path)
+        world.source_cache.source_from_file(path)
+      end
+
+      it 'caches Source instances by file path' do
+        expect(source_from_file(__FILE__)).to be_a(Source).
+                                          and have_attributes(:path => __FILE__).
+                                          and equal(source_from_file(__FILE__))
+      end
+    end
+
     describe "#announce_filters" do
       let(:reporter) { instance_spy(Reporter) }
       before { allow(world).to receive(:reporter) { reporter } }

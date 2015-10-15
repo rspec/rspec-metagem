@@ -62,7 +62,7 @@ module RSpec::Core
         EOS
       end
 
-      it 'passes the indentation on to the `:detail_formatter` lambda so it can align things' do
+      it 'aligns lines' do
         detail_formatter = Proc.new { "Some Detail" }
 
         the_presenter = Formatters::ExceptionPresenter.new(exception, example, :indentation => 4,
@@ -169,9 +169,27 @@ module RSpec::Core
         EOS
       end
     end
-    describe "#read_failed_line" do
-      def read_failed_line
-        presenter.send(:read_failed_line)
+    describe "#read_failed_lines" do
+      def read_failed_lines
+        presenter.send(:read_failed_lines)
+      end
+
+      context 'when the failed expression spans multiple lines', :if => RSpec::Support::RubyFeatures.ripper_supported? do
+        let(:exception) do
+          begin
+            expect('RSpec').to start_with('R').
+                           and end_with('z')
+          rescue RSpec::Expectations::ExpectationNotMetError => exception
+            exception
+          end
+        end
+
+        it 'returns all the lines' do
+          expect(read_failed_lines).to eq([
+            "            expect('RSpec').to start_with('R').",
+            "                           and end_with('z')"
+          ])
+        end
       end
 
       context "when backtrace is a heterogeneous language stack trace" do
@@ -185,16 +203,21 @@ module RSpec::Core
         end
 
         it "is handled gracefully" do
-          expect { read_failed_line }.not_to raise_error
+          expect { read_failed_lines }.not_to raise_error
         end
       end
 
       context "when backtrace will generate a security error" do
         let(:exception) { instance_double(Exception, :backtrace => [ "#{__FILE__}:#{__LINE__}"]) }
 
+        before do
+          # We lazily require SnippetExtractor but requiring it in $SAFE 3 environment raises error.
+          RSpec::Support.require_rspec_core "formatters/snippet_extractor"
+        end
+
         it "is handled gracefully" do
           with_safe_set_to_level_that_triggers_security_errors do
-            expect { read_failed_line }.not_to raise_error
+            expect { read_failed_lines }.not_to raise_error
           end
         end
       end
@@ -203,7 +226,7 @@ module RSpec::Core
         let(:exception) { instance_double(Exception, :backtrace => [ "#{__FILE__}:10000000"]) }
 
         it "reports the filename and that it was unable to find the matching line" do
-          expect(read_failed_line).to include("Unable to find matching line")
+          expect(read_failed_lines.first).to include("Unable to find matching line")
         end
       end
 
@@ -213,7 +236,7 @@ module RSpec::Core
 
         it "reports the filename and that it was unable to find the matching line" do
           example.metadata[:absolute_file_path] = file
-          expect(read_failed_line).to include("Unable to find #{file} to read failed line")
+          expect(read_failed_lines.first).to include("Unable to find #{file} to read failed line")
         end
       end
 
@@ -223,7 +246,7 @@ module RSpec::Core
         let(:exception) { instance_double(Exception, :backtrace => ["#{relative_file}:#{line}"]) }
 
         it 'still finds the backtrace line' do
-          expect(read_failed_line).to include("line = __LINE__")
+          expect(read_failed_lines.first).to include("line = __LINE__")
         end
       end
 
@@ -243,7 +266,7 @@ module RSpec::Core
         let(:exception) { instance_double(Exception, :backtrace => [ "#{__FILE__}:#{__LINE__}"]) }
 
         it "doesn't hang when file exists" do
-          expect(read_failed_line.strip).to eql(
+          expect(read_failed_lines.first.strip).to eql(
             %Q[let(:exception) { instance_double(Exception, :backtrace => [ "\#{__FILE__}:\#{__LINE__}"]) }])
         end
       end

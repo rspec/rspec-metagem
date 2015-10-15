@@ -55,6 +55,17 @@ module RSpec
       def inspect
         "#<#{self.class} #{path}>"
       end
+
+      # @private
+      class Cache
+        def initialize
+          @sources_by_path = {}
+        end
+
+        def source_from_file(path)
+          @sources_by_path[path] ||= Source.from_file(path)
+        end
+      end
     end
   end
 end

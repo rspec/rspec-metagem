@@ -1,4 +1,6 @@
 # encoding: utf-8
+RSpec::Support.require_rspec_support "encoded_string"
+
 module RSpec
   module Core
     module Formatters
@@ -138,11 +140,19 @@ module RSpec
         end
 
         def failure_lines
-          @failure_lines ||= [failure_slash_error_line] + exception_lines + extra_failure_lines
+          @failure_lines ||= failure_slash_error_lines + exception_lines + extra_failure_lines
         end
 
-        def failure_slash_error_line
-          "Failure/Error: #{read_failed_line.strip}"
+        def failure_slash_error_lines
+          lines = read_failed_lines
+          if lines.count == 1
+            lines[0] = "Failure/Error: #{lines[0].strip}"
+          else
+            least_indentation = lines.map { |line| line[/^[ \t]*/] }.min
+            lines = lines.map { |line| line.sub(/^#{least_indentation}/, '  ') }
+            lines.unshift('Failure/Error:')
+          end
+          lines
         end
 
         def exception_lines
@@ -175,22 +185,21 @@ module RSpec
           lines
         end
 
-        def read_failed_line
+        def read_failed_lines
           matching_line = find_failed_line
           unless matching_line
-            return "Unable to find matching line from backtrace"
+            return ["Unable to find matching line from backtrace"]
           end
 
           file_path, line_number = matching_line.match(/(.+?):(\d+)(|:\d+)/)[1..2]
-
-          if File.exist?(file_path)
-            File.readlines(file_path)[line_number.to_i - 1] ||
-              "Unable to find matching line in #{file_path}"
-          else
-            "Unable to find #{file_path} to read failed line"
-          end
+          RSpec::Support.require_rspec_core "formatters/snippet_extractor"
+          SnippetExtractor.extract_expression_lines_at(file_path, line_number.to_i)
+        rescue SnippetExtractor::NoSuchFileError
+          ["Unable to find #{file_path} to read failed line"]
+        rescue SnippetExtractor::NoSuchLineError
+          ["Unable to find matching line in #{file_path}"]
         rescue SecurityError
-          "Unable to read failed line"
+          ["Unable to read failed line"]
         end
 
         def find_failed_line

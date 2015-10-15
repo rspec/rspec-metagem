@@ -107,6 +107,14 @@ module RSpec
         @configuration.reporter
       end
 
+      # @private
+      def source_cache
+        @source_cache ||= begin
+          RSpec::Support.require_rspec_core "source"
+          Source::Cache.new
+        end
+      end
+
       # @api private
       #
       # Notify reporter of filters.
