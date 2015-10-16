@@ -9,11 +9,7 @@ module RSpec
         # @return [String]
         def failure_message
           if Array === actual
-            message  = "expected collection contained:  #{description_of(safe_sort(surface_descriptions_in expected))}\n"
-            message += "actual collection contained:    #{description_of(safe_sort(actual))}\n"
-            message += "the missing elements were:      #{description_of(safe_sort(surface_descriptions_in missing_items))}\n" unless missing_items.empty?
-            message += "the extra elements were:        #{description_of(safe_sort(extra_items))}\n" unless extra_items.empty?
-            message
+            generate_failure_message
           else
             "expected a collection that can be converted to an array with " \
             "`#to_ary` or `#to_a`, but got #{actual_formatted}"
@@ -35,6 +31,43 @@ module RSpec
         end
 
       private
+
+        def generate_failure_message
+          message = expected_collection_line
+          message += actual_collection_line
+          message += missing_elements_line unless missing_items.empty?
+          message += extra_elements_line unless extra_items.empty?
+          message
+        end
+
+        def expected_collection_line
+          message_line('expected collection contained', expected, true)
+        end
+
+        def actual_collection_line
+          message_line('actual collection contained', actual)
+        end
+
+        def missing_elements_line
+          message_line('the missing elements were', missing_items, true)
+        end
+
+        def extra_elements_line
+          message_line('the extra elements were', extra_items)
+        end
+
+        def describe_collection(collection, surface_descriptions=false)
+          if surface_descriptions
+            "#{description_of(safe_sort(surface_descriptions_in collection))}\n"
+          else
+            "#{description_of(safe_sort(collection))}\n"
+          end
+        end
+
+        def message_line(prefix, collection, surface_descriptions=false)
+          "%-32s%s" % [prefix + ':',
+                       describe_collection(collection, surface_descriptions)]
+        end
 
         def match(_expected, _actual)
           return false unless convert_actual_to_an_array
@@ -231,7 +264,7 @@ module RSpec
 
             modified_expecteds.delete(expected_index)
 
-            modified_actuals   = apply_pairing_to(
+            modified_actuals = apply_pairing_to(
               solution.indeterminate_actual_indexes,
               actual_to_expected_matched_indexes, expected_index)
 
