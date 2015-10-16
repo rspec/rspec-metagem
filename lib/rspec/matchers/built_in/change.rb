@@ -58,13 +58,15 @@ module RSpec
         # @api private
         # @return [String]
         def failure_message
-          "expected #{@change_details.message} to have changed, but #{positive_failure_reason}"
+          "expected #{@change_details.message} to have changed, " \
+          "but #{positive_failure_reason}"
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          "expected #{@change_details.message} not to have changed, but #{negative_failure_reason}"
+          "expected #{@change_details.message} not to have changed, " \
+          "but #{negative_failure_reason}"
         end
 
         # @api private
@@ -96,7 +98,8 @@ module RSpec
 
         def negative_failure_reason
           return "was not given a block" unless Proc === @event_proc
-          "did change from #{description_of @change_details.actual_before} to #{description_of @change_details.actual_after}"
+          "did change from #{description_of @change_details.actual_before} " \
+          "to #{description_of @change_details.actual_after}"
         end
       end
 
@@ -112,7 +115,9 @@ module RSpec
 
         # @private
         def failure_message
-          "expected #{@change_details.message} to have changed #{@relativity.to_s.gsub("_", " ")} #{description_of @expected_delta}, but #{failure_reason}"
+          "expected #{@change_details.message} to have changed " \
+          "#{@relativity.to_s.tr('_', ' ')} " \
+          "#{description_of @expected_delta}, but #{failure_reason}"
         end
 
         # @private
@@ -125,12 +130,14 @@ module RSpec
 
         # @private
         def does_not_match?(_event_proc)
-          raise NotImplementedError, "`expect { }.not_to change { }.#{@relativity}()` is not supported"
+          raise NotImplementedError, "`expect { }.not_to change " \
+            "{ }.#{@relativity}()` is not supported"
         end
 
         # @private
         def description
-          "change #{@change_details.message} #{@relativity.to_s.gsub("_", " ")} #{description_of @expected_delta}"
+          "change #{@change_details.message} " \
+          "#{@relativity.to_s.tr('_', ' ')} #{description_of @expected_delta}"
         end
 
         # @private
@@ -195,23 +202,31 @@ module RSpec
         end
 
         def before_value_failure
-          "expected #{@change_details.message} to have initially been #{description_of @expected_before}, but was #{description_of @change_details.actual_before}"
+          "expected #{@change_details.message} " \
+          "to have initially been #{description_of @expected_before}, " \
+          "but was #{description_of @change_details.actual_before}"
         end
 
         def after_value_failure
-          "expected #{@change_details.message} to have changed to #{description_of @expected_after}, but is now #{description_of @change_details.actual_after}"
+          "expected #{@change_details.message} " \
+          "to have changed to #{description_of @expected_after}, " \
+          "but is now #{description_of @change_details.actual_after}"
         end
 
         def did_not_change_failure
-          "expected #{@change_details.message} to have changed #{change_description}, but did not change"
+          "expected #{@change_details.message} " \
+          "to have changed #{change_description}, but did not change"
         end
 
         def did_change_failure
-          "expected #{@change_details.message} not to have changed, but did change from #{description_of @change_details.actual_before} to #{description_of @change_details.actual_after}"
+          "expected #{@change_details.message} not to have changed, but " \
+          "did change from #{description_of @change_details.actual_before} " \
+          "to #{description_of @change_details.actual_after}"
         end
 
         def not_given_a_block_failure
-          "expected #{@change_details.message} to have changed #{change_description}, but was not given a block"
+          "expected #{@change_details.message} to have changed " \
+          "#{change_description}, but was not given a block"
         end
       end
 
@@ -235,7 +250,8 @@ module RSpec
         # @private
         def does_not_match?(event_proc)
           if @description_suffix
-            raise NotImplementedError, "`expect { }.not_to change { }.to()` is not supported"
+            raise NotImplementedError, "`expect { }.not_to change { }.to()` " \
+              "is not supported"
           end
 
           @event_proc = event_proc
@@ -277,7 +293,8 @@ module RSpec
 
         # @private
         def does_not_match?(_event_proc)
-          raise NotImplementedError, "`expect { }.not_to change { }.to()` is not supported"
+          raise NotImplementedError, "`expect { }.not_to change { }.to()` " \
+            "is not supported"
         end
 
       private
