@@ -160,7 +160,7 @@ module RSpec
                         "will match when Ruby raises a `NoMethodError`, `NameError` or " \
                         "`ArgumentError`, potentially allowing the expectation to pass " \
                         "without even executing the method you are intending to call. " \
-                        "Actual error raised was #{description_of(@actual_error)}. "\
+                        "#{warning}"\
                         "Instead consider providing a specific error class or message. " \
                         "This message can be supressed by setting: " \
                         "`RSpec::Expectations.configuration.warn_about_potential_false_positives = false`")
@@ -214,6 +214,11 @@ module RSpec
         def raise_message_already_set
           raise "`expect { }.to raise_error(message).with_message(message)` is not valid. " \
                 'The matcher only allows the expected message to be specified once'
+        end
+
+        def warning
+          warning = "Actual error raised was #{description_of(@actual_error)}. "
+          warning if @actual_error
         end
       end
       # rubocop:enable RescueException
