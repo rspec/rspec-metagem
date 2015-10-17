@@ -13,6 +13,22 @@ RSpec.describe "expect { ... }.to raise_error" do
     expect { raise }.to raise_error
   end
 
+  it 'issues a warning that includes the current error when used without an error class or message' do
+    expect_warning_with_call_site __FILE__, __LINE__+1, /Actual error raised was #<StandardError: boom>/
+    expect { raise StandardError.new, 'boom'}.to raise_error
+  end
+
+  it 'issues a warning that does not include current error when its not present' do
+    expect(::Kernel).to receive(:warn) do |message|
+      ex = /Actual error raised was/
+      expect(message).not_to match ex
+    end
+
+    expect {
+      expect{ '' }.to(raise_error)
+    }.to fail_with("expected Exception but nothing was raised")
+  end
+
   it "can supresses the warning when configured to do so", :warn_about_potential_false_positives do
     RSpec::Expectations.configuration.warn_about_potential_false_positives = false
     expect_no_warnings
