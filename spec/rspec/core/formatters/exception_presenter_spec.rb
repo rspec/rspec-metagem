@@ -150,6 +150,25 @@ module RSpec::Core
           |     #   ./spec/rspec/core/formatters/exception_presenter_spec.rb:133
         EOS
       end
+
+      it "adds extra failure lines from the example metadata" do
+        extra_example = example.clone
+        failure_line = 'http://www.example.com/job_details/123'
+        extra_example.metadata[:extra_failure_lines] = [failure_line]
+        the_presenter = Formatters::ExceptionPresenter.new(exception, extra_example, :indentation => 4)
+        indent = ' ' * 7 # work around: RSpec behaves like library wide checks has no malformed whitespace
+        expect(the_presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
+          |
+          |    1) Example
+          |       Failure/Error: # The failure happened here!#{ encoding_check }
+          |         Boom
+          |         Bam
+          |#{indent}
+          |       #{failure_line}
+          |#{indent}
+          |       # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
+        EOS
+      end
     end
     describe "#read_failed_line" do
       def read_failed_line

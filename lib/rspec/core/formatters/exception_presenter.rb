@@ -19,6 +19,7 @@ module RSpec
           @indentation             = options.fetch(:indentation, 2)
           @skip_shared_group_trace = options.fetch(:skip_shared_group_trace, false)
           @failure_lines           = options[:failure_lines]
+          @extra_failure_lines     = Array(example.metadata[:extra_failure_lines])
         end
 
         def message_lines
@@ -131,6 +132,11 @@ module RSpec
               lines << "#{exception_class_name}:" unless exception_class_name =~ /RSpec/
               encoded_string(exception.message.to_s).split("\n").each do |line|
                 lines << "  #{line}"
+              end
+              unless @extra_failure_lines.empty?
+                lines << ''
+                lines.concat(@extra_failure_lines)
+                lines << ''
               end
               lines
             end

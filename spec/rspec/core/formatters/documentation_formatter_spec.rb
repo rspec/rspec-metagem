@@ -18,12 +18,14 @@ module RSpec::Core::Formatters
       send_notification :example_failed, example_notification( double("example 1",
                :description => "first example",
                :full_description => "group first example",
-               :execution_result => execution_result(:status => :failed, :exception => Exception.new)
+               :execution_result => execution_result(:status => :failed, :exception => Exception.new),
+               :metadata => {}
               ))
       send_notification :example_failed, example_notification( double("example 2",
                :description => "second example",
                :full_description => "group second example",
-               :execution_result => execution_result(:status => :failed, :exception => Exception.new)
+               :execution_result => execution_result(:status => :failed, :exception => Exception.new),
+               :metadata => {}
               ))
 
       expect(formatter_output.string).to match(/first example \(FAILED - 1\)/m)
