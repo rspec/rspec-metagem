@@ -36,6 +36,8 @@ Enhancements:
   file, we fall back to displaying the source of the first backtrace
   line. This should virtually eliminate the "Unable to find matching
   line from backtrace" messages. (Myron Marston, #2088)
+* Add support for `:extra_failure_lines` example metadata that will
+  be appended to the failure output. (bootstraponline, #2092).
 
 Bug Fixes:
 
