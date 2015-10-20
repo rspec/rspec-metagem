@@ -1684,6 +1684,17 @@ module RSpec
         @hooks ||= HookCollections.new(self, FilterableItemRepository::QueryOptimized)
       end
 
+      # Invokes block before defining an example group
+      def on_example_group_definition(&block)
+        on_example_group_definition_callbacks << block
+      end
+
+      # @api private
+      # Returns an array of blocks to call before defining an example group
+      def on_example_group_definition_callbacks
+        @on_example_group_definition_callbacks ||= []
+      end
+
     private
 
       def handle_suite_hook(args, collection, append_or_prepend, hook_type, block)
