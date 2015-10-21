@@ -1,4 +1,4 @@
-RSpec::Support.require_rspec_support "method_signature_verifier"
+RSpec::Support.require_rspec_support 'method_signature_verifier'
 
 module RSpec
   module Matchers
@@ -22,7 +22,8 @@ module RSpec
         def initialize(block)
           @block = block
           @used = false
-          self.num_yields, self.yielded_args = 0, []
+          self.num_yields = 0
+          self.yielded_args = []
         end
 
         def has_block?
@@ -50,8 +51,8 @@ module RSpec
           when 0 then false
           else
             raise "The #{matcher_name} matcher is not designed to be used with a " \
-                  "method that yields multiple times. Use the yield_successive_args " \
-                  "matcher for that case."
+                  'method that yields multiple times. Use the yield_successive_args ' \
+                  'matcher for that case.'
           end
         end
 
@@ -63,19 +64,19 @@ module RSpec
 
         def assert_used!
           return if @used
-          raise "You must pass the argument yielded to your expect block on " \
-                "to the method-under-test as a block. It acts as a probe that " \
-                "allows the matcher to detect whether or not the method-under-test " \
-                "yields, and, if so, how many times, and what the yielded arguments " \
-                "are."
+          raise 'You must pass the argument yielded to your expect block on ' \
+                'to the method-under-test as a block. It acts as a probe that ' \
+                'allows the matcher to detect whether or not the method-under-test ' \
+                'yields, and, if so, how many times, and what the yielded arguments ' \
+                'are.'
         end
 
         if RUBY_VERSION.to_f > 1.8
           def assert_valid_expect_block!
             block_signature = RSpec::Support::BlockSignature.new(@block)
             return if RSpec::Support::StrictSignatureVerifier.new(block_signature, [self]).valid?
-            raise "Your expect block must accept an argument to be used with this " \
-                  "matcher. Pass the argument as a block on to the method you are testing."
+            raise 'Your expect block must accept an argument to be used with this ' \
+                  'matcher. Pass the argument as a block on to the method you are testing.'
           end
         else
           # :nocov:
@@ -190,7 +191,7 @@ module RSpec
         end
 
         def failure_reason
-          return " but was not a block" unless @probe.has_block?
+          return ' but was not a block' unless @probe.has_block?
           return '' unless @expected_yields_count
           " #{human_readable_expectation_type}#{human_readable_count(@expected_yields_count)}" \
           " but yielded #{human_readable_count(@probe.num_yields)}"
@@ -206,8 +207,8 @@ module RSpec
 
         def human_readable_count(count)
           case count
-          when 1 then "once"
-          when 2 then "twice"
+          when 1 then 'once'
+          when 2 then 'twice'
           else "#{count} times"
           end
         end
@@ -247,14 +248,14 @@ module RSpec
       private
 
         def positive_failure_reason
-          return "was not a block" unless @probe.has_block?
-          return "did not yield" if @probe.num_yields.zero?
+          return 'was not a block' unless @probe.has_block?
+          return 'did not yield' if @probe.num_yields.zero?
           "yielded with arguments: #{description_of @probe.single_yield_args}"
         end
 
         def negative_failure_reason
-          return "was not a block" unless @probe.has_block?
-          "did"
+          return 'was not a block' unless @probe.has_block?
+          'did'
         end
       end
 
@@ -291,7 +292,7 @@ module RSpec
 
         # @private
         def description
-          desc = "yield with args"
+          desc = 'yield with args'
           desc << "(#{expected_arg_description})" unless @expected.empty?
           desc
         end
@@ -304,36 +305,36 @@ module RSpec
       private
 
         def positive_failure_reason
-          return "was not a block" unless @probe.has_block?
-          return "did not yield" if @probe.num_yields.zero?
+          return 'was not a block' unless @probe.has_block?
+          return 'did not yield' if @probe.num_yields.zero?
           @positive_args_failure
         end
 
         def expected_arg_description
-          @expected.map { |e| description_of e }.join(", ")
+          @expected.map { |e| description_of e }.join(', ')
         end
 
         def negative_failure_reason
           if !@probe.has_block?
-            "was not a block"
+            'was not a block'
           elsif all_args_match?
-            "yielded with expected arguments" \
-              "\nexpected not: #{surface_descriptions_in(@expected).inspect}" +
+            'yielded with expected arguments' \
+              "\nexpected not: #{surface_descriptions_in(@expected).inspect}" \
               "\n         got: #{actual_formatted}"
           else
-            "did"
+            'did'
           end
         end
 
         def args_match?
           if @expected.empty? # expect {...}.to yield_with_args
-            @positive_args_failure = "yielded with no arguments" if @actual.empty?
+            @positive_args_failure = 'yielded with no arguments' if @actual.empty?
             return !@actual.empty?
           end
 
           unless (match = all_args_match?)
-            @positive_args_failure = "yielded with unexpected arguments" \
-              "\nexpected: #{surface_descriptions_in(@expected).inspect}" +
+            @positive_args_failure = 'yielded with unexpected arguments' \
+              "\nexpected: #{surface_descriptions_in(@expected).inspect}" \
               "\n     got: #{actual_formatted}"
           end
 
@@ -367,19 +368,19 @@ module RSpec
 
         # @private
         def failure_message
-          "expected given block to yield successively with arguments, but #{positive_failure_reason}"
+          'expected given block to yield successively with arguments, ' \
+          "but #{positive_failure_reason}"
         end
 
         # @private
         def failure_message_when_negated
-          "expected given block not to yield successively with arguments, but #{negative_failure_reason}"
+          'expected given block not to yield successively with arguments, ' \
+          "but #{negative_failure_reason}"
         end
 
         # @private
         def description
-          desc = "yield successive args"
-          desc << "(#{expected_arg_description})"
-          desc
+          "yield successive args(#{expected_arg_description})"
         end
 
         # @private
@@ -394,21 +395,21 @@ module RSpec
         end
 
         def expected_arg_description
-          @expected.map { |e| description_of e }.join(", ")
+          @expected.map { |e| description_of e }.join(', ')
         end
 
         def positive_failure_reason
-          return "was not a block" unless @probe.has_block?
+          return 'was not a block' unless @probe.has_block?
 
-          "yielded with unexpected arguments" \
+          'yielded with unexpected arguments' \
           "\nexpected: #{surface_descriptions_in(@expected).inspect}" \
           "\n     got: #{actual_formatted}"
         end
 
         def negative_failure_reason
-          return "was not a block" unless @probe.has_block?
+          return 'was not a block' unless @probe.has_block?
 
-          "yielded with expected arguments" \
+          'yielded with expected arguments' \
           "\nexpected not: #{surface_descriptions_in(@expected).inspect}" \
           "\n         got: #{actual_formatted}"
         end
