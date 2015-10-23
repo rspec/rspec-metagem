@@ -73,6 +73,7 @@ module RSpec::Core::Formatters
   autoload :ProfileFormatter,         'rspec/core/formatters/profile_formatter'
   autoload :JsonFormatter,            'rspec/core/formatters/json_formatter'
   autoload :BisectFormatter,          'rspec/core/formatters/bisect_formatter'
+  autoload :ExceptionPresenter,       'rspec/core/formatters/exception_presenter'
 
   # Register the formatter class
   # @param formatter_class [Class] formatter class to register

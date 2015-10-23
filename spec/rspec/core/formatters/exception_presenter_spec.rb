@@ -404,11 +404,6 @@ module RSpec::Core
       context "when backtrace will generate a security error" do
         let(:exception) { instance_double(Exception, :backtrace => [ "#{__FILE__}:#{__LINE__}"]) }
 
-        before do
-          # We lazily require SnippetExtractor but requiring it in $SAFE 3 environment raises error.
-          RSpec::Support.require_rspec_core "formatters/snippet_extractor"
-        end
-
         it "is handled gracefully" do
           with_safe_set_to_level_that_triggers_security_errors do
             expect { read_failed_lines }.not_to raise_error
