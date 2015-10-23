@@ -38,6 +38,8 @@ Enhancements:
   line from backtrace" messages. (Myron Marston, #2088)
 * Add support for `:extra_failure_lines` example metadata that will
   be appended to the failure output. (bootstraponline, #2092).
+* Add `RSpec::Core::Example#duplicate_with` to produce new examples
+  with cloned metadata. (bootstraponline, #2098)
 
 Bug Fixes:
 
