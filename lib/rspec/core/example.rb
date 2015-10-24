@@ -136,7 +136,9 @@ module RSpec
           new_metadata.delete reserved_key
         end
 
-        Example.new(example_group.clone, description.clone,
+        # don't clone the example group because the new example
+        # must belong to the same example group (not a clone).
+        Example.new(example_group, description.clone,
                     new_metadata, new_metadata[:block])
       end
 
