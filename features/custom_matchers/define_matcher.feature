@@ -165,6 +165,28 @@ Feature: Define a custom matcher
     And the stdout should contain "1 example, 0 failures"
     And the stdout should contain "should be the sum of 1, 2, 3, and 4"
 
+  Scenario: With a block arg
+    Given a file named "matcher_with_block_arg_spec.rb" with:
+      """ruby
+      require 'rspec/expectations'
+
+      RSpec::Matchers.define :be_lazily_equal_to do
+        match do |obj|
+          obj == block_arg.call
+        end
+
+        description { "be lazily equal to #{block_arg.call}" }
+      end
+
+      RSpec.describe 10 do
+        it { is_expected.to be_lazily_equal_to { 10 } }
+      end
+      """
+    When I run `rspec ./matcher_with_block_arg_spec.rb --format documentation`
+    Then the exit status should be 0
+    And the stdout should contain "1 example, 0 failures"
+    And the stdout should contain "should be lazily equal to 10"
+
   Scenario: With helper methods
     Given a file named "matcher_with_internal_helper_spec.rb" with:
       """ruby
