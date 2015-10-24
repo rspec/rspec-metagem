@@ -8,8 +8,8 @@ module RSpec
       #
       # ### Warning:
       #
-      # This class is for internal use, and subject to change without notice.  We
-      # strongly recommend that you do not base your custom matchers on this
+      # This class is for internal use, and subject to change without notice.
+      # We strongly recommend that you do not base your custom matchers on this
       # class. If/when this changes, we will announce it and remove this warning.
       class BaseMatcher
         include RSpec::Matchers::Composable
@@ -92,7 +92,7 @@ module RSpec
 
         # @private
         def self.matcher_name
-          @matcher_name ||= underscore(name.split("::").last)
+          @matcher_name ||= underscore(name.split('::').last)
         end
 
         # @private
@@ -101,7 +101,7 @@ module RSpec
           word = camel_cased_word.to_s.dup
           word.gsub!(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
           word.gsub!(/([a-z\d])([A-Z])/, '\1_\2')
-          word.tr!("-", "_")
+          word.tr!('-', '_')
           word.downcase!
           word
         end
@@ -118,7 +118,7 @@ module RSpec
         if RUBY_VERSION.to_f < 1.9
           # :nocov:
           def present_ivars
-            instance_variables.map { |v| v.to_sym }
+            instance_variables.map(&:to_sym)
           end
           # :nocov:
         else
@@ -168,7 +168,7 @@ module RSpec
           # @private
           def self.has_default_failure_messages?(matcher)
             matcher.method(:failure_message).owner == self &&
-            matcher.method(:failure_message_when_negated).owner == self
+              matcher.method(:failure_message_when_negated).owner == self
           rescue NameError
             false
           end
