@@ -52,6 +52,9 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
       # cloned examples must have unique ids
       expect(example.id).to_not eq(example2.id)
+
+      # cloned examples must both refer to the same example group (not a clone)
+      expect(example.example_group.object_id).to eq(example2.example_group.object_id)
     end
   end
 
