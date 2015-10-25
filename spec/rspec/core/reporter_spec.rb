@@ -34,6 +34,34 @@ module RSpec::Core
 
         reporter.finish
       end
+
+      let(:install_coderay_snippet) { "install the coderay gem" }
+
+      def formatter_notified_of_dump_summary(syntax_highlighting_unavailable)
+        formatter = spy("formatter")
+        reporter.syntax_highlighting_unavailable = syntax_highlighting_unavailable
+        reporter.register_listener formatter, :dump_summary
+
+        reporter.start(0)
+        reporter.finish
+        formatter
+      end
+
+      it "includes a note about install coderay if syntax highlighting is unavailable" do
+        formatter = formatter_notified_of_dump_summary(true)
+
+        expect(formatter).to have_received(:dump_summary).with(an_object_having_attributes(
+          :fully_formatted => a_string_including(install_coderay_snippet)
+        ))
+      end
+
+      it "does not include a note about installing coderay if syntax highlighting is available" do
+        formatter = formatter_notified_of_dump_summary(false)
+
+        expect(formatter).to have_received(:dump_summary).with(an_object_having_attributes(
+          :fully_formatted => a_string_excluding(install_coderay_snippet)
+        ))
+      end
     end
 
     describe 'start' do

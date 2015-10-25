@@ -52,6 +52,9 @@ Enhancements:
 * Enhance `fail_fast` option so it can take a number (e.g. `--fail-fast=3`)
   to force the run to abort after the specified number of failures.
   (Jack Scotti, #2065)
+* Syntax highlight the failure snippets in text formatters when `color`
+  is enabled and the `coderay` gem is installed on a POSIX system.
+  (Myron Marston, #2109)
 
 Bug Fixes:
 

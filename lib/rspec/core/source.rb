@@ -1,4 +1,5 @@
 RSpec::Support.require_rspec_core 'source/node'
+RSpec::Support.require_rspec_core 'source/syntax_highlighter'
 RSpec::Support.require_rspec_core 'source/token'
 
 module RSpec
@@ -59,8 +60,11 @@ module RSpec
 
       # @private
       class Cache
-        def initialize
+        attr_reader :syntax_highlighter
+
+        def initialize(configuration)
           @sources_by_path = {}
+          @syntax_highlighter = SyntaxHighlighter.new(configuration)
         end
 
         def source_from_file(path)
