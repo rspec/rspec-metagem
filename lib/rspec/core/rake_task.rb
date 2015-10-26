@@ -1,8 +1,14 @@
 require 'rake'
 require 'rake/tasklib'
 require 'rspec/support'
-require 'rspec/support/ruby_features'
-require 'rspec/core/shell_escape'
+
+RSpec::Support.require_rspec_support "ruby_features"
+
+unless RSpec::Support.respond_to?(:require_rspec_core)
+  RSpec::Support.define_optimized_require_for_rspec(:core) { |f| require_relative "../#{f}" }
+end
+
+RSpec::Support.require_rspec_core "shell_escape"
 
 module RSpec
   module Core
