@@ -2,6 +2,7 @@ RSpec::Support.require_rspec_support 'recursive_const_methods'
 
 module RSpec
   module Core
+    # rubocop:disable Metrics/ClassLength
     # ExampleGroup and {Example} are the main structural elements of
     # rspec-core. Consider this example:
     #
@@ -340,6 +341,28 @@ module RSpec
         find_and_eval_shared("examples", name, caller.first, *args, &block)
       end
 
+      # Clear memoized values when adding/removing examples
+      # @private
+      def self.reset_memoized
+        @descendant_filtered_examples = nil
+        @_descendants = nil
+        @parent_groups = nil
+        @declaration_line_numbers = nil
+        @before_context_ivars = nil
+      end
+
+      # Adds an example to the example group
+      def self.add_example(example)
+        reset_memoized
+        examples << example
+      end
+
+      # Removes an example from the example group
+      def self.remove_example(example)
+        reset_memoized
+        examples.delete example
+      end
+
       # @private
       def self.find_and_eval_shared(label, name, inclusion_location, *args, &customization_block)
         shared_block = RSpec.world.shared_example_group_registry.find(parent_groups, name)
@@ -671,6 +694,7 @@ module RSpec
         super
       end
     end
+    # rubocop:enable Metrics/ClassLength
 
     # @private
     # Unnamed example group used by `SuiteHookContext`.

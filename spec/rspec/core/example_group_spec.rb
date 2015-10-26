@@ -1775,5 +1775,47 @@ module RSpec::Core
         expect(inspect_output).to end_with("\"example at #{path}:#{line}\">")
       end
     end
+
+    def group_ids group
+      ids = []
+      ['descendant_filtered_examples', 'descendants',
+       'parent_groups', 'declaration_line_numbers', 'before_context_ivars'].each do |method|
+        ids << group.send(method).object_id
+      end
+      ids
+    end
+
+    it 'allows adding examples' do
+      group = RSpec.describe('group') do
+          example('ex 1') { expect(1).to eq(1) }
+      end
+
+      # ids should remain the same until we add/remove an example
+      original_ids = group_ids group
+      expect(original_ids).to eq(group_ids(group))
+
+      group.add_example group.examples.first
+      expect(group.examples.length).to eq(2)
+
+      new_ids = group_ids group
+      new_ids.each_with_index { |id, idx| expect(id).to_not eq(original_ids[idx]) }
+    end
+
+    it 'allows removing examples' do
+      group = RSpec.describe('group') do
+        example('ex 1') { expect(1).to eq(1) }
+      end
+      group.add_example group.examples.first
+
+      # ids should remain the same until we add/remove an example
+      original_ids = group_ids group
+      expect(original_ids).to eq(group_ids(group))
+
+      group.remove_example group.examples.first
+      expect(group.examples.length).to eq(0)
+
+      new_ids = group_ids group
+      new_ids.each_with_index { |id, idx| expect(id).to_not eq(original_ids[idx]) }
+    end
   end
 end
