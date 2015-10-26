@@ -40,8 +40,10 @@ Enhancements:
   be appended to the failure output. (bootstraponline, #2092).
 * Add `RSpec::Core::Example#duplicate_with` to produce new examples
   with cloned metadata. (bootstraponline, #2098)
-* Add `on_example_group_definition` to register hooks to be invoked when
-  example groups are created. (bootstraponline, #2094)
+* Add `RSpec::Core::Configuration#on_example_group_definition` to register
+  hooks to be invoked when example groups are created. (bootstraponline, #2094)
+* Add `add_example` and `remove_example` to `RSpec::Core::ExampleGroup` to
+  allow  manipulating an example groups examples. (bootstraponline, #2095)
 
 Bug Fixes:
 
