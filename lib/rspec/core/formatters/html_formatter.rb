@@ -137,12 +137,12 @@ module RSpec
         # spec. For example, you could output links to images or other files
         # produced during the specs.
         def extra_failure_content(failure)
-          RSpec::Support.require_rspec_core "formatters/snippet_extractor"
+          RSpec::Support.require_rspec_core "formatters/html_snippet_extractor"
           backtrace = (failure.exception.backtrace || []).map do |line|
             RSpec.configuration.backtrace_formatter.backtrace_line(line)
           end
           backtrace.compact!
-          @snippet_extractor ||= SnippetExtractor.new
+          @snippet_extractor ||= HtmlSnippetExtractor.new
           "    <pre class=\"ruby\"><code>#{@snippet_extractor.snippet(backtrace)}</code></pre>"
         end
       end

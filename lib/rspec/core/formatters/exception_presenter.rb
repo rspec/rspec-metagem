@@ -1,4 +1,7 @@
 # encoding: utf-8
+RSpec::Support.require_rspec_core "formatters/snippet_extractor"
+RSpec::Support.require_rspec_support "encoded_string"
+
 module RSpec
   module Core
     module Formatters
@@ -12,14 +15,13 @@ module RSpec
           @exception               = exception
           @example                 = example
           @message_color           = options.fetch(:message_color)          { RSpec.configuration.failure_color }
-          @description             = options.fetch(:description_formatter)  { Proc.new { example.full_description } }.call(self)
+          @description             = options.fetch(:description)            { example.full_description }
           @detail_formatter        = options.fetch(:detail_formatter)       { Proc.new {} }
           @extra_detail_formatter  = options.fetch(:extra_detail_formatter) { Proc.new {} }
           @backtrace_formatter     = options.fetch(:backtrace_formatter)    { RSpec.configuration.backtrace_formatter }
           @indentation             = options.fetch(:indentation, 2)
           @skip_shared_group_trace = options.fetch(:skip_shared_group_trace, false)
           @failure_lines           = options[:failure_lines]
-          @extra_failure_lines     = Array(example.metadata[:extra_failure_lines])
         end
 
         def message_lines
@@ -71,16 +73,21 @@ module RSpec
         end
 
         def fully_formatted(failure_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-          alignment_basis = "#{' ' * @indentation}#{failure_number}) "
-          indentation = ' ' * alignment_basis.length
-
-          "\n#{alignment_basis}#{description_and_detail(colorizer, indentation)}" \
-          "\n#{formatted_message_and_backtrace(colorizer, indentation)}" \
-          "#{extra_detail_formatter.call(failure_number, colorizer, indentation)}"
+          lines = fully_formatted_lines(failure_number, colorizer)
+          lines.join("\n") << "\n"
         end
 
-        def failure_slash_error_line
-          @failure_slash_error_line ||= "Failure/Error: #{read_failed_line.strip}"
+        def fully_formatted_lines(failure_number, colorizer)
+          lines = [
+            description,
+            detail_formatter.call(example, colorizer),
+            formatted_message_and_backtrace(colorizer),
+            extra_detail_formatter.call(failure_number, colorizer),
+          ].compact.flatten
+
+          lines = indent_lines(lines, failure_number)
+          lines.unshift("")
+          lines
         end
 
       private
@@ -91,12 +98,6 @@ module RSpec
           else
             exception
           end
-        end
-
-        def description_and_detail(colorizer, indentation)
-          detail = detail_formatter.call(example, colorizer, indentation)
-          return (description || detail) unless description && detail
-          "#{description}\n#{indentation}#{detail}"
         end
 
         if String.method_defined?(:encoding)
@@ -118,6 +119,21 @@ module RSpec
           # :nocov:
         end
 
+        def indent_lines(lines, failure_number)
+          alignment_basis = "#{' ' * @indentation}#{failure_number}) "
+          indentation = ' ' * alignment_basis.length
+
+          lines.each_with_index.map do |line, index|
+            if index == 0
+              "#{alignment_basis}#{line}"
+            elsif line.empty?
+              line
+            else
+              "#{indentation}#{line}"
+            end
+          end
+        end
+
         def exception_class_name(exception=@exception)
           name = exception.class.name.to_s
           name = "(anonymous error class)" if name == ''
@@ -125,21 +141,49 @@ module RSpec
         end
 
         def failure_lines
-          @failure_lines ||=
-            begin
-              lines = []
-              lines << failure_slash_error_line unless (description == failure_slash_error_line)
-              lines << "#{exception_class_name}:" unless exception_class_name =~ /RSpec/
-              encoded_string(exception.message.to_s).split("\n").each do |line|
-                lines << "  #{line}"
-              end
-              unless @extra_failure_lines.empty?
-                lines << ''
-                lines.concat(@extra_failure_lines)
-                lines << ''
-              end
-              lines
+          @failure_lines ||= [].tap do |lines|
+            lines.concat(failure_slash_error_lines)
+
+            sections = [failure_slash_error_lines, exception_lines]
+            if sections.any? { |section| section.size > 1 } && !exception_lines.first.empty?
+              lines << ''
             end
+
+            lines.concat(exception_lines)
+            lines.concat(extra_failure_lines)
+          end
+        end
+
+        def failure_slash_error_lines
+          lines = read_failed_lines
+          if lines.count == 1
+            lines[0] = "Failure/Error: #{lines[0].strip}"
+          else
+            least_indentation = lines.map { |line| line[/^[ \t]*/] }.min
+            lines = lines.map { |line| line.sub(/^#{least_indentation}/, '  ') }
+            lines.unshift('Failure/Error:')
+          end
+          lines
+        end
+
+        def exception_lines
+          lines = []
+          lines << "#{exception_class_name}:" unless exception_class_name =~ /RSpec/
+          encoded_string(exception.message.to_s).split("\n").each do |line|
+            lines << (line.empty? ? line : "  #{line}")
+          end
+          lines
+        end
+
+        def extra_failure_lines
+          @extra_failure_lines ||= begin
+            lines = Array(example.metadata[:extra_failure_lines])
+            unless lines.empty?
+              lines.unshift('')
+              lines.push('')
+            end
+            lines
+          end
         end
 
         def add_shared_group_lines(lines, colorizer)
@@ -152,22 +196,21 @@ module RSpec
           lines
         end
 
-        def read_failed_line
+        def read_failed_lines
           matching_line = find_failed_line
           unless matching_line
-            return "Unable to find matching line from backtrace"
+            return ["Unable to find matching line from backtrace"]
           end
 
           file_path, line_number = matching_line.match(/(.+?):(\d+)(|:\d+)/)[1..2]
-
-          if File.exist?(file_path)
-            File.readlines(file_path)[line_number.to_i - 1] ||
-              "Unable to find matching line in #{file_path}"
-          else
-            "Unable to find #{file_path} to read failed line"
-          end
+          max_line_count = RSpec.configuration.max_displayed_failure_line_count
+          SnippetExtractor.extract_expression_lines_at(file_path, line_number.to_i, max_line_count)
+        rescue SnippetExtractor::NoSuchFileError
+          ["Unable to find #{file_path} to read failed line"]
+        rescue SnippetExtractor::NoSuchLineError
+          ["Unable to find matching line in #{file_path}"]
         rescue SecurityError
-          "Unable to read failed line"
+          ["Unable to read failed line"]
         end
 
         def find_failed_line
@@ -181,16 +224,12 @@ module RSpec
           end || exception_backtrace.first
         end
 
-        def formatted_message_and_backtrace(colorizer, indentation)
+        def formatted_message_and_backtrace(colorizer)
           lines = colorized_message_lines(colorizer) + colorized_formatted_backtrace(colorizer)
-
-          formatted = ""
-
-          lines.each do |line|
-            formatted << RSpec::Support::EncodedString.new("#{indentation}#{line}\n", encoding_of(formatted))
+          encoding = encoding_of("")
+          lines.map do |line|
+            RSpec::Support::EncodedString.new(line, encoding)
           end
-
-          formatted
         end
 
         def exception_backtrace
@@ -226,9 +265,9 @@ module RSpec
           def pending_options
             if @execution_result.pending_fixed?
               {
-                :description_formatter => Proc.new { "#{@example.full_description} FIXED" },
-                :message_color         => RSpec.configuration.fixed_color,
-                :failure_lines         => [
+                :description   => "#{@example.full_description} FIXED",
+                :message_color => RSpec.configuration.fixed_color,
+                :failure_lines => [
                   "Expected pending '#{@execution_result.pending_message}' to fail. No Error was raised."
                 ]
               }
@@ -251,8 +290,6 @@ module RSpec
                                                                        options[:message_color])
             )
 
-            options[:description_formatter] &&= Proc.new {}
-
             return options unless exception.aggregation_metadata[:hide_backtrace]
             options[:backtrace_formatter] = EmptyBacktraceFormatter
             options
@@ -263,7 +300,7 @@ module RSpec
           end
 
           def multiple_exception_summarizer(exception, prior_detail_formatter, color)
-            lambda do |example, colorizer, indentation|
+            lambda do |example, colorizer|
               summary = if exception.aggregation_metadata[:hide_backtrace]
                           # Since the backtrace is hidden, the subfailures will come
                           # immediately after this, and using `:` will read well.
@@ -276,27 +313,30 @@ module RSpec
 
               summary = colorizer.wrap(summary, color || RSpec.configuration.failure_color)
               return summary unless prior_detail_formatter
-              "#{prior_detail_formatter.call(example, colorizer, indentation)}\n#{indentation}#{summary}"
+              [
+                prior_detail_formatter.call(example, colorizer),
+                summary
+              ]
             end
           end
 
           def sub_failure_list_formatter(exception, message_color)
             common_backtrace_truncater = CommonBacktraceTruncater.new(exception)
 
-            lambda do |failure_number, colorizer, indentation|
-              exception.all_exceptions.each_with_index.map do |failure, index|
+            lambda do |failure_number, colorizer|
+              FlatMap.flat_map(exception.all_exceptions.each_with_index) do |failure, index|
                 options = with_multiple_error_options_as_needed(
                   failure,
-                  :description_formatter   => :failure_slash_error_line.to_proc,
-                  :indentation             => indentation.length,
+                  :description             => nil,
+                  :indentation             => 0,
                   :message_color           => message_color || RSpec.configuration.failure_color,
                   :skip_shared_group_trace => true
                 )
 
                 failure   = common_backtrace_truncater.with_truncated_backtrace(failure)
                 presenter = ExceptionPresenter.new(failure, @example, options)
-                presenter.fully_formatted("#{failure_number}.#{index + 1}", colorizer)
-              end.join
+                presenter.fully_formatted_lines("#{failure_number}.#{index + 1}", colorizer)
+              end
             end
           end
 

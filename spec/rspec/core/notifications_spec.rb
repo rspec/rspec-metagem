@@ -229,13 +229,14 @@ RSpec.describe "FailedExampleNotification" do
         end
 
         it 'lists both types in the exception listing' do
-          expect(fully_formatted.lines.to_a.last(9)).to eq(dedent(<<-EOS).lines.to_a)
+          expect(fully_formatted.lines.to_a.last(10)).to eq(dedent(<<-EOS).lines.to_a)
             |
             |     1.1) Failure/Error: expect(1).to fail_with_description("foo")
             |            expected pass, but foo
             |          # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 1}
             |
             |     1.2) Failure/Error: raise "boom"
+            |
             |          RuntimeError:
             |            boom
             |          # #{RSpec::Core::Metadata.relative_path(__FILE__)}:#{aggregate_line + 2}
@@ -283,13 +284,15 @@ RSpec.describe "FailedExampleNotification" do
       let(:exception)      { RSpec::Core::MultipleExceptionError.new(sub_failure_1, sub_failure_2) }
 
       it "lists each sub-failure, just like with MultipleExpectationsNotMetError" do
-        expect(fully_formatted.lines.to_a.last(8)).to eq(dedent(<<-EOS).lines.to_a)
+        expect(fully_formatted.lines.to_a.last(10)).to eq(dedent(<<-EOS).lines.to_a)
           |
           |     1.1) Failure/Error: Unable to find matching line from backtrace
+          |
           |          StandardError:
           |            foo
           |
           |     1.2) Failure/Error: Unable to find matching line from backtrace
+          |
           |          StandardError:
           |            bar
         EOS

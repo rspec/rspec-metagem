@@ -44,6 +44,11 @@ Enhancements:
   hooks to be invoked when example groups are created. (bootstraponline, #2094)
 * Add `add_example` and `remove_example` to `RSpec::Core::ExampleGroup` to
   allow  manipulating an example groups examples. (bootstraponline, #2095)
+* Display multiline failure source lines in failure output when Ripper is
+  available (MRI >= 1.9.2, and JRuby >= 1.7.5 && < 9.0.0.0.rc1).
+  (Yuji Nakayama, #2083)
+* Add `max_displayed_failure_line_count` configuration option
+  (defaults to 10). (Yuji Nakayama, #2083)
 
 Bug Fixes:
 

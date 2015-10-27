@@ -1,114 +1,137 @@
+RSpec::Support.require_rspec_core "source"
+
 module RSpec
   module Core
     module Formatters
-      # @api private
-      #
-      # Extracts code snippets by looking at the backtrace of the passed error
-      # and applies synax highlighting and line numbers using html.
+      # @private
       class SnippetExtractor
-        # @private
-        module NullConverter
-          def self.convert(code)
-            %Q(#{code}\n<span class="comment"># Install the coderay gem to get syntax highlighting</span>)
+        NoSuchFileError = Class.new(StandardError)
+        NoSuchLineError = Class.new(StandardError)
+
+        def self.extract_line_at(file_path, line_number)
+          source = source_from_file(file_path)
+          line = source.lines[line_number - 1]
+          raise NoSuchLineError unless line
+          line
+        end
+
+        def self.source_from_file(path)
+          raise NoSuchFileError unless File.exist?(path)
+          RSpec.world.source_cache.source_from_file(path)
+        end
+
+        if RSpec::Support::RubyFeatures.ripper_supported?
+          NoExpressionAtLineError = Class.new(StandardError)
+
+          PAREN_TOKEN_TYPE_PAIRS = {
+            :on_lbracket    => :on_rbracket,
+            :on_lparen      => :on_rparen,
+            :on_lbrace      => :on_rbrace,
+            :on_heredoc_beg => :on_heredoc_end
+          }
+
+          attr_reader :source, :beginning_line_number, :max_line_count
+
+          def self.extract_expression_lines_at(file_path, beginning_line_number, max_line_count=nil)
+            if max_line_count == 1
+              [extract_line_at(file_path, beginning_line_number)]
+            else
+              source = source_from_file(file_path)
+              new(source, beginning_line_number, max_line_count).expression_lines
+            end
           end
-        end
 
-        # @private
-        module CoderayConverter
-          def self.convert(code)
-            CodeRay.scan(code, :ruby).html(:line_numbers => false)
+          def initialize(source, beginning_line_number, max_line_count=nil)
+            @source = source
+            @beginning_line_number = beginning_line_number
+            @max_line_count = max_line_count
           end
-        end
 
-        # rubocop:disable Style/ClassVars
-        @@converter = NullConverter
-        begin
-          require 'coderay'
-          @@converter = CoderayConverter
-          # rubocop:disable Lint/HandleExceptions
-        rescue LoadError
-          # it'll fall back to the NullConverter assigned above
-          # rubocop:enable Lint/HandleExceptions
-        end
+          def expression_lines
+            line_range = line_range_of_expression
 
-        # rubocop:enable Style/ClassVars
+            if max_line_count && line_range.count > max_line_count
+              line_range = (line_range.begin)..(line_range.begin + max_line_count - 1)
+            end
 
-        # @api private
-        #
-        # Extract lines of code corresponding to  a backtrace.
-        #
-        # @param backtrace [String] the backtrace from a test failure
-        # @return [String] highlighted code snippet indicating where the test
-        #   failure occured
-        #
-        # @see #post_process
-        def snippet(backtrace)
-          raw_code, line = snippet_for(backtrace[0])
-          highlighted = @@converter.convert(raw_code)
-          post_process(highlighted, line)
-        end
-        # rubocop:enable Style/ClassVars
-
-        # @api private
-        #
-        # Create a snippet from a line of code.
-        #
-        # @param error_line [String] file name with line number (i.e.
-        #   'foo_spec.rb:12')
-        # @return [String] lines around the target line within the file
-        #
-        # @see #lines_around
-        def snippet_for(error_line)
-          if error_line =~ /(.*):(\d+)/
-            file = Regexp.last_match[1]
-            line = Regexp.last_match[2].to_i
-            [lines_around(file, line), line]
-          else
-            ["# Couldn't get snippet for #{error_line}", 1]
+            source.lines[(line_range.begin - 1)..(line_range.end - 1)]
+          rescue NoExpressionAtLineError
+            [self.class.extract_line_at(source.path, beginning_line_number)]
           end
-        end
 
-        # @api private
-        #
-        # Extract lines of code centered around a particular line within a
-        # source file.
-        #
-        # @param file [String] filename
-        # @param line [Fixnum] line number
-        # @return [String] lines around the target line within the file (2 above
-        #   and 1 below).
-        def lines_around(file, line)
-          if File.file?(file)
-            lines = File.read(file).split("\n")
-            min = [0, line - 3].max
-            max = [line + 1, lines.length - 1].min
-            selected_lines = []
-            selected_lines.join("\n")
-            lines[min..max].join("\n")
-          else
-            "# Couldn't get snippet for #{file}"
-          end
-        rescue SecurityError
-          "# Couldn't get snippet for #{file}"
-        end
+          private
 
-        # @api private
-        #
-        # Adds line numbers to all lines and highlights the line where the
-        # failure occurred using html `span` tags.
-        #
-        # @param highlighted [String] syntax-highlighted snippet surrounding the
-        #   offending line of code
-        # @param offending_line [Fixnum] line where failure occured
-        # @return [String] completed snippet
-        def post_process(highlighted, offending_line)
-          new_lines = []
-          highlighted.split("\n").each_with_index do |line, i|
-            new_line = "<span class=\"linenum\">#{offending_line + i - 2}</span>#{line}"
-            new_line = "<span class=\"offending\">#{new_line}</span>" if i == 2
-            new_lines << new_line
+          def line_range_of_expression
+            @line_range_of_expression ||= begin
+              line_range = line_range_of_location_nodes_in_expression
+              initial_unclosed_parens = unclosed_paren_tokens_in_line_range(line_range)
+              unclosed_parens = initial_unclosed_parens
+
+              until (initial_unclosed_parens & unclosed_parens).empty?
+                line_range = (line_range.begin)..(line_range.end + 1)
+                unclosed_parens = unclosed_paren_tokens_in_line_range(line_range)
+              end
+
+              line_range
+            end
           end
-          new_lines.join("\n")
+
+          def unclosed_paren_tokens_in_line_range(line_range)
+            tokens = FlatMap.flat_map(line_range) do |line_number|
+              source.tokens_by_line_number[line_number]
+            end
+
+            tokens.each_with_object([]) do |token, unclosed_tokens|
+              if PAREN_TOKEN_TYPE_PAIRS.keys.include?(token.type)
+                unclosed_tokens << token
+              else
+                index = unclosed_tokens.rindex do |unclosed_token|
+                  PAREN_TOKEN_TYPE_PAIRS[unclosed_token.type] == token.type
+                end
+                unclosed_tokens.delete_at(index) if index
+              end
+            end
+          end
+
+          def line_range_of_location_nodes_in_expression
+            line_numbers = expression_node.each_with_object(Set.new) do |node, set|
+              set << node.location.line if node.location
+            end
+
+            line_numbers.min..line_numbers.max
+          end
+
+          def expression_node
+            raise NoExpressionAtLineError if location_nodes_at_beginning_line.empty?
+
+            @expression_node ||= begin
+              common_ancestor_nodes = location_nodes_at_beginning_line.map do |node|
+                node.each_ancestor.to_a
+              end.reduce(:&)
+
+              common_ancestor_nodes.find { |node| expression_outmost_node?(node) }
+            end
+          end
+
+          def expression_outmost_node?(node)
+            return true unless node.parent
+            return false if node.type.to_s.start_with?('@')
+            ![node, node.parent].all? do |n|
+              # See `Ripper::PARSER_EVENTS` for the complete list of sexp types.
+              type = n.type.to_s
+              type.end_with?('call') || type.start_with?('method_add_')
+            end
+          end
+
+          def location_nodes_at_beginning_line
+            source.nodes_by_line_number[beginning_line_number]
+          end
+        else
+          # :nocov:
+          def self.extract_expression_lines_at(file_path, beginning_line_number, *)
+            [extract_line_at(file_path, beginning_line_number)]
+          end
+          # :nocov:
         end
       end
     end

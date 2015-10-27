@@ -80,18 +80,21 @@ module FormatterSupport
         |
         |  3) a failing spec with odd backtraces fails with a backtrace that has no file
         |     Failure/Error: Unable to find (erb) to read failed line
+        |
         |     RuntimeError:
         |       foo
         |     # (erb):1
         |
         |  4) a failing spec with odd backtraces fails with a backtrace containing an erb file
         |     Failure/Error: Unable to find /foo.html.erb to read failed line
+        |
         |     Exception:
         |       Exception
         |     # /foo.html.erb:1:in `<main>': foo (RuntimeError)
         |
         |  5) a failing spec with odd backtraces with a `nil` backtrace raises
         |     Failure/Error: Unable to find matching line from backtrace
+        |
         |     RuntimeError:
         |       boom
         |
@@ -150,6 +153,7 @@ module FormatterSupport
         |
         |  3) a failing spec with odd backtraces fails with a backtrace that has no file
         |     Failure/Error: ERB.new("<%= raise 'foo' %>").result
+        |
         |     RuntimeError:
         |       foo
         |     # (erb):1:in `<main>'
@@ -160,12 +164,14 @@ module FormatterSupport
         |
         |  4) a failing spec with odd backtraces fails with a backtrace containing an erb file
         |     Failure/Error: Unable to find /foo.html.erb to read failed line
+        |
         |     Exception:
         |       Exception
         |     # /foo.html.erb:1:in `<main>': foo (RuntimeError)
         |
         |  5) a failing spec with odd backtraces with a `nil` backtrace raises
         |     Failure/Error: Unable to find matching line from backtrace
+        |
         |     RuntimeError:
         |       boom
         |
