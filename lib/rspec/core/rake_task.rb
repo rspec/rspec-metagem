@@ -4,9 +4,11 @@ require 'rspec/support'
 
 RSpec::Support.require_rspec_support "ruby_features"
 
+# :nocov:
 unless RSpec::Support.respond_to?(:require_rspec_core)
   RSpec::Support.define_optimized_require_for_rspec(:core) { |f| require_relative "../#{f}" }
 end
+# :nocov:
 
 RSpec::Support.require_rspec_core "shell_escape"
 
