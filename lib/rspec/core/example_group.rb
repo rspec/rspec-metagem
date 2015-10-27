@@ -348,7 +348,6 @@ module RSpec
         @_descendants = nil
         @parent_groups = nil
         @declaration_line_numbers = nil
-        @before_context_ivars = nil
       end
 
       # Adds an example to the example group
