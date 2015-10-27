@@ -4,14 +4,20 @@ Behaviour Driven Development for Ruby
 
 # Description
 
-rspec is a meta-gem, which depends on the [rspec-core](https://github.com/rspec/rspec-core), [rspec-expectations](https://github.com/rspec/rspec-expectations)
-and [rspec-mocks](https://github.com/rspec/rspec-mocks) gems. Each of these can be installed separately and loaded in
-isolation using `require`. Among other benefits, this allows you to use
-rspec-expectations, for example, in Test::Unit::TestCase if you happen to
-prefer that style.
+rspec is a meta-gem, which depends on the
+[rspec-core](https://github.com/rspec/rspec-core),
+[rspec-expectations](https://github.com/rspec/rspec-expectations)
+and [rspec-mocks](https://github.com/rspec/rspec-mocks) gems. Each of these
+can be installed separately and loaded in isolation using `require`. Among
+other benefits, this allows you to use rspec-expectations, for example, in
+Test::Unit::TestCase if you happen to prefer that style.
 
 Conversely, if you like RSpec's approach to declaring example groups and
-examples (`describe` and `it`) but prefer Test::Unit assertions and [mocha](https://github.com/mochajs/mocha), [rr] (https://github.com/btakita/rr) or [flexmock] (https://github.com/jimweirich/flexmock) for mocking, you'll be able to do that without having to install or load the components of RSpec that you're not using.
+examples (`describe` and `it`) but prefer Test::Unit assertions and
+[mocha](https://github.com/mochajs/mocha), [rr] (https://github.com/btakita/rr)
+or [flexmock] (https://github.com/jimweirich/flexmock) for mocking, you'll be
+able to do that without having to install or load the components of RSpec that
+you're not using.
 
 ## Documentation
 
