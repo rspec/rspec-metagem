@@ -26,6 +26,7 @@ module RSpec
         @ast ||= begin
           require 'ripper'
           sexp = Ripper.sexp(source)
+          raise SyntaxError unless sexp
           Node.new(sexp)
         end
       end

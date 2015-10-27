@@ -55,7 +55,7 @@ module RSpec
             end
 
             source.lines[(line_range.begin - 1)..(line_range.end - 1)]
-          rescue NoExpressionAtLineError
+          rescue SyntaxError, NoExpressionAtLineError
             [self.class.extract_line_at(source.path, beginning_line_number)]
           end
 
