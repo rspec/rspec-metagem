@@ -9,3 +9,4 @@ Gemfile.lock
 bin
 bundle
 .bundle
+specs.out
