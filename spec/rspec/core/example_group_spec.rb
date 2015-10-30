@@ -1345,9 +1345,9 @@ module RSpec::Core
 
       context "with fail_fast and failures_required == 1" do
         let(:group) do
-          the_group = RSpec.describe
-          allow(the_group).to receive(:fail_fast?) { true }
-          the_group
+          group = RSpec.describe
+          allow(group).to receive(:fail_fast?) { true }
+          group
         end
         let(:config)   { Configuration.new }
         let(:reporter) do
@@ -1358,28 +1358,28 @@ module RSpec::Core
 
         it "does not run examples after the failed example" do
           examples_run = []
-          self.group.example('example 1') { examples_run << self }
-          self.group.example('example 2') { examples_run << self; fail; }
-          self.group.example('example 3') { examples_run << self }
+          group().example('example 1') { examples_run << self }
+          group().example('example 2') { examples_run << self; fail; }
+          group().example('example 3') { examples_run << self }
 
-          self.group.run(reporter)
+          group().run(reporter)
 
           expect(examples_run.length).to eq(2)
         end
 
         it "sets RSpec.world.wants_to_quit flag if encountering an exception in before(:all)" do
-          self.group.before(:all) { raise "error in before all" }
-          self.group.example("equality") { expect(1).to eq(2) }
-          expect(self.group.run).to be_falsey
+          group().before(:all) { raise "error in before all" }
+          group().example("equality") { expect(1).to eq(2) }
+          expect(group().run).to be_falsey
           expect(RSpec.world.wants_to_quit).to be_truthy
         end
       end
 
       context "with fail_fast and failures_required = 3" do
         let(:group) do
-          the_group = RSpec.describe
-          allow(the_group).to receive(:fail_fast?) { true }
-          the_group
+          group = RSpec.describe
+          allow(group).to receive(:fail_fast?) { true }
+          group
         end
         let(:config) { Configuration.new }
 
@@ -1391,21 +1391,21 @@ module RSpec::Core
 
         it "does not run examples after 3 failed examples" do
           examples_run = []
-          self.group.example('example 1') { examples_run << self }
-          self.group.example('example 2') { examples_run << self; fail; }
-          self.group.example('example 3') { examples_run << self; fail; }
-          self.group.example('example 4') { examples_run << self; fail; }
-          self.group.example('example 5') { examples_run << self }
+          group().example('example 1') { examples_run << self }
+          group().example('example 2') { examples_run << self; fail; }
+          group().example('example 3') { examples_run << self; fail; }
+          group().example('example 4') { examples_run << self; fail; }
+          group().example('example 5') { examples_run << self }
 
-          self.group.run(reporter)
+          group().run(reporter)
 
           expect(examples_run.length).to eq(4)
         end
 
         it "sets RSpec.world.wants_to_quit flag if encountering an exception in before(:all)" do
-          self.group.before(:all) { raise "error in before all" }
-          self.group.example("equality") { expect(1).to eq(2) }
-          expect(self.group.run).to be_falsey
+          group().before(:all) { raise "error in before all" }
+          group().example("equality") { expect(1).to eq(2) }
+          expect(group().run).to be_falsey
           expect(RSpec.world.wants_to_quit).to be_truthy
         end
       end
@@ -1421,7 +1421,7 @@ module RSpec::Core
 
         it "returns without starting the group" do
           expect(reporter).not_to receive(:example_group_started)
-          self.group.run(reporter)
+          group().run(reporter)
         end
       end
 
