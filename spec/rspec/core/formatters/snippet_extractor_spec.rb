@@ -250,6 +250,28 @@ module RSpec::Core::Formatters
         end
       end
 
+      context 'when Ripper cannot parse the source (which can happen on JRuby -- see jruby/jruby#2427)', :isolated_directory do
+        let(:file_path) { 'invalid_source.rb' }
+
+        let(:line_number) { 1 }
+
+        let(:source) { <<-EOS.gsub(/^ +\|/, '') }
+          |expect("some string").to include(
+          |  "some", "string"
+          |]
+        EOS
+
+        before do
+          File.open(file_path, 'w') { |file| file.write(source) }
+        end
+
+        it 'returns the line by falling back to the simple single line extraction' do
+          expect(expression_lines).to eq([
+            'expect("some string").to include('
+          ])
+        end
+      end
+
       context 'when max line count is given' do
         let(:max_line_count) do
           2
