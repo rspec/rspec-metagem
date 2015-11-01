@@ -80,7 +80,7 @@ module RSpec::Core
             begin
               value = Integer(argument)
             rescue ArgumentError
-              RSpec.warning "Non integer specified as fail count."
+              RSpec.warning "Expected an integer value for `--fail-fast`, got: #{argument.inspect}", :call_site => nil
             end
           end
           set_fail_fast(options, value)

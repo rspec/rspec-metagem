@@ -36,6 +36,12 @@ module RSpec::Core
       end
     end
 
+    describe "#fail_fast" do
+      it "defaults to `nil`" do
+        expect(RSpec::Core::Configuration.new.fail_fast).to be(nil)
+      end
+    end
+
     describe '#deprecation_stream' do
       it 'defaults to standard error' do
         expect($rspec_core_without_stderr_monkey_patch.deprecation_stream).to eq STDERR

@@ -1,6 +1,6 @@
 Feature: fail fast
 
-  Use the `fail_fast` option to tell RSpec to abort the run on after N failures:
+  Use the `fail_fast` option to tell RSpec to abort the run after N failures:
 
   Scenario: `fail_fast` with no failures (runs all examples)
     Given a file named "spec/spec_helper.rb" with:

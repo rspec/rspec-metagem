@@ -547,8 +547,8 @@ module RSpec
           for_filtered_examples(reporter) { |example| example.skip_with_exception(reporter, ex) }
           true
         rescue Support::AllExceptionsExceptOnesWeMustNotRescue => ex
-          RSpec.world.wants_to_quit = true if fail_fast?
           for_filtered_examples(reporter) { |example| example.fail_with_exception(reporter, ex) }
+          RSpec.world.wants_to_quit = true if reporter.fail_fast_limit_met?
           false
         ensure
           run_after_context_hooks(new('after(:context) hook')) if should_run_context_hooks
@@ -579,7 +579,7 @@ module RSpec
           instance = new(example.inspect_output)
           set_ivars(instance, before_context_ivars)
           succeeded = example.run(instance, reporter)
-          if !succeeded && fail_fast? && reporter.fail_fast_limit_met?
+          if !succeeded && reporter.fail_fast_limit_met?
             RSpec.world.wants_to_quit = true
           end
           succeeded
@@ -596,11 +596,6 @@ module RSpec
           reporter.example_group_finished(child)
         end
         false
-      end
-
-      # @private
-      def self.fail_fast?
-        RSpec.configuration.fail_fast?
       end
 
       # @private
