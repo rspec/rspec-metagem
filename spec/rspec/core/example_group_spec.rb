@@ -1233,8 +1233,7 @@ module RSpec::Core
     end
 
     describe "#run_examples" do
-
-      let(:reporter) { double("reporter").as_null_object }
+      let(:reporter) { RSpec::Core::NullReporter }
 
       it "returns true if all examples pass" do
         group = RSpec.describe('group') do
@@ -1342,19 +1341,27 @@ module RSpec::Core
     end
 
     describe "#run" do
+      context "with `fail_fast` set to `nil`" do
+        before { RSpec.configuration.fail_fast = nil }
+        let(:group) { RSpec.describe }
+        let(:reporter) { Reporter.new(RSpec.configuration) }
 
-      context "with fail_fast and failures_required == 1" do
-        let(:group) do
-          group = RSpec.describe
-          allow(group).to receive(:fail_fast?) { true }
-          group
+        it "does not run abort due to failures" do
+          examples_run = []
+          group().example('example 1') { examples_run << self; fail }
+          group().example('example 2') { examples_run << self; fail }
+          group().example('example 3') { examples_run << self; fail }
+
+          group().run(reporter)
+
+          expect(examples_run.length).to eq(3)
         end
-        let(:config)   { Configuration.new }
-        let(:reporter) do
-          the_reporter = Reporter.new config
-          allow(the_reporter).to receive(:failures_required) { 1 }
-          the_reporter
-        end
+      end
+
+      context "with fail_fast enabled" do
+        before { RSpec.configuration.fail_fast = true }
+        let(:group) { RSpec.describe }
+        let(:reporter) { Reporter.new(RSpec.configuration) }
 
         it "does not run examples after the failed example" do
           examples_run = []
@@ -1370,24 +1377,15 @@ module RSpec::Core
         it "sets RSpec.world.wants_to_quit flag if encountering an exception in before(:all)" do
           group().before(:all) { raise "error in before all" }
           group().example("equality") { expect(1).to eq(2) }
-          expect(group().run).to be_falsey
+          expect(group().run(reporter)).to be_falsey
           expect(RSpec.world.wants_to_quit).to be_truthy
         end
       end
 
-      context "with fail_fast and failures_required = 3" do
-        let(:group) do
-          group = RSpec.describe
-          allow(group).to receive(:fail_fast?) { true }
-          group
-        end
-        let(:config) { Configuration.new }
-
-        let(:reporter) do
-          the_reporter = Reporter.new config
-          allow(the_reporter).to receive(:failures_required) { 3 }
-          the_reporter
-        end
+      context "with fail_fast set to 3" do
+        before { RSpec.configuration.fail_fast = 3 }
+        let(:group) { RSpec.describe }
+        let(:reporter) { Reporter.new(RSpec.configuration) }
 
         it "does not run examples after 3 failed examples" do
           examples_run = []
@@ -1402,11 +1400,25 @@ module RSpec::Core
           expect(examples_run.length).to eq(4)
         end
 
-        it "sets RSpec.world.wants_to_quit flag if encountering an exception in before(:all)" do
+        it "does not set RSpec.world.wants_to_quit flag if encountering an exception in before(:all) causing less than 3 failures" do
           group().before(:all) { raise "error in before all" }
           group().example("equality") { expect(1).to eq(2) }
-          expect(group().run).to be_falsey
-          expect(RSpec.world.wants_to_quit).to be_truthy
+          group().example("equality") { expect(1).to eq(2) }
+
+          expect(group().run(reporter)).to be false
+
+          expect(RSpec.world.wants_to_quit).to be_falsey
+        end
+
+        it "sets RSpec.world.wants_to_quit flag if encountering an exception in before(:all) causing at least 3 failures" do
+          group().before(:all) { raise "error in before all" }
+          group().example("equality") { expect(1).to eq(1) }
+          group().example("equality") { expect(1).to eq(1) }
+          group().example("equality") { expect(1).to eq(1) }
+
+          expect(group().run(reporter)).to be false
+
+          expect(RSpec.world.wants_to_quit).to be true
         end
       end
 

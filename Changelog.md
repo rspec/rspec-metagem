@@ -49,6 +49,9 @@ Enhancements:
   (Yuji Nakayama, #2083)
 * Add `max_displayed_failure_line_count` configuration option
   (defaults to 10). (Yuji Nakayama, #2083)
+* Enhance `fail_fast` option so it can take a number (e.g. `--fail-fast=3`)
+  to force the run to abort after the specified number of failures.
+  (Jack Scotti, #2065)
 
 Bug Fixes:
 

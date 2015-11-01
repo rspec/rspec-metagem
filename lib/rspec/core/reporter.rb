@@ -199,12 +199,13 @@ module RSpec::Core
 
     # @private
     def fail_fast_limit_met?
-      failures_required <= @failed_examples.size
-    end
+      return false unless (fail_fast = @configuration.fail_fast)
 
-    # @private
-    def failures_required
-      @configuration.fail_fast == true ? 1 : @configuration.fail_fast
+      if fail_fast == true
+        @failed_examples.any?
+      else
+        fail_fast <= @failed_examples.size
+      end
     end
 
   private
@@ -216,7 +217,7 @@ module RSpec::Core
     def mute_profile_output?
       # Don't print out profiled info if there are failures and `--fail-fast` is
       # used, it just clutters the output.
-      !@configuration.profile_examples? || (@configuration.fail_fast? && @failed_examples.size > 0)
+      !@configuration.profile_examples? || fail_fast_limit_met?
     end
 
     def seed_used?

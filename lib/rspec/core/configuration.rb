@@ -187,7 +187,7 @@ module RSpec
 
       # @macro add_setting
       # If specified, indicates the number of failures required before cleaning
-      # up and exit (default: `false`).
+      # up and exit (default: `nil`).
       add_setting :fail_fast
 
       # @macro add_setting

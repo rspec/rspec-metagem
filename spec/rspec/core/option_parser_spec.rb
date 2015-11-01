@@ -343,9 +343,7 @@ module RSpec::Core
 
     describe '--fail-fast' do
       it 'warns when a non-integer is specified as fail count' do
-        expect(::Kernel).to receive(:warn) do |message|
-          expect(message).to match "Non integer specified as fail count"
-        end
+        expect_warning_without_call_site a_string_including("--fail-fast", "three")
         Parser.parse(%w[--fail-fast=three])
       end
     end
