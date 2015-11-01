@@ -197,6 +197,16 @@ module RSpec::Core
       exit!(exit_status)
     end
 
+    # @private
+    def fail_fast_limit_met?
+      failures_required <= @failed_examples.size
+    end
+
+    # @private
+    def failures_required
+      @configuration.fail_fast == true ? 1 : @configuration.fail_fast
+    end
+
   private
 
     def close

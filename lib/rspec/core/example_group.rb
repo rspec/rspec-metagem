@@ -579,7 +579,9 @@ module RSpec
           instance = new(example.inspect_output)
           set_ivars(instance, before_context_ivars)
           succeeded = example.run(instance, reporter)
-          RSpec.world.wants_to_quit = true if fail_fast? && !succeeded
+          if !succeeded && fail_fast? && reporter.fail_fast_limit_met?
+            RSpec.world.wants_to_quit = true
+          end
           succeeded
         end.all?
       end

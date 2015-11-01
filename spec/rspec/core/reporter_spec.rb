@@ -279,5 +279,22 @@ module RSpec::Core
         reporter.finish
       end
     end
+
+    describe "#failures_required" do
+      it "returns 1 when RSpec.configuration.fail_fast == true" do
+        config.fail_fast = true
+        expect(reporter.failures_required).to eq 1
+      end
+
+      it "returns 1 when RSpec.configuration.fail_fast == 1" do
+        config.fail_fast = 1
+        expect(reporter.failures_required).to eq 1
+      end
+
+      it "returns RSpec.configuration.fail_fast when RSpec.configuration.fail_fast > 1" do
+        config.fail_fast = 3
+        expect(reporter.failures_required).to eq 3
+      end
+    end
   end
 end

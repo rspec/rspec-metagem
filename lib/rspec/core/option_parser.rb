@@ -71,7 +71,18 @@ module RSpec::Core
           bisect_and_exit(argument)
         end
 
-        parser.on('--[no-]fail-fast', 'Abort the run on first failure.') do |value|
+        parser.on('--[no-]fail-fast[=COUNT]', 'Abort the run after a certain number of failures (1 by default).') do |argument|
+          if argument == true
+            value = 1
+          elsif argument == false || argument == 0
+            value = false
+          else
+            begin
+              value = Integer(argument)
+            rescue ArgumentError
+              RSpec.warning "Non integer specified as fail count."
+            end
+          end
           set_fail_fast(options, value)
         end
 
@@ -176,7 +187,7 @@ FILTERING
         parser.on("--next-failure", "Apply `--only-failures` and abort after one failure.",
                   "  (Equivalent to `--only-failures --fail-fast --order defined`)") do
           configure_only_failures(options)
-          set_fail_fast(options, true)
+          set_fail_fast(options, 1)
           options[:order] ||= 'defined'
         end
 
