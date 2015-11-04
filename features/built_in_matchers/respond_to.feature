@@ -19,7 +19,8 @@ Feature: `respond_to` matcher
     ```ruby
     expect(obj).to respond_to(:foo).with(1).argument
     expect(obj).to respond_to(:bar).with(2).arguments
-    expect(obj).to respond_to(:baz).with_unlimited_arguments
+    expect(obj).to respond_to(:baz).with(1..2).arguments
+    expect(obj).to respond_to(:xyz).with_unlimited_arguments
     ```
 
   If your Ruby version supports keyword arguments, you can specify a list of keywords accepted

@@ -153,6 +153,71 @@ RSpec.describe "expect(...).to respond_to(:sym).with(2).arguments" do
   end
 end
 
+RSpec.describe "expect(...).to respond_to(:sym).with(1..2).arguments" do
+  it "passes if target responds to any number of arguments" do
+    obj = Object.new
+    def obj.foo(*args); end
+    expect(obj).to respond_to(:foo).with(1..2).arguments
+  end
+
+  it "passes if target responds to one or more arguments" do
+    obj = Object.new
+    def obj.foo(a, *args); end
+    expect(obj).to respond_to(:foo).with(1..2).arguments
+  end
+
+  it "passes if target responds to one or two arguments" do
+    obj = Object.new
+    def obj.foo(a, b=nil); end
+    expect(obj).to respond_to(:foo).with(1..2).arguments
+  end
+
+  it "passes if target responds to one to three arguments" do
+    obj = Object.new
+    def obj.foo(a, b=nil, c=nil); end
+    expect(obj).to respond_to(:foo).with(1..2).arguments
+  end
+
+  it "fails if target does not respond to :sym" do
+    obj = Object.new
+    expect {
+      expect(obj).to respond_to(:some_method).with(1..2).arguments
+    }.to fail_with(/expected .* to respond to :some_method/)
+  end
+
+  it "fails if :sym expects 0 args" do
+    obj = Object.new
+    def obj.foo; end
+    expect {
+      expect(obj).to respond_to(:foo).with(1..2).arguments
+    }.to fail_with(/expected #<Object.*> to respond to :foo with 1..2 arguments/)
+  end
+
+  it "fails if :sym expects 1 args" do
+    obj = Object.new
+    def obj.foo(arg); end
+    expect {
+      expect(obj).to respond_to(:foo).with(1..2).arguments
+    }.to fail_with(/expected #<Object.*> to respond to :foo with 1..2 arguments/)
+  end
+
+  it "fails if :sym expects 2 args" do
+    obj = Object.new
+    def obj.foo(a, b); end
+    expect {
+      expect(obj).to respond_to(:foo).with(1..2).arguments
+    }.to fail_with(/expected #<Object.*> to respond to :foo with 1..2 arguments/)
+  end
+
+  it "fails if :sym expects 3 or more args" do
+    obj = Object.new
+    def obj.foo(arg, arg2, arg3, *args); end
+    expect {
+      expect(obj).to respond_to(:foo).with(1..2).arguments
+    }.to fail_with(/expected #<Object.*> to respond to :foo with 1..2 arguments/)
+  end
+end
+
 RSpec.describe "expect(...).to respond_to(:sym).with_unlimited_arguments" do
   it "passes if target responds to any number of arguments" do
     obj = Object.new
@@ -329,6 +394,61 @@ RSpec.describe "expect(...).not_to respond_to(:sym).with(2).arguments" do
     obj = Object.new
     def obj.foo(a, b, c, *arg); end
     expect(obj).not_to respond_to(:foo).with(2).arguments
+  end
+end
+
+RSpec.describe "expect(...).not_to respond_to(:sym).with(1..2).arguments" do
+  it "fails if target responds to :sym with one or two args" do
+    obj = Object.new
+    def obj.foo(a1, a2=nil); end
+    expect {
+      expect(obj).not_to respond_to(:foo).with(1..2).arguments
+    }.to fail_with(/expected .* not to respond to :foo with 1..2 arguments/)
+  end
+
+  it "fails if target responds to :sym with any number args" do
+    obj = Object.new
+    def obj.foo(*args); end
+    expect {
+      expect(obj).not_to respond_to(:foo).with(1..2).arguments
+    }.to fail_with(/expected .* not to respond to :foo with 1..2 arguments/)
+  end
+
+  it "fails if target responds to :sym with one or more args" do
+    obj = Object.new
+    def obj.foo(a, *args); end
+    expect {
+      expect(obj).not_to respond_to(:foo).with(1..2).arguments
+    }.to fail_with(/expected .* not to respond to :foo with 1..2 arguments/)
+  end
+
+  it "passes if target does not respond to :sym" do
+    obj = Object.new
+    expect(obj).not_to respond_to(:some_method).with(1..2).arguments
+  end
+
+  it "passes if :sym expects 0 args" do
+    obj = Object.new
+    def obj.foo; end
+    expect(obj).not_to respond_to(:foo).with(1..2).arguments
+  end
+
+  it "passes if :sym expects 1 arg" do
+    obj = Object.new
+    def obj.foo(arg); end
+    expect(obj).not_to respond_to(:foo).with(1..2).arguments
+  end
+
+  it "passes if :sym expects 2 args" do
+    obj = Object.new
+    def obj.foo(a, b); end
+    expect(obj).not_to respond_to(:foo).with(1..2).arguments
+  end
+
+  it "passes if :sym expects 3 or more args" do
+    obj = Object.new
+    def obj.foo(a, b, c, *arg); end
+    expect(obj).not_to respond_to(:foo).with(1..2).arguments
   end
 end
 

@@ -112,7 +112,14 @@ module RSpec
 
         def matches_arity?(actual, name)
           expectation = Support::MethodSignatureExpectation.new
-          expectation.count    = @expected_arity
+
+          if @expected_arity.is_a?(Range)
+            expectation.min_count = @expected_arity.min
+            expectation.max_count = @expected_arity.max
+          else
+            expectation.min_count = @expected_arity
+          end
+
           expectation.keywords = @expected_keywords
           expectation.expect_unlimited_arguments = @unlimited_arguments
           expectation.expect_arbitrary_keywords  = @arbitrary_keywords
