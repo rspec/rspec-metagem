@@ -6,7 +6,7 @@ module RSpec
     # @private
     module RubyProject
       def add_to_load_path(*dirs)
-        dirs.map { |dir| add_dir_to_load_path(File.join(root, dir)) }
+        dirs.each { |dir| add_dir_to_load_path(File.join(root, dir)) }
       end
 
       def add_dir_to_load_path(dir)
