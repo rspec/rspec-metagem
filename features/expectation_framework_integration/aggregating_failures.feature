@@ -1,6 +1,6 @@
 Feature: Aggregating Failures
 
-  RSpec::Expectations provides [`aggregate_failures`](/rspec/rspec-expectations/v/3-4/docs/aggregating-failures), an API that allows you to group a set of expectations and see all the failures at once, rather than it aborting on the first failure. RSpec::Core improves on this feature in a couple of ways:
+  RSpec::Expectations provides [`aggregate_failures`](https://relishapp.com/rspec/rspec-expectations/docs/aggregating-failures), an API that allows you to group a set of expectations and see all the failures at once, rather than it aborting on the first failure. RSpec::Core improves on this feature in a couple of ways:
 
     * RSpec::Core provides much better failure output, adding code snippets and backtraces to the sub-failures, just like it does for any normal failure.
     * RSpec::Core provides [metadata](../metadata/user-defined-metadata) integration for this feature. Each example that is tagged with `:aggregate_failures` will be wrapped in an `aggregate_failures` block. You can also use `config.define_derived_metadata` to apply this to every example automatically.
