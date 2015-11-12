@@ -38,6 +38,7 @@ Feature: `contain_exactly` matcher
       And the output should contain:
       """
            Failure/Error: it { is_expected.to contain_exactly(1, 2, 1) }
+
              expected collection contained:  [1, 1, 2]
              actual collection contained:    [1, 2, 3]
              the missing elements were:      [1]
