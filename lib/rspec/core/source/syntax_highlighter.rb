@@ -31,10 +31,8 @@ module RSpec
         def color_enabled_implementation
           @color_enabled_implementation ||= begin
             ::Kernel.require 'coderay'
-            @configuration.reporter.syntax_highlighting_unavailable = false
             CodeRayImplementation
           rescue LoadError
-            @configuration.reporter.syntax_highlighting_unavailable = true
             NoSyntaxHighlightingImplementation
           end
         end

@@ -281,10 +281,8 @@ module RSpec::Core
     # @attr pending_examples [Array<RSpec::Core::Example>] the pending examples
     # @attr load_time [Float] the number of seconds taken to boot RSpec
     #                         and load the spec files
-    # @attr syntax_highlighting_unavailable [Boolean] indicates if syntax highlighting
-    #       was attempted to be used but was unavailable.
-    SummaryNotification = Struct.new(:duration, :examples, :failed_examples, :pending_examples,
-                                     :load_time, :syntax_highlighting_unavailable)
+    SummaryNotification = Struct.new(:duration, :examples, :failed_examples,
+                                     :pending_examples, :load_time)
     class SummaryNotification
       # @api
       # @return [Fixnum] the number of examples run
@@ -362,11 +360,7 @@ module RSpec::Core
       # @return [String] The summary information fully formatted in the way that
       #   RSpec's built-in formatters emit.
       def fully_formatted(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        formatted = ""
-        if syntax_highlighting_unavailable
-          formatted << "\nSyntax highlighting of failure snippets unavailable -- install the coderay gem to enable it.\n"
-        end
-        formatted << "\nFinished in #{formatted_duration} " \
+        formatted = "\nFinished in #{formatted_duration} " \
                     "(files took #{formatted_load_time} to load)\n" \
                     "#{colorized_totals_line(colorizer)}\n"
 

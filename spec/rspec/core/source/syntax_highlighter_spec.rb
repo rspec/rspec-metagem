@@ -5,10 +5,6 @@ class RSpec::Core::Source
     let(:config)      { RSpec::Core::Configuration.new.tap { |c| c.color = true } }
     let(:highlighter) { SyntaxHighlighter.new(config)  }
 
-    def be_highlighted
-      include("\e[32m")
-    end
-
     context "when CodeRay is available", :unless => RSpec::Support::OS.windows? do
       before { expect { require 'coderay' }.not_to raise_error }
 
@@ -40,22 +36,6 @@ class RSpec::Core::Source
         expect(highlighter.highlight(['[:ok, "ok"]']).first).to be_highlighted
         config.color = false
         expect(highlighter.highlight(['[:ok, "ok"]']).first).not_to be_highlighted
-      end
-
-      it 'notifies the reporter' do
-        config.reporter.syntax_highlighting_unavailable = true
-
-        expect {
-          highlighter.highlight([""])
-        }.to change { config.reporter.syntax_highlighting_unavailable }.to(false)
-      end
-
-      it 'does not notify the reporter if highlighting is never attempted' do
-        config.reporter.syntax_highlighting_unavailable = true
-
-        expect {
-          SyntaxHighlighter.new(config)
-        }.not_to change { config.reporter.syntax_highlighting_unavailable }
       end
 
       it "rescues coderay failures since we do not want a coderay error to be displayed instead of the user's error" do
@@ -95,21 +75,11 @@ class RSpec::Core::Source
         expect(highlighter.highlight(lines)).to eq(lines)
       end
 
-      it 'notifies the reporter', :unless => RSpec::Support::OS.windows? do
-        config.reporter.syntax_highlighting_unavailable = false
-
-        expect {
-          highlighter.highlight([""])
-        }.to change { config.reporter.syntax_highlighting_unavailable }.to(true)
-      end
-
-      it 'does not notify the reporter if highlighting is never attempted' do
-        config.reporter.syntax_highlighting_unavailable = false
-
-        expect {
-          SyntaxHighlighter.new(config)
-        }.not_to change { config.reporter.syntax_highlighting_unavailable }
-      end
     end
+
+    def be_highlighted
+      include("\e[32m")
+    end
+
   end
 end

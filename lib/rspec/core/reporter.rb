@@ -22,8 +22,6 @@ module RSpec::Core
 
     # @private
     attr_reader :examples, :failed_examples, :pending_examples
-    # @private
-    attr_accessor :syntax_highlighting_unavailable
 
     # @private
     def reset
@@ -167,8 +165,7 @@ module RSpec::Core
                                                                        @profiler.example_groups)
         end
         notify :dump_summary, Notifications::SummaryNotification.new(@duration, @examples, @failed_examples,
-                                                                     @pending_examples, @load_time,
-                                                                     syntax_highlighting_unavailable)
+                                                                     @pending_examples, @load_time)
         notify :seed, Notifications::SeedNotification.new(@configuration.seed, seed_used?)
       end
     end
