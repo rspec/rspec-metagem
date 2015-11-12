@@ -159,7 +159,7 @@ module RSpec
           if lines.count == 1
             lines[0] = "Failure/Error: #{lines[0].strip}"
           else
-            least_indentation = lines.map { |line| line[/^[ \t]*/] }.min
+            least_indentation = SnippetExtractor.least_indentation_from(lines)
             lines = lines.map { |line| line.sub(/^#{least_indentation}/, '  ') }
             lines.unshift('Failure/Error:')
           end
@@ -204,7 +204,8 @@ module RSpec
 
           file_path, line_number = matching_line.match(/(.+?):(\d+)(|:\d+)/)[1..2]
           max_line_count = RSpec.configuration.max_displayed_failure_line_count
-          SnippetExtractor.extract_expression_lines_at(file_path, line_number.to_i, max_line_count)
+          lines = SnippetExtractor.extract_expression_lines_at(file_path, line_number.to_i, max_line_count)
+          RSpec.world.source_cache.syntax_highlighter.highlight(lines)
         rescue SnippetExtractor::NoSuchFileError
           ["Unable to find #{file_path} to read failed line"]
         rescue SnippetExtractor::NoSuchLineError

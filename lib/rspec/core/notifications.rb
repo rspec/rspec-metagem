@@ -281,7 +281,8 @@ module RSpec::Core
     # @attr pending_examples [Array<RSpec::Core::Example>] the pending examples
     # @attr load_time [Float] the number of seconds taken to boot RSpec
     #                         and load the spec files
-    SummaryNotification = Struct.new(:duration, :examples, :failed_examples, :pending_examples, :load_time)
+    SummaryNotification = Struct.new(:duration, :examples, :failed_examples,
+                                     :pending_examples, :load_time)
     class SummaryNotification
       # @api
       # @return [Fixnum] the number of examples run

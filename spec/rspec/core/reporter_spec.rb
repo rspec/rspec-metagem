@@ -34,6 +34,7 @@ module RSpec::Core
 
         reporter.finish
       end
+
     end
 
     describe 'start' do

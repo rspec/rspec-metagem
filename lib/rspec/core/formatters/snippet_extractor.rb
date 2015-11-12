@@ -133,6 +133,10 @@ module RSpec
           end
           # :nocov:
         end
+
+        def self.least_indentation_from(lines)
+          lines.map { |line| line[/^[ \t]*/] }.min
+        end
       end
     end
   end

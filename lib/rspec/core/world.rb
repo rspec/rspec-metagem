@@ -111,7 +111,7 @@ module RSpec
       def source_cache
         @source_cache ||= begin
           RSpec::Support.require_rspec_core "source"
-          Source::Cache.new
+          Source::Cache.new(@configuration)
         end
       end
 
