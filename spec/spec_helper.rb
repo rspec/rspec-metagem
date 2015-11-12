@@ -59,6 +59,13 @@ RSpec::configure do |config|
   end
 
   config.disable_monkey_patching!
+
+  # We don't want rspec-core to look in our `lib` for failure snippets.
+  # When it does that, it inevitably finds this line:
+  # `RSpec::Support.notify_failure(RSpec::Expectations::ExpectationNotMetError.new message)`
+  # ...which isn't very helpful. Far better for it to find the expectation
+  # call site in the spec.
+  config.project_source_dirs -= ["lib"]
 end
 
 RSpec.shared_context "with #should enabled", :uses_should do
