@@ -39,36 +39,42 @@ Feature: Comparison matchers
       And the output should contain:
       """
            Failure/Error: it { is_expected.to be < 15 }
+
              expected: < 15
                   got:   18
       """
       And the output should contain:
       """
            Failure/Error: it { is_expected.to be > 20 }
+
              expected: > 20
                   got:   18
       """
       And the output should contain:
       """
            Failure/Error: it { is_expected.to be <= 17 }
+
              expected: <= 17
                   got:    18
       """
       And the output should contain:
       """
            Failure/Error: it { is_expected.to be >= 19 }
+
              expected: >= 19
                   got:    18
       """
       And the output should contain:
       """
            Failure/Error: it { is_expected.to be < 'a' }
+
              expected: < "a"
                   got:   18
       """
       And the output should contain:
       """
            Failure/Error: it { is_expected.to be < 18 }
+
              expected: < 18
                   got:   "a"
       """
@@ -95,24 +101,28 @@ Feature: Comparison matchers
       And the output should contain:
       """
            Failure/Error: it { is_expected.to be < "Cranberry" }
+
              expected: < "Cranberry"
                   got:   "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: it { is_expected.to be > "Zuchini" }
+
              expected: > "Zuchini"
                   got:   "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: it { is_expected.to be <= "Potato" }
+
              expected: <= "Potato"
                   got:    "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: it { is_expected.to be >= "Tomato" }
+
              expected: >= "Tomato"
                   got:    "Strawberry"
       """
