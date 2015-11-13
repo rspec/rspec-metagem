@@ -39,7 +39,7 @@ module RSpec
         end
 
         def bisect_dependency_check_failed(_notification)
-          output.puts " failure is not order-dependent"
+          output.puts " failure(s) do not require any non-failures to run first"
         end
 
         def bisect_round_started(notification, include_trailing_space=true)
