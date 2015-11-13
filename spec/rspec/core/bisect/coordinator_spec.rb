@@ -108,7 +108,7 @@ module RSpec::Core
           |Bisect started using options: ""
           |Running suite to find failures... (n.nnnn seconds)
           |Starting bisect with 1 failing example and 7 non-failing examples.
-          |Checking that failure(s) are order-dependent... failure is not order-dependent
+          |Checking that failure(s) are order-dependent... failure(s) do not require any non-failures to run first
           |
           |Bisect complete! Reduced necessary non-failing examples from 7 to 0 in n.nnnn seconds.
           |
