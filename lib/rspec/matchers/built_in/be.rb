@@ -137,7 +137,8 @@ module RSpec
         include BeHelpers
 
         def initialize(operand, operator)
-          @expected, @operator = operand, operator
+          @expected = operand
+          @operator = operator
           @args = []
         end
 
@@ -151,13 +152,15 @@ module RSpec
         # @api private
         # @return [String]
         def failure_message
-          "expected: #{@operator} #{expected_formatted}\n     got: #{@operator.to_s.gsub(/./, ' ')} #{actual_formatted}"
+          "expected: #{@operator} #{expected_formatted}\n" \
+          "     got: #{@operator.to_s.gsub(/./, ' ')} #{actual_formatted}"
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          message = "`expect(#{actual_formatted}).not_to be #{@operator} #{expected_formatted}`"
+          message = "`expect(#{actual_formatted}).not_to " \
+                    "be #{@operator} #{expected_formatted}`"
           if [:<, :>, :<=, :>=].include?(@operator)
             message + " not only FAILED, it is a bit confusing."
           else
