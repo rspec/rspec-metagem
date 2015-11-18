@@ -35,7 +35,7 @@ module RSpec
         end
 
         def formatted_backtrace(exception=@exception)
-          backtrace_formatter.format_backtrace((exception.backtrace || []), example.metadata) +
+          backtrace_formatter.format_backtrace(exception.backtrace, example.metadata) +
             formatted_cause(exception)
         end
 

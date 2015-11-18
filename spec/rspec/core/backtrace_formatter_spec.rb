@@ -132,10 +132,20 @@ module RSpec::Core
         end
       end
 
-      describe "an empty backtrace" do
+      describe "for an empty backtrace" do
         it "does not add the explanatory message about backtrace filtering" do
           formatter = BacktraceFormatter.new
           expect(formatter.format_backtrace([])).to eq([])
+        end
+      end
+
+      describe "for a `nil` backtrace (since exceptions can have no backtrace!)" do
+        it 'returns a blank array, with no explanatory message' do
+          exception = Exception.new
+          expect(exception.backtrace).to be_nil
+
+          formatter = BacktraceFormatter.new
+          expect(formatter.format_backtrace(exception.backtrace)).to eq([])
         end
       end
 
