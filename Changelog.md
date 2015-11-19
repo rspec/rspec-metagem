@@ -1,3 +1,11 @@
+### 3.4.1 / 2015-11-18
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.0...v3.4.1)
+
+Bug Fixes:
+
+* Fix backtrace formatter to handle backtraces that are `nil`.
+  (Myron Marston, #2118)
+
 ### 3.4.0 / 2015-11-11
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.3.2...v3.4.0)
 
