@@ -42,7 +42,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "minitest", "~> 5.3"
   s.add_development_dependency "aruba",    "~> 0.6.2" # 0.7 is broken on ruby 1.8.7
 
-  s.add_development_dependency "nokogiri", (RUBY_VERSION < '1.9.3' ? "1.5.2" : ["~> 1.5", "< 1.6.6.3"])
+  s.add_development_dependency "nokogiri", (RUBY_VERSION < '1.9.3' ? "1.5.2" : ["~> 1.5", "< 1.6.6.3", "> 1.6.6.4"])
   s.add_development_dependency "coderay",  "~> 1.0.9"
 
   s.add_development_dependency "mocha",        "~> 0.13.0"
