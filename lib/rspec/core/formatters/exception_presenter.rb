@@ -93,7 +93,7 @@ module RSpec
       private
 
         def final_exception(exception)
-          if exception.cause
+          if exception.cause && exception != exception.cause
             final_exception(exception.cause)
           else
             exception
