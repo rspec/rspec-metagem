@@ -713,6 +713,51 @@ module RSpec::Core
           group.run
           expect(order).to eq([:example, :after_example, :example, :after_example])
         end
+
+        describe "#currently_executing_a_context_hook?" do
+          it "sets currently_executing_a_context_hook? to false initially" do
+            group = RSpec.describe
+            expect(group.currently_executing_a_context_hook?).to be false
+          end
+
+          it "sets currently_executing_a_context_hook? during before(:context) execution" do
+            group = RSpec.describe
+            hook_result = nil
+            group.before(:context) { hook_result = group.currently_executing_a_context_hook? }
+            group.example("") {}
+            group.run
+            expect(hook_result).to be true
+          end
+
+          it "does not set currently_executing_a_context_hook? outside of before(:context) execution" do
+            group = RSpec.describe
+            hook_result = nil
+
+            group.before(:context) { hook_result = group.currently_executing_a_context_hook? }
+            group.before(:each) { hook_result = group.currently_executing_a_context_hook? }
+            group.example("") {}
+            group.run
+            expect(hook_result).to be false
+          end
+
+          it "sets currently_executing_a_context_hook? during after(:context) execution" do
+            group = RSpec.describe
+            hook_result = nil
+
+            group.after(:context) { hook_result = group.currently_executing_a_context_hook? }
+            group.example("") {}
+            group.run
+            expect(hook_result).to be true
+          end
+
+          it "unsets currently_executing_a_context_hook? after an after(:context) hook is done" do
+            group = RSpec.describe
+            group.after(:context) { }
+            group.example("") {}
+            group.run
+            expect(group.currently_executing_a_context_hook?).to be false
+          end
+        end
       end
 
       it "runs the before alls in order" do

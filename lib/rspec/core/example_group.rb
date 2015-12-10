@@ -414,6 +414,8 @@ module RSpec
         )
         ExampleGroups.assign_const(self)
 
+        @currently_executing_a_context_hook = false
+
         hooks.register_globals(self, RSpec.configuration.hooks)
         RSpec.configuration.configure_group(self)
       end
@@ -486,15 +488,24 @@ module RSpec
         end
       end
 
+      # Returns true if a `before(:context)` or `after(:context)`
+      # hook is currently executing.
+      def self.currently_executing_a_context_hook?
+        @currently_executing_a_context_hook
+      end
+
       # @private
       def self.run_before_context_hooks(example_group_instance)
         set_ivars(example_group_instance, superclass_before_context_ivars)
+
+        @currently_executing_a_context_hook = true
 
         ContextHookMemoized::Before.isolate_for_context_hook(example_group_instance) do
           hooks.run(:before, :context, example_group_instance)
         end
       ensure
         store_before_context_ivars(example_group_instance)
+        @currently_executing_a_context_hook = false
       end
 
       if RUBY_VERSION.to_f >= 1.9
@@ -525,11 +536,14 @@ module RSpec
       def self.run_after_context_hooks(example_group_instance)
         set_ivars(example_group_instance, before_context_ivars)
 
+        @currently_executing_a_context_hook = true
+
         ContextHookMemoized::After.isolate_for_context_hook(example_group_instance) do
           hooks.run(:after, :context, example_group_instance)
         end
       ensure
         before_context_ivars.clear
+        @currently_executing_a_context_hook = false
       end
 
       # Runs all the examples in this group.
