@@ -159,6 +159,47 @@ module RSpec::Core
         EOS
       end
 
+      it 'wont produce a stack error when cause is the exception itself', :if => RSpec::Support::RubyFeatures.supports_exception_cause? do
+        allow(the_exception).to receive(:cause) { the_exception }
+        the_presenter = Formatters::ExceptionPresenter.new(the_exception, example)
+
+        expect(the_presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
+          |
+          |  1) Example
+          |     Failure/Error: # The failure happened here!#{ encoding_check }
+          |
+          |       Boom
+          |       Bam
+          |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
+          |     # ------------------
+          |     # --- Caused by: ---
+          |     #   Boom
+          |     #   Bam
+          |     #   ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
+        EOS
+      end
+
+      it 'wont produce a stack error when the cause is an older exception', :if => RSpec::Support::RubyFeatures.supports_exception_cause? do
+        allow(the_exception).to receive(:cause) do
+          instance_double(Exception, :cause => the_exception, :message => "A loop", :backtrace => the_exception.backtrace)
+        end
+        the_presenter = Formatters::ExceptionPresenter.new(the_exception, example)
+
+        expect(the_presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
+          |
+          |  1) Example
+          |     Failure/Error: # The failure happened here!#{ encoding_check }
+          |
+          |       Boom
+          |       Bam
+          |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
+          |     # ------------------
+          |     # --- Caused by: ---
+          |     #   A loop
+          |     #   ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
+        EOS
+      end
+
       it "adds extra failure lines from the example metadata" do
         extra_example = example.clone
         failure_line = 'http://www.example.com/job_details/123'
