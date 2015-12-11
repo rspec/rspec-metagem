@@ -111,6 +111,50 @@ module RSpec::Core
       end
     end
 
+    describe "interrupt catching" do
+      let(:interrupt_handlers) { [] }
+
+      before do
+        allow(Object).to receive(:trap).with("INT", any_args) do |&block|
+          interrupt_handlers << block
+        end
+      end
+
+      def interrupt
+        interrupt_handlers.each(&:call)
+      end
+
+      it "adds a handler for SIGINT" do
+        expect(interrupt_handlers).to be_empty
+        Runner.send(:trap_interrupt)
+        expect(interrupt_handlers.size).to eq(1)
+      end
+
+      context "with SIGINT once" do
+        it "aborts processing" do
+          Runner.send(:trap_interrupt)
+          expect(Runner).to receive(:handle_interrupt)
+          interrupt
+        end
+
+        it "does not exit immediately" do
+          Runner.send(:trap_interrupt)
+          expect_any_instance_of(Object).not_to receive(:exit)
+          expect_any_instance_of(Object).not_to receive(:exit!)
+          interrupt
+        end
+      end
+
+      context "with SIGINT twice" do
+        it "exits immediately" do
+          Runner.send(:trap_interrupt)
+          expect_any_instance_of(Object).to receive(:exit!).with(1)
+          interrupt
+          interrupt
+        end
+      end
+    end
+
     # This is intermittently slow because this method calls out to the network
     # interface.
     describe ".running_in_drb?", :slow do
