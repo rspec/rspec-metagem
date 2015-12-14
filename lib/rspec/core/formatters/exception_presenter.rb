@@ -408,6 +408,8 @@ module RSpec
           # ignore it.
           return if Pending::PendingExampleFixedError === exception
 
+          return if exception == self
+
           all_exceptions << exception
 
           if exception.class.name =~ /RSpec/
