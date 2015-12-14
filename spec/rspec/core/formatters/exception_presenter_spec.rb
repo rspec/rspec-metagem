@@ -695,6 +695,12 @@ module RSpec::Core
       end
     end
 
+    it "does not let you add itself to the list of all_exceptions" do
+      m = MultipleExceptionError.new
+      m.add(m)
+      expect(m.all_exceptions).to_not include(m)
+    end
+
     it 'supports the same interface as `RSpec::Expectations::MultipleExpectationsNotMetError`' do
       skip "Skipping to allow an rspec-expectations PR to add a new method and remain green" if ENV['NEW_MUTLI_EXCEPTION_METHOD']
 
