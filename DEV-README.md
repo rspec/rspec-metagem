@@ -20,7 +20,7 @@ Or ...
     bundle install --binstubs
     bin/rspec
 
-## Customize the dev enviroment
+## Customize the dev environment
 
 The Gemfile includes the gems you'll need to be able to run specs. If you want
 to customize your dev enviroment with additional tools like guard or
