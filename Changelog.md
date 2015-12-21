@@ -5,6 +5,9 @@ Bug Fixes:
 
 * Prevent a `TypeError` from occuring when running via the rake task when
   Ruby crashes. (Patrik Wenger, #2161)
+* Only consider example and group declaration lines from a specific file
+  when applying line number filtering, instead of considering all
+  declaration lines from all spec files. (Myron Marston, #2170)
 
 ### 3.5.0.beta1 / 2016-02-06
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.2...v3.5.0.beta1)

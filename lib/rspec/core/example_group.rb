@@ -347,7 +347,7 @@ module RSpec
         @descendant_filtered_examples = nil
         @_descendants = nil
         @parent_groups = nil
-        @declaration_line_numbers = nil
+        @declaration_locations = nil
       end
 
       # Adds an example to the example group
@@ -613,10 +613,10 @@ module RSpec
       end
 
       # @private
-      def self.declaration_line_numbers
-        @declaration_line_numbers ||= [metadata[:line_number]] +
-          examples.map { |e| e.metadata[:line_number] } +
-          FlatMap.flat_map(children, &:declaration_line_numbers)
+      def self.declaration_locations
+        @declaration_locations ||= [Metadata.location_tuple_from(metadata)] +
+          examples.map { |e| Metadata.location_tuple_from(e.metadata) } +
+          FlatMap.flat_map(children, &:declaration_locations)
       end
 
       # @return [String] the unique id of this example group. Pass

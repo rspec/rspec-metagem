@@ -1878,7 +1878,7 @@ module RSpec::Core
     def group_ids group
       ids = []
       ['descendant_filtered_examples', 'descendants',
-       'parent_groups', 'declaration_line_numbers', 'before_context_ivars'].each do |method|
+       'parent_groups', 'declaration_locations', 'before_context_ivars'].each do |method|
         ids << group.send(method).object_id
       end
       ids

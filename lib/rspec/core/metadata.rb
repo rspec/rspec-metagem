@@ -107,6 +107,11 @@ module RSpec
       end
 
       # @private
+      def self.location_tuple_from(metadata)
+        [metadata[:absolute_file_path], metadata[:line_number]]
+      end
+
+      # @private
       # Used internally to populate metadata hashes with computed keys
       # managed by RSpec.
       class HashPopulator
