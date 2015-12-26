@@ -413,7 +413,7 @@ Feature: filters
             expect(invoked_hooks).to be_empty
           end
 
-          it "does not run the hook if the coerced values match", :foo => 'bar' do
+          it "runs the hook if the coerced values match", :foo => 'bar' do
             expect(invoked_hooks).to eq([:before_example_foo_bar])
           end
         end
