@@ -9,7 +9,7 @@ module RSpec
     #
     # This allows us to provide rich metadata about each individual
     # example without adding tons of methods directly to the ExampleGroup
-    # that users may inadvertantly redefine.
+    # that users may inadvertently redefine.
     #
     # Useful for configuring logging and/or taking some action based
     # on the state of an example's metadata.
