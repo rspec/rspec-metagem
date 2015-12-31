@@ -9,7 +9,7 @@ module RSpec
     #
     # This allows us to provide rich metadata about each individual
     # example without adding tons of methods directly to the ExampleGroup
-    # that users may inadvertantly redefine.
+    # that users may inadvertently redefine.
     #
     # Useful for configuring logging and/or taking some action based
     # on the state of an example's metadata.
@@ -260,6 +260,7 @@ module RSpec
 
         finish(reporter)
       ensure
+        execution_result.ensure_timing_set(clock)
         RSpec.current_example = nil
       end
 
@@ -565,12 +566,22 @@ module RSpec
         # @api private
         # Records the finished status of the example.
         def record_finished(status, finished_at)
-          self.status      = status
-          self.finished_at = finished_at
-          self.run_time    = (finished_at - started_at).to_f
+          self.status = status
+          calculate_run_time(finished_at)
+        end
+
+        # @api private
+        # Populates finished_at and run_time if it has not yet been set
+        def ensure_timing_set(clock)
+          calculate_run_time(clock.now) unless finished_at
         end
 
       private
+
+        def calculate_run_time(finished_at)
+          self.finished_at = finished_at
+          self.run_time    = (finished_at - started_at).to_f
+        end
 
         # For backwards compatibility we present `status` as a string
         # when presenting the legacy hash interface.

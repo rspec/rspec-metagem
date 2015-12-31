@@ -58,6 +58,18 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
   end
 
+  it "captures example timing even for exceptions unhandled by RSpec" do
+    unhandled = RSpec::Support::AllExceptionsExceptOnesWeMustNotRescue::AVOID_RESCUING.first
+    example = example_group.example { raise unhandled }
+
+    begin
+      example_group.run
+    rescue unhandled
+      # no-op, prevent from bubbling up
+    end
+    expect(example.execution_result.finished_at).not_to be_nil
+  end
+
   describe "#exception" do
     it "supplies the exception raised, if there is one" do
       example = example_group.example { raise "first" }
@@ -784,7 +796,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
   end
 
   describe "exposing the examples reporter" do
-    it "returns a null reporter when the example hasnt run yet" do
+    it "returns a null reporter when the example has not run yet" do
       example = RSpec.describe.example
       expect(example.reporter).to be RSpec::Core::NullReporter
     end

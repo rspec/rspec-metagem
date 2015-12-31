@@ -1,3 +1,11 @@
+### Development
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.1...master)
+
+Bug Fixes:
+
+* Fix `rspec --profile` when an example calls `abort` or `exit`.
+  (Bradley Schaefer, #2144)
+
 ### 3.4.1 / 2015-11-18
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.0...v3.4.1)
 
