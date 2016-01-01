@@ -464,9 +464,9 @@ module RSpec::Core
         let(:exception) { instance_double(Exception, :backtrace => [ "#{__FILE__}:#{__LINE__}"]) }
 
         it "is handled gracefully" do
-          with_safe_set_to_level_that_triggers_security_errors do
-            expect { read_failed_lines }.not_to raise_error
-          end
+          expect {
+            with_safe_set_to_level_that_triggers_security_errors { read_failed_lines }
+          }.not_to raise_error
         end
       end
 
