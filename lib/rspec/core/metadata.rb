@@ -47,7 +47,9 @@ module RSpec
         return nil if line == '-e:1'.freeze
         line
       rescue SecurityError
+        # :nocov:
         nil
+        # :nocov:
       end
 
       # @private

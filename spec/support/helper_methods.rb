@@ -14,15 +14,19 @@ module RSpecHelpers
   end
 
   def with_safe_set_to_level_that_triggers_security_errors
+    result = nil
+
     Thread.new do
       ignoring_warnings { $SAFE = SAFE_LEVEL_THAT_TRIGGERS_SECURITY_ERRORS }
-      yield
+      result = yield
     end.join
 
     # $SAFE is not supported on Rubinius
     unless defined?(Rubinius)
       expect($SAFE).to eql 0 # $SAFE should not have changed in this thread.
     end
+
+    result
   end
 
 end

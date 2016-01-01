@@ -1,4 +1,4 @@
-# This file was generated on 2015-10-13T18:52:08-07:00 from the rspec-dev repo.
+# This file was generated on 2016-01-01T10:42:16+09:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 function is_mri {
