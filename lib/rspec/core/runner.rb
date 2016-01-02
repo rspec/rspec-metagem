@@ -2,6 +2,10 @@ module RSpec
   module Core
     # Provides the main entry point to run a suite of RSpec examples.
     class Runner
+      # @attr_reader
+      # @private
+      attr_reader :options, :configuration, :world
+
       # Register an `at_exit` hook that runs the suite when the process exits.
       #
       # @note This is not generally needed. The `rspec` command takes care
