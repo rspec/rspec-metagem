@@ -1,10 +1,11 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang='en'>
 <head>
-<title>RSpec results</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta http-equiv="Expires" content="-1">
-<meta http-equiv="Pragma" content="no-cache">
-<style type="text/css">
+  <title>RSpec results</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Expires" content="-1" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <style type="text/css">
   body {
     margin: 0;
     padding: 0;
@@ -12,7 +13,7 @@
     font-size: 80%;
   }
   </style>
-<script type="text/javascript">
+  <script type="text/javascript">
     // <![CDATA[
 
 function addClass(element_id, classname) {
@@ -90,7 +91,8 @@ function assign_display_style_for_group(classname, display_flag, subgroup_flag) 
 }
 
     // ]]>
-  </script><style type="text/css">
+  </script>
+  <style type="text/css">
 #rspec-header {
   background: #65C400; color: #fff; height: 4em;
 }
@@ -264,14 +266,14 @@ a {
   </div>
 
   <div id="display-filters">
-    <input id="passed_checkbox" name="passed_checkbox" type="checkbox" checked onchange="apply_filters()" value="1"><label for="passed_checkbox">Passed</label>
-    <input id="failed_checkbox" name="failed_checkbox" type="checkbox" checked onchange="apply_filters()" value="2"><label for="failed_checkbox">Failed</label>
-    <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked onchange="apply_filters()" value="3"><label for="pending_checkbox">Pending</label>
+    <input id="passed_checkbox"  name="passed_checkbox"  type="checkbox" checked="checked" onchange="apply_filters()" value="1" /> <label for="passed_checkbox">Passed</label>
+    <input id="failed_checkbox"  name="failed_checkbox"  type="checkbox" checked="checked" onchange="apply_filters()" value="2" /> <label for="failed_checkbox">Failed</label>
+    <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked="checked" onchange="apply_filters()" value="3" /> <label for="pending_checkbox">Pending</label>
   </div>
 
   <div id="summary">
-    <p id="totals"> </p>
-    <p id="duration"> </p>
+    <p id="totals">&#160;</p>
+    <p id="duration">&#160;</p>
   </div>
 </div>
 
@@ -279,33 +281,45 @@ a {
 <div class="results">
 <div id="div_group_1" class="example_group passed">
   <dl style="margin-left: 0px;">
-<dt id="example_group_1" class="passed">pending spec with no implementation</dt>
-    <script type="text/javascript">makeYellow('rspec-header');</script><script type="text/javascript">makeYellow('div_group_1');</script><script type="text/javascript">makeYellow('example_group_1');</script><script type="text/javascript">moveProgressBar('12.5');</script><dd class="example not_implemented"><span class="not_implemented_spec_name">is pending (PENDING: Not yet implemented)</span></dd>
+  <dt id="example_group_1" class="passed">pending spec with no implementation</dt>
+    <script type="text/javascript">makeYellow('rspec-header');</script>
+    <script type="text/javascript">makeYellow('div_group_1');</script>
+    <script type="text/javascript">makeYellow('example_group_1');</script>
+    <script type="text/javascript">moveProgressBar('12.5');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">is pending (PENDING: Not yet implemented)</span></dd>
   </dl>
 </div>
 <div id="div_group_2" class="example_group passed">
   <dl style="margin-left: 0px;">
-<dt id="example_group_2" class="passed">pending command with block format</dt>
+  <dt id="example_group_2" class="passed">pending command with block format</dt>
   </dl>
 </div>
 <div id="div_group_3" class="example_group passed">
   <dl style="margin-left: 15px;">
-<dt id="example_group_3" class="passed">with content that would fail</dt>
-    <script type="text/javascript">makeYellow('rspec-header');</script><script type="text/javascript">makeYellow('div_group_3');</script><script type="text/javascript">makeYellow('example_group_3');</script><script type="text/javascript">moveProgressBar('25.0');</script><dd class="example not_implemented"><span class="not_implemented_spec_name">is pending (PENDING: No reason given)</span></dd>
+  <dt id="example_group_3" class="passed">with content that would fail</dt>
+    <script type="text/javascript">makeYellow('rspec-header');</script>
+    <script type="text/javascript">makeYellow('div_group_3');</script>
+    <script type="text/javascript">makeYellow('example_group_3');</script>
+    <script type="text/javascript">moveProgressBar('25.0');</script>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">is pending (PENDING: No reason given)</span></dd>
   </dl>
 </div>
 <div id="div_group_4" class="example_group passed">
   <dl style="margin-left: 15px;">
-<dt id="example_group_4" class="passed">behaves like shared</dt>
-    <script type="text/javascript">makeRed('rspec-header');</script><script type="text/javascript">makeRed('div_group_4');</script><script type="text/javascript">makeRed('example_group_4');</script><script type="text/javascript">moveProgressBar('37.5');</script><dd class="example pending_fixed">
+  <dt id="example_group_4" class="passed">behaves like shared</dt>
+    <script type="text/javascript">makeRed('rspec-header');</script>
+    <script type="text/javascript">makeRed('div_group_4');</script>
+    <script type="text/javascript">makeRed('example_group_4');</script>
+    <script type="text/javascript">moveProgressBar('37.5');</script>
+    <dd class="example pending_fixed">
       <span class="failed_spec_name">is marked as pending but passes</span>
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_1">
         <div class="message"><pre>Expected example to fail since it is pending, but it passed.</pre></div>
         <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:4</pre></div>
     <pre class="ruby"><code><span class="linenum">2</span>
-<span class="linenum">3</span><span class="constant">RSpec</span>.shared_examples_for <span class="string"><span class="delimiter">"</span><span class="content">shared</span><span class="delimiter">"</span></span> <span class="keyword">do</span>
-<span class="offending"><span class="linenum">4</span>  it <span class="string"><span class="delimiter">"</span><span class="content">is marked as pending but passes</span><span class="delimiter">"</span></span> <span class="keyword">do</span></span>
+<span class="linenum">3</span><span class="constant">RSpec</span>.shared_examples_for <span class="string"><span class="delimiter">&quot;</span><span class="content">shared</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
+<span class="offending"><span class="linenum">4</span>  it <span class="string"><span class="delimiter">&quot;</span><span class="content">is marked as pending but passes</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span></span>
 <span class="linenum">5</span>    pending
 <span class="linenum">6</span>    expect(<span class="integer">1</span>).to eq(<span class="integer">1</span>)</code></pre>
       </div>
@@ -314,16 +328,18 @@ a {
 </div>
 <div id="div_group_5" class="example_group passed">
   <dl style="margin-left: 0px;">
-<dt id="example_group_5" class="passed">passing spec</dt>
-    <script type="text/javascript">moveProgressBar('50.0');</script><dd class="example passed">
-<span class="passed_spec_name">passes</span><span class="duration">n.nnnns</span>
-</dd>
+  <dt id="example_group_5" class="passed">passing spec</dt>
+    <script type="text/javascript">moveProgressBar('50.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">passes</span><span class='duration'>n.nnnns</span></dd>
   </dl>
 </div>
 <div id="div_group_6" class="example_group passed">
   <dl style="margin-left: 0px;">
-<dt id="example_group_6" class="passed">failing spec</dt>
-    <script type="text/javascript">makeRed('div_group_6');</script><script type="text/javascript">makeRed('example_group_6');</script><script type="text/javascript">moveProgressBar('62.5');</script><dd class="example failed">
+  <dt id="example_group_6" class="passed">failing spec</dt>
+    <script type="text/javascript">makeRed('div_group_6');</script>
+    <script type="text/javascript">makeRed('example_group_6');</script>
+    <script type="text/javascript">moveProgressBar('62.5');</script>
+    <dd class="example failed">
       <span class="failed_spec_name">fails</span>
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_2">
@@ -333,9 +349,9 @@ expected: 2
 
 (compared using ==)
 </pre></div>
-        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:33</pre></div>
-    <pre class="ruby"><code><span class="linenum">31</span><span class="constant">RSpec</span>.describe <span class="string"><span class="delimiter">"</span><span class="content">failing spec</span><span class="delimiter">"</span></span> <span class="keyword">do</span>
-<span class="linenum">32</span>  it <span class="string"><span class="delimiter">"</span><span class="content">fails</span><span class="delimiter">"</span></span> <span class="keyword">do</span>
+        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:33:in `block (2 levels) in &lt;top (required)&gt;&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">31</span><span class="constant">RSpec</span>.describe <span class="string"><span class="delimiter">&quot;</span><span class="content">failing spec</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
+<span class="linenum">32</span>  it <span class="string"><span class="delimiter">&quot;</span><span class="content">fails</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
 <span class="offending"><span class="linenum">33</span>    expect(<span class="integer">1</span>).to eq(<span class="integer">2</span>)</span>
 <span class="linenum">34</span>  <span class="keyword">end</span>
 <span class="linenum">35</span><span class="keyword">end</span></code></pre>
@@ -345,31 +361,46 @@ expected: 2
 </div>
 <div id="div_group_7" class="example_group passed">
   <dl style="margin-left: 0px;">
-<dt id="example_group_7" class="passed">a failing spec with odd backtraces</dt>
-    <script type="text/javascript">makeRed('div_group_7');</script><script type="text/javascript">makeRed('example_group_7');</script><script type="text/javascript">moveProgressBar('75.0');</script><dd class="example failed">
+  <dt id="example_group_7" class="passed">a failing spec with odd backtraces</dt>
+    <script type="text/javascript">makeRed('div_group_7');</script>
+    <script type="text/javascript">makeRed('example_group_7');</script>
+    <script type="text/javascript">moveProgressBar('75.0');</script>
+    <dd class="example failed">
       <span class="failed_spec_name">fails with a backtrace that has no file</span>
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_3">
         <div class="message"><pre>foo</pre></div>
-        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:41</pre></div>
-    <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for (erb)</span></code></pre>
+        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:41:in `block (2 levels) in &lt;top (required)&gt;&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">39</span>    require <span class="string"><span class="delimiter">'</span><span class="content">erb</span><span class="delimiter">'</span></span>
+<span class="linenum">40</span>
+<span class="offending"><span class="linenum">41</span>    <span class="constant">ERB</span>.new(<span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;%= raise 'foo' %&gt;</span><span class="delimiter">&quot;</span></span>).result</span>
+<span class="linenum">42</span>  <span class="keyword">end</span></code></pre>
       </div>
     </dd>
-    <script type="text/javascript">moveProgressBar('87.5');</script><dd class="example failed">
+    <script type="text/javascript">moveProgressBar('87.5');</script>
+    <dd class="example failed">
       <span class="failed_spec_name">fails with a backtrace containing an erb file</span>
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_4">
         <div class="message"><pre>Exception</pre></div>
-        <div class="backtrace"><pre></pre></div>
-    <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for /foo.html.erb</span></code></pre>
+        <div class="backtrace"><pre>/foo.html.erb:1:in `&lt;main&gt;&#39;: foo (RuntimeError)
+   from /lib/ruby/1.9.1/erb.rb:753:in `eval&#39;
+
+  Showing full backtrace because every line was filtered out.
+  See docs for RSpec::Configuration#backtrace_exclusion_patterns and
+  RSpec::Configuration#backtrace_inclusion_patterns for more information.</pre></div>
+    <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for </span></code></pre>
       </div>
     </dd>
   </dl>
 </div>
 <div id="div_group_8" class="example_group passed">
   <dl style="margin-left: 15px;">
-<dt id="example_group_8" class="passed">with a `nil` backtrace</dt>
-    <script type="text/javascript">makeRed('div_group_8');</script><script type="text/javascript">makeRed('example_group_8');</script><script type="text/javascript">moveProgressBar('100.0');</script><dd class="example failed">
+  <dt id="example_group_8" class="passed">with a `nil` backtrace</dt>
+    <script type="text/javascript">makeRed('div_group_8');</script>
+    <script type="text/javascript">makeRed('example_group_8');</script>
+    <script type="text/javascript">moveProgressBar('100.0');</script>
+    <dd class="example failed">
       <span class="failed_spec_name">raises</span>
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_5">
@@ -380,7 +411,8 @@ expected: 2
     </dd>
   </dl>
 </div>
-<script type="text/javascript">document.getElementById('duration').innerHTML = "Finished in <strong>n.nnnn seconds</strong>";</script><script type="text/javascript">document.getElementById('totals').innerHTML = "8 examples, 5 failures, 2 pending";</script>
+<script type="text/javascript">document.getElementById('duration').innerHTML = "Finished in <strong>n.nnnn seconds</strong>";</script>
+<script type="text/javascript">document.getElementById('totals').innerHTML = "8 examples, 5 failures, 2 pending";</script>
 </div>
 </div>
 </body>
