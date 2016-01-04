@@ -152,7 +152,7 @@ module RSpec
       # @private
       # rubocop:disable Lint/EnsureReturn
       def self.running_in_drb?
-        if defined?(DRb) && DRb.current_server
+        if defined?(DRb) && DRb.current_server && DRb.current_server.alive?
           require 'socket'
           require 'uri'
           local_ipv4 = IPSocket.getaddress(Socket.gethostname)
