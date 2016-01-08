@@ -158,29 +158,67 @@ module RSpec::Core
     # This is intermittently slow because this method calls out to the network
     # interface.
     describe ".running_in_drb?", :slow do
-      it "returns true if drb server is started with 127.0.0.1" do
-        allow(::DRb).to receive(:current_server).and_return(double(:uri => "druby://127.0.0.1:0000/"))
+      subject { RSpec::Core::Runner.running_in_drb? }
 
-        expect(RSpec::Core::Runner.running_in_drb?).to be_truthy
+      before do
+        allow(::DRb).to receive(:current_server) { drb_server }
       end
 
-      it "returns true if drb server is started with localhost" do
-        allow(::DRb).to receive(:current_server).and_return(double(:uri => "druby://localhost:0000/"))
+      context "when drb server is started with 127.0.0.1" do
+        let(:drb_server) do
+          instance_double(::DRb::DRbServer, :uri => "druby://127.0.0.1:0000/", :alive? => true)
+        end
 
-        expect(RSpec::Core::Runner.running_in_drb?).to be_truthy
+        it { should be_truthy }
       end
 
-      it "returns true if drb server is started with another local ip address" do
-        allow(::DRb).to receive(:current_server).and_return(double(:uri => "druby://192.168.0.1:0000/"))
-        allow(::IPSocket).to receive(:getaddress).and_return("192.168.0.1")
+      context "when drb server is started with localhost" do
+        let(:drb_server) do
+          instance_double(::DRb::DRbServer, :uri => "druby://localhost:0000/", :alive? => true)
+        end
 
-        expect(RSpec::Core::Runner.running_in_drb?).to be_truthy
+        it { should be_truthy }
       end
 
-      it "returns false if no drb server is running" do
-        allow(::DRb).to receive(:current_server).and_raise(::DRb::DRbServerNotFound)
+      context "when drb server is started with another local ip address" do
+        let(:drb_server) do
+          instance_double(::DRb::DRbServer, :uri => "druby://192.168.0.1:0000/", :alive? => true)
+        end
 
-        expect(RSpec::Core::Runner.running_in_drb?).to be_falsey
+        before do
+          allow(::IPSocket).to receive(:getaddress).and_return("192.168.0.1")
+        end
+
+        it { should be_truthy }
+      end
+
+      context "when drb server is started with another local ip address" do
+        let(:drb_server) do
+          instance_double(::DRb::DRbServer, :uri => "druby://192.168.0.1:0000/", :alive? => true)
+        end
+
+        before do
+          allow(::IPSocket).to receive(:getaddress).and_return("192.168.0.1")
+        end
+
+        it { should be_truthy }
+      end
+
+      context "when drb server is started with 127.0.0.1 but not alive" do
+        let(:drb_server) do
+          instance_double(::DRb::DRbServer, :uri => "druby://127.0.0.1:0000/", :alive? => false)
+        end
+
+        it { should be_falsey }
+      end
+
+
+      context "when no drb server is running" do
+        let(:drb_server) do
+          raise ::DRb::DRbServerNotFound
+        end
+
+        it { should be_falsey }
       end
     end
 
