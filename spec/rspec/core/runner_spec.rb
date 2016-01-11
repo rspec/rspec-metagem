@@ -290,6 +290,24 @@ module RSpec::Core
 
             run_specs
           end
+
+          if RSpec::Support::RubyFeatures.supports_exception_cause?
+            it "prevents the DRb error from being listed as the cause of expectation failures" do
+              subclass = Class.new(RSpec::Core::Runner) do
+                include RSpec::Matchers
+
+                def run(err, out)
+                  expect(1).to eq(2)
+                end
+              end
+
+              expect {
+                subclass.run([], StringIO.new, StringIO.new)
+              }.to raise_error(RSpec::Expectations::ExpectationNotMetError) do |e|
+                expect(e.cause).to be_nil
+              end
+            end
+          end
         end
       end
     end

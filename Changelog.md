@@ -5,6 +5,9 @@ Bug Fixes:
 
 * Fix `rspec --profile` when an example calls `abort` or `exit`.
   (Bradley Schaefer, #2144)
+* Fix `--drb` so that when no DRb server is running, it prevents
+  the DRb connection error from being listed as the cause of all
+  expectation failures. (Myron Marston, #2156)
 
 ### 3.4.1 / 2015-11-18
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.0...v3.4.1)

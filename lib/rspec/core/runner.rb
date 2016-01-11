@@ -69,13 +69,13 @@ module RSpec
           require 'rspec/core/drb'
           begin
             DRbRunner.new(options).run(err, out)
+            return
           rescue DRb::DRbConnError
             err.puts "No DRb server is running. Running in local process instead ..."
-            new(options).run(err, out)
           end
-        else
-          new(options).run(err, out)
         end
+
+        new(options).run(err, out)
       end
 
       def initialize(options, configuration=RSpec.configuration, world=RSpec.world)
