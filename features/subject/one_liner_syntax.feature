@@ -22,6 +22,7 @@ Feature: One-liner syntax
 
     * This feature is only available when using rspec-expectations.
     * Examples defined using this one-liner syntax cannot be directly selected from the command line using the [`--example` option](../command-line/example-option).
+    * The one-liner syntax only works with non-block expectations (e.g. `expect(obj).to eq`, etc) and it cannot be used with block expectations (e.g. `expect { object }`).
 
   Scenario: Implicit subject
     Given a file named "example_spec.rb" with:
