@@ -162,7 +162,7 @@ module RSpec
                         "without even executing the method you are intending to call. " \
                         "#{warning}"\
                         "Instead consider providing a specific error class or message. " \
-                        "This message can be supressed by setting: " \
+                        "This message can be suppressed by setting: " \
                         "`RSpec::Expectations.configuration.warn_about_potential_false_positives = false`")
         end
 
@@ -172,7 +172,7 @@ module RSpec
                         "including those raised by Ruby (e.g. NoMethodError, NameError " \
                         "and ArgumentError), meaning the code you are intending to test " \
                         "may not even get reached. Instead consider using " \
-                        "`expect {}.not_to raise_error`. This message can be supressed by setting: " \
+                        "`expect {}.not_to raise_error`. This message can be suppressed by setting: " \
                         "`RSpec::Expectations.configuration.warn_about_potential_false_positives = false`")
         end
 
