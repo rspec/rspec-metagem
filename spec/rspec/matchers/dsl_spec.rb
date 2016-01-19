@@ -563,6 +563,68 @@ module RSpec::Matchers::DSL
         expect(self.matcher.matches?('other value')).to be_falsey
       end
 
+      context "with a match_when_negated block" do
+        let(:matcher) do
+          new_matcher(:name, "value") do |expected|
+            match do |actual|
+              expect(actual).to eq expected
+            end
+
+            match_when_negated do |actual|
+              expect(actual).not_to eq expected
+            end
+          end
+        end
+
+        it "returns true if the wrapped expectation passes" do
+          expect(self.matcher.does_not_match?('other value')).to be_truthy
+        end
+
+        it "returns false if the wrapped expectation fails" do
+          expect(self.matcher.does_not_match?('value')).to be_falsey
+        end
+      end
+
+      context "with a negative expectation" do
+        let(:matcher) do
+          new_matcher(:name, "purposely_the_same") do |expected|
+            match do |actual|
+              expect(actual).not_to eq expected
+            end
+          end
+        end
+
+        it "returns true if the wrapped expectation passes" do
+          expect(self.matcher.matches?('purposely_different')).to be_truthy
+        end
+
+        it "returns false if the wrapped expectation fails" do
+          expect(self.matcher.matches?('purposely_the_same')).to be_falsey
+        end
+
+        context "with a match_when_negated block" do
+          let(:matcher) do
+            new_matcher(:name, "purposely_the_same") do |expected|
+              match do |actual|
+                expect(actual).not_to eq expected
+              end
+
+              match_when_negated do |actual|
+                expect(actual).to eq expected
+              end
+            end
+          end
+
+          it "returns true if the wrapped expectation passes" do
+            expect(self.matcher.does_not_match?('purposely_the_same')).to be_truthy
+          end
+
+          it "returns false if the wrapped expectation fails" do
+            expect(self.matcher.does_not_match?('purposely_different')).to be_falsey
+          end
+        end
+      end
+
       it "can use the `include` matcher from a `match` block" do
         RSpec::Matchers.define(:descend_from) do |mod|
           match do |klass|
@@ -618,6 +680,26 @@ module RSpec::Matchers::DSL
             expect(error).to have_attributes(:failures => [
               an_object_having_attributes(:message => "expected `1.even?` to return true, got false"),
               an_object_having_attributes(:message => 'expected "foo" to use an internal expectation')
+            ])
+          end
+        end
+
+        it 'does not aggregate the inner expectation failure (negation)' do
+          use_an_internal_expectation = new_matcher(:use_an_internal_expectation) do
+            match_when_negated do |actual|
+              expect(actual).not_to end_with "o"
+            end
+          end
+
+          expect {
+            aggregate_failures do
+              expect(1).to be_even
+              expect("foo").not_to use_an_internal_expectation
+            end
+          }.to fail do |error|
+            expect(error).to have_attributes(:failures => [
+              an_object_having_attributes(:message => "expected `1.even?` to return true, got false"),
+              an_object_having_attributes(:message => 'expected "foo" not to use an internal expectation')
             ])
           end
         end
