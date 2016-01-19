@@ -137,27 +137,52 @@ module RSpec
 
     RSpec.describe NegativeExpectationHandler do
       describe "#handle_matcher" do
-        it "asks the matcher if it doesn't match when the matcher responds to #does_not_match?" do
-          matcher = double("matcher", :does_not_match? => true, :failure_message_when_negated => nil)
-          actual = Object.new
-          expect(matcher).to receive(:does_not_match?).with(actual).and_return(true)
-          RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)
+        context "with matching values" do
+          context "when the matcher responds to #does_not_match?" do
+            it "returns false" do
+              matcher = double("matcher", :failure_message_when_negated => "Error!")
+              actual = Object.new
+
+              expect(matcher).to receive(:does_not_match?).with(actual).and_return(false)
+              expect {
+                RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)
+              }.to raise_error(RSpec::Expectations::ExpectationNotMetError, "Error!")
+            end
+          end
+
+          context "when the matcher doesn't respond to #does_not_match?" do
+            it "returns false" do
+              matcher = double("matcher", :failure_message_when_negated => "Error!")
+              actual = Object.new
+
+              expect(matcher).to receive(:matches?).with(actual).and_return(true)
+              expect {
+                RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)
+              }.to raise_error(RSpec::Expectations::ExpectationNotMetError, "Error!")
+            end
+          end
         end
 
-        it "asks the matcher if it matches when the matcher doesn't respond to #does_not_match?" do
-          matcher = double("matcher")
-          actual = Object.new
-          allow(matcher).to receive(:failure_message_when_negated)
-          expect(matcher).to receive(:matches?).with(actual).and_return(false)
-          RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)
-        end
+        context "with non-matching values" do
+          context "when the matcher responds to #does_not_match?" do
+            it "returns true" do
+              matcher = double("matcher")
+              actual = Object.new
 
-        it "returns the match value" do
-          matcher = double("matcher")
-          actual = Object.new
-          expect(matcher).to receive(:matches?).with(actual).and_return(false)
-          allow(matcher).to receive(:failure_message_when_negated).and_return("ignore")
-          expect(RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)).to be_falsey
+              expect(matcher).to receive(:does_not_match?).with(actual).and_return(true)
+              expect(RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)).to be_truthy
+            end
+          end
+
+          context "when the matcher doesn't respond to #does_not_match?" do
+            it "returns true" do
+              matcher = double("matcher")
+              actual = Object.new
+
+              expect(matcher).to receive(:matches?).with(actual).and_return(false)
+              expect(RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)).to be_truthy
+            end
+          end
         end
 
         it "calls fail if matcher.diffable?" do
