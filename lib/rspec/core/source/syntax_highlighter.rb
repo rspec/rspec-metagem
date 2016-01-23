@@ -30,7 +30,7 @@ module RSpec
 
         def color_enabled_implementation
           @color_enabled_implementation ||= begin
-            ::Kernel.require 'coderay'
+            require 'coderay'
             CodeRayImplementation
           rescue LoadError
             NoSyntaxHighlightingImplementation
