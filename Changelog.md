@@ -8,6 +8,9 @@ Bug Fixes:
 * Fix `--drb` so that when no DRb server is running, it prevents
   the DRb connection error from being listed as the cause of all
   expectation failures. (Myron Marston, #2156)
+* Fix syntax highlighter so that it works when the `coderay` gem is
+  installed as a rubygem but not already available on your load path
+  (as happens when you use bundler). (Myron Marston, #2159)
 
 ### 3.4.1 / 2015-11-18
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.0...v3.4.1)

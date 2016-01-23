@@ -47,7 +47,7 @@ class RSpec::Core::Source
 
     context "when CodeRay is unavailable" do
       before do
-        allow(::Kernel).to receive(:require).with("coderay").and_raise(LoadError)
+        allow(highlighter).to receive(:require).with("coderay").and_raise(LoadError)
       end
 
       it 'does not highlight the syntax' do
