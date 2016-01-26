@@ -1,5 +1,8 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.1...master)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.2...master)
+
+### 3.4.2 / 2016-01-26
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.1...v3.4.2)
 
 Bug Fixes:
 
