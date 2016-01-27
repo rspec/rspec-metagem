@@ -12,7 +12,8 @@ module RSpec
         def initialize(expected_error_or_message=nil, expected_message=nil, &block)
           @block = block
           @actual_error = nil
-          @warn_about_bare_error = warn_about_potential_false_positives? && expected_error_or_message.nil?
+          @warn_about_bare_error = warn_about_potential_false_positives? &&
+            expected_error_or_message.nil?
 
           case expected_error_or_message
           when nil
@@ -163,7 +164,8 @@ module RSpec
                         "#{warning}"\
                         "Instead consider providing a specific error class or message. " \
                         "This message can be suppressed by setting: " \
-                        "`RSpec::Expectations.configuration.warn_about_potential_false_positives = false`")
+                        "`RSpec::Expectations.configuration.warn_about_potential_false" \
+                        "_positives = false`")
         end
 
         def warn_about_negative_false_positive(expression)
@@ -172,8 +174,10 @@ module RSpec
                         "including those raised by Ruby (e.g. NoMethodError, NameError " \
                         "and ArgumentError), meaning the code you are intending to test " \
                         "may not even get reached. Instead consider using " \
-                        "`expect {}.not_to raise_error`. This message can be suppressed by setting: " \
-                        "`RSpec::Expectations.configuration.warn_about_potential_false_positives = false`")
+                        "`expect {}.not_to raise_error` or `expect { }.to raise_error" \
+                        "(DifferentSpecificErrorClass)`. This message can be suppressed by " \
+                        "setting: `RSpec::Expectations.configuration.warn_about_potential_false" \
+                        "_positives = false`")
         end
 
         def expected_error
