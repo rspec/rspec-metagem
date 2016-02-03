@@ -1,3 +1,18 @@
+### 3.5.0 Development
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.4.0...master)
+
+Enhancements:
+
+* Make `match_when_negated` in custom matcher DSL support use of
+  expectations within the match logic. (Chris Arcand, #789)
+
+Bug Fixes:
+
+* Return `true` as expected from passing negated expectations
+  (such as `expect("foo").not_to eq "bar"`), so they work
+  properly when used within a `match` or `match_when_negated`
+  block. (Chris Arcand, #789)
+
 ### 3.4.0 / 2015-11-11
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.3.1...v3.4.0)
 
