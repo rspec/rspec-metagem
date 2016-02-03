@@ -546,42 +546,22 @@ module RSpec::Matchers::DSL
       expect(matcher.does_not_match?(4)).to be true
     end
 
-    context "wrapping another expectation (expect(...).to eq ...)" do
-      let(:matcher) do
-        new_matcher(:name, "value") do |expected|
-          match do |actual|
-            expect(actual).to eq expected
-          end
-        end
-      end
-
-      it "returns true if the wrapped expectation passes" do
-        expect(self.matcher.matches?('value')).to be_truthy
-      end
-
-      it "returns false if the wrapped expectation fails" do
-        expect(self.matcher.matches?('other value')).to be_falsey
-      end
-
-      context "with a match_when_negated block" do
+    context "wrapping another expectation in a `match` block" do
+      context "with a positive expectation" do
         let(:matcher) do
           new_matcher(:name, "value") do |expected|
             match do |actual|
               expect(actual).to eq expected
             end
-
-            match_when_negated do |actual|
-              expect(actual).not_to eq expected
-            end
           end
         end
 
-        it "returns true if the wrapped expectation passes" do
-          expect(self.matcher.does_not_match?('other value')).to be_truthy
+        specify "`match?` returns true if the wrapped expectation passes" do
+          expect(self.matcher.matches?('value')).to be_truthy
         end
 
-        it "returns false if the wrapped expectation fails" do
-          expect(self.matcher.does_not_match?('value')).to be_falsey
+        specify "`match?` returns false if the wrapped expectation fails" do
+          expect(self.matcher.matches?('other value')).to be_falsey
         end
       end
 
@@ -594,34 +574,12 @@ module RSpec::Matchers::DSL
           end
         end
 
-        it "returns true if the wrapped expectation passes" do
+        specify "`match?` returns true if the wrapped expectation passes" do
           expect(self.matcher.matches?('purposely_different')).to be_truthy
         end
 
-        it "returns false if the wrapped expectation fails" do
+        specify "`match?` returns false if the wrapped expectation fails" do
           expect(self.matcher.matches?('purposely_the_same')).to be_falsey
-        end
-
-        context "with a match_when_negated block" do
-          let(:matcher) do
-            new_matcher(:name, "purposely_the_same") do |expected|
-              match do |actual|
-                expect(actual).not_to eq expected
-              end
-
-              match_when_negated do |actual|
-                expect(actual).to eq expected
-              end
-            end
-          end
-
-          it "returns true if the wrapped expectation passes" do
-            expect(self.matcher.does_not_match?('purposely_the_same')).to be_truthy
-          end
-
-          it "returns false if the wrapped expectation fails" do
-            expect(self.matcher.does_not_match?('purposely_different')).to be_falsey
-          end
         end
       end
 
@@ -725,6 +683,44 @@ module RSpec::Matchers::DSL
           end
 
           expect(error_rescued).to be true
+        end
+      end
+    end
+
+    context "wrapping another expectation in a `match_when_negated` block" do
+      context "with a positive expectation" do
+        let(:matcher) do
+          new_matcher(:name, "purposely_the_same") do |expected|
+            match_when_negated do |actual|
+              expect(actual).to eq expected
+            end
+          end
+        end
+
+        specify "`does_not_match?` returns true if the wrapped expectation passes" do
+          expect(self.matcher.does_not_match?('purposely_the_same')).to be_truthy
+        end
+
+        specify "`does_not_match?` returns false if the wrapped expectation fails" do
+          expect(self.matcher.does_not_match?('purposely_different')).to be_falsey
+        end
+      end
+
+      context "with a negative expectation" do
+        let(:matcher) do
+          new_matcher(:name, "value") do |expected|
+            match_when_negated do |actual|
+              expect(actual).not_to eq expected
+            end
+          end
+        end
+
+        specify "`does_not_match?` returns true if the wrapped expectation passes" do
+          expect(self.matcher.does_not_match?('other value')).to be_truthy
+        end
+
+        specify "`does_not_match?` returns false if the wrapped expectation fails" do
+          expect(self.matcher.does_not_match?('value')).to be_falsey
         end
       end
     end
