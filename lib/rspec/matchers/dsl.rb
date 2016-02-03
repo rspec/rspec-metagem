@@ -80,8 +80,14 @@ module RSpec
         # @yield [Object] actual the actual value (i.e. the value wrapped by `expect`)
         def match_when_negated(&match_block)
           define_user_override(:does_not_match?, match_block) do |actual|
-            @actual = actual
-            super(*actual_arg_for(match_block))
+            begin
+              @actual = actual
+              RSpec::Support.with_failure_notifier(RAISE_NOTIFIER) do
+                super(*actual_arg_for(match_block))
+              end
+            rescue RSpec::Expectations::ExpectationNotMetError
+              false
+            end
           end
         end
 

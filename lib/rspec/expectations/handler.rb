@@ -69,7 +69,7 @@ module RSpec
       def self.handle_matcher(actual, initial_matcher, message=nil, &block)
         ExpectationHelper.with_matcher(self, initial_matcher, message) do |matcher|
           return ::RSpec::Matchers::BuiltIn::NegativeOperatorMatcher.new(actual) unless initial_matcher
-          !(does_not_match?(matcher, actual, &block) || ExpectationHelper.handle_failure(matcher, message, :failure_message_when_negated))
+          does_not_match?(matcher, actual, &block) || ExpectationHelper.handle_failure(matcher, message, :failure_message_when_negated)
         end
       end
 
