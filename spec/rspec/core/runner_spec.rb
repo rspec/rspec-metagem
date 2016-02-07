@@ -162,6 +162,14 @@ module RSpec::Core
 
       before do
         allow(::DRb).to receive(:current_server) { drb_server }
+
+        # To deal with some network weirdness at my workplace, I had to
+        # configure my network adapter in a non-standard way that causes
+        # `IPSocket.getaddress(Socket.gethostname)` to raise
+        # `SocketError: getaddrinfo: nodename nor servname provided, or not known`
+        # I'm not sure why this happens, but to keep the specs here passing,
+        # I have to stub this out :(.
+        allow(IPSocket).to receive(:getaddress) { "127.0.0.1" }
       end
 
       context "when drb server is started with 127.0.0.1" do
@@ -195,6 +203,20 @@ module RSpec::Core
       context "when drb server is started with 127.0.0.1 but not alive" do
         let(:drb_server) do
           instance_double(::DRb::DRbServer, :uri => "druby://127.0.0.1:0000/", :alive? => false)
+        end
+
+        it { should be_falsey }
+      end
+
+      context "when IPSocket cannot resolve the current hostname" do
+        let(:drb_server) do
+          instance_double(::DRb::DRbServer, :uri => "druby://localhost:0000/", :alive? => true)
+        end
+
+        before do
+          allow(::IPSocket).to receive(:getaddress).and_raise(
+            SocketError, "getaddrinfo: nodename nor servname provided, or not known"
+          )
         end
 
         it { should be_falsey }

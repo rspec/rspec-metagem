@@ -150,19 +150,28 @@ module RSpec
       end
 
       # @private
-      # rubocop:disable Lint/EnsureReturn
       def self.running_in_drb?
-        if defined?(DRb) && DRb.current_server && DRb.current_server.alive?
-          require 'socket'
-          require 'uri'
-          local_ipv4 = IPSocket.getaddress(Socket.gethostname)
-          local_drb = ["127.0.0.1", "localhost", local_ipv4].any? { |addr| addr == URI(DRb.current_server.uri).host }
-        end
-      rescue DRb::DRbServerNotFound
-      ensure
-        return local_drb || false
+        return false unless defined?(DRb)
+
+        server = begin
+                   DRb.current_server
+                 rescue DRb::DRbServerNotFound
+                   return false
+                 end
+
+        return false unless server && server.alive?
+
+        require 'socket'
+        require 'uri'
+
+        local_ipv4 = begin
+                       IPSocket.getaddress(Socket.gethostname)
+                     rescue SocketError
+                       return false
+                     end
+
+        ["127.0.0.1", "localhost", local_ipv4].any? { |addr| addr == URI(DRb.current_server.uri).host }
       end
-      # rubocop:enable Lint/EnsureReturn
 
       # @private
       def self.trap_interrupt
