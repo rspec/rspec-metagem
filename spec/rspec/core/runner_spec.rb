@@ -115,7 +115,7 @@ module RSpec::Core
       let(:interrupt_handlers) { [] }
 
       before do
-        allow(Object).to receive(:trap).with("INT", any_args) do |&block|
+        allow(Runner).to receive(:trap).with("INT", any_args) do |&block|
           interrupt_handlers << block
         end
       end
@@ -139,8 +139,8 @@ module RSpec::Core
 
         it "does not exit immediately" do
           Runner.send(:trap_interrupt)
-          expect_any_instance_of(Object).not_to receive(:exit)
-          expect_any_instance_of(Object).not_to receive(:exit!)
+          expect(Runner).not_to receive(:exit)
+          expect(Runner).not_to receive(:exit!)
           interrupt
         end
       end
@@ -148,7 +148,7 @@ module RSpec::Core
       context "with SIGINT twice" do
         it "exits immediately" do
           Runner.send(:trap_interrupt)
-          expect_any_instance_of(Object).to receive(:exit!).with(1)
+          expect(Runner).to receive(:exit!).with(1)
           interrupt
           interrupt
         end
