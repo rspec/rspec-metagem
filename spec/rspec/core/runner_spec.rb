@@ -192,18 +192,6 @@ module RSpec::Core
         it { should be_truthy }
       end
 
-      context "when drb server is started with another local ip address" do
-        let(:drb_server) do
-          instance_double(::DRb::DRbServer, :uri => "druby://192.168.0.1:0000/", :alive? => true)
-        end
-
-        before do
-          allow(::IPSocket).to receive(:getaddress).and_return("192.168.0.1")
-        end
-
-        it { should be_truthy }
-      end
-
       context "when drb server is started with 127.0.0.1 but not alive" do
         let(:drb_server) do
           instance_double(::DRb::DRbServer, :uri => "druby://127.0.0.1:0000/", :alive? => false)
