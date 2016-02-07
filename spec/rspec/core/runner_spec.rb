@@ -212,7 +212,6 @@ module RSpec::Core
         it { should be_falsey }
       end
 
-
       context "when no drb server is running" do
         let(:drb_server) do
           raise ::DRb::DRbServerNotFound
