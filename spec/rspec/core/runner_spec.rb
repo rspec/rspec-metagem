@@ -137,11 +137,12 @@ module RSpec::Core
           interrupt
         end
 
-        it "does not exit immediately" do
+        it "does not exit immediately, but notifies the user" do
           Runner.send(:trap_interrupt)
           expect(Runner).not_to receive(:exit)
           expect(Runner).not_to receive(:exit!)
-          interrupt
+
+          expect { interrupt }.to output(/RSpec is shutting down/).to_stderr
         end
       end
 
@@ -149,7 +150,7 @@ module RSpec::Core
         it "exits immediately" do
           Runner.send(:trap_interrupt)
           expect(Runner).to receive(:exit!).with(1)
-          interrupt
+          expect { interrupt }.to output(//).to_stderr
           interrupt
         end
       end

@@ -175,7 +175,7 @@ module RSpec
           exit!(1)
         else
           RSpec.world.wants_to_quit = true
-          STDERR.puts "\nRSpec is shutting down and will print the summary report... Interrupt again to force quit."
+          $stderr.puts "\nRSpec is shutting down and will print the summary report... Interrupt again to force quit."
         end
       end
     end
