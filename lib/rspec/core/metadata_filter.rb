@@ -15,9 +15,9 @@ module RSpec
         # @private
         def filter_applies?(key, value, metadata)
           silence_metadata_example_group_deprecations do
-            return location_filter_applies?(value, metadata)          if key == :locations
-            return id_filter_applies?(value, metadata)                if key == :ids
-            return filters_apply?(key, value, metadata)               if Hash === value
+            return location_filter_applies?(value, metadata) if key == :locations
+            return id_filter_applies?(value, metadata)       if key == :ids
+            return filters_apply?(key, value, metadata)      if Hash === value
 
             return false unless metadata.key?(key)
             return true if TrueClass === value && !!metadata[key]
