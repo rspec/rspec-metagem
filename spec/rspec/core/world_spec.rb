@@ -115,7 +115,7 @@ module RSpec::Core
         end
       end
 
-      context "with two exaples and the second example is registre first" do
+      context "with two examples and the second example is registered first" do
         let(:second_group_declaration_line) { second_group.metadata[:line_number] }
 
         before do
