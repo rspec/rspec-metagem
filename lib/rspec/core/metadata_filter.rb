@@ -49,13 +49,14 @@ module RSpec
         end
 
         def location_filter_applies?(locations, metadata)
-          line_numbers = example_group_declaration_lines(locations, metadata)
-          line_number_filter_applies?(line_numbers, metadata)
-        end
+          Metadata.ascend(metadata).any? do |meta|
+            file_path = meta[:absolute_file_path]
+            line_num  = meta[:line_number]
 
-        def line_number_filter_applies?(line_numbers, metadata)
-          preceding_declaration_lines = line_numbers.map { |n| RSpec.world.preceding_declaration_line(n) }
-          !(relevant_line_numbers(metadata) & preceding_declaration_lines).empty?
+            locations[file_path].any? do |filter_line_num|
+              line_num == RSpec.world.preceding_declaration_line(filter_line_num)
+            end
+          end
         end
 
         def proc_filter_applies?(key, proc, metadata)
@@ -64,16 +65,6 @@ module RSpec
           when 2 then proc.call(metadata[key], metadata)
           else proc.call(metadata[key])
           end
-        end
-
-        def relevant_line_numbers(metadata)
-          Metadata.ascend(metadata).map { |meta| meta[:line_number] }
-        end
-
-        def example_group_declaration_lines(locations, metadata)
-          FlatMap.flat_map(Metadata.ascend(metadata)) do |meta|
-            locations[meta[:absolute_file_path]]
-          end.uniq
         end
 
         def filters_apply?(key, value, metadata)
