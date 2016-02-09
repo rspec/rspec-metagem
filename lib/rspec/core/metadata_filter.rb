@@ -54,7 +54,7 @@ module RSpec
             line_num  = meta[:line_number]
 
             locations[file_path].any? do |filter_line_num|
-              line_num == RSpec.world.preceding_declaration_line(filter_line_num)
+              line_num == RSpec.world.preceding_declaration_line(file_path, filter_line_num)
             end
           end
         end

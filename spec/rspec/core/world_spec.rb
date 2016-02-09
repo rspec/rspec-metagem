@@ -91,27 +91,31 @@ module RSpec::Core
       let(:group_declaration_line) { group.metadata[:line_number] }
       let(:example_declaration_line) { group_declaration_line + 2 }
 
+      def preceding_declaration_line(line_num)
+        world.preceding_declaration_line(__FILE__, line_num)
+      end
+
       context "with one example" do
         before { world.register(group) }
 
         it "returns nil if no example or group precedes the line" do
-          expect(world.preceding_declaration_line(group_declaration_line - 1)).to be_nil
+          expect(preceding_declaration_line(group_declaration_line - 1)).to be_nil
         end
 
         it "returns the argument line number if a group starts on that line" do
-          expect(world.preceding_declaration_line(group_declaration_line)).to eq(group_declaration_line)
+          expect(preceding_declaration_line(group_declaration_line)).to eq(group_declaration_line)
         end
 
         it "returns the argument line number if an example starts on that line" do
-          expect(world.preceding_declaration_line(example_declaration_line)).to eq(example_declaration_line)
+          expect(preceding_declaration_line(example_declaration_line)).to eq(example_declaration_line)
         end
 
         it "returns line number of a group that immediately precedes the argument line" do
-          expect(world.preceding_declaration_line(group_declaration_line + 1)).to eq(group_declaration_line)
+          expect(preceding_declaration_line(group_declaration_line + 1)).to eq(group_declaration_line)
         end
 
         it "returns line number of an example that immediately precedes the argument line" do
-          expect(world.preceding_declaration_line(example_declaration_line + 1)).to eq(example_declaration_line)
+          expect(preceding_declaration_line(example_declaration_line + 1)).to eq(example_declaration_line)
         end
       end
 
@@ -124,7 +128,7 @@ module RSpec::Core
         end
 
         it 'return line number of group if a group start on that line' do
-          expect(world.preceding_declaration_line(second_group_declaration_line)).to eq(second_group_declaration_line)
+          expect(preceding_declaration_line(second_group_declaration_line)).to eq(second_group_declaration_line)
         end
       end
     end

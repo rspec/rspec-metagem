@@ -96,7 +96,7 @@ module RSpec
       # @api private
       #
       # Find line number of previous declaration.
-      def preceding_declaration_line(filter_line)
+      def preceding_declaration_line(_file_name, filter_line)
         declaration_line_numbers.sort.inject(nil) do |highest_prior_declaration_line, line|
           line <= filter_line ? line : highest_prior_declaration_line
         end
