@@ -14,7 +14,7 @@ Test::Unit::TestCase if you happen to prefer that style.
 
 Conversely, if you like RSpec's approach to declaring example groups and
 examples (`describe` and `it`) but prefer Test::Unit assertions and
-[mocha](https://github.com/mochajs/mocha), [rr] (https://github.com/btakita/rr)
+[mocha](https://github.com/freerange/mocha), [rr] (https://github.com/btakita/rr)
 or [flexmock] (https://github.com/jimweirich/flexmock) for mocking, you'll be
 able to do that without having to install or load the components of RSpec that
 you're not using.
