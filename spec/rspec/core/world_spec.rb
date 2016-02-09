@@ -91,31 +91,35 @@ module RSpec::Core
       let(:group_declaration_line) { group.metadata[:line_number] }
       let(:example_declaration_line) { group_declaration_line + 2 }
 
+      def preceding_declaration_line(line_num)
+        world.preceding_declaration_line(__FILE__, line_num)
+      end
+
       context "with one example" do
         before { world.register(group) }
 
         it "returns nil if no example or group precedes the line" do
-          expect(world.preceding_declaration_line(group_declaration_line - 1)).to be_nil
+          expect(preceding_declaration_line(group_declaration_line - 1)).to be_nil
         end
 
         it "returns the argument line number if a group starts on that line" do
-          expect(world.preceding_declaration_line(group_declaration_line)).to eq(group_declaration_line)
+          expect(preceding_declaration_line(group_declaration_line)).to eq(group_declaration_line)
         end
 
         it "returns the argument line number if an example starts on that line" do
-          expect(world.preceding_declaration_line(example_declaration_line)).to eq(example_declaration_line)
+          expect(preceding_declaration_line(example_declaration_line)).to eq(example_declaration_line)
         end
 
         it "returns line number of a group that immediately precedes the argument line" do
-          expect(world.preceding_declaration_line(group_declaration_line + 1)).to eq(group_declaration_line)
+          expect(preceding_declaration_line(group_declaration_line + 1)).to eq(group_declaration_line)
         end
 
         it "returns line number of an example that immediately precedes the argument line" do
-          expect(world.preceding_declaration_line(example_declaration_line + 1)).to eq(example_declaration_line)
+          expect(preceding_declaration_line(example_declaration_line + 1)).to eq(example_declaration_line)
         end
       end
 
-      context "with two exaples and the second example is registre first" do
+      context "with two groups and the second example is registered first" do
         let(:second_group_declaration_line) { second_group.metadata[:line_number] }
 
         before do
@@ -124,7 +128,41 @@ module RSpec::Core
         end
 
         it 'return line number of group if a group start on that line' do
-          expect(world.preceding_declaration_line(second_group_declaration_line)).to eq(second_group_declaration_line)
+          expect(preceding_declaration_line(second_group_declaration_line)).to eq(second_group_declaration_line)
+        end
+      end
+
+      context "with groups from multiple files registered" do
+        another_file = File.join(__FILE__, "another_spec_file.rb")
+
+        let(:group_from_another_file) do
+          instance_eval <<-EOS, another_file, 1
+            RSpec.describe("third group") do
+
+              example("inside of a gropu")
+
+            end
+          EOS
+        end
+
+        before do
+          world.register(group)
+          world.register(group_from_another_file)
+        end
+
+        it "returns nil if given a file name with no declarations" do
+          expect(world.preceding_declaration_line("/some/other/file.rb", 100_000)).to eq(nil)
+        end
+
+        it "considers only declaration lines from the provided files", :aggregate_failures do
+          expect(world.preceding_declaration_line(another_file, 1)).to eq(1)
+          expect(world.preceding_declaration_line(another_file, 2)).to eq(1)
+          expect(world.preceding_declaration_line(another_file, 3)).to eq(3)
+          expect(world.preceding_declaration_line(another_file, 4)).to eq(3)
+          expect(world.preceding_declaration_line(another_file, 5)).to eq(3)
+          expect(world.preceding_declaration_line(another_file, 100_000)).to eq(3)
+
+          expect(world.preceding_declaration_line(__FILE__, group_declaration_line + 1)).to eq(group_declaration_line)
         end
       end
     end

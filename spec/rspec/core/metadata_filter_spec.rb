@@ -52,8 +52,8 @@ module RSpec
           }}
 
           before do
-            expect(world).to receive(:preceding_declaration_line).at_least(:once) do |v|
-              preceeding_declaration_lines[v]
+            expect(world).to receive(:preceding_declaration_line).at_least(:once) do |_file_name, line_num|
+              preceeding_declaration_lines[line_num]
             end
           end
 

@@ -96,10 +96,12 @@ module RSpec
       # @api private
       #
       # Find line number of previous declaration.
-      def preceding_declaration_line(filter_line)
-        declaration_line_numbers.sort.inject(nil) do |highest_prior_declaration_line, line|
-          line <= filter_line ? line : highest_prior_declaration_line
+      def preceding_declaration_line(absolute_file_name, filter_line)
+        line_numbers = descending_declaration_line_numbers_by_file.fetch(absolute_file_name) do
+          return nil
         end
+
+        line_numbers.find { |num| num <= filter_line }
       end
 
       # @private
@@ -179,8 +181,22 @@ module RSpec
 
     private
 
-      def declaration_line_numbers
-        @declaration_line_numbers ||= FlatMap.flat_map(example_groups, &:declaration_line_numbers)
+      def descending_declaration_line_numbers_by_file
+        @descending_declaration_line_numbers_by_file ||= begin
+          declaration_locations = FlatMap.flat_map(example_groups, &:declaration_locations)
+          hash_of_arrays = Hash.new { |h, k| h[k] = [] }
+
+          # TODO: change `inject` to `each_with_object` when we drop 1.8.7 support.
+          line_nums_by_file = declaration_locations.inject(hash_of_arrays) do |hash, (file_name, line_number)|
+            hash[file_name] << line_number
+            hash
+          end
+
+          line_nums_by_file.each_value do |list|
+            list.sort!
+            list.reverse!
+          end
+        end
       end
 
       def fail_if_config_and_cli_options_invalid

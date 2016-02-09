@@ -96,6 +96,33 @@ RSpec.describe 'Filtering' do
       run_command "spec/a_spec.rb:13 -fd" # selecting :if => false example
       expect(last_cmd_stdout).to include("0 examples, 0 failures").and exclude("ex 1", "ex 2", "ex 3", "ex 4", "ex 5")
     end
+
+    it 'works correctly when line numbers align with a shared example group line number from another file' do
+      write_file_formatted 'spec/support/shared_examples_with_matching_line.rb', "
+        # line 1
+        # line 2
+        # line 3
+        RSpec.shared_examples_for 'shared examples' do # line 4
+          it 'fails' do # line 5
+            fail 'shared example'
+          end
+        end
+      "
+
+      write_file_formatted 'spec/some_spec.rb', "
+        require File.expand_path('../support/shared_examples_with_matching_line', __FILE__) # line 1
+        RSpec.describe 'A group' do # line 2
+          it_behaves_like 'shared examples' # line 3
+          # line 4
+          it 'passes' do # line 5
+            expect(1).to eq(1)
+          end
+        end
+      "
+
+      run_command "spec/some_spec.rb:5"
+      expect(last_cmd_stdout).to include("1 example, 0 failures")
+    end
   end
 
   context "passing a line-number-filtered file and a non-filtered file" do
