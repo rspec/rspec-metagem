@@ -41,12 +41,12 @@ module RSpec
 
         syntax_host.module_exec do
           def should(matcher=nil, message=nil, &block)
-            ::RSpec::Expectations::Syntax.warn_about_should_unless_configured(__method__)
+            ::RSpec::Expectations::Syntax.warn_about_should_unless_configured(::Kernel.__method__)
             ::RSpec::Expectations::PositiveExpectationHandler.handle_matcher(self, matcher, message, &block)
           end
 
           def should_not(matcher=nil, message=nil, &block)
-            ::RSpec::Expectations::Syntax.warn_about_should_unless_configured(__method__)
+            ::RSpec::Expectations::Syntax.warn_about_should_unless_configured(::Kernel.__method__)
             ::RSpec::Expectations::NegativeExpectationHandler.handle_matcher(self, matcher, message, &block)
           end
         end
