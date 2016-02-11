@@ -55,16 +55,23 @@ module RSpec
         #     expect(3).to be_even     # fails
         #     expect(4).not_to be_even # fails
         #
+        # By default the match block will swallow expectation errors (e.g.
+        # caused by using an expectation such as `expect(1).to eq 2`), if you
+        # with to allow these to bubble up, pass in the option
+        # `:notify_expectation_failures => true`.
+        #
+        # @param [Hash] options for defining the behavior of the match block.
         # @yield [Object] actual the actual value (i.e. the value wrapped by `expect`)
-        def match(&match_block)
+        def match(options={}, &match_block)
           define_user_override(:matches?, match_block) do |actual|
-            begin
-              @actual = actual
-              RSpec::Support.with_failure_notifier(RAISE_NOTIFIER) do
+            @actual = actual
+            RSpec::Support.with_failure_notifier(RAISE_NOTIFIER) do
+              begin
                 super(*actual_arg_for(match_block))
+              rescue RSpec::Expectations::ExpectationNotMetError
+                raise if options[:notify_expectation_failures]
+                false
               end
-            rescue RSpec::Expectations::ExpectationNotMetError
-              false
             end
           end
         end
