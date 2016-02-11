@@ -43,6 +43,16 @@ RSpec.describe Object, "#should" do
     it 'works properly on BasicObject-subclassed proxy objects' do
       expect(proxy_class.new(Object.new)).to be_proxied
     end
+
+    it 'does not break the deprecation check on BasicObject-subclassed proxy objects' do
+      begin
+        should_enabled = RSpec::Expectations::Syntax.should_enabled?
+        RSpec::Expectations::Syntax.enable_should unless should_enabled
+        proxy_class.new(BasicObject.new).should be_proxied
+      ensure
+        RSpec::Expectations::Syntax.disable_should if should_enabled
+      end
+    end
   end
 end
 
