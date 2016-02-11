@@ -1,6 +1,10 @@
 ### 3.5.0 Development
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.5.0.beta1...master)
 
+Bug Fixes:
+
+* Allow `should` deprecation check to work on `BasicObject`s. (James Coleman, #898)
+
 ### 3.5.0.beta1 / 2016-02-06
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.4.0...v3.5.0.beta1)
 
