@@ -1,6 +1,11 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.0.beta1...master)
 
+Enhancements:
+
+* Remove unneeded `:execution_result` example groups metadata, saving a
+  bit of memory. (Myron Marston, #2172)
+
 Bug Fixes:
 
 * Prevent a `TypeError` from occuring when running via the rake task when
