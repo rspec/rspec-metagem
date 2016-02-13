@@ -141,15 +141,36 @@ module RSpec
         end
 
         it 'does not include example-group specific keys' do
-          meta = nil
+          example_meta = nil
+          group_meta = nil
 
           RSpec.describe "group" do
             context "nested" do
-              meta = example("foo").metadata
+              group_meta = metadata
+              example_meta = example("foo").metadata
             end
           end
 
-          expect(meta.keys).not_to include(:parent_example_group)
+          expect(group_meta.keys - example_meta.keys).to contain_exactly(:parent_example_group)
+        end
+      end
+
+      context "for an example group" do
+        it 'does not include example specific keys' do
+          example_meta = nil
+          group_meta = nil
+
+          RSpec.describe "group" do
+            context "nested" do
+              group_meta = metadata
+              example_meta = example("foo").metadata
+            end
+          end
+
+          expect(example_meta.keys - group_meta.keys).to contain_exactly(
+            :execution_result, :last_run_status, :skip,
+            :shared_group_inclusion_backtrace, :example_group
+          )
         end
       end
 

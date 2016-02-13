@@ -128,7 +128,6 @@ module RSpec
         def populate
           ensure_valid_user_keys
 
-          metadata[:execution_result] = Example::ExecutionResult.new
           metadata[:block]            = block
           metadata[:description_args] = description_args
           metadata[:description]      = build_description_from(*metadata[:description_args])
@@ -219,6 +218,7 @@ module RSpec
           end)
           group_metadata.update(example_metadata)
 
+          example_metadata[:execution_result] = Example::ExecutionResult.new
           example_metadata[:example_group] = group_metadata
           example_metadata[:shared_group_inclusion_backtrace] = SharedExampleGroupInclusionStackFrame.current_backtrace
           example_metadata.delete(:parent_example_group)
