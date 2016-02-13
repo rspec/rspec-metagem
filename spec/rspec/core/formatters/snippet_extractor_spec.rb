@@ -149,6 +149,20 @@ module RSpec::Core::Formatters
         end
       end
 
+      context 'when the expression contains do-end block and ends with "end"-only line' do
+        let(:source) do
+          do_something_fail do
+          end
+        end
+
+        it 'returns all the lines' do
+          expect(expression_lines).to eq([
+            '          do_something_fail do',
+            '          end'
+          ])
+        end
+      end
+
       context "when the expression ends with multiple paren-only lines of same type" do
         let(:source) do
           do_something_fail(:foo, (:bar

@@ -8,6 +8,9 @@ Bug Fixes:
 * Only consider example and group declaration lines from a specific file
   when applying line number filtering, instead of considering all
   declaration lines from all spec files. (Myron Marston, #2170)
+* Fix failure snippet extraction so that snippets that contain `do-end` style
+  block and end with `end`-only line can be extracted properly.
+  (Yuji Nakayama, #2173)
 
 ### 3.5.0.beta1 / 2016-02-06
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.2...v3.5.0.beta1)
