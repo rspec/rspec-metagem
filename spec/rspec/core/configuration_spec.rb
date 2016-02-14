@@ -1598,6 +1598,111 @@ module RSpec::Core
       end
     end
 
+    describe "#when_first_matching_example_defined" do
+      include_examples "warning of deprecated `:example_group` during filtering configuration", :when_first_matching_example_defined
+
+      it "runs the block when the first matching example is defined" do
+        sequence = []
+        RSpec.configuration.when_first_matching_example_defined(:foo) do
+          sequence << :callback
+        end
+
+        RSpec.describe do
+          example("ex 1")
+          sequence << :before_first_matching_example_defined
+          example("ex 2", :foo)
+          sequence << :after_first_matching_example_defined
+        end
+
+        expect(sequence).to eq [:before_first_matching_example_defined, :callback, :after_first_matching_example_defined]
+      end
+
+      it "does not fire when later matching examples are defined" do
+        sequence = []
+        RSpec.configuration.when_first_matching_example_defined(:foo) do
+          sequence << :callback
+        end
+
+        RSpec.describe do
+          example("ex 1", :foo)
+          sequence.clear
+
+          sequence << :before_second_matching_example_defined
+          example("ex 2", :foo)
+          sequence << :after_second_matching_example_defined
+        end
+
+        expect(sequence).to eq [:before_second_matching_example_defined, :after_second_matching_example_defined]
+      end
+
+      it "does not run the block if no matching examples are defined" do
+        sequence = []
+        RSpec.configuration.when_first_matching_example_defined(:foo) do
+          sequence << :callback
+        end
+
+        RSpec.describe do
+          example("ex 1")
+          example("ex 2", :bar)
+        end
+
+        expect(sequence).to eq []
+      end
+
+      it 'does not run the block if groups match the metadata but no examples do' do
+        called = false
+        RSpec.configuration.when_first_matching_example_defined(:foo => true) do
+          called = true
+        end
+
+        RSpec.describe "group 1", :foo => true do
+        end
+
+        RSpec.describe "group 2", :foo => true do
+          example("ex", :foo => false)
+        end
+
+        expect(called).to be false
+      end
+
+      it "still runs after the first matching example even if there is a group that matches earlier" do
+        sequence = []
+        RSpec.configuration.when_first_matching_example_defined(:foo) do
+          sequence << :callback
+        end
+
+        RSpec.describe "group", :foo do
+        end
+
+        RSpec.describe do
+          example("ex 1")
+          sequence << :before_first_matching_example_defined
+          example("ex 2", :foo)
+          sequence << :after_first_matching_example_defined
+        end
+
+        expect(sequence).to eq [:before_first_matching_example_defined, :callback, :after_first_matching_example_defined]
+      end
+
+      context "when a group is defined with matching metadata" do
+        it "runs the callback after the first example in the group is defined" do
+          sequence = []
+          RSpec.configuration.when_first_matching_example_defined(:foo) do
+            sequence << :callback
+          end
+
+          sequence << :before_group
+          RSpec.describe "group", :foo do
+            sequence << :before_example
+            example("ex")
+            sequence << :after_example
+          end
+
+          expect(sequence).to eq [:before_group, :before_example, :callback, :after_example]
+        end
+      end
+    end
+
     describe "#add_setting" do
       describe "with no modifiers" do
         context "with no additional options" do

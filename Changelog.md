@@ -9,6 +9,8 @@ Enhancements:
   (Myron Marston, #2189)
 * `RSpec::Core::Configuration#reporter` is now public API under semver.
   (Jon Rowe, #2193)
+* Add new `config.when_first_matching_example_defined` hook. (Myron
+  Marston, #2175)
 
 ### 3.5.0.beta1 / 2016-02-06
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.3...v3.5.0.beta1)

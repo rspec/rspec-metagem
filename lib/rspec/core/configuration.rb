@@ -1553,6 +1553,41 @@ module RSpec
         @derived_metadata_blocks.append(block, meta)
       end
 
+      # Defines a callback that runs after the first example with matching
+      # metadata is defined. If no examples are defined with matching metadata,
+      # it will not get called at all.
+      #
+      # This can be used to ensure some setup is performed (such as bootstrapping
+      # a DB or loading a specific file that adds significantly to the boot time)
+      # if needed (as indicated by the presence of an example with matching metadata)
+      # but avoided otherwise.
+      #
+      # @example
+      #   RSpec.configure do |config|
+      #     config.when_first_matching_example_defined(:db) do
+      #       # Load a support file that does some heavyweight setup,
+      #       # including bootstrapping the DB, but only if we have loaded
+      #       # any examples tagged with `:db`.
+      #       require 'support/db'
+      #     end
+      #   end
+      def when_first_matching_example_defined(*filters, &block)
+        specified_meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
+
+        callback = lambda do |example_or_group_meta|
+          # Example groups do not have `:example_group` metadata
+          # (instead they have `:parent_example_group` metadata).
+          return unless example_or_group_meta.key?(:example_group)
+
+          # Ensure the callback only fires once.
+          @derived_metadata_blocks.items_for(specified_meta).delete(callback)
+
+          block.call
+        end
+
+        @derived_metadata_blocks.append(callback, specified_meta)
+      end
+
       # @private
       def apply_derived_metadata_to(metadata)
         @derived_metadata_blocks.items_for(metadata).each do |block|

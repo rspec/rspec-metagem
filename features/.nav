@@ -20,6 +20,7 @@
   - before_and_after_hooks.feature
   - around_hooks.feature
   - filtering.feature
+  - when_first_matching_example_defined.feature
 - subject:
   - implicit_subject.feature
   - explicit_subject.feature
