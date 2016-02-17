@@ -1,8 +1,11 @@
 Feature: `--pattern` option
 
-  By default, RSpec loads files matching the pattern:
+  When you run RSpec without giving it specific file names, it determines which
+  files to load by applying a pattern to the provided directory arguments or
+  `spec` (if no directories are provided). By default, RSpec uses the following
+  pattern:
 
-      "spec/**/*_spec.rb"
+      "**{,/*/**}/*_spec.rb"
 
   Use the `--pattern` option to declare a different pattern.
 
@@ -25,7 +28,7 @@ Feature: `--pattern` option
       end
       """
 
-  Scenario: By default, RSpec runs files that match `"**/*_spec.rb"`
+  Scenario: By default, RSpec runs matching spec files
    When I run `rspec`
    Then the output should contain "2 examples, 0 failures"
 
