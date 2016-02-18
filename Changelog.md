@@ -6,6 +6,12 @@ Enhancements:
 * Remove unneeded `:execution_result` example groups metadata, saving a
   bit of memory. (Myron Marston, #2172)
 
+### 3.5.0.beta1 / 2016-02-06
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.3...v3.5.0.beta1)
+
+### 3.4.3 / 2016-02-19
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.2...v3.4.3)
+
 Bug Fixes:
 
 * Prevent a `TypeError` from occuring when running via the rake task when
@@ -16,9 +22,6 @@ Bug Fixes:
 * Fix failure snippet extraction so that snippets that contain `do-end` style
   block and end with `end`-only line can be extracted properly.
   (Yuji Nakayama, #2173)
-
-### 3.5.0.beta1 / 2016-02-06
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.2...v3.5.0.beta1)
 
 ### 3.4.2 / 2016-01-26
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.1...v3.4.2)
