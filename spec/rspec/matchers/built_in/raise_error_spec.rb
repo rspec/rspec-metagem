@@ -35,6 +35,12 @@ RSpec.describe "expect { ... }.to raise_error" do
     expect { raise }.to raise_error
   end
 
+  it "can supresses the warning when configured to do so", :warn_about_potential_false_positives do
+    RSpec::Expectations.configuration.on_potential_false_positives = :nothing
+    expect_no_warnings
+    expect { raise }.to raise_error
+  end
+
   it 'does not issue a warning when an exception class is specified (even if it is just `Exception`)' do
     expect_no_warnings
     expect { raise "error" }.to raise_error Exception
