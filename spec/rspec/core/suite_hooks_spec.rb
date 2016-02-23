@@ -5,7 +5,7 @@ module RSpec::Core
     [:before, :after, :prepend_before, :append_before, :prepend_after, :append_after].each do |registration_method|
       type = registration_method.to_s.split('_').last
 
-      describe "a `:suite` hook registered with `#{registration_method}" do
+      describe "a `:suite` hook registered with `#{registration_method}`" do
         it 'is skipped when in dry run mode' do
           RSpec.configuration.dry_run = true
 
