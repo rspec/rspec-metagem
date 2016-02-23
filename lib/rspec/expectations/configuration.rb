@@ -18,8 +18,15 @@ module RSpec
     #
     #   RSpec::Expectations.configuration
     class Configuration
+      # @private
+      FALSE_POSITIVE_BEHAVIOURS =
+        {
+          :warn    => lambda { |message| RSpec.warning message },
+          :nothing => lambda { |_| true },
+        }
+
       def initialize
-        @warn_about_potential_false_positives = true
+        @on_potential_false_positives = :warn
       end
 
       # Configures the supported syntax.
@@ -141,14 +148,27 @@ module RSpec
       # Configures whether RSpec will warn about matcher use which will
       # potentially cause false positives in tests.
       #
-      # @param value [Boolean]
-      attr_writer :warn_about_potential_false_positives
+      # @param [Boolean] boolean
+      def warn_about_potential_false_positives=(boolean)
+        if boolean
+          @on_potential_false_positives = :warn
+        elsif warn_about_potential_false_positives?
+          @on_potential_false_positives = :nothing
+        else
+          # no-op, handler is something else
+        end
+      end
 
       # Indicates whether RSpec will warn about matcher use which will
       # potentially cause false positives in tests, generally you want to
       # avoid such scenarios so this defaults to `true`.
       def warn_about_potential_false_positives?
-        @warn_about_potential_false_positives
+        @on_potential_false_positives == :warn
+      end
+
+      # @private
+      def false_positives_handler
+        FALSE_POSITIVE_BEHAVIOURS.fetch(@on_potential_false_positives)
       end
     end
 
