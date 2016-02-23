@@ -22,6 +22,7 @@ module RSpec
       FALSE_POSITIVE_BEHAVIOURS =
         {
           :warn    => lambda { |message| RSpec.warning message },
+          :raise   => lambda { |message| raise ArgumentError, message },
           :nothing => lambda { |_| true },
         }
 
@@ -162,7 +163,7 @@ module RSpec
       # Configures what RSpec will do about matcher use which will
       # potentially cause false positives in tests.
       #
-      # @param [Symbol] behavior can be set to :warn or :nothing
+      # @param [Symbol] behavior can be set to :warn, :raise or :nothing
       def on_potential_false_positives=(behavior)
         unless FALSE_POSITIVE_BEHAVIOURS.key?(behavior)
           raise ArgumentError, "Supported values are: #{FALSE_POSITIVE_BEHAVIOURS.keys}"

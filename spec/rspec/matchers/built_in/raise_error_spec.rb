@@ -29,6 +29,16 @@ RSpec.describe "expect { ... }.to raise_error" do
     }.to fail_with("expected Exception but nothing was raised")
   end
 
+  it "raises an exception when configured to do so" do
+    begin
+      RSpec::Expectations.configuration.on_potential_false_positives = :raise
+      expect_no_warnings
+      expect { expect { '' }.to raise_error }.to raise_error ArgumentError
+    ensure
+      RSpec::Expectations.configuration.on_potential_false_positives = :warn
+    end
+  end
+
   it "can supresses the warning when configured to do so", :warn_about_potential_false_positives do
     RSpec::Expectations.configuration.warn_about_potential_false_positives = false
     expect_no_warnings

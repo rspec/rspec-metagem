@@ -119,6 +119,11 @@ module RSpec
           config.on_potential_false_positives = :warn
           expect(config.on_potential_false_positives).to eq :warn
         end
+
+        it 'can be set to :raise' do
+          config.on_potential_false_positives = :raise
+          expect(config.on_potential_false_positives).to eq :raise
+        end
       end
 
       shared_examples "configuring the expectation syntax" do
