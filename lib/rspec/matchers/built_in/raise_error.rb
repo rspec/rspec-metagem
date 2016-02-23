@@ -12,8 +12,7 @@ module RSpec
         def initialize(expected_error_or_message=nil, expected_message=nil, &block)
           @block = block
           @actual_error = nil
-          @warn_about_bare_error = warn_about_potential_false_positives? &&
-            expected_error_or_message.nil?
+          @warn_about_bare_error = expected_error_or_message.nil?
 
           case expected_error_or_message
           when nil
@@ -133,7 +132,6 @@ module RSpec
         end
 
         def warn_for_false_positives
-          return unless warn_about_potential_false_positives?
           expression = if expecting_specific_exception? && @expected_message
                          "`expect { }.not_to raise_error(SpecificErrorClass, message)`"
                        elsif expecting_specific_exception?
@@ -147,8 +145,8 @@ module RSpec
           warn_about_negative_false_positive expression
         end
 
-        def warn_about_potential_false_positives?
-          RSpec::Expectations.configuration.warn_about_potential_false_positives?
+        def handle_warning(message)
+          RSpec::Expectations.configuration.false_positives_handler.call(message)
         end
 
         def warning_about_bare_error
@@ -156,28 +154,28 @@ module RSpec
         end
 
         def warn_about_bare_error
-          RSpec.warning("Using the `raise_error` matcher without providing a specific " \
-                        "error or message risks false positives, since `raise_error` " \
-                        "will match when Ruby raises a `NoMethodError`, `NameError` or " \
-                        "`ArgumentError`, potentially allowing the expectation to pass " \
-                        "without even executing the method you are intending to call. " \
-                        "#{warning}"\
-                        "Instead consider providing a specific error class or message. " \
-                        "This message can be suppressed by setting: " \
-                        "`RSpec::Expectations.configuration.warn_about_potential_false" \
-                        "_positives = false`")
+          handle_warning("Using the `raise_error` matcher without providing a specific " \
+                         "error or message risks false positives, since `raise_error` " \
+                         "will match when Ruby raises a `NoMethodError`, `NameError` or " \
+                         "`ArgumentError`, potentially allowing the expectation to pass " \
+                         "without even executing the method you are intending to call. " \
+                         "#{warning}"\
+                         "Instead consider providing a specific error class or message. " \
+                         "This message can be suppressed by setting: " \
+                         "`RSpec::Expectations.configuration.warn_about_potential_false" \
+                         "_positives = false`")
         end
 
         def warn_about_negative_false_positive(expression)
-          RSpec.warning("Using #{expression} risks false positives, since literally " \
-                        "any other error would cause the expectation to pass, " \
-                        "including those raised by Ruby (e.g. NoMethodError, NameError " \
-                        "and ArgumentError), meaning the code you are intending to test " \
-                        "may not even get reached. Instead consider using " \
-                        "`expect {}.not_to raise_error` or `expect { }.to raise_error" \
-                        "(DifferentSpecificErrorClass)`. This message can be suppressed by " \
-                        "setting: `RSpec::Expectations.configuration.warn_about_potential_false" \
-                        "_positives = false`")
+          handle_warning("Using #{expression} risks false positives, since literally " \
+                         "any other error would cause the expectation to pass, " \
+                         "including those raised by Ruby (e.g. NoMethodError, NameError " \
+                         "and ArgumentError), meaning the code you are intending to test " \
+                         "may not even get reached. Instead consider using " \
+                         "`expect {}.not_to raise_error` or `expect { }.to raise_error" \
+                         "(DifferentSpecificErrorClass)`. This message can be suppressed by " \
+                         "setting: `RSpec::Expectations.configuration.warn_about_potential_false" \
+                         "_positives = false`")
         end
 
         def expected_error
