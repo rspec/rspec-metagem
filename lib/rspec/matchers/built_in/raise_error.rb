@@ -162,8 +162,8 @@ module RSpec
                          "#{warning}"\
                          "Instead consider providing a specific error class or message. " \
                          "This message can be suppressed by setting: " \
-                         "`RSpec::Expectations.configuration.warn_about_potential_false" \
-                         "_positives = false`")
+                         "`RSpec::Expectations.configuration.on_potential_false" \
+                         "_positives = :nothing`")
         end
 
         def warn_about_negative_false_positive(expression)
@@ -174,8 +174,8 @@ module RSpec
                          "may not even get reached. Instead consider using " \
                          "`expect {}.not_to raise_error` or `expect { }.to raise_error" \
                          "(DifferentSpecificErrorClass)`. This message can be suppressed by " \
-                         "setting: `RSpec::Expectations.configuration.warn_about_potential_false" \
-                         "_positives = false`")
+                         "setting: `RSpec::Expectations.configuration.on_potential_false" \
+                         "_positives = :nothing`")
         end
 
         def expected_error
