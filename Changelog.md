@@ -1,6 +1,11 @@
 ### 3.5.0 Development
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.5.0.beta1...master)
 
+Enhancements:
+
+* Add the ability to raise an error on encountering false positives via
+  `RSpec::Configuration#on_potential_false_positives = :raise`. (Jon Rowe, #900)
+
 Bug Fixes:
 
 * Allow `should` deprecation check to work on `BasicObject`s. (James Coleman, #898)
