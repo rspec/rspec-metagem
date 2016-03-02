@@ -18,8 +18,16 @@ module RSpec
     #
     #   RSpec::Expectations.configuration
     class Configuration
+      # @private
+      FALSE_POSITIVE_BEHAVIOURS =
+        {
+          :warn    => lambda { |message| RSpec.warning message },
+          :raise   => lambda { |message| raise ArgumentError, message },
+          :nothing => lambda { |_| true },
+        }
+
       def initialize
-        @warn_about_potential_false_positives = true
+        @on_potential_false_positives = :warn
       end
 
       # Configures the supported syntax.
@@ -141,14 +149,43 @@ module RSpec
       # Configures whether RSpec will warn about matcher use which will
       # potentially cause false positives in tests.
       #
-      # @param value [Boolean]
-      attr_writer :warn_about_potential_false_positives
+      # @param [Boolean] boolean
+      def warn_about_potential_false_positives=(boolean)
+        if boolean
+          self.on_potential_false_positives = :warn
+        elsif warn_about_potential_false_positives?
+          self.on_potential_false_positives = :nothing
+        else
+          # no-op, handler is something else
+        end
+      end
+      #
+      # Configures what RSpec will do about matcher use which will
+      # potentially cause false positives in tests.
+      #
+      # @param [Symbol] behavior can be set to :warn, :raise or :nothing
+      def on_potential_false_positives=(behavior)
+        unless FALSE_POSITIVE_BEHAVIOURS.key?(behavior)
+          raise ArgumentError, "Supported values are: #{FALSE_POSITIVE_BEHAVIOURS.keys}"
+        end
+        @on_potential_false_positives = behavior
+      end
+
+      # Indicates what RSpec will do about matcher use which will
+      # potentially cause false positives in tests, generally you want to
+      # avoid such scenarios so this defaults to `true`.
+      attr_reader :on_potential_false_positives
 
       # Indicates whether RSpec will warn about matcher use which will
       # potentially cause false positives in tests, generally you want to
       # avoid such scenarios so this defaults to `true`.
       def warn_about_potential_false_positives?
-        @warn_about_potential_false_positives
+        on_potential_false_positives == :warn
+      end
+
+      # @private
+      def false_positives_handler
+        FALSE_POSITIVE_BEHAVIOURS.fetch(@on_potential_false_positives)
       end
     end
 

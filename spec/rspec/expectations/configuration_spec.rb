@@ -104,6 +104,28 @@ module RSpec
         end
       end
 
+      describe '#on_potential_false_positives' do
+        it 'is set to :warn by default' do
+          expect(config.on_potential_false_positives).to eq :warn
+        end
+
+        it 'can be set to :nothing' do
+          config.on_potential_false_positives = :nothing
+          expect(config.on_potential_false_positives).to eq :nothing
+        end
+
+        it 'can be set back to :warn' do
+          config.on_potential_false_positives = :nothing
+          config.on_potential_false_positives = :warn
+          expect(config.on_potential_false_positives).to eq :warn
+        end
+
+        it 'can be set to :raise' do
+          config.on_potential_false_positives = :raise
+          expect(config.on_potential_false_positives).to eq :raise
+        end
+      end
+
       shared_examples "configuring the expectation syntax" do
         before do
           @orig_syntax = RSpec::Matchers.configuration.syntax
