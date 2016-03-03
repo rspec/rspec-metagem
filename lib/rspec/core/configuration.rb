@@ -1251,21 +1251,6 @@ module RSpec
       end
 
       # @private
-      def configure_group_with(group, module_list, application_method)
-        module_list.items_for(group.metadata).each do |mod|
-          __send__(application_method, mod, group)
-        end
-      end
-
-      # @private
-      def configure_existing_groups(mod, meta, application_method)
-        world.all_example_groups.each do |group|
-          next unless meta.empty? || MetadataFilter.apply?(:any?, meta, group.metadata)
-          __send__(application_method, mod, group)
-        end
-      end
-
-      # @private
       #
       # Used internally to extend the singleton class of a single example's
       # example group instance with modules using `include` and/or `extend`.
@@ -1284,13 +1269,6 @@ module RSpec
         end
       end
 
-      if RSpec::Support::RubyFeatures.module_prepends_supported?
-        # @private
-        def safe_prepend(mod, host)
-          host.__send__(:prepend, mod) unless host < mod
-        end
-      end
-
       # @private
       def requires=(paths)
         directories = ['lib', default_path].select { |p| File.directory? p }
@@ -1306,31 +1284,6 @@ module RSpec
         end
 
         Regexp.union(regexes)
-      end
-
-      # @private
-      if RUBY_VERSION.to_f >= 1.9
-        # @private
-        def safe_include(mod, host)
-          host.__send__(:include, mod) unless host < mod
-        end
-
-        # @private
-        def safe_extend(mod, host)
-          host.extend(mod) unless host.singleton_class < mod
-        end
-      else # for 1.8.7
-        # :nocov:
-        # @private
-        def safe_include(mod, host)
-          host.__send__(:include, mod) unless host.included_modules.include?(mod)
-        end
-
-        # @private
-        def safe_extend(mod, host)
-          host.extend(mod) unless (class << host; self; end).included_modules.include?(mod)
-        end
-        # :nocov:
       end
 
       # @private
@@ -1865,6 +1818,45 @@ module RSpec
       def clear_values_derived_from_example_status_persistence_file_path
         @last_run_statuses = nil
         @spec_files_with_failures = nil
+      end
+
+      def configure_group_with(group, module_list, application_method)
+        module_list.items_for(group.metadata).each do |mod|
+          __send__(application_method, mod, group)
+        end
+      end
+
+      def configure_existing_groups(mod, meta, application_method)
+        world.all_example_groups.each do |group|
+          next unless meta.empty? || MetadataFilter.apply?(:any?, meta, group.metadata)
+          __send__(application_method, mod, group)
+        end
+      end
+
+      if RSpec::Support::RubyFeatures.module_prepends_supported?
+        def safe_prepend(mod, host)
+          host.__send__(:prepend, mod) unless host < mod
+        end
+      end
+
+      if RUBY_VERSION.to_f >= 1.9
+        def safe_include(mod, host)
+          host.__send__(:include, mod) unless host < mod
+        end
+
+        def safe_extend(mod, host)
+          host.extend(mod) unless host.singleton_class < mod
+        end
+      else # for 1.8.7
+        # :nocov:
+        def safe_include(mod, host)
+          host.__send__(:include, mod) unless host.included_modules.include?(mod)
+        end
+
+        def safe_extend(mod, host)
+          host.extend(mod) unless (class << host; self; end).included_modules.include?(mod)
+        end
+        # :nocov:
       end
     end
     # rubocop:enable Metrics/ClassLength
