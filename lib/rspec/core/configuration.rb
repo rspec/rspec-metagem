@@ -1161,7 +1161,7 @@ module RSpec
       def include(mod, *filters)
         meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
         @include_modules.append(mod, meta)
-        configure_existing_groups(mod, meta, :safe_include)
+        on_existing_matching_groups(meta) { |group| safe_include(mod, group) }
       end
 
       # Tells RSpec to extend example groups with `mod`. Methods defined in
@@ -1197,7 +1197,7 @@ module RSpec
       def extend(mod, *filters)
         meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
         @extend_modules.append(mod, meta)
-        configure_existing_groups(mod, meta, :safe_extend)
+        on_existing_matching_groups(meta) { |group| safe_extend(mod, group) }
       end
 
       if RSpec::Support::RubyFeatures.module_prepends_supported?
@@ -1236,7 +1236,7 @@ module RSpec
         def prepend(mod, *filters)
           meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
           @prepend_modules.append(mod, meta)
-          configure_existing_groups(mod, meta, :safe_prepend)
+          on_existing_matching_groups(meta) { |group| safe_prepend(mod, group) }
         end
       end
 
@@ -1826,10 +1826,9 @@ module RSpec
         end
       end
 
-      def configure_existing_groups(mod, meta, application_method)
+      def on_existing_matching_groups(meta)
         world.all_example_groups.each do |group|
-          next unless meta.empty? || MetadataFilter.apply?(:any?, meta, group.metadata)
-          __send__(application_method, mod, group)
+          yield group if meta.empty? || MetadataFilter.apply?(:any?, meta, group.metadata)
         end
       end
 
