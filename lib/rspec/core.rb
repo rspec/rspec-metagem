@@ -83,7 +83,6 @@ module RSpec
   def self.configuration
     @configuration ||= RSpec::Core::Configuration.new
   end
-  configuration.expose_dsl_globally = true
 
   # Yields the global configuration to a block.
   # @yield [Configuration] global configuration
@@ -178,4 +177,7 @@ module RSpec
     require MODULES_TO_AUTOLOAD.fetch(name) { return super }
     ::RSpec.const_get(name)
   end
+
+  Core::DSL.expose_globally!
+  Core::SharedExampleGroup::TopLevelDSL.expose_globally!
 end

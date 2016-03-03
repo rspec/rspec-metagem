@@ -343,12 +343,13 @@ module RSpec
       # @private
       attr_writer :files_to_run
       # @private
-      attr_accessor :filter_manager
+      attr_accessor :filter_manager, :world
       # @private
       attr_accessor :static_config_filter_manager
       # @private
       attr_reader :backtrace_formatter, :ordering_manager, :loaded_spec_files
 
+      # rubocop:disable Metrics/AbcSize
       def initialize
         # rubocop:disable Style/GlobalVars
         @start_time = $_rspec_core_load_started_at || ::RSpec::Core::Time.now
@@ -394,9 +395,11 @@ module RSpec
         @derived_metadata_blocks = FilterableItemRepository::QueryOptimized.new(:any?)
         @threadsafe = true
         @max_displayed_failure_line_count = 10
+        @world = World::Null
 
         define_built_in_hooks
       end
+      # rubocop:enable Metrics/AbcSize
 
       # @private
       #
@@ -1256,7 +1259,7 @@ module RSpec
 
       # @private
       def configure_existing_groups(mod, meta, application_method)
-        RSpec.world.all_example_groups.each do |group|
+        world.all_example_groups.each do |group|
           next unless meta.empty? || MetadataFilter.apply?(:any?, meta, group.metadata)
           __send__(application_method, mod, group)
         end
@@ -1352,7 +1355,7 @@ module RSpec
         # in that case, the spec file was loaded by `ruby` and
         # isn't loaded by us here so we only know about it because
         # of an example group being registered in it.
-        RSpec.world.registered_example_group_files.each do |f|
+        world.registered_example_group_files.each do |f|
           loaded_spec_files << f # the registered files are already expended absolute paths
         end
 
@@ -1814,7 +1817,7 @@ module RSpec
       end
 
       def assert_no_example_groups_defined(config_option)
-        return unless RSpec.world.example_groups.any?
+        return unless world.example_groups.any?
 
         raise MustBeConfiguredBeforeExampleGroupsError.new(
           "RSpec's #{config_option} configuration option must be configured before " \

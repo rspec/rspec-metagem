@@ -10,6 +10,8 @@ module RSpec::Core
     let(:exclusion_filter) { config.exclusion_filter.rules }
     let(:inclusion_filter) { config.inclusion_filter.rules }
 
+    before { config.world = RSpec.world }
+
     shared_examples_for "warning of deprecated `:example_group` during filtering configuration" do |method, *args|
       it "issues a deprecation warning when filtering by `:example_group`" do
         args << { :example_group => { :file_location => /spec\/unit/ } }

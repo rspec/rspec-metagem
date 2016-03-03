@@ -12,6 +12,7 @@ module RSpec
 
       def initialize(configuration=RSpec.configuration)
         @configuration = configuration
+        configuration.world = self
         @example_groups = []
         @example_group_counts_by_spec_file = Hash.new(0)
         @filtered_examples = Hash.new do |hash, group|
@@ -207,6 +208,24 @@ module RSpec
           "`config.example_status_persistence_file_path`.",
           1 # exit code
         )
+      end
+
+      # @private
+      # Provides a null implementation for initial use by configuration.
+      module Null
+        def self.registered_example_group_files
+          []
+        end
+
+        # :nocov:
+        def self.example_groups
+          []
+        end
+
+        def self.all_example_groups
+          []
+        end
+        # :nocov:
       end
     end
   end
