@@ -1569,9 +1569,9 @@ module RSpec
       # @see #prepend_before
       # @see #after
       # @see #append_after
-      def before(*args, &block)
-        handle_suite_hook(args, @before_suite_hooks, :push,
-                          Hooks::BeforeHook, block) || super(*args, &block)
+      def before(scope=nil, *meta, &block)
+        handle_suite_hook(scope, meta, @before_suite_hooks, :push,
+                          Hooks::BeforeHook, block) || super(scope, *meta, &block)
       end
       alias_method :append_before, :before
 
@@ -1588,9 +1588,9 @@ module RSpec
       # @see #before
       # @see #after
       # @see #append_after
-      def prepend_before(*args, &block)
-        handle_suite_hook(args, @before_suite_hooks, :unshift,
-                          Hooks::BeforeHook, block) || super(*args, &block)
+      def prepend_before(scope=nil, *meta, &block)
+        handle_suite_hook(scope, meta, @before_suite_hooks, :unshift,
+                          Hooks::BeforeHook, block) || super(scope, *meta, &block)
       end
 
       # Defines a `after` hook. See {Hooks#after} for full docs.
@@ -1602,9 +1602,9 @@ module RSpec
       # @see #append_after
       # @see #before
       # @see #prepend_before
-      def after(*args, &block)
-        handle_suite_hook(args, @after_suite_hooks, :unshift,
-                          Hooks::AfterHook, block) || super(*args, &block)
+      def after(scope=nil, *meta, &block)
+        handle_suite_hook(scope, meta, @after_suite_hooks, :unshift,
+                          Hooks::AfterHook, block) || super(scope, *meta, &block)
       end
       alias_method :prepend_after, :after
 
@@ -1621,9 +1621,9 @@ module RSpec
       # @see #append_after
       # @see #before
       # @see #prepend_before
-      def append_after(*args, &block)
-        handle_suite_hook(args, @after_suite_hooks, :push,
-                          Hooks::AfterHook, block) || super(*args, &block)
+      def append_after(scope=nil, *meta, &block)
+        handle_suite_hook(scope, meta, @after_suite_hooks, :push,
+                          Hooks::AfterHook, block) || super(scope, *meta, &block)
       end
 
       # @private
@@ -1660,11 +1660,10 @@ module RSpec
 
     private
 
-      def handle_suite_hook(args, collection, append_or_prepend, hook_type, block)
-        scope, meta = *args
+      def handle_suite_hook(scope, meta, collection, append_or_prepend, hook_type, block)
         return nil unless scope == :suite
 
-        if meta
+        unless meta.empty?
           # TODO: in RSpec 4, consider raising an error here.
           # We warn only for backwards compatibility.
           RSpec.warn_with "WARNING: `:suite` hooks do not support metadata since " \
