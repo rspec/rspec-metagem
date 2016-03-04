@@ -1570,6 +1570,8 @@ module RSpec
       # @see #after
       # @see #append_after
       def before(scope=nil, *meta, &block)
+        on_existing_matching_groups({}) { |g| g.before(scope, *meta, &block) }
+
         handle_suite_hook(scope, meta) do
           @before_suite_hooks << Hooks::BeforeHook.new(block, {})
         end || super(scope, *meta, &block)
@@ -1590,6 +1592,8 @@ module RSpec
       # @see #after
       # @see #append_after
       def prepend_before(scope=nil, *meta, &block)
+        on_existing_matching_groups({}) { |g| g.prepend_before(scope, *meta, &block) }
+
         handle_suite_hook(scope, meta) do
           @before_suite_hooks.unshift Hooks::BeforeHook.new(block, {})
         end || super(scope, *meta, &block)
@@ -1605,6 +1609,8 @@ module RSpec
       # @see #before
       # @see #prepend_before
       def after(scope=nil, *meta, &block)
+        on_existing_matching_groups({}) { |g| g.after(scope, *meta, &block) }
+
         handle_suite_hook(scope, meta) do
           @after_suite_hooks.unshift Hooks::AfterHook.new(block, {})
         end || super(scope, *meta, &block)
@@ -1625,9 +1631,20 @@ module RSpec
       # @see #before
       # @see #prepend_before
       def append_after(scope=nil, *meta, &block)
+        on_existing_matching_groups({}) { |g| g.append_after(scope, *meta, &block) }
+
         handle_suite_hook(scope, meta) do
           @after_suite_hooks << Hooks::AfterHook.new(block, {})
         end || super(scope, *meta, &block)
+      end
+
+      # Registers `block` as an `around` hook.
+      #
+      # See {Hooks#around} for full `around` hook docs.
+      def around(scope=nil, *meta, &block)
+        on_existing_matching_groups({}) { |g| g.around(scope, *meta, &block) }
+
+        super(scope, *meta, &block)
       end
 
       # @private
