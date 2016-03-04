@@ -1161,7 +1161,7 @@ module RSpec
       def include(mod, *filters)
         meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
         @include_modules.append(mod, meta)
-        configure_existing_groups(mod, meta, :safe_include)
+        on_existing_matching_groups(meta) { |group| safe_include(mod, group) }
       end
 
       # Tells RSpec to extend example groups with `mod`. Methods defined in
@@ -1197,7 +1197,7 @@ module RSpec
       def extend(mod, *filters)
         meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
         @extend_modules.append(mod, meta)
-        configure_existing_groups(mod, meta, :safe_extend)
+        on_existing_matching_groups(meta) { |group| safe_extend(mod, group) }
       end
 
       if RSpec::Support::RubyFeatures.module_prepends_supported?
@@ -1236,7 +1236,7 @@ module RSpec
         def prepend(mod, *filters)
           meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
           @prepend_modules.append(mod, meta)
-          configure_existing_groups(mod, meta, :safe_prepend)
+          on_existing_matching_groups(meta) { |group| safe_prepend(mod, group) }
         end
       end
 
@@ -1248,21 +1248,6 @@ module RSpec
         configure_group_with group, @include_modules, :safe_include
         configure_group_with group, @extend_modules,  :safe_extend
         configure_group_with group, @prepend_modules, :safe_prepend
-      end
-
-      # @private
-      def configure_group_with(group, module_list, application_method)
-        module_list.items_for(group.metadata).each do |mod|
-          __send__(application_method, mod, group)
-        end
-      end
-
-      # @private
-      def configure_existing_groups(mod, meta, application_method)
-        world.all_example_groups.each do |group|
-          next unless meta.empty? || MetadataFilter.apply?(:any?, meta, group.metadata)
-          __send__(application_method, mod, group)
-        end
       end
 
       # @private
@@ -1284,13 +1269,6 @@ module RSpec
         end
       end
 
-      if RSpec::Support::RubyFeatures.module_prepends_supported?
-        # @private
-        def safe_prepend(mod, host)
-          host.__send__(:prepend, mod) unless host < mod
-        end
-      end
-
       # @private
       def requires=(paths)
         directories = ['lib', default_path].select { |p| File.directory? p }
@@ -1306,31 +1284,6 @@ module RSpec
         end
 
         Regexp.union(regexes)
-      end
-
-      # @private
-      if RUBY_VERSION.to_f >= 1.9
-        # @private
-        def safe_include(mod, host)
-          host.__send__(:include, mod) unless host < mod
-        end
-
-        # @private
-        def safe_extend(mod, host)
-          host.extend(mod) unless host.singleton_class < mod
-        end
-      else # for 1.8.7
-        # :nocov:
-        # @private
-        def safe_include(mod, host)
-          host.__send__(:include, mod) unless host.included_modules.include?(mod)
-        end
-
-        # @private
-        def safe_extend(mod, host)
-          host.extend(mod) unless (class << host; self; end).included_modules.include?(mod)
-        end
-        # :nocov:
       end
 
       # @private
@@ -1616,9 +1569,10 @@ module RSpec
       # @see #prepend_before
       # @see #after
       # @see #append_after
-      def before(*args, &block)
-        handle_suite_hook(args, @before_suite_hooks, :push,
-                          Hooks::BeforeHook, block) || super(*args, &block)
+      def before(scope=nil, *meta, &block)
+        handle_suite_hook(scope, meta) do
+          @before_suite_hooks << Hooks::BeforeHook.new(block, {})
+        end || super(scope, *meta, &block)
       end
       alias_method :append_before, :before
 
@@ -1635,9 +1589,10 @@ module RSpec
       # @see #before
       # @see #after
       # @see #append_after
-      def prepend_before(*args, &block)
-        handle_suite_hook(args, @before_suite_hooks, :unshift,
-                          Hooks::BeforeHook, block) || super(*args, &block)
+      def prepend_before(scope=nil, *meta, &block)
+        handle_suite_hook(scope, meta) do
+          @before_suite_hooks.unshift Hooks::BeforeHook.new(block, {})
+        end || super(scope, *meta, &block)
       end
 
       # Defines a `after` hook. See {Hooks#after} for full docs.
@@ -1649,9 +1604,10 @@ module RSpec
       # @see #append_after
       # @see #before
       # @see #prepend_before
-      def after(*args, &block)
-        handle_suite_hook(args, @after_suite_hooks, :unshift,
-                          Hooks::AfterHook, block) || super(*args, &block)
+      def after(scope=nil, *meta, &block)
+        handle_suite_hook(scope, meta) do
+          @after_suite_hooks.unshift Hooks::AfterHook.new(block, {})
+        end || super(scope, *meta, &block)
       end
       alias_method :prepend_after, :after
 
@@ -1668,9 +1624,10 @@ module RSpec
       # @see #append_after
       # @see #before
       # @see #prepend_before
-      def append_after(*args, &block)
-        handle_suite_hook(args, @after_suite_hooks, :push,
-                          Hooks::AfterHook, block) || super(*args, &block)
+      def append_after(scope=nil, *meta, &block)
+        handle_suite_hook(scope, meta) do
+          @after_suite_hooks << Hooks::AfterHook.new(block, {})
+        end || super(scope, *meta, &block)
       end
 
       # @private
@@ -1707,11 +1664,10 @@ module RSpec
 
     private
 
-      def handle_suite_hook(args, collection, append_or_prepend, hook_type, block)
-        scope, meta = *args
+      def handle_suite_hook(scope, meta)
         return nil unless scope == :suite
 
-        if meta
+        unless meta.empty?
           # TODO: in RSpec 4, consider raising an error here.
           # We warn only for backwards compatibility.
           RSpec.warn_with "WARNING: `:suite` hooks do not support metadata since " \
@@ -1720,7 +1676,7 @@ module RSpec
                           "The metadata you have provided (#{meta.inspect}) will be ignored."
         end
 
-        collection.__send__(append_or_prepend, hook_type.new(block, {}))
+        yield
       end
 
       def run_hooks_with(hooks, hook_context)
@@ -1865,6 +1821,44 @@ module RSpec
       def clear_values_derived_from_example_status_persistence_file_path
         @last_run_statuses = nil
         @spec_files_with_failures = nil
+      end
+
+      def configure_group_with(group, module_list, application_method)
+        module_list.items_for(group.metadata).each do |mod|
+          __send__(application_method, mod, group)
+        end
+      end
+
+      def on_existing_matching_groups(meta)
+        world.all_example_groups.each do |group|
+          yield group if meta.empty? || MetadataFilter.apply?(:any?, meta, group.metadata)
+        end
+      end
+
+      if RSpec::Support::RubyFeatures.module_prepends_supported?
+        def safe_prepend(mod, host)
+          host.__send__(:prepend, mod) unless host < mod
+        end
+      end
+
+      if RUBY_VERSION.to_f >= 1.9
+        def safe_include(mod, host)
+          host.__send__(:include, mod) unless host < mod
+        end
+
+        def safe_extend(mod, host)
+          host.extend(mod) unless host.singleton_class < mod
+        end
+      else # for 1.8.7
+        # :nocov:
+        def safe_include(mod, host)
+          host.__send__(:include, mod) unless host.included_modules.include?(mod)
+        end
+
+        def safe_extend(mod, host)
+          host.extend(mod) unless (class << host; self; end).included_modules.include?(mod)
+        end
+        # :nocov:
       end
     end
     # rubocop:enable Metrics/ClassLength
