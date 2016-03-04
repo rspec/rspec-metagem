@@ -1570,8 +1570,9 @@ module RSpec
       # @see #after
       # @see #append_after
       def before(scope=nil, *meta, &block)
-        handle_suite_hook(scope, meta, @before_suite_hooks, :push,
-                          Hooks::BeforeHook, block) || super(scope, *meta, &block)
+        handle_suite_hook(scope, meta) do
+          @before_suite_hooks << Hooks::BeforeHook.new(block, {})
+        end || super(scope, *meta, &block)
       end
       alias_method :append_before, :before
 
@@ -1589,8 +1590,9 @@ module RSpec
       # @see #after
       # @see #append_after
       def prepend_before(scope=nil, *meta, &block)
-        handle_suite_hook(scope, meta, @before_suite_hooks, :unshift,
-                          Hooks::BeforeHook, block) || super(scope, *meta, &block)
+        handle_suite_hook(scope, meta) do
+          @before_suite_hooks.unshift Hooks::BeforeHook.new(block, {})
+        end || super(scope, *meta, &block)
       end
 
       # Defines a `after` hook. See {Hooks#after} for full docs.
@@ -1603,8 +1605,9 @@ module RSpec
       # @see #before
       # @see #prepend_before
       def after(scope=nil, *meta, &block)
-        handle_suite_hook(scope, meta, @after_suite_hooks, :unshift,
-                          Hooks::AfterHook, block) || super(scope, *meta, &block)
+        handle_suite_hook(scope, meta) do
+          @after_suite_hooks.unshift Hooks::AfterHook.new(block, {})
+        end || super(scope, *meta, &block)
       end
       alias_method :prepend_after, :after
 
@@ -1622,8 +1625,9 @@ module RSpec
       # @see #before
       # @see #prepend_before
       def append_after(scope=nil, *meta, &block)
-        handle_suite_hook(scope, meta, @after_suite_hooks, :push,
-                          Hooks::AfterHook, block) || super(scope, *meta, &block)
+        handle_suite_hook(scope, meta) do
+          @after_suite_hooks << Hooks::AfterHook.new(block, {})
+        end || super(scope, *meta, &block)
       end
 
       # @private
@@ -1660,7 +1664,7 @@ module RSpec
 
     private
 
-      def handle_suite_hook(scope, meta, collection, append_or_prepend, hook_type, block)
+      def handle_suite_hook(scope, meta)
         return nil unless scope == :suite
 
         unless meta.empty?
@@ -1672,7 +1676,7 @@ module RSpec
                           "The metadata you have provided (#{meta.inspect}) will be ignored."
         end
 
-        collection.__send__(append_or_prepend, hook_type.new(block, {}))
+        yield
       end
 
       def run_hooks_with(hooks, hook_context)
