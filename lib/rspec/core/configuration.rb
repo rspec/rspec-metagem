@@ -825,7 +825,7 @@ module RSpec
         end
       end
 
-      # @private
+      # @return [RSpec::Core::Reporter] the currently configured reporter
       def reporter
         # @reporter_buffer should only ever be set in this method to cover
         # initialization of @reporter.
