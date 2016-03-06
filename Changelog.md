@@ -7,6 +7,8 @@ Enhancements:
   bit of memory. (Myron Marston, #2172)
 * Apply hooks registered with `config` to previously defined groups.
   (Myron Marston, #2189)
+* `RSpec::Core::Configuration#reporter` is now public API under semver.
+  (Jon Rowe, #2193)
 
 ### 3.5.0.beta1 / 2016-02-06
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.3...v3.5.0.beta1)
