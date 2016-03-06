@@ -18,7 +18,6 @@ module RSpec::Core
     describe "#example_groups" do
       it "contains all registered example groups" do
         example_group = RSpec.describe("group") {}
-        world.register(example_group)
         expect(world.example_groups).to include(example_group)
       end
     end
@@ -96,8 +95,6 @@ module RSpec::Core
       end
 
       context "with one example" do
-        before { world.register(group) }
-
         it "returns nil if no example or group precedes the line" do
           expect(preceding_declaration_line(group_declaration_line - 1)).to be_nil
         end
@@ -123,8 +120,8 @@ module RSpec::Core
         let(:second_group_declaration_line) { second_group.metadata[:line_number] }
 
         before do
-          world.register(second_group)
-          world.register(group)
+          world.record(second_group)
+          world.record(group)
         end
 
         it 'return line number of group if a group start on that line' do
@@ -146,8 +143,8 @@ module RSpec::Core
         end
 
         before do
-          world.register(group)
-          world.register(group_from_another_file)
+          world.record(group)
+          world.record(group_from_another_file)
         end
 
         it "returns nil if given a file name with no declarations" do

@@ -178,6 +178,16 @@ module RSpec
         @example_group_class = example_group_class
         @example_block       = example_block
 
+        # Register the example with the group before creating the metadata hash.
+        # This is necessary since creating the metadata hash triggers
+        # `when_first_matching_example_defined` callbacks, in which users can
+        # load RSpec support code which defines hooks. For that to work, the
+        # examples and example groups must be registered at the time the
+        # support code is called or be defined afterwards.
+        # Begin defined beforehand but registered afterwards causes hooks to
+        # not be applied where they should.
+        example_group_class.examples << self
+
         @metadata = Metadata::ExampleHash.create(
           @example_group_class.metadata, user_metadata,
           example_group_class.method(:next_runnable_index_for),

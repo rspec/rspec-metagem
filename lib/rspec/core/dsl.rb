@@ -40,7 +40,9 @@ module RSpec
         example_group_aliases << name
 
         (class << RSpec; self; end).__send__(:define_method, name) do |*args, &example_group_block|
-          RSpec.world.register RSpec::Core::ExampleGroup.__send__(name, *args, &example_group_block)
+          group = RSpec::Core::ExampleGroup.__send__(name, *args, &example_group_block)
+          RSpec.world.record(group)
+          group
         end
 
         expose_example_group_alias_globally(name) if exposed_globally?

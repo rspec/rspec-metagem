@@ -30,8 +30,7 @@ module RSpec::Core
       end
 
       it 'successfully invokes the block' do
-        example_group = RSpec.describe("group") { it "example 1" do; end}
-        RSpec.world.register(example_group)
+        RSpec.describe("group") { it "example 1" do; end}
         example = RSpec.world.example_groups.first.examples.first
         expect(example.metadata[:new_key]).to eq(:new_value)
       end
@@ -1499,6 +1498,50 @@ module RSpec::Core
 
         expect(group_bar_value).to eq("bar")
         expect(example_bar_value).to eq("bar")
+      end
+
+      it 'registers top-level groups before invoking the callback so the logic can configure already registered groups' do
+        registered_groups = nil
+
+        RSpec.configuration.define_derived_metadata do |_meta|
+          registered_groups = RSpec.world.example_groups
+        end
+
+        group = RSpec.describe("My group") do
+        end
+
+        expect(registered_groups).to eq [group]
+      end
+
+      it 'registers nested groups before invoking the callback so the logic can configure already registered groups' do
+        registered_groups = nil
+
+        RSpec.configuration.define_derived_metadata(:inner) do |_meta|
+          registered_groups = RSpec.world.all_example_groups
+        end
+
+        inner = nil
+        outer = RSpec.describe("Outer") do
+          inner = context "Inner", :inner do
+          end
+        end
+
+        expect(registered_groups).to contain_exactly(outer, inner)
+      end
+
+      it 'registers examples before invoking the callback so the logic can configure already registered groups' do
+        registered_examples = nil
+
+        RSpec.configuration.define_derived_metadata(:ex) do |_meta|
+          registered_examples = FlatMap.flat_map(RSpec.world.all_example_groups, &:examples)
+        end
+
+        example = nil
+        RSpec.describe("Outer") do
+          example = example("ex", :ex)
+        end
+
+        expect(registered_examples).to contain_exactly(example)
       end
 
       context "when passed a metadata filter" do
