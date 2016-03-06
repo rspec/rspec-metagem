@@ -1,5 +1,118 @@
 module RSpec::Core
   RSpec.describe "config block hook filtering" do
+    context "when hooks are defined after a group has been defined" do
+      it "still applies" do
+        sequence = []
+
+        group = RSpec.describe do
+          example { sequence << :ex_1 }
+          example { sequence << :ex_2 }
+        end
+
+        RSpec.configure do |c|
+          c.before(:context) { sequence << :before_cont_2 }
+          c.prepend_before(:context) { sequence << :before_cont_1 }
+
+          c.before(:example) { sequence << :before_ex_2 }
+          c.prepend_before(:example) { sequence << :before_ex_1 }
+
+          c.after(:context)  { sequence << :after_cont_1 }
+          c.append_after(:context) { sequence << :after_cont_2 }
+
+          c.after(:example)  { sequence << :after_ex_1 }
+          c.append_after(:example) { sequence << :after_ex_2 }
+
+          c.around(:example) do |ex|
+            sequence << :around_before_ex
+            ex.run
+            sequence << :around_after_ex
+          end
+        end
+
+        group.run
+
+        expect(sequence).to eq [
+          :before_cont_1, :before_cont_2,
+          :around_before_ex, :before_ex_1, :before_ex_2, :ex_1, :after_ex_1, :after_ex_2, :around_after_ex,
+          :around_before_ex, :before_ex_1, :before_ex_2, :ex_2, :after_ex_1, :after_ex_2, :around_after_ex,
+          :after_cont_1, :after_cont_2
+        ]
+      end
+
+      it "applies only to groups with matching metadata" do
+        sequence = []
+
+        unmatching_group = RSpec.describe do
+          example { }
+          example { }
+        end
+
+        matching_group = RSpec.describe "", :run_hooks do
+          example { sequence << :ex_1 }
+          example { sequence << :ex_2 }
+        end
+
+        RSpec.configure do |c|
+          c.before(:context, :run_hooks) { sequence << :before_cont_2 }
+          c.prepend_before(:context, :run_hooks) { sequence << :before_cont_1 }
+
+          c.before(:example, :run_hooks) { sequence << :before_ex_2 }
+          c.prepend_before(:example, :run_hooks) { sequence << :before_ex_1 }
+
+          c.after(:context, :run_hooks)  { sequence << :after_cont_1 }
+          c.append_after(:context, :run_hooks) { sequence << :after_cont_2 }
+
+          c.after(:example, :run_hooks)  { sequence << :after_ex_1 }
+          c.append_after(:example, :run_hooks) { sequence << :after_ex_2 }
+
+          c.around(:example, :run_hooks) do |ex|
+            sequence << :around_before_ex
+            ex.run
+            sequence << :around_after_ex
+          end
+        end
+
+        expect { unmatching_group.run }.not_to change { sequence }.from([])
+
+        matching_group.run
+        expect(sequence).to eq [
+          :before_cont_1, :before_cont_2,
+          :around_before_ex, :before_ex_1, :before_ex_2, :ex_1, :after_ex_1, :after_ex_2, :around_after_ex,
+          :around_before_ex, :before_ex_1, :before_ex_2, :ex_2, :after_ex_1, :after_ex_2, :around_after_ex,
+          :after_cont_1, :after_cont_2
+        ]
+      end
+
+      it "applies only to examples with matching metadata" do
+        sequence = []
+
+        group = RSpec.describe do
+          example("") { sequence << :ex_1 }
+          example("", :run_hooks) { sequence << :ex_2 }
+        end
+
+        RSpec.configure do |c|
+          c.before(:example, :run_hooks) { sequence << :before_ex_2 }
+          c.prepend_before(:example, :run_hooks) { sequence << :before_ex_1 }
+
+          c.after(:example, :run_hooks)  { sequence << :after_ex_1 }
+          c.append_after(:example, :run_hooks) { sequence << :after_ex_2 }
+
+          c.around(:example, :run_hooks) do |ex|
+            sequence << :around_before_ex
+            ex.run
+            sequence << :around_after_ex
+          end
+        end
+
+        group.run
+        expect(sequence).to eq [
+          :ex_1,
+          :around_before_ex, :before_ex_1, :before_ex_2, :ex_2, :after_ex_1, :after_ex_2, :around_after_ex,
+        ]
+      end
+    end
+
     describe "unfiltered hooks" do
       it "is run" do
         filters = []

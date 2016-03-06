@@ -342,14 +342,7 @@ module RSpec
     private
 
       # @private
-      class Hook
-        attr_reader :block, :options
-
-        def initialize(block, options)
-          @block = block
-          @options = options
-        end
-      end
+      Hook = Struct.new(:block, :options)
 
       # @private
       class BeforeHook < Hook
