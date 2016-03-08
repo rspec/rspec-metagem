@@ -111,6 +111,24 @@ module RSpec::Core
           :around_before_ex, :before_ex_1, :before_ex_2, :ex_2, :after_ex_1, :after_ex_2, :around_after_ex,
         ]
       end
+
+      it "does not apply `suite` hooks to groups (or print warnings about suite hooks applied to example groups)" do
+        sequence = []
+
+        group = RSpec.describe do
+          example { sequence << :example }
+        end
+
+        RSpec.configure do |c|
+          c.before(:suite) { sequence << :before_suite }
+          c.prepend_before(:suite) { sequence << :prepended_before_suite }
+          c.after(:suite) { sequence << :after_suite }
+          c.append_after(:suite) { sequence << :appended_after_suite }
+        end
+
+        group.run
+        expect(sequence).to eq [:example]
+      end
     end
 
     describe "unfiltered hooks" do

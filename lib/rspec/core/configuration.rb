@@ -1570,11 +1570,12 @@ module RSpec
       # @see #after
       # @see #append_after
       def before(scope=nil, *meta, &block)
-        on_existing_matching_groups({}) { |g| g.before(scope, *meta, &block) }
-
         handle_suite_hook(scope, meta) do
           @before_suite_hooks << Hooks::BeforeHook.new(block, {})
-        end || super(scope, *meta, &block)
+        end || begin
+          on_existing_matching_groups({}) { |g| g.before(scope, *meta, &block) }
+          super(scope, *meta, &block)
+        end
       end
       alias_method :append_before, :before
 
@@ -1592,11 +1593,12 @@ module RSpec
       # @see #after
       # @see #append_after
       def prepend_before(scope=nil, *meta, &block)
-        on_existing_matching_groups({}) { |g| g.prepend_before(scope, *meta, &block) }
-
         handle_suite_hook(scope, meta) do
           @before_suite_hooks.unshift Hooks::BeforeHook.new(block, {})
-        end || super(scope, *meta, &block)
+        end || begin
+          on_existing_matching_groups({}) { |g| g.prepend_before(scope, *meta, &block) }
+          super(scope, *meta, &block)
+        end
       end
 
       # Defines a `after` hook. See {Hooks#after} for full docs.
@@ -1609,11 +1611,12 @@ module RSpec
       # @see #before
       # @see #prepend_before
       def after(scope=nil, *meta, &block)
-        on_existing_matching_groups({}) { |g| g.after(scope, *meta, &block) }
-
         handle_suite_hook(scope, meta) do
           @after_suite_hooks.unshift Hooks::AfterHook.new(block, {})
-        end || super(scope, *meta, &block)
+        end || begin
+          on_existing_matching_groups({}) { |g| g.after(scope, *meta, &block) }
+          super(scope, *meta, &block)
+        end
       end
       alias_method :prepend_after, :after
 
@@ -1631,11 +1634,12 @@ module RSpec
       # @see #before
       # @see #prepend_before
       def append_after(scope=nil, *meta, &block)
-        on_existing_matching_groups({}) { |g| g.append_after(scope, *meta, &block) }
-
         handle_suite_hook(scope, meta) do
           @after_suite_hooks << Hooks::AfterHook.new(block, {})
-        end || super(scope, *meta, &block)
+        end || begin
+          on_existing_matching_groups({}) { |g| g.append_after(scope, *meta, &block) }
+          super(scope, *meta, &block)
+        end
       end
 
       # Registers `block` as an `around` hook.
