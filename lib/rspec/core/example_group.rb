@@ -455,7 +455,7 @@ module RSpec
           # We add 1 so the ids start at 1 instead of 0. This is
           # necessary for this branch (but not for the other one)
           # because we register examples and groups with the
-          # `childeren` and `examples` collection BEFORE this
+          # `children` and `examples` collection BEFORE this
           # method is called as part of metadata hash creation,
           # but the example group is recorded with
           # `RSpec.world.example_group_counts_by_spec_file` AFTER
