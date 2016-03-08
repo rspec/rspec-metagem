@@ -143,9 +143,7 @@ module RSpec
           options.update(:skip => RSpec::Core::Pending::NOT_YET_IMPLEMENTED) unless block
           options.update(extra_options)
 
-          example = RSpec::Core::Example.new(self, desc, options, block)
-          examples << example
-          example
+          RSpec::Core::Example.new(self, desc, options, block)
         end
       end
 
@@ -235,27 +233,27 @@ module RSpec
           thread_data = RSpec::Support.thread_local_data
           top_level   = self == ExampleGroup
 
-          if top_level
-            if thread_data[:in_example_group]
-              raise "Creating an isolated context from within a context is " \
-                    "not allowed. Change `RSpec.#{name}` to `#{name}` or " \
-                    "move this to a top-level scope."
+          registration_collection =
+            if top_level
+              if thread_data[:in_example_group]
+                raise "Creating an isolated context from within a context is " \
+                      "not allowed. Change `RSpec.#{name}` to `#{name}` or " \
+                      "move this to a top-level scope."
+              end
+
+              thread_data[:in_example_group] = true
+              RSpec.world.example_groups
+            else
+              children
             end
 
-            thread_data[:in_example_group] = true
-          end
-
           begin
-
             description = args.shift
             combined_metadata = metadata.dup
             combined_metadata.merge!(args.pop) if args.last.is_a? Hash
             args << combined_metadata
 
-            subclass(self, description, args, &example_group_block).tap do |child|
-              children << child
-            end
-
+            subclass(self, description, args, registration_collection, &example_group_block)
           ensure
             thread_data.delete(:in_example_group) if top_level
           end
@@ -379,9 +377,9 @@ module RSpec
       # @!endgroup
 
       # @private
-      def self.subclass(parent, description, args, &example_group_block)
+      def self.subclass(parent, description, args, registration_collection, &example_group_block)
         subclass = Class.new(parent)
-        subclass.set_it_up(description, *args, &example_group_block)
+        subclass.set_it_up(description, args, registration_collection, &example_group_block)
         subclass.module_exec(&example_group_block) if example_group_block
 
         # The LetDefinitions module must be included _after_ other modules
@@ -394,7 +392,7 @@ module RSpec
       end
 
       # @private
-      def self.set_it_up(description, *args, &example_group_block)
+      def self.set_it_up(description, args, registration_collection, &example_group_block)
         # Ruby 1.9 has a bug that can lead to infinite recursion and a
         # SystemStackError if you include a module in a superclass after
         # including it in a subclass: https://gist.github.com/845896
@@ -404,6 +402,16 @@ module RSpec
         # RSpec::Core::ExampleGroup. So we need to configure example groups
         # here.
         ensure_example_groups_are_configured
+
+        # Register the example with the group before creating the metadata hash.
+        # This is necessary since creating the metadata hash triggers
+        # `when_first_matching_example_defined` callbacks, in which users can
+        # load RSpec support code which defines hooks. For that to work, the
+        # examples and example groups must be registered at the time the
+        # support code is called or be defined afterwards.
+        # Begin defined beforehand but registered afterwards causes hooks to
+        # not be applied where they should.
+        registration_collection << self
 
         user_metadata = Metadata.build_hash_from(args)
 
@@ -444,10 +452,19 @@ module RSpec
       # @private
       def self.next_runnable_index_for(file)
         if self == ExampleGroup
-          RSpec.world.num_example_groups_defined_in(file)
+          # We add 1 so the ids start at 1 instead of 0. This is
+          # necessary for this branch (but not for the other one)
+          # because we register examples and groups with the
+          # `childeren` and `examples` collection BEFORE this
+          # method is called as part of metadata hash creation,
+          # but the example group is recorded with
+          # `RSpec.world.example_group_counts_by_spec_file` AFTER
+          # the metadata hash is created and the group is returned
+          # to the caller.
+          RSpec.world.num_example_groups_defined_in(file) + 1
         else
           children.count + examples.count
-        end + 1
+        end
       end
 
       # @private

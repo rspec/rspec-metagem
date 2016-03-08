@@ -48,12 +48,10 @@ module RSpec
 
       # @api private
       #
-      # Register an example group.
-      def register(example_group)
+      # Records an example group.
+      def record(example_group)
         @configuration.on_example_group_definition_callbacks.each { |block| block.call(example_group) }
-        example_groups << example_group
         @example_group_counts_by_spec_file[example_group.metadata[:absolute_file_path]] += 1
-        example_group
       end
 
       # @private

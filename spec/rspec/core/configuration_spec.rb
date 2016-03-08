@@ -21,19 +21,17 @@ module RSpec::Core
     end
 
     describe '#on_example_group_definition' do
-      let(:configuration) do
-        tmp_config = RSpec::Core::Configuration.new
-        tmp_config.on_example_group_definition do |example_group|
-          example_group.examples.first.metadata[:new_key] = :new_value
+      before do
+        RSpec.configure do |c|
+          c.on_example_group_definition do |example_group|
+            example_group.examples.first.metadata[:new_key] = :new_value
+          end
         end
-        tmp_config
       end
-      let(:world) { RSpec::Core::World.new(configuration) }
 
       it 'successfully invokes the block' do
-        example_group = RSpec.describe("group") { it "example 1" do; end}
-        world.register(example_group)
-        example = world.example_groups.first.examples.first
+        RSpec.describe("group") { it "example 1" do; end}
+        example = RSpec.world.example_groups.first.examples.first
         expect(example.metadata[:new_key]).to eq(:new_value)
       end
     end
@@ -1502,6 +1500,50 @@ module RSpec::Core
         expect(example_bar_value).to eq("bar")
       end
 
+      it 'registers top-level groups before invoking the callback so the logic can configure already registered groups' do
+        registered_groups = nil
+
+        RSpec.configuration.define_derived_metadata do |_meta|
+          registered_groups = RSpec.world.example_groups
+        end
+
+        group = RSpec.describe("My group") do
+        end
+
+        expect(registered_groups).to eq [group]
+      end
+
+      it 'registers nested groups before invoking the callback so the logic can configure already registered groups' do
+        registered_groups = nil
+
+        RSpec.configuration.define_derived_metadata(:inner) do |_meta|
+          registered_groups = RSpec.world.all_example_groups
+        end
+
+        inner = nil
+        outer = RSpec.describe("Outer") do
+          inner = context "Inner", :inner do
+          end
+        end
+
+        expect(registered_groups).to contain_exactly(outer, inner)
+      end
+
+      it 'registers examples before invoking the callback so the logic can configure already registered groups' do
+        registered_examples = nil
+
+        RSpec.configuration.define_derived_metadata(:ex) do |_meta|
+          registered_examples = FlatMap.flat_map(RSpec.world.all_example_groups, &:examples)
+        end
+
+        example = nil
+        RSpec.describe("Outer") do
+          example = example("ex", :ex)
+        end
+
+        expect(registered_examples).to contain_exactly(example)
+      end
+
       context "when passed a metadata filter" do
         it 'only applies to the groups and examples that match that filter' do
           RSpec.configure do |c|
@@ -1552,6 +1594,111 @@ module RSpec::Core
 
           expect(g1.metadata).to include(:reverse_description => "1G")
           expect(g2.metadata).not_to include(:reverse_description)
+        end
+      end
+    end
+
+    describe "#when_first_matching_example_defined" do
+      include_examples "warning of deprecated `:example_group` during filtering configuration", :when_first_matching_example_defined
+
+      it "runs the block when the first matching example is defined" do
+        sequence = []
+        RSpec.configuration.when_first_matching_example_defined(:foo) do
+          sequence << :callback
+        end
+
+        RSpec.describe do
+          example("ex 1")
+          sequence << :before_first_matching_example_defined
+          example("ex 2", :foo)
+          sequence << :after_first_matching_example_defined
+        end
+
+        expect(sequence).to eq [:before_first_matching_example_defined, :callback, :after_first_matching_example_defined]
+      end
+
+      it "does not fire when later matching examples are defined" do
+        sequence = []
+        RSpec.configuration.when_first_matching_example_defined(:foo) do
+          sequence << :callback
+        end
+
+        RSpec.describe do
+          example("ex 1", :foo)
+          sequence.clear
+
+          sequence << :before_second_matching_example_defined
+          example("ex 2", :foo)
+          sequence << :after_second_matching_example_defined
+        end
+
+        expect(sequence).to eq [:before_second_matching_example_defined, :after_second_matching_example_defined]
+      end
+
+      it "does not run the block if no matching examples are defined" do
+        sequence = []
+        RSpec.configuration.when_first_matching_example_defined(:foo) do
+          sequence << :callback
+        end
+
+        RSpec.describe do
+          example("ex 1")
+          example("ex 2", :bar)
+        end
+
+        expect(sequence).to eq []
+      end
+
+      it 'does not run the block if groups match the metadata but no examples do' do
+        called = false
+        RSpec.configuration.when_first_matching_example_defined(:foo => true) do
+          called = true
+        end
+
+        RSpec.describe "group 1", :foo => true do
+        end
+
+        RSpec.describe "group 2", :foo => true do
+          example("ex", :foo => false)
+        end
+
+        expect(called).to be false
+      end
+
+      it "still runs after the first matching example even if there is a group that matches earlier" do
+        sequence = []
+        RSpec.configuration.when_first_matching_example_defined(:foo) do
+          sequence << :callback
+        end
+
+        RSpec.describe "group", :foo do
+        end
+
+        RSpec.describe do
+          example("ex 1")
+          sequence << :before_first_matching_example_defined
+          example("ex 2", :foo)
+          sequence << :after_first_matching_example_defined
+        end
+
+        expect(sequence).to eq [:before_first_matching_example_defined, :callback, :after_first_matching_example_defined]
+      end
+
+      context "when a group is defined with matching metadata" do
+        it "runs the callback after the first example in the group is defined" do
+          sequence = []
+          RSpec.configuration.when_first_matching_example_defined(:foo) do
+            sequence << :callback
+          end
+
+          sequence << :before_group
+          RSpec.describe "group", :foo do
+            sequence << :before_example
+            example("ex")
+            sequence << :after_example
+          end
+
+          expect(sequence).to eq [:before_group, :before_example, :callback, :after_example]
         end
       end
     end

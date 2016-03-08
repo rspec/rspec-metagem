@@ -359,11 +359,10 @@ module RSpec::Core
       end
 
       it "is not registered in world" do
-        world = RSpec::Core::World.new
         parent = RSpec.describe
-        world.register(parent)
         parent.describe
-        expect(world.example_groups).to eq([parent])
+
+        expect(RSpec.world.example_groups).to eq([parent])
       end
     end
 
