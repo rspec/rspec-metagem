@@ -21,19 +21,18 @@ module RSpec::Core
     end
 
     describe '#on_example_group_definition' do
-      let(:configuration) do
-        tmp_config = RSpec::Core::Configuration.new
-        tmp_config.on_example_group_definition do |example_group|
-          example_group.examples.first.metadata[:new_key] = :new_value
+      before do
+        RSpec.configure do |c|
+          c.on_example_group_definition do |example_group|
+            example_group.examples.first.metadata[:new_key] = :new_value
+          end
         end
-        tmp_config
       end
-      let(:world) { RSpec::Core::World.new(configuration) }
 
       it 'successfully invokes the block' do
         example_group = RSpec.describe("group") { it "example 1" do; end}
-        world.register(example_group)
-        example = world.example_groups.first.examples.first
+        RSpec.world.register(example_group)
+        example = RSpec.world.example_groups.first.examples.first
         expect(example.metadata[:new_key]).to eq(:new_value)
       end
     end

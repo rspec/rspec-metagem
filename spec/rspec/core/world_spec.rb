@@ -4,8 +4,8 @@ class Foo; end
 module RSpec::Core
 
   RSpec.describe RSpec::Core::World do
-    let(:configuration) { RSpec::Core::Configuration.new }
-    let(:world) { RSpec::Core::World.new(configuration) }
+    let(:configuration) { RSpec.configuration }
+    let(:world) { RSpec.world }
 
     describe '#reset' do
       it 'clears #example_groups' do
