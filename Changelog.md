@@ -12,13 +12,16 @@ Enhancements:
 * Add new `config.when_first_matching_example_defined` hook. (Myron
   Marston, #2175)
 
+### 3.5.0.beta1 / 2016-02-06
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.3...v3.5.0.beta1)
+
+### 3.4.4 / 2016-03-09
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.3...3.4.4)
+
 Bug Fixes:
 
 * Fix `RSpec::Core::RakeTask` so that it works with Rake 11.
   (Travis Grathwell, #2197)
-
-### 3.5.0.beta1 / 2016-02-06
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.3...v3.5.0.beta1)
 
 ### 3.4.3 / 2016-02-19
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.2...v3.4.3)
