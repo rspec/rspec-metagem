@@ -12,6 +12,12 @@ branch = File.read(File.expand_path("../maintenance-branch", __FILE__)).chomp
   end
 end
 
+if RUBY_VERSION >= '1.9.3'
+  gem 'rake', '>= 10.0.0'
+else
+  gem 'rake', '< 11.0.0' # rake 11 requires Ruby 1.9.3 or later
+end
+
 gem 'yard', '~> 0.8.7', :require => false
 
 ### deps for rdoc.info
