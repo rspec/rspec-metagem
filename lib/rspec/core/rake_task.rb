@@ -88,7 +88,7 @@ module RSpec
 
       # @private
       def define(args, &task_block)
-        desc "Run RSpec code examples" unless ::Rake.application.last_comment
+        desc "Run RSpec code examples" unless ::Rake.application.last_description
 
         task name, *args do |_, task_args|
           RakeFileUtils.__send__(:verbose, verbose) do
