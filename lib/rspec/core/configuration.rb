@@ -264,6 +264,8 @@ module RSpec
       # @macro add_setting
       # Run all examples if none match the configured filters
       # (default: `false`).
+      # @deprecated Use {#filter_run_when_matching} instead for the specific
+      #   filters that you want to be ignored if none match.
       add_setting :run_all_when_everything_filtered
 
       # @macro add_setting
@@ -1039,8 +1041,22 @@ module RSpec
         filter_manager.include_with_low_priority meta
         static_config_filter_manager.include_with_low_priority Metadata.deep_hash_dup(meta)
       end
-
       alias_method :filter_run, :filter_run_including
+
+      # Applies the provided filter only if any of examples match, in constrast
+      # to {#filter_run}, which always applies even if no examples match, in
+      # which case no examples will be run. This allows you to leave configured
+      # filters in place that are intended only for temporary use. The most common
+      # example is focus filtering: `config.filter_run_when_matching :focus`.
+      # With that configured, you can temporarily focus an example or group
+      # by tagging it with `:focus` metadata, or prefixing it with an `f`
+      # (as in `fdescribe`, `fcontext` and `fit`) since those are aliases for
+      # `describe`/`context`/`it` with `:focus` metadata.
+      def filter_run_when_matching(*args)
+        when_first_matching_example_defined(*args) do
+          filter_run(*args)
+        end
+      end
 
       # Clears and reassigns the `inclusion_filter`. Set to `nil` if you don't
       # want any inclusion filter at all.
