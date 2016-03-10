@@ -16,7 +16,7 @@ Enhancements:
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.3...v3.5.0.beta1)
 
 ### 3.4.4 / 2016-03-09
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.3...3.4.4)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.3...v3.4.4)
 
 Bug Fixes:
 
