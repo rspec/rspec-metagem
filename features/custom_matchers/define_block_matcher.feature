@@ -42,3 +42,37 @@ Feature: define a matcher supporting block expectations
       """
     When I run `rspec ./block_matcher_spec.rb`
     Then the example should pass
+
+  Scenario: define a block matcher using shortcut
+    Given a file named "block_matcher_spec.rb" with:
+      """ruby
+      RSpec::Matchers.define :support_blocks_with_errors do
+        match(:notify_expectation_failures => true) do |actual|
+          actual.call
+          true
+        end
+
+        supports_block_expectations
+      end
+
+      RSpec.describe "a custom block matcher" do
+        specify do
+          expect {
+            expect(true).to eq false
+          }.to support_blocks_with_errors
+        end
+      end
+      """
+    When I run `rspec ./block_matcher_spec.rb`
+    Then it should fail with:
+      """
+      Failures:
+
+        1) a custom block matcher should support blocks with errors
+           Failure/Error: expect(true).to eq false
+
+             expected: false
+                  got: true
+
+             (compared using ==)
+      """
