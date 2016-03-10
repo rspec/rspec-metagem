@@ -5,6 +5,10 @@ Enhancements:
 
 * Add the ability to raise an error on encountering false positives via
   `RSpec::Configuration#on_potential_false_positives = :raise`. (Jon Rowe, #900)
+* When using the custom matcher DSL, support new
+  `notify_expectation_failures: true` option for the `match` method to
+  allow expectation failures to be raised as normal instead of being
+  converted into a `false` return value for `matches?`. (Jon Rowe, #892)
 
 Bug Fixes:
 
