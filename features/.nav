@@ -37,7 +37,6 @@
   - inclusion_filters.feature
   - exclusion_filters.feature
   - if_and_unless.feature
-  - run_all_when_everything_filtered.feature
 - configuration:
   - read_options_from_file.feature
   - color.feature
