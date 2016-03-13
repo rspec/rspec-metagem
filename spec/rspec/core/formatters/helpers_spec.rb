@@ -30,7 +30,13 @@ RSpec.describe RSpec::Core::Formatters::Helpers do
 
     context '> 300' do
       it "returns 'x minutes xx seconds' formatted string" do
+        expect(helper.format_duration(315.14)).to eq("5 minutes 15 seconds")
         expect(helper.format_duration(335.14)).to eq("5 minutes 35 seconds")
+      end
+
+      it "returns 'x minutes xx seconds' correctly on edgecase roundings" do
+        expect(helper.format_duration(359.111111111111)).to eq("5 minutes 59 seconds")
+        expect(helper.format_duration(359.999999999999)).to eq("6 minutes 0 seconds")
       end
     end
 
