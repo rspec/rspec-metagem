@@ -230,4 +230,47 @@ RSpec.describe 'Filtering' do
       expect(last_cmd_stdout).to match(/2 examples, 0 failures/)
     end
   end
+
+  context "with `filter_run_when_matching`" do
+    it "filters to matching examples" do
+      write_file_formatted "spec/example_spec.rb", "
+        RSpec.configure do |c|
+          c.filter_run_when_matching :some_tag
+        end
+
+        RSpec.describe 'A matching group', :some_tag do
+          it 'passes' do
+          end
+        end
+
+        RSpec.describe 'An unmatching group' do
+          it 'passes', :some_tag do
+          end
+
+          it 'fails' do
+            raise 'boom'
+          end
+        end
+      "
+
+      run_command ""
+      expect(last_cmd_stdout).to include("2 examples, 0 failures")
+    end
+
+    it "is ignored when no examples match the provided filter" do
+      write_file_formatted "spec/example_spec.rb", "
+        RSpec.configure do |c|
+          c.filter_run_when_matching :some_tag
+        end
+
+        RSpec.describe 'A group' do
+          it 'is still run' do
+          end
+        end
+      "
+
+      run_command ""
+      expect(last_cmd_stdout).to include("1 example, 0 failures")
+    end
+  end
 end

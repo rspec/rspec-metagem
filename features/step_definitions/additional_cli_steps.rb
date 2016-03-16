@@ -221,6 +221,15 @@ Then(/^the output should report "slow before context hook" as the slowest exampl
   )
 end
 
+Given(/^I have changed `([^`]+)` to `([^`]+)` in "(.*?)"$/) do |old_code, new_code, file_name|
+  in_current_dir do
+    file_content = File.read(file_name)
+    expect(file_content).to include(old_code)
+    new_file_content = file_content.sub(old_code, new_code)
+    File.open(file_name, "w") { |f| f.write(new_file_content) }
+  end
+end
+
 module Normalization
   def normalize_failure_output(text)
     whitespace_normalized = text.lines.map { |line| line.sub(/\s+$/, '').sub(/:in .*$/, '') }.join

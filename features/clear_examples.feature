@@ -23,9 +23,8 @@ Feature: Running specs multiple times with different runner options in the same 
     Given a file named "spec/spec_helper.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.filter_run_including :focus => true
+        config.filter_run_when_matching :focus => true
         config.filter_run_excluding :slow => true
-        config.run_all_when_everything_filtered = true
       end
       """
     Given a file named "spec/truth_spec.rb" with:
