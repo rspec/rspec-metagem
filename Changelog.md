@@ -9,6 +9,8 @@ Enhancements:
   `notify_expectation_failures: true` option for the `match` method to
   allow expectation failures to be raised as normal instead of being
   converted into a `false` return value for `matches?`. (Jon Rowe, #892)
+* Make `rspec/expectations/minitest_integration` work on Minitest::Spec
+  5.6+. (Myron Marston, #904)
 
 Bug Fixes:
 

@@ -1,8 +1,5 @@
 module RSpec
   module Expectations
-    # so our examples below can set expectations about the target
-    ExpectationTarget.send(:attr_reader, :target)
-
     RSpec.describe ExpectationTarget do
       context 'when constructed via #expect' do
         it 'constructs a new instance targetting the given argument' do

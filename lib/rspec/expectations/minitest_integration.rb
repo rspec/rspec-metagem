@@ -3,8 +3,12 @@ require 'rspec/expectations'
 Minitest::Test.class_eval do
   include ::RSpec::Matchers
 
+  # This `expect` will only be called if the user is using Minitest < 5.6
+  # or if they are _not_ using Minitest::Spec on 5.6+. Minitest::Spec on 5.6+
+  # defines its own `expect` and will have the assertions incremented via our
+  # definitions of `to`/`not_to`/`to_not` below.
   def expect(*a, &b)
-    assert(true) # so each expectation gets counted in minitest's assertion stats
+    self.assertions += 1
     super
   end
 
@@ -19,6 +23,29 @@ Minitest::Test.class_eval do
     assertion_failed = Minitest::Assertion.new(e.message)
     assertion_failed.set_backtrace e.backtrace
     raise assertion_failed
+  end
+end
+
+# Older versions of Minitest (e.g. before 5.6) do not define
+# `Minitest::Expectation`.
+if defined?(::Minitest::Expectation)
+  Minitest::Expectation.class_eval do
+    include RSpec::Expectations::ExpectationTarget::InstanceMethods
+
+    def to(*args)
+      ctx.assertions += 1
+      super
+    end
+
+    def not_to(*args)
+      ctx.assertions += 1
+      super
+    end
+
+    def to_not(*args)
+      ctx.assertions += 1
+      super
+    end
   end
 end
 
