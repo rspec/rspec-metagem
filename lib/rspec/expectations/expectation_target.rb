@@ -21,6 +21,12 @@ module RSpec
       # `nil` is a valid value to pass.
       UndefinedValue = Module.new
 
+      # @note this name aligns with `Minitest::Expectation` so that our
+      #   {InstanceMethods} module can be included in that class when
+      #   used in a Minitest context.
+      # @return [Object] the target of the expectation
+      attr_reader :target
+
       # @api private
       def initialize(value)
         @target = value
@@ -40,40 +46,48 @@ module RSpec
         end
       end
 
-      # Runs the given expectation, passing if `matcher` returns true.
-      # @example
-      #   expect(value).to eq(5)
-      #   expect { perform }.to raise_error
-      # @param [Matcher]
-      #   matcher
-      # @param [String or Proc] message optional message to display when the expectation fails
-      # @return [Boolean] true if the expectation succeeds (else raises)
-      # @see RSpec::Matchers
-      def to(matcher=nil, message=nil, &block)
-        prevent_operator_matchers(:to) unless matcher
-        RSpec::Expectations::PositiveExpectationHandler.handle_matcher(@target, matcher, message, &block)
+      # Defines instance {ExpectationTarget} instance methods. These are defined
+      # in a module so we can include it in `Minitest::Expectation` when
+      # `rspec/expectations/minitest_integration` is laoded in order to
+      # support usage with Minitest.
+      module InstanceMethods
+        # Runs the given expectation, passing if `matcher` returns true.
+        # @example
+        #   expect(value).to eq(5)
+        #   expect { perform }.to raise_error
+        # @param [Matcher]
+        #   matcher
+        # @param [String or Proc] message optional message to display when the expectation fails
+        # @return [Boolean] true if the expectation succeeds (else raises)
+        # @see RSpec::Matchers
+        def to(matcher=nil, message=nil, &block)
+          prevent_operator_matchers(:to) unless matcher
+          RSpec::Expectations::PositiveExpectationHandler.handle_matcher(target, matcher, message, &block)
+        end
+
+        # Runs the given expectation, passing if `matcher` returns false.
+        # @example
+        #   expect(value).not_to eq(5)
+        # @param [Matcher]
+        #   matcher
+        # @param [String or Proc] message optional message to display when the expectation fails
+        # @return [Boolean] false if the negative expectation succeeds (else raises)
+        # @see RSpec::Matchers
+        def not_to(matcher=nil, message=nil, &block)
+          prevent_operator_matchers(:not_to) unless matcher
+          RSpec::Expectations::NegativeExpectationHandler.handle_matcher(target, matcher, message, &block)
+        end
+        alias to_not not_to
+
+      private
+
+        def prevent_operator_matchers(verb)
+          raise ArgumentError, "The expect syntax does not support operator matchers, " \
+                               "so you must pass a matcher to `##{verb}`."
+        end
       end
 
-      # Runs the given expectation, passing if `matcher` returns false.
-      # @example
-      #   expect(value).not_to eq(5)
-      # @param [Matcher]
-      #   matcher
-      # @param [String or Proc] message optional message to display when the expectation fails
-      # @return [Boolean] false if the negative expectation succeeds (else raises)
-      # @see RSpec::Matchers
-      def not_to(matcher=nil, message=nil, &block)
-        prevent_operator_matchers(:not_to) unless matcher
-        RSpec::Expectations::NegativeExpectationHandler.handle_matcher(@target, matcher, message, &block)
-      end
-      alias to_not not_to
-
-    private
-
-      def prevent_operator_matchers(verb)
-        raise ArgumentError, "The expect syntax does not support operator matchers, " \
-                             "so you must pass a matcher to `##{verb}`."
-      end
+      include InstanceMethods
     end
 
     # @private

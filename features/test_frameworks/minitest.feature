@@ -50,3 +50,64 @@ Feature: Minitest integration
       And the output should contain "expected `[1, 2].empty?` to return true, got false"
       And the output should contain "be_an_int is deprecated"
       And the output should contain "Got 2 failures from failure aggregation block"
+
+  Scenario: use rspec/expectations with minitest/spec
+    Given a file named "rspec_expectations_spec.rb" with:
+      """ruby
+      require 'minitest/autorun'
+      require 'minitest/spec'
+      require 'rspec/expectations/minitest_integration'
+
+      describe "Using RSpec::Expectations with Minitest::Spec" do
+        RSpec::Matchers.define :be_an_integer do
+          match { |actual| Integer === actual }
+        end
+
+        it 'passes an expectation' do
+          expect(1 + 3).to eq 4
+        end
+
+        it 'fails an expectation' do
+          expect([1, 2]).to be_empty
+        end
+
+        it 'passes a block expectation' do
+          x = 1
+          expect { x += 2 }.to change { x }.from(1).to(3)
+        end
+
+        it 'fails a block expectation' do
+          x = 1
+          expect { x += 2 }.to change { x }.from(1).to(:wrong_value)
+        end
+
+        it 'passes a negative expectation (using `not_to`)' do
+          expect(1).not_to eq 2
+        end
+
+        it 'fails a negative expectation (using `to_not`)' do
+          expect(1).to_not eq 1
+        end
+
+        it 'fails multiple expectations' do
+          aggregate_failures do
+            expect(1).to be_even
+            expect(2).to be_odd
+          end
+        end
+
+        it 'passes a minitest expectation' do
+          expect(1 + 3).must_equal 4
+        end
+
+        it 'fails a minitest expectation' do
+          expect([1, 2]).must_be :empty?
+        end
+      end
+      """
+     When I run `ruby rspec_expectations_spec.rb`
+     Then the output should contain "9 runs, 10 assertions, 5 failures, 0 errors"
+      And the output should contain "expected `[1, 2].empty?` to return true, got false"
+      And the output should contain "expected result to have changed to :wrong_value, but is now 3"
+      And the output should contain "Got 2 failures from failure aggregation block"
+      And the output should contain "Expected [1, 2] to be empty?"
