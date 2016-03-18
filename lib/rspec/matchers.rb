@@ -621,6 +621,7 @@ module RSpec
       BuiltIn::HaveAttributes.new(expected)
     end
     alias_matcher :an_object_having_attributes, :have_attributes
+    alias_matcher :having_attributes,           :have_attributes
 
     # Passes if actual includes expected. This works for
     # collections and Strings. You can also pass in multiple args

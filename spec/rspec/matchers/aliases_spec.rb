@@ -222,6 +222,14 @@ module RSpec
 
     specify do
       expect(
+        having_attributes(:age => 32)
+      ).to be_aliased_to(
+        have_attributes(:age => 32)
+      ).with_description("having attributes {:age => 32}")
+    end
+
+    specify do
+      expect(
         a_string_including("a")
       ).to be_aliased_to(
         include("a")

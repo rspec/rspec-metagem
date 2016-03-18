@@ -11,6 +11,8 @@ Enhancements:
   converted into a `false` return value for `matches?`. (Jon Rowe, #892)
 * Make `rspec/expectations/minitest_integration` work on Minitest::Spec
   5.6+. (Myron Marston, #904)
+* Add an alias `having_attributes` for `have_attributes` matcher.
+  (Yuji Nakayama, #905)
 
 Bug Fixes:
 
