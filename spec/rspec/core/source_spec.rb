@@ -51,6 +51,17 @@ module RSpec::Core
           'end'
         ])
       end
+
+      it 'returns an array of lines no matter the encoding' do
+        source_string << "\xAE"
+        encoded_string = source_string.force_encoding('US-ASCII')
+        expect(Source.new(encoded_string).lines).to eq([
+          '2.times do',
+          '  puts :foo',
+          'end',
+          '?',
+        ])
+      end
     end
 
     describe '#ast' do

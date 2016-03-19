@@ -1,3 +1,4 @@
+RSpec::Support.require_rspec_support "encoded_string"
 RSpec::Support.require_rspec_core 'source/node'
 RSpec::Support.require_rspec_core 'source/syntax_highlighter'
 RSpec::Support.require_rspec_core 'source/token'
@@ -14,9 +15,18 @@ module RSpec
         new(source, path)
       end
 
-      def initialize(source_string, path=nil)
-        @source = source_string
-        @path = path ? File.expand_path(path) : '(string)'
+      if String.method_defined?(:encoding)
+        def initialize(source_string, path=nil)
+          @source = RSpec::Support::EncodedString.new(source_string, Encoding.default_external)
+          @path = path ? File.expand_path(path) : '(string)'
+        end
+      else # for 1.8.7
+        # :nocov:
+        def initialize(source_string, path=nil)
+          @source = RSpec::Support::EncodedString.new(source_string)
+          @path = path ? File.expand_path(path) : '(string)'
+        end
+        # :nocov:
       end
 
       def lines
