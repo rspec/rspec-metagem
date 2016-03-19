@@ -18,6 +18,7 @@ Enhancements:
 Bug Fixes:
 
 * Use the encoded string logic for source extraction. (Jon Rowe, #2183)
+* Fix rounding issue in duration formatting helper. (Fabersky, Jon Rowe, #2208)
 
 ### 3.5.0.beta1 / 2016-02-06
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.3...v3.5.0.beta1)
