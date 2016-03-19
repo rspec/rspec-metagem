@@ -15,6 +15,10 @@ Enhancements:
   the combination of `config.filter_run` and
   `config.run_all_when_everything_filtered` (Myron Marston, #2206)
 
+Bug Fixes:
+
+* Use the encoded string logic for source extraction. (Jon Rowe, #2183)
+
 ### 3.5.0.beta1 / 2016-02-06
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.3...v3.5.0.beta1)
 
