@@ -14,7 +14,8 @@ module RSpec
         }.freeze
 
         CLOSING_KEYWORDS_BY_OPENING_KEYWORD = {
-          'do' => 'end'
+          'def' => 'end',
+          'do'  => 'end',
         }.freeze
 
         attr_reader :token

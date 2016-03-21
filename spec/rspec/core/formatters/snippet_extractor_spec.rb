@@ -31,14 +31,12 @@ module RSpec::Core::Formatters
     let(:error) do
       begin
         source
-      rescue ExpectedError => error
+      rescue => error
         error
-      ensure
-        raise 'No ExpectedError has been raised' unless error
+      else
+        raise 'No error has been raised'
       end
     end
-
-    ExpectedError = Class.new(StandardError)
 
     # We use this helper method to raise an error while allowing any arguments,
     #
@@ -46,7 +44,7 @@ module RSpec::Core::Formatters
     # beginning of the method invocation. It's not SnippetExtractor's fault and even affects to the
     # simple single line extraction.
     def do_something_fail(*)
-      raise ExpectedError
+      raise
     end
 
     def another_expression(*)
@@ -158,6 +156,27 @@ module RSpec::Core::Formatters
         it 'returns all the lines' do
           expect(expression_lines).to eq([
             '          do_something_fail do',
+            '          end'
+          ])
+        end
+      end
+
+      argument_error_points_invoker = RSpec::Support::Ruby.jruby? && !RUBY_VERSION.start_with?('1.8.')
+      context 'when the expression is a method definition and ends with "end"-only line', :unless => argument_error_points_invoker do
+        let(:source) do
+          obj = Object.new
+
+          def obj.foo(arg)
+            p arg
+          end
+
+          obj.foo
+        end
+
+        it 'returns all the lines' do
+          expect(expression_lines).to eq([
+            '          def obj.foo(arg)',
+            '            p arg',
             '          end'
           ])
         end
