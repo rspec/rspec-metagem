@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.license     = "MIT"
   s.authors     = ["Steven Baker", "David Chelimsky", "Myron Marston"]
   s.email       = "rspec@googlegroups.com"
-  s.homepage    = "http://github.com/rspec/rspec-expectations"
+  s.homepage    = "https://github.com/rspec/rspec-expectations"
   s.summary     = "rspec-expectations-#{RSpec::Expectations::Version::STRING}"
   s.description = "rspec-expectations provides a simple, readable API to express expected outcomes of a code example."
 
