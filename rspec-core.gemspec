@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.license     = "MIT"
   s.authors     = ["Steven Baker", "David Chelimsky", "Chad Humphries", "Myron Marston"]
   s.email       = "rspec@googlegroups.com"
-  s.homepage    = "http://github.com/rspec/rspec-core"
+  s.homepage    = "https://github.com/rspec/rspec-core"
   s.summary     = "rspec-core-#{RSpec::Core::Version::STRING}"
   s.description = "BDD for Ruby. RSpec runner and example groups."
 
