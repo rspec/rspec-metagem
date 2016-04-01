@@ -202,7 +202,7 @@ module RSpec::Core
 
     private
 
-      def initialize(example, exception_presenter=Formatters::ExceptionPresenter.new(example.execution_result.exception, example))
+      def initialize(example, exception_presenter)
         @exception_presenter = exception_presenter
         super(example)
       end
