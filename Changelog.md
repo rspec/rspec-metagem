@@ -13,6 +13,8 @@ Enhancements:
   5.6+. (Myron Marston, #904)
 * Add an alias `having_attributes` for `have_attributes` matcher.
   (Yuji Nakayama, #905)
+* Improve `change` matcher error message when block is mis-used.
+  (Alex Altair, #908)
 
 Bug Fixes:
 
