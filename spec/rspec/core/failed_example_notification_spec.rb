@@ -15,7 +15,8 @@ module RSpec::Core::Notifications
         it_behaves_like "a"
       end
       group.run
-      fne = FailedExampleNotification.new(example)
+      exception_presenter= RSpec::Core::Formatters::ExceptionPresenter.new(example.execution_result.exception, example)
+      fne = FailedExampleNotification.new(example, exception_presenter)
       lines = fne.colorized_message_lines
       expect(lines).to include(match("\\e\\[37mShared Example Group:"))
     end
