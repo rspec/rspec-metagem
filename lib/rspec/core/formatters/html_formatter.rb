@@ -71,7 +71,7 @@ module RSpec
           exception = failure.exception
           exception_details = if exception
                                 {
-                                  :message => exception.message,
+                                  :message => failure.message_lines.join("\n"),
                                   :backtrace => failure.formatted_backtrace.join("\n")
                                 }
                               end
