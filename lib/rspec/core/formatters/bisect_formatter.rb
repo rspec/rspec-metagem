@@ -16,12 +16,13 @@ module RSpec
                             :example_failed, :example_passed, :example_pending
 
         def initialize(_output)
-          port                = RSpec.configuration.drb_port
-          drb_uri             = "druby://localhost:#{port}"
-          @all_example_ids    = []
+          port = RSpec.configuration.drb_port
+          drb_uri = "druby://localhost:#{port}"
+          @all_example_ids = []
           @failed_example_ids = []
-          @bisect_server      = DRbObject.new_with_uri(drb_uri)
+          @bisect_server = DRbObject.new_with_uri(drb_uri)
           @remaining_failures = []
+          RSpec.configuration.files_or_directories_to_run = @bisect_server.files_or_directories_to_run
         end
 
         def start(_notification)

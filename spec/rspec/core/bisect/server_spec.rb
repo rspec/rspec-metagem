@@ -59,7 +59,7 @@ module RSpec::Core
       end
 
       it 'receives suite results' do
-        results = server.capture_run_results do
+        results = server.capture_run_results(['spec/rspec/core/resources/formatter_specs.rb']) do
           run_formatter_specs
         end
 
@@ -92,7 +92,7 @@ module RSpec::Core
             ./spec/rspec/core/resources/formatter_specs.rb[4:1]
           ]
 
-          results = server.capture_run_results(expected_failures) do
+          results = server.capture_run_results(['spec/rspec/core/resources/formatter_specs.rb'], expected_failures) do
             run_formatter_specs
           end
 
@@ -115,7 +115,7 @@ module RSpec::Core
           passing_example       = "./spec/rspec/core/resources/formatter_specs.rb[3:1]"
           later_failing_example = "./spec/rspec/core/resources/formatter_specs.rb[4:1]"
 
-          results = server.capture_run_results([passing_example, later_failing_example]) do
+          results = server.capture_run_results(['spec/rspec/core/resources/formatter_specs.rb'], [passing_example, later_failing_example]) do
             run_formatter_specs
           end
 
@@ -136,7 +136,7 @@ module RSpec::Core
           pending_example       = "./spec/rspec/core/resources/formatter_specs.rb[1:1]"
           later_failing_example = "./spec/rspec/core/resources/formatter_specs.rb[4:1]"
 
-          results = server.capture_run_results([pending_example, later_failing_example]) do
+          results = server.capture_run_results(['spec/rspec/core/resources/formatter_specs.rb'], [pending_example, later_failing_example]) do
             run_formatter_specs
           end
 
