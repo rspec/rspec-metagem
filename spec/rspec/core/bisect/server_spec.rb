@@ -55,7 +55,7 @@ module RSpec::Core
 
       def run_formatter_specs
         RSpec.configuration.drb_port = server.drb_port
-        run_example_specs_with_formatter("bisect")
+        run_rspec_with_formatter("bisect")
       end
 
       it 'receives suite results' do
