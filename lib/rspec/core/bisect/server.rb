@@ -20,8 +20,9 @@ module RSpec
           server.stop
         end
 
-        def capture_run_results(expected_failures=[])
+        def capture_run_results(files_or_directories_to_run=[], expected_failures=[])
           self.expected_failures  = expected_failures
+          self.files_or_directories_to_run = files_or_directories_to_run
           self.latest_run_results = nil
           run_output = yield
           latest_run_results || raise_bisect_failed(run_output)
@@ -48,6 +49,9 @@ module RSpec
 
         # Set via DRb by the BisectFormatter with the results of the run.
         attr_accessor :latest_run_results
+
+        # Fetched via DRb to tell clients which files to run
+        attr_accessor :files_or_directories_to_run
 
       private
 

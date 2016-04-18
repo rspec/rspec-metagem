@@ -8,6 +8,7 @@ module RSpec::Core
 
     describe "#run" do
       let(:original_cli_args) { %w[ spec/1_spec.rb ] }
+      let(:target_specs) { %w[ spec/1_spec.rb[1:1] spec/1_spec.rb[1:2] ] }
 
       it "passes the failed examples from the original run as the expected failures so the runs can abort early" do
         original_results = Formatters::BisectFormatter::RunResults.new(
@@ -15,15 +16,15 @@ module RSpec::Core
         )
 
         expect(server).to receive(:capture_run_results).
-          with(no_args).
+          with(original_cli_args).
           ordered.
           and_return(original_results)
 
         expect(server).to receive(:capture_run_results).
-          with(original_results.failed_example_ids).
+          with(target_specs, original_results.failed_example_ids).
           ordered
 
-        runner.run(%w[ spec/1_spec.rb[1:1] spec/1_spec.rb[1:2] ])
+        runner.run(target_specs)
       end
     end
 
@@ -207,7 +208,7 @@ module RSpec::Core
     end
 
     describe "#original_results" do
-      let(:original_cli_args) { %w[spec/unit] }
+      let(:original_cli_args) { %w[spec/unit --seed 1234] }
 
       open3_method = Open3.respond_to?(:capture2e) ? :capture2e : :popen3
       open3_method = :popen3 if RSpec::Support::Ruby.jruby?
@@ -222,9 +223,9 @@ module RSpec::Core
         end
       end
 
-      it "runs the suite with the locations from the original CLI args" do
+      it "runs the suite with the seed from the original CLI args" do
         runner.original_results
-        expect(Open3).to have_received(open3_method).with(a_string_including("spec/unit"))
+        expect(Open3).to have_received(open3_method).with(a_string_including("--seed 1234"))
       end
 
       it 'returns the run results' do

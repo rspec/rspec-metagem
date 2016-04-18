@@ -27,6 +27,7 @@ module RSpec
 
           parts << "--format"   << "bisect"
           parts << "--drb-port" << @server.drb_port
+
           parts.concat reusable_cli_options
           parts.concat locations.map { |l| open3_safe_escape(l) }
 
@@ -60,9 +61,9 @@ module RSpec
           alias open3_safe_escape escape
         end
 
-        def run_locations(locations, *capture_args)
+        def run_locations(*capture_args)
           @server.capture_run_results(*capture_args) do
-            run_command command_for(locations)
+            run_command command_for([])
           end
         end
 
