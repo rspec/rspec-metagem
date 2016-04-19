@@ -223,7 +223,7 @@ module RSpec::Core
         end
       end
 
-      it "runs the suite with the seed from the original CLI args" do
+      it "runs the suite with the original CLI options" do
         runner.original_results
         expect(Open3).to have_received(open3_method).with(a_string_including("--seed 1234"))
       end
