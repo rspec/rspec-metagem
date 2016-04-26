@@ -213,10 +213,39 @@ module RSpec::Core
       open3_method = Open3.respond_to?(:capture2e) ? :capture2e : :popen3
       open3_method = :popen3 if RSpec::Support::Ruby.jruby?
 
+      def called_environment
+        @called_environment
+      end
+
+      if open3_method == :capture2e
+        RSpec::Matchers.define :invoke_command_with_env do |command, environment|
+          match do |block|
+            block.call
+
+            expect(Open3).to have_received(open3_method).with(environment, command)
+          end
+
+          supports_block_expectations
+        end
+      elsif open3_method == :popen3
+        RSpec::Matchers.define :invoke_command_with_env do |command, environment|
+          match do |block|
+            block.call
+
+            expect(Open3).to have_received(open3_method).with(command)
+            expect(called_environment).to include(environment)
+          end
+
+          supports_block_expectations
+        end
+      end
+
       before do
-        allow(Open3).to receive(open3_method).and_return(
+        allow(Open3).to receive(open3_method) do
+          @called_environment = ENV.to_hash.dup
           [double("Exit Status"), double("Stdout/err")]
-        )
+        end
+
         allow(server).to receive(:capture_run_results) do |&block|
           block.call
           "the results"
@@ -224,8 +253,35 @@ module RSpec::Core
       end
 
       it "runs the suite with the original CLI options" do
-        runner.original_results
-        expect(Open3).to have_received(open3_method).with(a_string_including("--seed 1234"))
+        expect {
+          runner.original_results
+        }.to invoke_command_with_env(a_string_including("--seed 1234"), {})
+      end
+
+      context 'when --bisect is present in SPEC_OPTS' do
+        it "runs the suite with --bisect removed from the environment" do
+          expect {
+            with_env_vars 'SPEC_OPTS' => '--bisect --fail-fast' do
+              runner.original_results
+            end
+          }.to invoke_command_with_env(
+            a_string_including("--seed 1234"),
+            { 'SPEC_OPTS' => '--fail-fast' }
+          )
+        end
+      end
+
+      context 'when --bisect=verbose is present in SPEC_OPTS' do
+        it "runs the suite with --bisect removed from the environment" do
+          expect {
+            with_env_vars 'SPEC_OPTS' => '--bisect=verbose --fail-fast' do
+              runner.original_results
+            end
+          }.to invoke_command_with_env(
+            a_string_including("--seed 1234"),
+            { 'SPEC_OPTS' => '--fail-fast' }
+          )
+        end
       end
 
       it 'returns the run results' do

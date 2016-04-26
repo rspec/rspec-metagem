@@ -68,7 +68,7 @@ module RSpec::Core
 
         parser.on('--bisect[=verbose]', 'Repeatedly runs the suite in order to isolate the failures to the ',
                   '  smallest reproducible case.') do |argument|
-          bisect_and_exit(argument)
+          options[:bisect] = argument || true
         end
 
         parser.on('--[no-]fail-fast[=COUNT]', 'Abort the run after a certain number of failures (1 by default).') do |argument|
@@ -286,23 +286,6 @@ FILTERING
       RSpec::Support.require_rspec_core "project_initializer"
       ProjectInitializer.new.run
       exit
-    end
-
-    def bisect_and_exit(argument)
-      RSpec::Support.require_rspec_core "bisect/coordinator"
-
-      success = Bisect::Coordinator.bisect_with(
-        original_args,
-        RSpec.configuration,
-        bisect_formatter_for(argument)
-      )
-
-      exit(success ? 0 : 1)
-    end
-
-    def bisect_formatter_for(argument)
-      return Formatters::BisectDebugFormatter if argument == "verbose"
-      Formatters::BisectProgressFormatter
     end
 
     def print_version_and_exit

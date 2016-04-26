@@ -73,9 +73,24 @@ module RSpec
           rescue DRb::DRbConnError
             err.puts "No DRb server is running. Running in local process instead ..."
           end
+        elsif options.options[:bisect]
+          RSpec::Support.require_rspec_core "bisect/coordinator"
+
+          success = Bisect::Coordinator.bisect_with(
+            args,
+            RSpec.configuration,
+            bisect_formatter_for(options.options[:bisect])
+          )
+
+          return success ? 0 : 1
         end
 
         new(options).run(err, out)
+      end
+
+      def self.bisect_formatter_for(argument)
+        return Formatters::BisectDebugFormatter if argument == "verbose"
+        Formatters::BisectProgressFormatter
       end
 
       def initialize(options, configuration=RSpec.configuration, world=RSpec.world)

@@ -10,11 +10,10 @@ module RSpec::Core
 
     def bisect(cli_args, expected_status=nil)
       RSpec.configuration.output_stream = formatter_output
-      parser = Parser.new(cli_args + ["--bisect"])
-      expect(parser).to receive(:exit).with(expected_status) if expected_status
 
       expect {
-        parser.parse
+        status = RSpec::Core::Runner.run(cli_args + ["--bisect"])
+        expect(status).to eq(expected_status) if expected_status
       }.to avoid_outputting.to_stdout_from_any_process.and avoid_outputting.to_stderr_from_any_process
 
       normalize_durations(formatter_output.string)
