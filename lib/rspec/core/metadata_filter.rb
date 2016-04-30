@@ -34,6 +34,14 @@ module RSpec
           end
         end
 
+        # @private
+        def silence_metadata_example_group_deprecations
+          RSpec::Support.thread_local_data[:silence_metadata_example_group_deprecations] = true
+          yield
+        ensure
+          RSpec::Support.thread_local_data.delete(:silence_metadata_example_group_deprecations)
+        end
+
       private
 
         def filter_applies_to_any_value?(key, value, metadata)
@@ -71,13 +79,6 @@ module RSpec
           subhash = metadata[key]
           return false unless Hash === subhash || HashImitatable === subhash
           value.all? { |k, v| filter_applies?(k, v, subhash) }
-        end
-
-        def silence_metadata_example_group_deprecations
-          RSpec::Support.thread_local_data[:silence_metadata_example_group_deprecations] = true
-          yield
-        ensure
-          RSpec::Support.thread_local_data.delete(:silence_metadata_example_group_deprecations)
         end
       end
     end
@@ -202,9 +203,20 @@ module RSpec
         end
 
         def applicable_metadata_from(metadata)
-          @applicable_keys.inject({}) do |hash, key|
-            hash[key] = metadata[key] if metadata.key?(key)
-            hash
+          MetadataFilter.silence_metadata_example_group_deprecations do
+            @applicable_keys.inject({}) do |hash, key|
+              # :example_group is treated special here because...
+              # - In RSpec 2, example groups had an `:example_group` key
+              # - In RSpec 3, that key is deprecated (it was confusing!).
+              # - The key is not technically present in an example group metadata hash
+              #   (and thus would fail the `metadata.key?(key)` check) but a value
+              #   is provided when accessed via the hash's `default_proc`
+              # - Thus, for backwards compatibility, we have to explicitly check
+              #   for `:example_group` here if it is one of the keys being used to
+              #   filter.
+              hash[key] = metadata[key] if metadata.key?(key) || key == :example_group
+              hash
+            end
           end
         end
 
