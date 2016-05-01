@@ -25,6 +25,8 @@ Bug Fixes:
 * Fix `--bisect` so it works on large spec suites that were previously triggering
   "Argument list too long errors" due to all the spec locations being passed as
   CLI args. (Matt Jones, #2223).
+* Fix deprecated `:example_group`-based filtering so that it properly
+  applies to matching example groups. (Myron Marston, #2234)
 
 ### 3.5.0.beta1 / 2016-02-06
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.3...v3.5.0.beta1)

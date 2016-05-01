@@ -938,6 +938,16 @@ module RSpec::Core
           expect(group.new.you_call_this_a_blt?).to eq("egad man, where's the mayo?!?!?")
         end
 
+        it "includes in example groups that match a deprecated `:example_group` filter" do
+          RSpec.configure do |c|
+            c.include(InstanceLevelMethods, :example_group => { :file_path => /./ })
+          end
+
+          group = RSpec.describe('does like, stuff and junk')
+          expect(group).not_to respond_to(:you_call_this_a_blt?)
+          expect(group.new.you_call_this_a_blt?).to eq("egad man, where's the mayo?!?!?")
+        end
+
         it "includes the given module into each existing matching example group" do
           matching_group = RSpec.describe('does like, stuff and junk', :magic_key => :include) { }
           non_matching_group = RSpec.describe
