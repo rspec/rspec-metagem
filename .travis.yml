@@ -1,4 +1,4 @@
-# This file was generated on 2016-04-30T11:57:31+10:00 from the rspec-dev repo.
+# This file was generated on 2016-05-06T10:38:07+10:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 language: ruby
@@ -9,7 +9,11 @@ cache:
 before_install:
   - "script/clone_all_rspec_repos"
   # Note this doesn't work on JRUBY 2.0.0 mode so we don't do it
-  - if [ "jruby" != "$TRAVIS_RUBY_VERSION"  ]; then gem install bundler; fi
+  - if [ "jruby" != "$TRAVIS_RUBY_VERSION"  ]; then gem install bundler -v '1.11.2'; fi
+# current versions of bundler are broken due to the json gem on travis
+install:
+  - export bundle_install_flags="--binstubs --standalone --without documentation --path ../bundle"
+  - if [ "jruby" != "$TRAVIS_RUBY_VERSION"  ]; then bundle _1.11.2_ install $bundle_install_flags; else bundle install $bundle_install_flags; fi
 bundler_args: "--binstubs --standalone --without documentation --path ../bundle"
 script: "script/run_build"
 rvm:
@@ -19,7 +23,7 @@ rvm:
   - 2.0.0
   - 2.1
   - 2.2
-  - 2.3.0
+  - 2.3.1
   - ruby-head
   - ree
   - rbx
