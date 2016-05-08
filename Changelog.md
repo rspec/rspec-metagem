@@ -19,6 +19,7 @@ Enhancements:
 Bug Fixes:
 
 * Allow `should` deprecation check to work on `BasicObject`s. (James Coleman, #898)
+* Fix `include` matcher so that it provides a valid diff for hashes. (Yuji Nakayama, #916)
 
 ### 3.5.0.beta1 / 2016-02-06
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.4.0...v3.5.0.beta1)

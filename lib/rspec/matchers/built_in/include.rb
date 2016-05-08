@@ -5,8 +5,11 @@ module RSpec
       # Provides the implementation for `include`.
       # Not intended to be instantiated directly.
       class Include < BaseMatcher
-        def initialize(*expected)
-          @expected = expected
+        # @private
+        attr_reader :expecteds
+
+        def initialize(*expecteds)
+          @expecteds = expecteds
         end
 
         # @api private
@@ -24,7 +27,7 @@ module RSpec
         # @api private
         # @return [String]
         def description
-          improve_hash_formatting("include#{readable_list_of(expected)}")
+          improve_hash_formatting("include#{readable_list_of(expecteds)}")
         end
 
         # @api private
@@ -43,6 +46,16 @@ module RSpec
         # @return [Boolean]
         def diffable?
           !diff_would_wrongly_highlight_matched_item?
+        end
+
+        # @api private
+        # @return [Array, Hash]
+        def expected
+          if expecteds.all? { |item| item.is_a?(Hash) }
+            expecteds.inject(:merge)
+          else
+            expecteds
+          end
         end
 
       private
@@ -73,7 +86,7 @@ module RSpec
         def excluded_from_actual
           return [] unless @actual.respond_to?(:include?)
 
-          expected.inject([]) do |memo, expected_item|
+          expecteds.inject([]) do |memo, expected_item|
             if comparing_hash_to_a_subset?(expected_item)
               expected_item.each do |(key, value)|
                 memo << { key => value } unless yield actual_hash_includes?(key, value)
