@@ -113,6 +113,28 @@ module RSpec::Core
         expect(BacktraceFormatter.new.format_backtrace(backtrace)).to eq(["./my_spec.rb:5"])
       end
 
+      it "excludes lines from bundler by default, since Bundler 1.12 now includes its stackframes in all stacktraces when you `bundle exec`" do
+        bundler_trace = [
+          "/some/other/file.rb:13",
+          "/Users/myron/.gem/ruby/2.3.0/gems/bundler-1.12.3/lib/bundler/cli/exec.rb:63:in `load'",
+          "/Users/myron/.gem/ruby/2.3.0/gems/bundler-1.12.3/lib/bundler/cli/exec.rb:63:in `kernel_load'",
+          "/Users/myron/.gem/ruby/2.3.0/gems/bundler-1.12.3/lib/bundler/cli/exec.rb:24:in `run'",
+          "/Users/myron/.gem/ruby/2.3.0/gems/bundler-1.12.3/lib/bundler/cli.rb:304:in `exec'",
+          "/Users/myron/.gem/ruby/2.3.0/gems/bundler-1.12.3/lib/bundler/vendor/thor/lib/thor/command.rb:27:in `run'",
+          "/Users/myron/.gem/ruby/2.3.0/gems/bundler-1.12.3/lib/bundler/vendor/thor/lib/thor/invocation.rb:126:in `invoke_command'",
+          "/Users/myron/.gem/ruby/2.3.0/gems/bundler-1.12.3/lib/bundler/vendor/thor/lib/thor.rb:359:in `dispatch'",
+          "/Users/myron/.gem/ruby/2.3.0/gems/bundler-1.12.3/lib/bundler/vendor/thor/lib/thor/base.rb:440:in `start'",
+          "/Users/myron/.gem/ruby/2.3.0/gems/bundler-1.12.3/lib/bundler/cli.rb:11:in `start'",
+          "/Users/myron/.gem/ruby/2.3.0/gems/bundler-1.12.3/exe/bundle:27:in `block in <top (required)>'",
+          "/Users/myron/.gem/ruby/2.3.0/gems/bundler-1.12.3/lib/bundler/friendly_errors.rb:98:in `with_friendly_errors'",
+          "/Users/myron/.gem/ruby/2.3.0/gems/bundler-1.12.3/exe/bundle:19:in `<top (required)>'",
+          "/Users/myron/.gem/ruby/2.3.0/bin/bundle:23:in `load'",
+          "/Users/myron/.gem/ruby/2.3.0/bin/bundle:23:in `<main>'"
+        ]
+
+        expect(BacktraceFormatter.new.format_backtrace(bundler_trace)).to eq ["/some/other/file.rb:13"]
+      end
+
       context "when every line is filtered out" do
         let(:backtrace) do
           [
