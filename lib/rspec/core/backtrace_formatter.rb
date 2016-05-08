@@ -8,7 +8,7 @@ module RSpec
       def initialize
         @full_backtrace = false
 
-        patterns = %w[ /lib\d*/ruby/ bin/ exe/rspec ]
+        patterns = %w[ /lib\d*/ruby/ bin/ exe/rspec /lib/bundler/ /exe/bundle: ]
         patterns << "org/jruby/" if RUBY_PLATFORM == 'java'
         patterns.map! { |s| Regexp.new(s.gsub("/", File::SEPARATOR)) }
 

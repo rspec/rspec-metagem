@@ -14,6 +14,9 @@ Enhancements:
 * Add new `config.filter_run_when_matching` API, intended to replace
   the combination of `config.filter_run` and
   `config.run_all_when_everything_filtered` (Myron Marston, #2206)
+* Filter out bundler stackframes from backtraces by default, since
+  Bundler 1.12 now includes its own frames in stack traces produced
+  by using `bundle exec`. (Myron Marston, #2240)
 
 Bug Fixes:
 
