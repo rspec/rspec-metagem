@@ -116,6 +116,11 @@ module RSpec::Core::Formatters
     attr_accessor :default_formatter
 
     # @private
+    def prepare_default(output_stream, deprecation_stream)
+      reporter.prepare_default(self, output_stream, deprecation_stream)
+    end
+
+    # @private
     def setup_default(output_stream, deprecation_stream)
       add default_formatter, output_stream if @formatters.empty?
 
