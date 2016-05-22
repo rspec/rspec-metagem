@@ -204,7 +204,13 @@ module RSpec
             return ["Unable to find matching line from backtrace"]
           end
 
-          file_path, line_number = matching_line.match(/(.+?):(\d+)(|:\d+)/)[1..2]
+          file_and_line_number = matching_line.match(/(.+?):(\d+)(|:\d+)/)
+
+          unless file_and_line_number
+            return ["Unable to infer file and line number from backtrace"]
+          end
+
+          file_path, line_number = file_and_line_number[1..2]
           max_line_count = RSpec.configuration.max_displayed_failure_line_count
           lines = SnippetExtractor.extract_expression_lines_at(file_path, line_number.to_i, max_line_count)
           RSpec.world.source_cache.syntax_highlighter.highlight(lines)

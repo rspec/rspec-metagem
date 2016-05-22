@@ -478,6 +478,14 @@ module RSpec::Core
         end
       end
 
+      context "when the stack trace is from a java exception" do
+        let(:exception) { instance_double(Exception, :backtrace => [ "org.jruby.SomeJavaException(Unknown Source)"]) }
+
+        it "reports that it was unable to infer a code location from the backtrace" do
+          expect(read_failed_lines.first).to include("Unable to infer file and line number from backtrace")
+        end
+      end
+
       context "when ruby reports a file that does not exist" do
         let(:file) { "#{__FILE__}/blah.rb" }
         let(:exception) { instance_double(Exception, :backtrace => [ "#{file}:1"]) }
