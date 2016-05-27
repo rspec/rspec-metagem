@@ -128,7 +128,7 @@ module RSpec
 
           signature = Support::MethodSignature.new(Support.method_handle_for(actual, name))
 
-          Support::StrictSignatureVerifier.new(signature, []).with_expectation(expectation).valid?
+          Support::StrictSignatureVerifier.new(signature).with_expectation(expectation).valid?
         end
 
         def with_arity
