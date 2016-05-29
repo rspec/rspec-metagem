@@ -108,6 +108,20 @@ RSpec.describe "#include matcher" do
         expect(hash).to include(hash)
       end
 
+      it 'provides a valid diff' do
+        allow(RSpec::Matchers.configuration).to receive(:color?).and_return(false)
+
+        expect {
+          expect(:foo => 1, :bar => 2).to include(:foo => 1, :bar => 3)
+        }.to fail_including(dedent(<<-END))
+          |Diff:
+          |@@ -1,3 +1,3 @@
+          |-:bar => 3,
+          |+:bar => 2,
+          | :foo => 1,
+        END
+      end
+
       context 'that overrides #send' do
         it 'still works' do
           array = [1, 2]
