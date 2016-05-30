@@ -1389,8 +1389,12 @@ module RSpec
 
       # @macro delegate_to_ordering_manager
       #
-      # Sets the default global order and, if order is `'rand:<seed>'`, also
-      # sets the seed.
+      # Sets the default global ordering strategy. By default this can be one
+      # of `:defined`, `:random`, but is customizable through the
+      # `register_ordering` API. If order is set to `'rand:<seed>'`,
+      # the seed will also be set.
+      #
+      # @see #register_ordering
       delegate_to_ordering_manager :order=
 
       # @macro delegate_to_ordering_manager
@@ -1412,13 +1416,32 @@ module RSpec
       #     end
       #   end
       #
-      #   describe MyClass, :order => :reverse do
+      #   RSpec.describe 'MyClass', :order => :reverse do
       #     # ...
       #   end
       #
       # @note Pass the symbol `:global` to set the ordering strategy that
       #   will be used to order the top-level example groups and any example
       #   groups that do not have declared `:order` metadata.
+      #
+      # @example
+      #   RSpec.configure do |rspec|
+      #     rspec.register_ordering :global do |examples|
+      #       acceptance, other = examples.partition do |example|
+      #         example.metadata[:type] == :acceptance
+      #       end
+      #       other + acceptance
+      #     end
+      #   end
+      #
+      #   RSpec.describe 'MyClass', :type => :acceptance do
+      #     # will run last
+      #   end
+      #
+      #   RSpec.describe 'MyClass' do
+      #     # will run first
+      #   end
+      #
       delegate_to_ordering_manager :register_ordering
 
       # @private
