@@ -184,6 +184,27 @@ RSpec.describe "#include matcher" do
           expect([1,2,3]).to include(5,1,6,2,4)
         }.to fail_matching("expected [1, 2, 3] to include 5, 6, and 4")
       end
+
+      it 'correctly diffs lists of hashes' do
+        allow(RSpec::Matchers.configuration).to receive(:color?).and_return(false)
+
+        expect {
+          expect([
+            { :number => 1 },
+            { :number => 2 },
+            { :number => 3 }
+          ]).to include(
+            { :number => 1 },
+            { :number => 0 },
+            { :number => 3 }
+          )
+        }.to fail_including(dedent(<<-END))
+          |Diff:
+          |@@ -1,2 +1,2 @@
+          |-[{:number=>1}, {:number=>0}, {:number=>3}]
+          |+[{:number=>1}, {:number=>2}, {:number=>3}]
+        END
+      end
     end
 
     context "for a hash target" do
