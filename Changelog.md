@@ -1,5 +1,24 @@
 ### 3.5.0 Development
-[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.5.0.beta1...master)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.5.0.beta3...master)
+
+Bug Fixes:
+
+* Fix `include` matcher so that it provides a valid diff for hashes. (Yuji Nakayama, #916)
+
+### 3.5.0.beta3 / 2016-04-02
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.5.0.beta2...v3.5.0.beta3)
+
+Enhancements:
+
+* Make `rspec/expectations/minitest_integration` work on Minitest::Spec
+  5.6+. (Myron Marston, #904)
+* Add an alias `having_attributes` for `have_attributes` matcher.
+  (Yuji Nakayama, #905)
+* Improve `change` matcher error message when block is mis-used.
+  (Alex Altair, #908)
+
+### 3.5.0.beta2 / 2016-03-10
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.5.0.beta1...v3.5.0.beta2)
 
 Enhancements:
 
@@ -9,17 +28,10 @@ Enhancements:
   `notify_expectation_failures: true` option for the `match` method to
   allow expectation failures to be raised as normal instead of being
   converted into a `false` return value for `matches?`. (Jon Rowe, #892)
-* Make `rspec/expectations/minitest_integration` work on Minitest::Spec
-  5.6+. (Myron Marston, #904)
-* Add an alias `having_attributes` for `have_attributes` matcher.
-  (Yuji Nakayama, #905)
-* Improve `change` matcher error message when block is mis-used.
-  (Alex Altair, #908)
 
 Bug Fixes:
 
 * Allow `should` deprecation check to work on `BasicObject`s. (James Coleman, #898)
-* Fix `include` matcher so that it provides a valid diff for hashes. (Yuji Nakayama, #916)
 
 ### 3.5.0.beta1 / 2016-02-06
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.4.0...v3.5.0.beta1)
