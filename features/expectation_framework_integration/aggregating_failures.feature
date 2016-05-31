@@ -71,7 +71,7 @@ Feature: Aggregating Failures
                          expected {"Content-Type" => "text/plain"} to include {"Content-Type" => "application/json"}
                          Diff:
                          @@ -1,2 +1,2 @@
-                         -[{"Content-Type"=>"application/json"}]
+                         -"Content-Type" => "application/json",
                          +"Content-Type" => "text/plain",
                        # ./spec/use_block_form_spec.rb:20
 
@@ -184,7 +184,7 @@ Feature: Aggregating Failures
                   expected {"Content-Type" => "text/plain"} to include {"Content-Type" => "application/json"}
                   Diff:
                   @@ -1,2 +1,2 @@
-                  -[{"Content-Type"=>"application/json"}]
+                  -"Content-Type" => "application/json",
                   +"Content-Type" => "text/plain",
                 # ./spec/enable_globally_spec.rb:14
 
@@ -240,7 +240,7 @@ Feature: Aggregating Failures
                          expected {"Content-Type" => "text/plain"} to include {"Content-Type" => "application/json"}
                          Diff:
                          @@ -1,2 +1,2 @@
-                         -[{"Content-Type"=>"application/json"}]
+                         -"Content-Type" => "application/json",
                          +"Content-Type" => "text/plain",
                        # ./spec/nested_failure_aggregation_spec.rb:10
 
@@ -248,7 +248,7 @@ Feature: Aggregating Failures
                          expected {"Content-Type" => "text/plain"} to include {"Content-Length" => "21"}
                          Diff:
                          @@ -1,2 +1,2 @@
-                         -[{"Content-Length"=>"21"}]
+                         -"Content-Length" => "21",
                          +"Content-Type" => "text/plain",
                        # ./spec/nested_failure_aggregation_spec.rb:11
 
@@ -338,7 +338,7 @@ Feature: Aggregating Failures
                   expected {"Content-Type" => "text/plain"} to include {"Content-Type" => "application/json"}
                   Diff:
                   @@ -1,2 +1,2 @@
-                  -[{"Content-Type"=>"application/json"}]
+                  -"Content-Type" => "application/json",
                   +"Content-Type" => "text/plain",
                 # ./spec/pending_spec.rb:9
 
