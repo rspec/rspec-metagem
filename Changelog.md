@@ -1,22 +1,29 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.0.beta1...master)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.0.beta3...master)
 
 Enhancements:
 
-* Remove unneeded `:execution_result` example groups metadata, saving a
-  bit of memory. (Myron Marston, #2172)
-* Apply hooks registered with `config` to previously defined groups.
-  (Myron Marston, #2189)
-* `RSpec::Core::Configuration#reporter` is now public API under semver.
-  (Jon Rowe, #2193)
-* Add new `config.when_first_matching_example_defined` hook. (Myron
-  Marston, #2175)
-* Add new `config.filter_run_when_matching` API, intended to replace
-  the combination of `config.filter_run` and
-  `config.run_all_when_everything_filtered` (Myron Marston, #2206)
 * Filter out bundler stackframes from backtraces by default, since
   Bundler 1.12 now includes its own frames in stack traces produced
   by using `bundle exec`. (Myron Marston, #2240)
+
+Bug Fixes:
+
+* Fix `--bisect` so it works on large spec suites that were previously triggering
+  "Argument list too long errors" due to all the spec locations being passed as
+  CLI args. (Matt Jones, #2223).
+* Fix deprecated `:example_group`-based filtering so that it properly
+  applies to matching example groups. (Myron Marston, #2234)
+* Fix `NoMethodError` caused by Java backtraces on JRuby. (Michele Piccirillo, #2244)
+
+### 3.5.0.beta3 / 2016-04-02
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.0.beta2...v3.5.0.beta3)
+
+Enhancements:
+
+* Add new `config.filter_run_when_matching` API, intended to replace
+  the combination of `config.filter_run` and
+  `config.run_all_when_everything_filtered` (Myron Marston, #2206)
 
 Bug Fixes:
 
@@ -25,15 +32,33 @@ Bug Fixes:
 * Fix failure snippet extraction so that `def-end` snippets
   ending with `end`-only line can be extracted properly.
   (Yuji Nakayama, #2215)
-* Fix `--bisect` so it works on large spec suites that were previously triggering
-  "Argument list too long errors" due to all the spec locations being passed as
-  CLI args. (Matt Jones, #2223).
-* Fix deprecated `:example_group`-based filtering so that it properly
-  applies to matching example groups. (Myron Marston, #2234)
-* Fix `NoMethodError` caused by Java backtraces. (Michele Piccirillo, #2244)
+
+### 3.5.0.beta2 / 2016-03-10
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.0.beta1...v3.5.0.beta2)
+
+Enhancements:
+
+* Remove unneeded `:execution_result` example group metadata, saving a
+  bit of memory. (Myron Marston, #2172)
+* Apply hooks registered with `config` to previously defined groups.
+  (Myron Marston, #2189)
+* `RSpec::Core::Configuration#reporter` is now public API under SemVer.
+  (Jon Rowe, #2193)
+* Add new `config.when_first_matching_example_defined` hook. (Myron
+  Marston, #2175)
 
 ### 3.5.0.beta1 / 2016-02-06
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.3...v3.5.0.beta1)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.4...v3.5.0.beta1)
+
+Enhancements:
+
+* Add `RSpec::Core::ExampleGroup.currently_executing_a_context_hook?`,
+  primarily for use by rspec-rails. (Sam Phippen, #2131)
+
+Bug Fixes:
+
+* Ensure `MultipleExceptionError` does not contain a recursive reference
+  to itself. (Sam Phippen, #2133)
 
 ### 3.4.4 / 2016-03-09
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.3...v3.4.4)
@@ -48,7 +73,7 @@ Bug Fixes:
 
 Bug Fixes:
 
-* Prevent a `TypeError` from occuring when running via the rake task when
+* Prevent a `TypeError` from occurring when running via the rake task when
   Ruby crashes. (Patrik Wenger, #2161)
 * Only consider example and group declaration lines from a specific file
   when applying line number filtering, instead of considering all
@@ -56,6 +81,8 @@ Bug Fixes:
 * Fix failure snippet extraction so that snippets that contain `do-end` style
   block and end with `end`-only line can be extracted properly.
   (Yuji Nakayama, #2173)
+* Prevent infinite recursion when an exception is caused by itself.
+  (Jon Rowe, #2128)
 
 ### 3.4.2 / 2016-01-26
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.4.1...v3.4.2)
