@@ -51,8 +51,8 @@ module RSpec
         # @api private
         # @return [Array, Hash]
         def expected
-          if expecteds.all? { |item| item.is_a?(Hash) }
-            expecteds.inject(:merge)
+          if expecteds.one? && Hash === expecteds.first
+            expecteds.first
           else
             expecteds
           end
