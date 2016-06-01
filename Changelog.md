@@ -8,6 +8,11 @@ Enhancements:
   by using `bundle exec`. (Myron Marston, #2240)
 * HTML Formatter uses exception presenter to get failure message
   for consistency with other formatters. (@mrageh, #2222)
+* Load spec files in the order of the directories or files passed
+  at the command line, making it easy to make some specs run before
+  others in a one-off manner.  For example, `rspec spec/unit
+  spec/acceptance --order defined` will run unit specs before acceptance
+  specs. (Myron Marston, #2253)
 
 Bug Fixes:
 

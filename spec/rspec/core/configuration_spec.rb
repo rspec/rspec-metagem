@@ -483,7 +483,7 @@ module RSpec::Core
 
       it 'attempts to load the provided file names' do
         assign_files_or_directories_to_run "path/to/some/file.rb"
-        expect(config.files_to_run).to eq(["path/to/some/file.rb"])
+        expect(config.files_to_run).to contain_files("path/to/some/file.rb")
       end
 
       it 'does not attempt to load a file at the `default_path`' do
@@ -554,57 +554,70 @@ module RSpec::Core
         end
       end
 
-      def specify_consistent_ordering_of_files_to_run
-        allow(File).to receive(:directory?).and_call_original
-        allow(File).to receive(:directory?).with('a') { true }
-        globbed_files = nil
-        allow(Dir).to receive(:[]).with(/^\{?a/) { globbed_files }
-        allow(Dir).to receive(:[]).with(a_string_starting_with(Dir.getwd)) { [] }
+      it 'loads files in passed directories in alphabetical order to avoid OS-specific file-globbing non-determinism' do
+        define_dirs "spec/unit" => [
+          ["spec/unit/b_spec.rb", "spec/unit/a_spec.rb"],
+          ["spec/unit/a_spec.rb", "spec/unit/b_spec.rb"]
+        ]
 
-        orderings = [
-          %w[ a/1.rb a/2.rb a/3.rb ],
-          %w[ a/2.rb a/1.rb a/3.rb ],
-          %w[ a/3.rb a/2.rb a/1.rb ]
-        ].map do |files|
-          globbed_files = files
-          yield
-          config.files_to_run
-        end
-
-        expect(orderings.uniq.size).to eq(1)
+        expect(assign_files_or_directories_to_run "spec/unit").to match [
+          file_at("spec/unit/a_spec.rb"),
+          file_at("spec/unit/b_spec.rb")
+        ]
+        expect(assign_files_or_directories_to_run "spec/unit").to match [
+          file_at("spec/unit/a_spec.rb"),
+          file_at("spec/unit/b_spec.rb")
+        ]
       end
 
-      context 'when the given directories match the pattern' do
-        it 'orders the files in a consistent ordering, regardless of the underlying OS ordering' do
-          specify_consistent_ordering_of_files_to_run do
-            config.pattern = 'a/*.rb'
-            assign_files_or_directories_to_run 'a'
-          end
+      it 'respects the user-specified order of files and directories passed at the command line' do
+        define_dirs "spec/b" => [["spec/b/1_spec.rb", "spec/b/2_spec.rb"]],
+                    "spec/c" => [["spec/c/1_spec.rb", "spec/c/2_spec.rb"]]
+
+        expect(assign_files_or_directories_to_run "spec/b", "spec/a1_spec.rb", "spec/c", "spec/a2_spec.rb").to match [
+          file_at("spec/b/1_spec.rb"), file_at("spec/b/2_spec.rb"),
+          file_at("spec/a1_spec.rb"),
+          file_at("spec/c/1_spec.rb"), file_at("spec/c/2_spec.rb"),
+          file_at("spec/a2_spec.rb")
+        ]
+      end
+
+      it 'deduplicates spec files that are listed individually and present in a passed dir' do
+        define_dirs "spec/unit" => [[
+          "spec/unit/a_spec.rb",
+          "spec/unit/b_spec.rb",
+          "spec/unit/c_spec.rb"
+        ]]
+
+        expect(assign_files_or_directories_to_run "spec/unit/b_spec.rb", "spec/unit").to match [
+          file_at("spec/unit/b_spec.rb"),
+          file_at("spec/unit/a_spec.rb"),
+          file_at("spec/unit/c_spec.rb")
+        ]
+
+        expect(assign_files_or_directories_to_run "spec/unit", "spec/unit/b_spec.rb").to match [
+          file_at("spec/unit/a_spec.rb"),
+          file_at("spec/unit/b_spec.rb"),
+          file_at("spec/unit/c_spec.rb")
+        ]
+      end
+
+      def define_dirs(dirs_hash)
+        allow(File).to receive(:directory?) do |path|
+          !path.end_with?(".rb")
+        end
+
+        allow(Dir).to receive(:[]).and_return([])
+
+        dirs_hash.each do |dir, sequential_glob_return_values|
+          allow(Dir).to receive(:[]).with(
+            a_string_including(dir, config.pattern)
+          ).and_return(*sequential_glob_return_values)
         end
       end
 
-      context 'when the pattern is given relative to the given directories' do
-        it 'orders the files in a consistent ordering, regardless of the underlying OS ordering' do
-          specify_consistent_ordering_of_files_to_run do
-            config.pattern = '*.rb'
-            assign_files_or_directories_to_run 'a'
-          end
-        end
-      end
-
-      context 'when given multiple file paths' do
-        it 'orders the files in a consistent ordering, regardless of the given order' do
-          allow(File).to receive(:directory?) { false } # fake it into thinking these a full file paths
-
-          files = ['a/b/c_spec.rb', 'c/b/a_spec.rb']
-          assign_files_or_directories_to_run(*files)
-          ordering_1 = config.files_to_run
-
-          assign_files_or_directories_to_run(*files.reverse)
-          ordering_2 = config.files_to_run
-
-          expect(ordering_1).to eq(ordering_2)
-        end
+      def file_at(relative_path)
+        eq(relative_path).or eq(File.expand_path(relative_path))
       end
     end
 
@@ -819,10 +832,10 @@ module RSpec::Core
 
     it "allows file names with brackets" do
       assign_files_or_directories_to_run "./path/to/a_[1:2]spec.rb"
-      expect(config.files_to_run).to eq(["./path/to/a_[1:2]spec.rb"])
+      expect(config.files_to_run).to contain_files("./path/to/a_[1:2]spec.rb")
 
       assign_files_or_directories_to_run "./path/to/a_spec.rb[foo]"
-      expect(config.files_to_run).to eq(["./path/to/a_spec.rb[foo]"])
+      expect(config.files_to_run).to contain_files("./path/to/a_spec.rb[foo]")
     end
 
     context "with an example id" do

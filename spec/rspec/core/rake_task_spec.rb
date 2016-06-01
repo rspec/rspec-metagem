@@ -167,7 +167,7 @@ module RSpec::Core
     context "with SPEC env var set" do
       it "sets files to run" do
         with_env_vars 'SPEC' => 'path/to/file' do
-          expect(loaded_files).to eq(["path/to/file"])
+          expect(loaded_files).to contain_files("path/to/file")
         end
       end
 
@@ -346,7 +346,7 @@ module RSpec::Core
         it "loads the files from the FileList" do
           task.pattern = FileList["spec/rspec/core/resources/**/*_spec.rb"]
 
-          expect(loaded_files).to contain_exactly(
+          expect(loaded_files).to contain_files(
             "spec/rspec/core/resources/a_spec.rb",
             "spec/rspec/core/resources/acceptance/foo_spec.rb"
           )

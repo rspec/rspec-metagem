@@ -1782,7 +1782,7 @@ module RSpec
         files = FlatMap.flat_map(paths_to_check(paths)) do |path|
           path = path.gsub(File::ALT_SEPARATOR, File::SEPARATOR) if File::ALT_SEPARATOR
           File.directory?(path) ? gather_directories(path) : extract_location(path)
-        end.sort.uniq
+        end.uniq
 
         return files unless only_failures?
         relative_files = files.map { |f| Metadata.relative_path(File.expand_path f) }
@@ -1802,11 +1802,12 @@ module RSpec
       def gather_directories(path)
         include_files = get_matching_files(path, pattern)
         exclude_files = get_matching_files(path, exclude_pattern)
-        (include_files - exclude_files).sort.uniq
+        (include_files - exclude_files).uniq
       end
 
       def get_matching_files(path, pattern)
-        Dir[file_glob_from(path, pattern)].map { |file| File.expand_path(file) }
+        raw_files = Dir[file_glob_from(path, pattern)]
+        raw_files.map { |file| File.expand_path(file) }.sort
       end
 
       def file_glob_from(path, pattern)
@@ -1846,7 +1847,7 @@ module RSpec
         end
 
         return [] if path == default_path
-        path
+        File.expand_path(path)
       end
 
       def command
