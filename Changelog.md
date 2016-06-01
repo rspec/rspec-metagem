@@ -6,6 +6,8 @@ Enhancements:
 * Filter out bundler stackframes from backtraces by default, since
   Bundler 1.12 now includes its own frames in stack traces produced
   by using `bundle exec`. (Myron Marston, #2240)
+* HTML Formatter uses exception presenter to get failure message
+  for consistency with other formatters. (@mrageh, #2222)
 
 Bug Fixes:
 
