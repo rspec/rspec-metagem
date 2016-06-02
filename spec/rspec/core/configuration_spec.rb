@@ -901,6 +901,19 @@ module RSpec::Core
       end
     end
 
+    config_methods = %w[ include extend ]
+    config_methods << "prepend" if RSpec::Support::RubyFeatures.module_prepends_supported?
+    config_methods.each do |config_method|
+      it "raises an immediate `TypeError` when you attempt to `config.#{config_method}` with something besides a module" do
+        expect {
+          config.send(config_method, :not_a_module)
+        }.to raise_error(TypeError, a_string_including(
+          "configuration.#{config_method}",
+          "expects a module but got", "not_a_module"
+        ))
+      end
+    end
+
     describe "#include" do
       include_examples "warning of deprecated `:example_group` during filtering configuration", :include, Enumerable
 

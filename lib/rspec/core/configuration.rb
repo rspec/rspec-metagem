@@ -1175,9 +1175,9 @@ module RSpec
       # @see #extend
       # @see #prepend
       def include(mod, *filters)
-        meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
-        @include_modules.append(mod, meta)
-        on_existing_matching_groups(meta) { |group| safe_include(mod, group) }
+        define_mixed_in_module(mod, filters, @include_modules, :include) do |group|
+          safe_include(mod, group)
+        end
       end
 
       # Tells RSpec to extend example groups with `mod`. Methods defined in
@@ -1211,9 +1211,9 @@ module RSpec
       # @see #include
       # @see #prepend
       def extend(mod, *filters)
-        meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
-        @extend_modules.append(mod, meta)
-        on_existing_matching_groups(meta) { |group| safe_extend(mod, group) }
+        define_mixed_in_module(mod, filters, @extend_modules, :extend) do |group|
+          safe_extend(mod, group)
+        end
       end
 
       if RSpec::Support::RubyFeatures.module_prepends_supported?
@@ -1250,9 +1250,9 @@ module RSpec
         # @see #include
         # @see #extend
         def prepend(mod, *filters)
-          meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
-          @prepend_modules.append(mod, meta)
-          on_existing_matching_groups(meta) { |group| safe_prepend(mod, group) }
+          define_mixed_in_module(mod, filters, @prepend_modules, :prepend) do |group|
+            safe_prepend(mod, group)
+          end
         end
       end
 
@@ -1955,6 +1955,16 @@ module RSpec
           host.extend(mod) unless (class << host; self; end).included_modules.include?(mod)
         end
         # :nocov:
+      end
+
+      def define_mixed_in_module(mod, filters, mod_list, config_method, &block)
+        unless Module === mod
+          raise TypeError, "`RSpec.configuration.#{config_method}` expects a module but got: #{mod.inspect}"
+        end
+
+        meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
+        mod_list.append(mod, meta)
+        on_existing_matching_groups(meta, &block)
       end
     end
     # rubocop:enable Metrics/ClassLength
