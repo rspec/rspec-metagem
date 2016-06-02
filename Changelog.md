@@ -13,6 +13,9 @@ Enhancements:
   others in a one-off manner.  For example, `rspec spec/unit
   spec/acceptance --order defined` will run unit specs before acceptance
   specs. (Myron Marston, #2253)
+* Add new `config.include_context` API for configuring global or
+  filtered inclusion of shared contexts in example groups.
+  (Myron Marston, #2256)
 
 Bug Fixes:
 

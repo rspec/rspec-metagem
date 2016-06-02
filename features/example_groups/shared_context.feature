@@ -1,15 +1,13 @@
 Feature: shared context
 
-  Use `shared_context` to define a block that will be evaluated in the context
-  of example groups either explicitly, using `include_context`, or implicitly by
-  matching metadata.
+  Use `shared_context` to define a block that will be evaluated in the context of example groups either locally, using `include_context` in an example group, or globally using `config.include_context`.
 
   When implicitly including shared contexts via matching metadata, the normal way is to define matching metadata on an example group, in which case the context is included in the entire group. However, you also have the option to include it in an individual example instead. RSpec treats every example as having a singleton example group (analogous to Ruby's singleton classes) containing just the one example.
 
   Background:
     Given a file named "shared_stuff.rb" with:
       """ruby
-      RSpec.shared_context "shared stuff", :a => :b do
+      RSpec.shared_context "shared stuff" do
         before { @some_var = :some_value }
         def shared_method
           "it works"
@@ -18,6 +16,10 @@ Feature: shared context
         subject do
           'this is the subject'
         end
+      end
+
+      RSpec.configure do |rspec|
+        rspec.include_context "shared stuff", :include_shared => true
       end
       """
 
@@ -72,7 +74,7 @@ Feature: shared context
       """ruby
       require "./shared_stuff.rb"
 
-      RSpec.describe "group that includes a shared context using metadata", :a => :b do
+      RSpec.describe "group that includes a shared context using metadata", :include_shared => true do
         it "has access to methods defined in shared context" do
           expect(shared_method).to eq("it works")
         end
@@ -103,7 +105,7 @@ Feature: shared context
           expect(self).not_to respond_to(:shared_method)
         end
 
-        it "has access to shared methods from examples with matching metadata", :a => :b do
+        it "has access to shared methods from examples with matching metadata", :include_shared => true do
           expect(shared_method).to eq("it works")
         end
       end

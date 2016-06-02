@@ -914,6 +914,46 @@ module RSpec::Core
       end
     end
 
+    describe "#include_context" do
+      context "with no metadata filters" do
+        it 'includes the named shared example group in all groups' do
+          RSpec.shared_examples "shared group" do
+            let(:foo) { 17 }
+          end
+          RSpec.configuration.include_context "shared group"
+
+          expect(RSpec.describe.new.foo).to eq 17
+        end
+      end
+
+      context "with metadata filters" do
+        it 'includes the named shared example group in matching groups' do
+          RSpec.shared_examples "shared group" do
+            let(:foo) { 18 }
+          end
+          RSpec.configuration.include_context "shared group", :include_it
+
+          expect(RSpec.describe.new).not_to respond_to(:foo)
+          expect(RSpec.describe("", :include_it).new.foo).to eq 18
+        end
+
+        it 'includes the named shared example group in the singleton class of matching examples' do
+          RSpec.shared_examples "shared group" do
+            let(:foo) { 19 }
+          end
+          RSpec.configuration.include_context "shared group", :include_it
+
+          foo_value = nil
+          describe_successfully do
+            it { expect { self.foo }.to raise_error(NoMethodError) }
+            it("", :include_it) { foo_value = foo }
+          end
+
+          expect(foo_value).to eq 19
+        end
+      end
+    end
+
     describe "#include" do
       include_examples "warning of deprecated `:example_group` during filtering configuration", :include, Enumerable
 

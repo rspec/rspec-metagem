@@ -1153,7 +1153,7 @@ module RSpec
       #     end
       #
       #     RSpec.configure do |config|
-      #       config.include(UserHelpers) # included in all modules
+      #       config.include(UserHelpers) # included in all groups
       #       config.include(AuthenticationHelpers, :type => :request)
       #     end
       #
@@ -1172,12 +1172,55 @@ module RSpec
       #   example has a singleton example group containing just the one
       #   example.
       #
+      # @see #include_context
       # @see #extend
       # @see #prepend
       def include(mod, *filters)
         define_mixed_in_module(mod, filters, @include_modules, :include) do |group|
           safe_include(mod, group)
         end
+      end
+
+      # Tells RSpec to include the named shared example group in example groups.
+      # Use `filters` to constrain the groups or examples in which to include
+      # the example group.
+      #
+      # @example
+      #
+      #     RSpec.shared_context "example users" do
+      #       let(:admin_user) { create_user(:admin) }
+      #       let(:guest_user) { create_user(:guest) }
+      #     end
+      #
+      #     RSpec.configure do |config|
+      #       config.include_context "example users", :type => :request
+      #     end
+      #
+      #     RSpec.describe "The admin page", :type => :request do
+      #       it "can be viewed by admins" do
+      #         login_with admin_user
+      #         get "/admin"
+      #         expect(response).to be_ok
+      #       end
+      #
+      #       it "cannot be viewed by guests" do
+      #         login_with guest_user
+      #         get "/admin"
+      #         expect(response).to be_forbidden
+      #       end
+      #     end
+      #
+      # @note Filtered context inclusions can also be applied to
+      #   individual examples that have matching metadata. Just like
+      #   Ruby's object model is that every object has a singleton class
+      #   which has only a single instance, RSpec's model is that every
+      #   example has a singleton example group containing just the one
+      #   example.
+      #
+      # @see #include
+      def include_context(shared_group_name, *filters)
+        block = world.shared_example_group_registry.find([:main], shared_group_name)
+        include SharedExampleGroupModule.new(shared_group_name, block), *filters
       end
 
       # Tells RSpec to extend example groups with `mod`. Methods defined in
