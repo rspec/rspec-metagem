@@ -34,8 +34,7 @@ module RSpec
         end
 
         def example_failed(failure)
-          output.puts failure_output(failure.example,
-                                     failure.example.execution_result.exception)
+          output.puts failure_output(failure.example)
         end
 
       private
@@ -50,7 +49,7 @@ module RSpec
                             :pending)
         end
 
-        def failure_output(example, _exception)
+        def failure_output(example)
           ConsoleCodes.wrap("#{current_indentation}#{example.description.strip} " \
                             "(FAILED - #{next_failure_index})",
                             :failure)
