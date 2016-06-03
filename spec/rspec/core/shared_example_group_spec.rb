@@ -40,8 +40,16 @@ module RSpec
         describe shared_method_name do
           let(:group) { RSpec.describe('example group') }
 
+          before do
+            RSpec.configuration.shared_context_metadata_behavior = :apply_to_host_groups
+          end
+
           define_method :define_shared_group do |*args, &block|
             group.send(shared_method_name, *args, &block)
+          end
+
+          define_method :define_top_level_shared_group do |*args, &block|
+            RSpec.send(shared_method_name, *args, &block)
           end
 
           def find_implementation_block(registry, scope, name)
@@ -80,7 +88,8 @@ module RSpec
           end
 
           it 'generates a named (rather than anonymous) module' do
-            define_shared_group("shared behaviors", :include_it) { }
+            define_top_level_shared_group("shared behaviors") { }
+            RSpec.configuration.include_context "shared behaviors", :include_it
             example_group = RSpec.describe("Group", :include_it) { }
 
             anonymous_module_regex = /#<Module:0x[0-9a-f]+>/
@@ -107,42 +116,109 @@ module RSpec
             end
           end
 
-          context "given a hash" do
-            it "includes itself in matching example groups" do
-              implementation = Proc.new { def self.bar; 'bar'; end }
-              define_shared_group(:foo => :bar, &implementation)
+          context "when `config.shared_context_metadata_behavior == :trigger_inclusion`" do
+            before do
+              RSpec.configuration.shared_context_metadata_behavior = :trigger_inclusion
+            end
 
-              matching_group = RSpec.describe "Group", :foo => :bar
-              non_matching_group = RSpec.describe "Group"
+            context "given a hash" do
+              it "includes itself in matching example groups" do
+                implementation = Proc.new { def self.bar; 'bar'; end }
+                define_shared_group(:foo => :bar, &implementation)
 
-              expect(matching_group.bar).to eq("bar")
-              expect(non_matching_group).not_to respond_to(:bar)
+                matching_group = RSpec.describe "Group", :foo => :bar
+                non_matching_group = RSpec.describe "Group"
+
+                expect(matching_group.bar).to eq("bar")
+                expect(non_matching_group).not_to respond_to(:bar)
+              end
+            end
+
+            context "given a string and a hash" do
+              it "captures the given string and block in the World's collection of shared example groups" do
+                implementation = lambda { }
+                define_shared_group("name", :foo => :bar, &implementation)
+                expect(find_implementation_block(registry, group, "name")).to eq implementation
+              end
+
+              it "delegates include on configuration" do
+                implementation = Proc.new { def self.bar; 'bar'; end }
+                define_shared_group("name", :foo => :bar, &implementation)
+
+                matching_group = RSpec.describe "Group", :foo => :bar
+                non_matching_group = RSpec.describe "Group"
+
+                expect(matching_group.bar).to eq("bar")
+                expect(non_matching_group).not_to respond_to(:bar)
+              end
+            end
+
+            it "displays a warning when adding a second shared example group with the same name" do
+              group.send(shared_method_name, 'some shared group') {}
+              original_declaration = [__FILE__, __LINE__ - 1].join(':')
+
+              warning = nil
+              allow(::Kernel).to receive(:warn) { |msg| warning = msg }
+
+              group.send(shared_method_name, 'some shared group') {}
+              second_declaration = [__FILE__, __LINE__ - 1].join(':')
+              expect(warning).to include('some shared group', original_declaration, second_declaration)
+              expect(warning).to_not include 'Called from'
             end
           end
 
-          context "given a string and a hash" do
-            it "captures the given string and block in the World's collection of shared example groups" do
-              implementation = lambda { }
-              define_shared_group("name", :foo => :bar, &implementation)
-              expect(find_implementation_block(registry, group, "name")).to eq implementation
+          context "when `config.shared_context_metadata_behavior == :apply_to_host_groups`" do
+            before do
+              RSpec.configuration.shared_context_metadata_behavior = :apply_to_host_groups
             end
 
-            it "delegates include on configuration" do
-              implementation = Proc.new { def self.bar; 'bar'; end }
-              define_shared_group("name", :foo => :bar, &implementation)
+            it "does not auto-include the shared group based on passed metadata" do
+              define_top_level_shared_group("name", :foo => :bar) do
+                def self.bar; 'bar'; end
+              end
 
               matching_group = RSpec.describe "Group", :foo => :bar
-              non_matching_group = RSpec.describe "Group"
 
-              expect(matching_group.bar).to eq("bar")
-              expect(non_matching_group).not_to respond_to(:bar)
+              expect(matching_group).not_to respond_to(:bar)
+            end
+
+            it "adds passed metadata to including groups and examples" do
+              define_top_level_shared_group("name", :foo => :bar) { }
+
+              group = RSpec.describe("outer")
+              nested = group.describe("inner")
+              example = group.example("ex")
+
+              group.include_context "name"
+
+              expect([group, nested, example]).to all have_attributes(
+                :metadata => a_hash_including(:foo => :bar)
+              )
+            end
+
+            it "requires a valid name" do
+              expect {
+                define_shared_group(:foo => 1)
+              }.to raise_error(ArgumentError, a_string_including(
+                "Shared example group names",
+                {:foo => 1}.inspect
+              ))
+            end
+          end
+
+          context "when the group is included via `config.include_context` and matching metadata" do
+            before do
+              # To ensure we don't accidentally include shared contexts the
+              # old way in this context, we disable the option here.
+              RSpec.configuration.shared_context_metadata_behavior = :apply_to_host_groups
             end
 
             describe "when it has a `let` and applies to an individual example via metadata" do
               it 'defines the `let` method correctly' do
-                define_shared_group("name", :include_it) do
+                define_top_level_shared_group("name") do
                   let(:foo) { "bar" }
                 end
+                RSpec.configuration.include_context "name", :include_it
 
                 ex = value = nil
                 RSpec.describe "group" do
@@ -166,7 +242,7 @@ module RSpec
               it 'runs them' do
                 sequence = []
 
-                define_shared_group("name", :include_it) do
+                define_top_level_shared_group("name") do
                   before(:context) { sequence << :before_context }
                   after(:context)  { sequence << :after_context }
 
@@ -179,6 +255,8 @@ module RSpec
                     sequence << :around_example_after
                   end
                 end
+
+                RSpec.configuration.include_context "name", :include_it
 
                 RSpec.describe "group" do
                   example("ex1") { sequence << :unmatched_example_1 }
@@ -202,13 +280,15 @@ module RSpec
               it 'runs the `after(:context)` hooks even if the `before(:context)` hook raises an error' do
                 sequence = []
 
-                define_shared_group("name", :include_it) do
+                define_top_level_shared_group("name") do
                   before(:context) do
                     sequence << :before_context
                     raise "boom"
                   end
                   after(:context) { sequence << :after_context }
                 end
+
+                RSpec.configuration.include_context "name", :include_it
 
                 RSpec.describe "group" do
                   example("ex", :include_it) { sequence << :example }

@@ -7,7 +7,17 @@ Feature: shared context
   Background:
     Given a file named "shared_stuff.rb" with:
       """ruby
-      RSpec.shared_context "shared stuff" do
+      RSpec.configure do |rspec|
+        # This config option will be enabled by default on RSpec 4,
+        # but for reasons of backwards compatibility, you have to
+        # set it on RSpec 3.
+        #
+        # It causes the host group and examples to inherit metadata
+        # from the shared context.
+        rspec.shared_context_metadata_behavior = :apply_to_host_groups
+      end
+
+      RSpec.shared_context "shared stuff", :shared_context => :metadata do
         before { @some_var = :some_value }
         def shared_method
           "it works"
@@ -45,6 +55,13 @@ Feature: shared context
 
         it "accesses the subject defined in the shared context" do
           expect(subject).to eq('this is the subject')
+        end
+
+        group = self
+
+        it "inherits metadata from the included context" do |ex|
+          expect(group.metadata).to include(:shared_context => :metadata)
+          expect(ex.metadata).to include(:shared_context => :metadata)
         end
       end
       """
@@ -90,6 +107,13 @@ Feature: shared context
         it "accesses the subject defined in the shared context" do
           expect(subject).to eq('this is the subject')
         end
+
+        group = self
+
+        it "inherits metadata from the included context" do |ex|
+          expect(group.metadata).to include(:shared_context => :metadata)
+          expect(ex.metadata).to include(:shared_context => :metadata)
+        end
       end
       """
     When I run `rspec shared_context_example.rb`
@@ -107,6 +131,10 @@ Feature: shared context
 
         it "has access to shared methods from examples with matching metadata", :include_shared => true do
           expect(shared_method).to eq("it works")
+        end
+
+        it "inherits metadata form the included context due to the matching metadata", :include_shared => true do |ex|
+          expect(ex.metadata).to include(:shared_context => :metadata)
         end
       end
       """

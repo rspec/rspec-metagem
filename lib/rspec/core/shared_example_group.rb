@@ -8,9 +8,10 @@ module RSpec
       # @private
       attr_reader :definition
 
-      def initialize(description, definition)
+      def initialize(description, definition, metadata)
         @description = description
         @definition  = definition
+        @metadata    = metadata
       end
 
       # Provides a human-readable representation of this module.
@@ -29,6 +30,8 @@ module RSpec
 
       # @private
       def include_in(klass, inclusion_line, args, customization_block)
+        klass.update_inherited_metadata(@metadata) unless @metadata.empty?
+
         SharedExampleGroupInclusionStackFrame.with_frame(@description, inclusion_line) do
           klass.class_exec(*args, &@definition)
           klass.class_exec(&customization_block) if customization_block
@@ -150,18 +153,21 @@ module RSpec
       # @private
       class Registry
         def add(context, name, *metadata_args, &block)
-          ensure_block_has_source_location(block) { CallerFilter.first_non_rspec_line }
-          shared_module = SharedExampleGroupModule.new(name, block)
-
-          if valid_name?(name)
-            warn_if_key_taken context, name, block
-            shared_example_groups[context][name] = shared_module
-          else
-            metadata_args.unshift name
+          if RSpec.configuration.shared_context_metadata_behavior == :trigger_inclusion
+            return legacy_add(context, name, *metadata_args, &block)
           end
 
-          return if metadata_args.empty?
-          RSpec.configuration.include shared_module, *metadata_args
+          unless valid_name?(name)
+            raise ArgumentError, "Shared example group names can only be a string, " \
+                                 "symbol or module but got: #{name.inspect}"
+          end
+
+          ensure_block_has_source_location(block) { CallerFilter.first_non_rspec_line }
+          warn_if_key_taken context, name, block
+
+          metadata = Metadata.build_hash_from(metadata_args)
+          shared_module = SharedExampleGroupModule.new(name, block, metadata)
+          shared_example_groups[context][name] = shared_module
         end
 
         def find(lookup_contexts, name)
@@ -174,6 +180,25 @@ module RSpec
         end
 
       private
+
+        # TODO: remove this in RSpec 4. This exists only to support
+        # `config.shared_context_metadata_behavior == :trigger_inclusion`,
+        # the legacy behavior of shared context metadata, which we do
+        # not want to support in RSpec 4.
+        def legacy_add(context, name, *metadata_args, &block)
+          ensure_block_has_source_location(block) { CallerFilter.first_non_rspec_line }
+          shared_module = SharedExampleGroupModule.new(name, block, {})
+
+          if valid_name?(name)
+            warn_if_key_taken context, name, block
+            shared_example_groups[context][name] = shared_module
+          else
+            metadata_args.unshift name
+          end
+
+          return if metadata_args.empty?
+          RSpec.configuration.include shared_module, *metadata_args
+        end
 
         def shared_example_groups
           @shared_example_groups ||= Hash.new { |hash, context| hash[context] = {} }

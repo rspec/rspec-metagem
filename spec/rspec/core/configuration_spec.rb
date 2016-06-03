@@ -2414,6 +2414,31 @@ module RSpec::Core
       end
     end
 
+    describe "#shared_context_metadata_behavior" do
+      it "defaults to :trigger_inclusion for backwards compatibility" do
+        expect(config.shared_context_metadata_behavior).to eq :trigger_inclusion
+      end
+
+      it "can be set to :apply_to_host_groups" do
+        config.shared_context_metadata_behavior = :apply_to_host_groups
+        expect(config.shared_context_metadata_behavior).to eq :apply_to_host_groups
+      end
+
+      it "can be set to :trigger_inclusion explicitly" do
+        config.shared_context_metadata_behavior = :trigger_inclusion
+        expect(config.shared_context_metadata_behavior).to eq :trigger_inclusion
+      end
+
+      it "cannot be set to any other values" do
+        expect {
+          config.shared_context_metadata_behavior = :another_value
+        }.to raise_error(ArgumentError, a_string_including(
+          "shared_context_metadata_behavior",
+          ":another_value", ":trigger_inclusion", ":apply_to_host_groups"
+        ))
+      end
+    end
+
     # assigns files_or_directories_to_run and triggers post-processing
     # via `files_to_run`.
     def assign_files_or_directories_to_run(*value)
