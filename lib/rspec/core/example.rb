@@ -229,8 +229,7 @@ module RSpec
       def run(example_group_instance, reporter)
         @example_group_instance = example_group_instance
         @reporter = reporter
-        hooks.register_global_singleton_context_hooks(self, RSpec.configuration.hooks)
-        RSpec.configuration.configure_example(self)
+        RSpec.configuration.configure_example(self, hooks)
         RSpec.current_example = self
 
         start(reporter)

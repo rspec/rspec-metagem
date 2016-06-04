@@ -426,7 +426,6 @@ module RSpec
 
         @currently_executing_a_context_hook = false
 
-        hooks.register_globals(self, RSpec.configuration.hooks)
         RSpec.configuration.configure_group(self)
       end
 

@@ -1304,6 +1304,8 @@ module RSpec
       # Used internally to extend a group with modules using `include`, `prepend` and/or
       # `extend`.
       def configure_group(group)
+        group.hooks.register_globals(group, hooks)
+
         configure_group_with group, @include_modules, :safe_include
         configure_group_with group, @extend_modules,  :safe_extend
         configure_group_with group, @prepend_modules, :safe_prepend
@@ -1313,7 +1315,8 @@ module RSpec
       #
       # Used internally to extend the singleton class of a single example's
       # example group instance with modules using `include` and/or `extend`.
-      def configure_example(example)
+      def configure_example(example, example_hooks)
+        example_hooks.register_global_singleton_context_hooks(example, hooks)
         singleton_group = example.example_group_instance.singleton_class
 
         # We replace the metadata so that SharedExampleGroupModule#included
