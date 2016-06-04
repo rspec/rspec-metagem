@@ -364,16 +364,16 @@ module RSpec
 
       # @private
       def self.find_and_eval_shared(label, name, inclusion_location, *args, &customization_block)
-        shared_block = RSpec.world.shared_example_group_registry.find(parent_groups, name)
+        shared_module = RSpec.world.shared_example_group_registry.find(parent_groups, name)
 
-        unless shared_block
+        unless shared_module
           raise ArgumentError, "Could not find shared #{label} #{name.inspect}"
         end
 
-        SharedExampleGroupInclusionStackFrame.with_frame(name, Metadata.relative_path(inclusion_location)) do
-          module_exec(*args, &shared_block)
-          module_exec(&customization_block) if customization_block
-        end
+        shared_module.include_in(
+          self, Metadata.relative_path(inclusion_location),
+          args, customization_block
+        )
       end
 
       # @!endgroup

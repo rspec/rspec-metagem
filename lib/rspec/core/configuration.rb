@@ -1219,8 +1219,8 @@ module RSpec
       #
       # @see #include
       def include_context(shared_group_name, *filters)
-        block = world.shared_example_group_registry.find([:main], shared_group_name)
-        include SharedExampleGroupModule.new(shared_group_name, block), *filters
+        shared_module = world.shared_example_group_registry.find([:main], shared_group_name)
+        include shared_module, *filters
       end
 
       # Tells RSpec to extend example groups with `mod`. Methods defined in

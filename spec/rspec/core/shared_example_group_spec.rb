@@ -44,6 +44,10 @@ module RSpec
             group.send(shared_method_name, *args, &block)
           end
 
+          def find_implementation_block(registry, scope, name)
+            registry.find([scope], name).definition
+          end
+
           it "is exposed to the global namespace when expose_dsl_globally is enabled" do
             in_sub_process do
               RSpec.configuration.expose_dsl_globally = true
@@ -98,7 +102,7 @@ module RSpec
               it "captures the given #{type} and block in the collection of shared example groups" do
                 implementation = lambda { }
                 define_shared_group(object, &implementation)
-                expect(registry.find([group], object)).to eq implementation
+                expect(find_implementation_block(registry, group, object)).to eq implementation
               end
             end
           end
@@ -120,7 +124,7 @@ module RSpec
             it "captures the given string and block in the World's collection of shared example groups" do
               implementation = lambda { }
               define_shared_group("name", :foo => :bar, &implementation)
-              expect(registry.find([group], "name")).to eq implementation
+              expect(find_implementation_block(registry, group, "name")).to eq implementation
             end
 
             it "delegates include on configuration" do

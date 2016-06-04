@@ -5,6 +5,9 @@ module RSpec
     # eval'd when the `SharedExampleGroupModule` instance is included in an example
     # group.
     class SharedExampleGroupModule < Module
+      # @private
+      attr_reader :definition
+
       def initialize(description, definition)
         @description = description
         @definition  = definition
@@ -21,8 +24,14 @@ module RSpec
       # including example group.
       def included(klass)
         inclusion_line = klass.metadata[:location]
+        include_in klass, inclusion_line, [], nil
+      end
+
+      # @private
+      def include_in(klass, inclusion_line, args, customization_block)
         SharedExampleGroupInclusionStackFrame.with_frame(@description, inclusion_line) do
-          klass.class_exec(&@definition)
+          klass.class_exec(*args, &@definition)
+          klass.class_exec(&customization_block) if customization_block
         end
       end
     end
@@ -142,16 +151,17 @@ module RSpec
       class Registry
         def add(context, name, *metadata_args, &block)
           ensure_block_has_source_location(block) { CallerFilter.first_non_rspec_line }
+          shared_module = SharedExampleGroupModule.new(name, block)
 
           if valid_name?(name)
             warn_if_key_taken context, name, block
-            shared_example_groups[context][name] = block
+            shared_example_groups[context][name] = shared_module
           else
             metadata_args.unshift name
           end
 
           return if metadata_args.empty?
-          RSpec.configuration.include SharedExampleGroupModule.new(name, block), *metadata_args
+          RSpec.configuration.include shared_module, *metadata_args
         end
 
         def find(lookup_contexts, name)
@@ -177,13 +187,13 @@ module RSpec
         end
 
         def warn_if_key_taken(context, key, new_block)
-          existing_block = shared_example_groups[context][key]
+          existing_module = shared_example_groups[context][key]
 
-          return unless existing_block
+          return unless existing_module
 
           RSpec.warn_with <<-WARNING.gsub(/^ +\|/, ''), :call_site => nil
             |WARNING: Shared example group '#{key}' has been previously defined at:
-            |  #{formatted_location existing_block}
+            |  #{formatted_location existing_module.definition}
             |...and you are now defining it at:
             |  #{formatted_location new_block}
             |The new definition will overwrite the original one.
