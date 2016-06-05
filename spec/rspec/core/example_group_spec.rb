@@ -1533,6 +1533,115 @@ module RSpec::Core
       end
     end
 
+    describe "#update_inherited_metadata" do
+      it "updates the group metadata with the provided hash" do
+        group = RSpec.describe
+
+        expect(group.metadata).not_to include(:foo => 1, :bar => 2)
+        group.update_inherited_metadata(:foo => 1, :bar => 2)
+        expect(group.metadata).to include(:foo => 1, :bar => 2)
+      end
+
+      it "does not overwrite existing metadata since group metadata takes precedence over inherited metadata" do
+        group = RSpec.describe("group", :foo => 1)
+
+        expect {
+          group.update_inherited_metadata(:foo => 2)
+        }.not_to change { group.metadata[:foo] }.from(1)
+      end
+
+      it "does not replace the existing metadata object with a new one or change its default proc" do
+        group = RSpec.describe
+
+        expect {
+          group.update_inherited_metadata(:foo => 1)
+        }.to avoid_changing { group.metadata.__id__ }.and avoid_changing { group.metadata.default_proc }
+      end
+
+      it "propogates metadata updates to previously declared child examples" do
+        group = RSpec.describe
+        example = group.example
+
+        expect {
+          group.update_inherited_metadata(:foo => 1)
+        }.to change { example.metadata[:foo] }.from(nil).to(1)
+      end
+
+      it "propogates metadata updates to previously declared child group" do
+        group = RSpec.describe
+        child_group = group.describe
+
+        expect {
+          group.update_inherited_metadata(:foo => 1)
+        }.to change { child_group.metadata[:foo] }.from(nil).to(1)
+      end
+
+      it "applies new metadata-based config items based on the update" do
+        extension = Module.new do
+          def extension_method; 17; end
+        end
+
+        sequence = []
+        extension_checks = []
+        RSpec.configure do |c|
+          c.before(:example, :foo => true) { sequence << :global_before_hook }
+          c.after(:example, :foo => true) { sequence << :global_after_hook }
+          c.extend extension, :foo => true
+        end
+
+        describe_successfully do
+          example { sequence << :example_1 }
+
+          extension_checks << begin
+            self.extension_method
+          rescue NoMethodError
+            :method_not_defined
+          end
+
+          context "nested group before update" do
+            example { sequence << :nested_example }
+          end
+
+          update_inherited_metadata(:foo => true)
+
+          extension_checks << begin
+            self.extension_method
+          rescue NoMethodError
+            :method_not_defined
+          end
+
+          example { sequence << :example_2 }
+        end
+
+        expect(sequence).to eq [
+          :global_before_hook, :example_1, :global_after_hook,
+          :global_before_hook, :example_2, :global_after_hook,
+          :global_before_hook, :nested_example, :global_after_hook,
+        ]
+
+        expect(extension_checks).to eq [:method_not_defined, 17]
+      end
+
+      it "does not cause duplicate hooks to be added when re-configuring the group" do
+        sequence = []
+        RSpec.configure do |c|
+          c.before(:example, :foo => true) { sequence << :global_before_hook }
+          c.after(:example, :foo => true) { sequence << :global_after_hook }
+        end
+
+        describe_successfully("Group", :foo => true) do
+         example { sequence << :example_1 }
+         update_inherited_metadata(:bar => true)
+         example { sequence << :example_2 }
+        end
+
+        expect(sequence).to eq [
+          :global_before_hook, :example_1, :global_after_hook,
+          :global_before_hook, :example_2, :global_after_hook,
+        ]
+      end
+    end
+
     %w[include_examples include_context].each do |name|
       describe "##{name}" do
         let(:group) { RSpec.describe }

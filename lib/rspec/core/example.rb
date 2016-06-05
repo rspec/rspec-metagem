@@ -142,6 +142,13 @@ module RSpec
                     new_metadata, new_metadata[:block])
       end
 
+      # @private
+      def update_inherited_metadata(updates)
+        metadata.update(updates) do |_key, existing_example_value, _new_inherited_value|
+          existing_example_value
+        end
+      end
+
       # @attr_reader
       #
       # Returns the first exception raised in the context of running this

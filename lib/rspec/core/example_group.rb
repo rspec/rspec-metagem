@@ -689,6 +689,17 @@ module RSpec
         # :nocov:
       end
 
+      # @private
+      def self.update_inherited_metadata(updates)
+        metadata.update(updates) do |_key, existing_group_value, _new_inherited_value|
+          existing_group_value
+        end
+
+        RSpec.configuration.configure_group(self)
+        examples.each { |ex| ex.update_inherited_metadata(updates) }
+        children.each { |group| group.update_inherited_metadata(updates) }
+      end
+
       # Raised when an RSpec API is called in the wrong scope, such as `before`
       # being called from within an example rather than from within an example
       # group block.

@@ -40,6 +40,48 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
   end
 
+  describe "#update_inherited_metadata" do
+    it "updates the example metadata with the provided hash" do
+      example = RSpec.describe.example
+
+      expect(example.metadata).not_to include(:foo => 1, :bar => 2)
+      example.update_inherited_metadata(:foo => 1, :bar => 2)
+      expect(example.metadata).to include(:foo => 1, :bar => 2)
+    end
+
+    it "does not overwrite existing metadata since example metadata takes precedence over inherited metadata" do
+      example = RSpec.describe.example("ex", :foo => 1)
+
+      expect {
+        example.update_inherited_metadata(:foo => 2)
+      }.not_to change { example.metadata[:foo] }.from(1)
+    end
+
+    it "does not replace the existing metadata object with a new one or change its default proc" do
+      example = RSpec.describe.example
+
+      expect {
+        example.update_inherited_metadata(:foo => 1)
+      }.to avoid_changing { example.metadata.__id__ }.and avoid_changing { example.metadata.default_proc }
+    end
+
+    it "applies new metadata-based config items based on the update" do
+      sequence = []
+      RSpec.configure do |c|
+        c.before(:example, :foo => true) { sequence << :global_before_hook }
+        c.after(:example, :foo => true) { sequence << :global_after_hook }
+      end
+
+      describe_successfully do
+        it "gets the before hook due to the update" do
+          sequence << :example
+        end.update_inherited_metadata(:foo => true)
+      end
+
+      expect(sequence).to eq [:global_before_hook, :example, :global_after_hook]
+    end
+  end
+
   describe '#duplicate_with' do
     it 'successfully duplicates an example' do
       example = example_group.example { raise 'first' }
