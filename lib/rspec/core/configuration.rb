@@ -327,6 +327,59 @@ module RSpec
         )
       end
 
+      # @macro define_reader
+      # Configures how RSpec treats metadata passed as part of a shared example
+      # group definition. For example, given this shared example group definition:
+      #
+      #     RSpec.shared_context "uses DB", :db => true do
+      #       around(:example) do |ex|
+      #         MyORM.transaction(:rollback => true, &ex)
+      #       end
+      #     end
+      #
+      # ...there are two ways RSpec can treat the `:db => true` metadata, each
+      # of which has a corresponding config option:
+      #
+      # 1. `:trigger_inclusion`: this shared context will be implicitly included
+      #    in any groups (or examples) that have `:db => true` metadata.
+      # 2. `:apply_to_host_groups`: the metadata will be inherited by the metadata
+      #    hash of all host groups and examples.
+      #
+      # `:trigger_inclusion` is the legacy behavior from before RSpec 3.5 but should
+      # be considered deprecated. Instead, you can explicitly include a group with
+      # `include_context`:
+      #
+      #     RSpec.describe "My model" do
+      #       include_context "uses DB"
+      #     end
+      #
+      # ...or you can configure RSpec to include the context based on matching metadata
+      # using an API that mirrors configured module inclusion:
+      #
+      #     RSpec.configure do |rspec|
+      #       rspec.include_context "uses DB", :db => true
+      #     end
+      #
+      # `:apply_to_host_groups` is a new feature of RSpec 3.5 and will be the only
+      # supported behavior in RSpec 4.
+      #
+      # @overload shared_context_metadata_behavior
+      #   @return [:trigger_inclusion, :apply_to_host_groups] the configured behavior
+      # @overload shared_context_metadata_behavior=(value)
+      #   @param value [:trigger_inclusion, :apply_to_host_groups] sets the configured behavior
+      define_reader :shared_context_metadata_behavior
+      # @see shared_context_metadata_behavior
+      def shared_context_metadata_behavior=(value)
+        case value
+        when :trigger_inclusion, :apply_to_host_groups
+          @shared_context_metadata_behavior = value
+        else
+          raise ArgumentError, "Cannot set `RSpec.configuration." \
+            "shared_context_metadata_behavior` to `#{value.inspect}`. Only " \
+            "`:trigger_inclusion` and `:apply_to_host_groups` are valid values."
+        end
+      end
+
       # Record the start time of the spec suite to measure load time.
       add_setting :start_time
 
@@ -352,6 +405,7 @@ module RSpec
       attr_reader :backtrace_formatter, :ordering_manager, :loaded_spec_files
 
       # rubocop:disable Metrics/AbcSize
+      # rubocop:disable Metrics/MethodLength
       def initialize
         # rubocop:disable Style/GlobalVars
         @start_time = $_rspec_core_load_started_at || ::RSpec::Core::Time.now
@@ -398,9 +452,11 @@ module RSpec
         @threadsafe = true
         @max_displayed_failure_line_count = 10
         @world = World::Null
+        @shared_context_metadata_behavior = :trigger_inclusion
 
         define_built_in_hooks
       end
+      # rubocop:enable Metrics/MethodLength
       # rubocop:enable Metrics/AbcSize
 
       # @private
@@ -1153,7 +1209,7 @@ module RSpec
       #     end
       #
       #     RSpec.configure do |config|
-      #       config.include(UserHelpers) # included in all modules
+      #       config.include(UserHelpers) # included in all groups
       #       config.include(AuthenticationHelpers, :type => :request)
       #     end
       #
@@ -1172,12 +1228,55 @@ module RSpec
       #   example has a singleton example group containing just the one
       #   example.
       #
+      # @see #include_context
       # @see #extend
       # @see #prepend
       def include(mod, *filters)
-        meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
-        @include_modules.append(mod, meta)
-        on_existing_matching_groups(meta) { |group| safe_include(mod, group) }
+        define_mixed_in_module(mod, filters, @include_modules, :include) do |group|
+          safe_include(mod, group)
+        end
+      end
+
+      # Tells RSpec to include the named shared example group in example groups.
+      # Use `filters` to constrain the groups or examples in which to include
+      # the example group.
+      #
+      # @example
+      #
+      #     RSpec.shared_context "example users" do
+      #       let(:admin_user) { create_user(:admin) }
+      #       let(:guest_user) { create_user(:guest) }
+      #     end
+      #
+      #     RSpec.configure do |config|
+      #       config.include_context "example users", :type => :request
+      #     end
+      #
+      #     RSpec.describe "The admin page", :type => :request do
+      #       it "can be viewed by admins" do
+      #         login_with admin_user
+      #         get "/admin"
+      #         expect(response).to be_ok
+      #       end
+      #
+      #       it "cannot be viewed by guests" do
+      #         login_with guest_user
+      #         get "/admin"
+      #         expect(response).to be_forbidden
+      #       end
+      #     end
+      #
+      # @note Filtered context inclusions can also be applied to
+      #   individual examples that have matching metadata. Just like
+      #   Ruby's object model is that every object has a singleton class
+      #   which has only a single instance, RSpec's model is that every
+      #   example has a singleton example group containing just the one
+      #   example.
+      #
+      # @see #include
+      def include_context(shared_group_name, *filters)
+        shared_module = world.shared_example_group_registry.find([:main], shared_group_name)
+        include shared_module, *filters
       end
 
       # Tells RSpec to extend example groups with `mod`. Methods defined in
@@ -1211,9 +1310,9 @@ module RSpec
       # @see #include
       # @see #prepend
       def extend(mod, *filters)
-        meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
-        @extend_modules.append(mod, meta)
-        on_existing_matching_groups(meta) { |group| safe_extend(mod, group) }
+        define_mixed_in_module(mod, filters, @extend_modules, :extend) do |group|
+          safe_extend(mod, group)
+        end
       end
 
       if RSpec::Support::RubyFeatures.module_prepends_supported?
@@ -1250,9 +1349,9 @@ module RSpec
         # @see #include
         # @see #extend
         def prepend(mod, *filters)
-          meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
-          @prepend_modules.append(mod, meta)
-          on_existing_matching_groups(meta) { |group| safe_prepend(mod, group) }
+          define_mixed_in_module(mod, filters, @prepend_modules, :prepend) do |group|
+            safe_prepend(mod, group)
+          end
         end
       end
 
@@ -1261,6 +1360,8 @@ module RSpec
       # Used internally to extend a group with modules using `include`, `prepend` and/or
       # `extend`.
       def configure_group(group)
+        group.hooks.register_globals(group, hooks)
+
         configure_group_with group, @include_modules, :safe_include
         configure_group_with group, @extend_modules,  :safe_extend
         configure_group_with group, @prepend_modules, :safe_prepend
@@ -1270,7 +1371,8 @@ module RSpec
       #
       # Used internally to extend the singleton class of a single example's
       # example group instance with modules using `include` and/or `extend`.
-      def configure_example(example)
+      def configure_example(example, example_hooks)
+        example_hooks.register_global_singleton_context_hooks(example, hooks)
         singleton_group = example.example_group_instance.singleton_class
 
         # We replace the metadata so that SharedExampleGroupModule#included
@@ -1955,6 +2057,16 @@ module RSpec
           host.extend(mod) unless (class << host; self; end).included_modules.include?(mod)
         end
         # :nocov:
+      end
+
+      def define_mixed_in_module(mod, filters, mod_list, config_method, &block)
+        unless Module === mod
+          raise TypeError, "`RSpec.configuration.#{config_method}` expects a module but got: #{mod.inspect}"
+        end
+
+        meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
+        mod_list.append(mod, meta)
+        on_existing_matching_groups(meta, &block)
       end
     end
     # rubocop:enable Metrics/ClassLength

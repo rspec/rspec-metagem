@@ -901,6 +901,59 @@ module RSpec::Core
       end
     end
 
+    config_methods = %w[ include extend ]
+    config_methods << "prepend" if RSpec::Support::RubyFeatures.module_prepends_supported?
+    config_methods.each do |config_method|
+      it "raises an immediate `TypeError` when you attempt to `config.#{config_method}` with something besides a module" do
+        expect {
+          config.send(config_method, :not_a_module)
+        }.to raise_error(TypeError, a_string_including(
+          "configuration.#{config_method}",
+          "expects a module but got", "not_a_module"
+        ))
+      end
+    end
+
+    describe "#include_context" do
+      context "with no metadata filters" do
+        it 'includes the named shared example group in all groups' do
+          RSpec.shared_examples "shared group" do
+            let(:foo) { 17 }
+          end
+          RSpec.configuration.include_context "shared group"
+
+          expect(RSpec.describe.new.foo).to eq 17
+        end
+      end
+
+      context "with metadata filters" do
+        it 'includes the named shared example group in matching groups' do
+          RSpec.shared_examples "shared group" do
+            let(:foo) { 18 }
+          end
+          RSpec.configuration.include_context "shared group", :include_it
+
+          expect(RSpec.describe.new).not_to respond_to(:foo)
+          expect(RSpec.describe("", :include_it).new.foo).to eq 18
+        end
+
+        it 'includes the named shared example group in the singleton class of matching examples' do
+          RSpec.shared_examples "shared group" do
+            let(:foo) { 19 }
+          end
+          RSpec.configuration.include_context "shared group", :include_it
+
+          foo_value = nil
+          describe_successfully do
+            it { expect { self.foo }.to raise_error(NoMethodError) }
+            it("", :include_it) { foo_value = foo }
+          end
+
+          expect(foo_value).to eq 19
+        end
+      end
+    end
+
     describe "#include" do
       include_examples "warning of deprecated `:example_group` during filtering configuration", :include, Enumerable
 
@@ -2358,6 +2411,31 @@ module RSpec::Core
       it 'is configurable' do
         config.max_displayed_failure_line_count = 5
         expect(config.max_displayed_failure_line_count).to eq 5
+      end
+    end
+
+    describe "#shared_context_metadata_behavior" do
+      it "defaults to :trigger_inclusion for backwards compatibility" do
+        expect(config.shared_context_metadata_behavior).to eq :trigger_inclusion
+      end
+
+      it "can be set to :apply_to_host_groups" do
+        config.shared_context_metadata_behavior = :apply_to_host_groups
+        expect(config.shared_context_metadata_behavior).to eq :apply_to_host_groups
+      end
+
+      it "can be set to :trigger_inclusion explicitly" do
+        config.shared_context_metadata_behavior = :trigger_inclusion
+        expect(config.shared_context_metadata_behavior).to eq :trigger_inclusion
+      end
+
+      it "cannot be set to any other values" do
+        expect {
+          config.shared_context_metadata_behavior = :another_value
+        }.to raise_error(ArgumentError, a_string_including(
+          "shared_context_metadata_behavior",
+          ":another_value", ":trigger_inclusion", ":apply_to_host_groups"
+        ))
       end
     end
 

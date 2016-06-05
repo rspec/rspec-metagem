@@ -1,7 +1,7 @@
 require 'tmpdir'
 require 'fileutils'
 
-RSpec.shared_context "isolated home directory", :isolated_home => true do
+RSpec.shared_context "isolated home directory" do
   around do |ex|
     Dir.mktmpdir do |tmp_dir|
       original_home = ENV['HOME']
@@ -13,4 +13,8 @@ RSpec.shared_context "isolated home directory", :isolated_home => true do
       end
     end
   end
+end
+
+RSpec.configure do |c|
+  c.include_context "isolated home directory", :isolated_home => true
 end

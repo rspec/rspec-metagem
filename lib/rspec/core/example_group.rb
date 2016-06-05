@@ -364,16 +364,16 @@ module RSpec
 
       # @private
       def self.find_and_eval_shared(label, name, inclusion_location, *args, &customization_block)
-        shared_block = RSpec.world.shared_example_group_registry.find(parent_groups, name)
+        shared_module = RSpec.world.shared_example_group_registry.find(parent_groups, name)
 
-        unless shared_block
+        unless shared_module
           raise ArgumentError, "Could not find shared #{label} #{name.inspect}"
         end
 
-        SharedExampleGroupInclusionStackFrame.with_frame(name, Metadata.relative_path(inclusion_location)) do
-          module_exec(*args, &shared_block)
-          module_exec(&customization_block) if customization_block
-        end
+        shared_module.include_in(
+          self, Metadata.relative_path(inclusion_location),
+          args, customization_block
+        )
       end
 
       # @!endgroup
@@ -426,7 +426,6 @@ module RSpec
 
         @currently_executing_a_context_hook = false
 
-        hooks.register_globals(self, RSpec.configuration.hooks)
         RSpec.configuration.configure_group(self)
       end
 
@@ -688,6 +687,17 @@ module RSpec
           class << self; self; end
         end
         # :nocov:
+      end
+
+      # @private
+      def self.update_inherited_metadata(updates)
+        metadata.update(updates) do |_key, existing_group_value, _new_inherited_value|
+          existing_group_value
+        end
+
+        RSpec.configuration.configure_group(self)
+        examples.each { |ex| ex.update_inherited_metadata(updates) }
+        children.each { |group| group.update_inherited_metadata(updates) }
       end
 
       # Raised when an RSpec API is called in the wrong scope, such as `before`

@@ -24,7 +24,7 @@ Metrics/LineLength:
 
 # This should go down over time.
 Metrics/MethodLength:
-  Max: 40
+  Max: 37
 
 # This should go down over time.
 Metrics/CyclomaticComplexity:

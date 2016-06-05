@@ -38,8 +38,8 @@ class RaiseOnFailuresReporter < RSpec::Core::NullReporter
 end
 
 module CommonHelpers
-  def describe_successfully(description="", &describe_body)
-    example_group    = RSpec.describe(description, &describe_body)
+  def describe_successfully(*args, &describe_body)
+    example_group    = RSpec.describe(*args, &describe_body)
     ran_successfully = example_group.run RaiseOnFailuresReporter
     expect(ran_successfully).to eq true
     example_group

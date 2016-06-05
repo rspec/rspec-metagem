@@ -13,6 +13,13 @@ Enhancements:
   others in a one-off manner.  For example, `rspec spec/unit
   spec/acceptance --order defined` will run unit specs before acceptance
   specs. (Myron Marston, #2253)
+* Add new `config.include_context` API for configuring global or
+  filtered inclusion of shared contexts in example groups.
+  (Myron Marston, #2256)
+* Add new `config.shared_context_metadata_behavior = :apply_to_host_groups`
+  option, which causes shared context metadata to be inherited by the
+  metadata hash of all host groups and examples instead of configuring
+  implicit auto-inclusion based on the passed metadata. (Myron Marston, #2256)
 
 Bug Fixes:
 

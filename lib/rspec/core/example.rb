@@ -142,6 +142,13 @@ module RSpec
                     new_metadata, new_metadata[:block])
       end
 
+      # @private
+      def update_inherited_metadata(updates)
+        metadata.update(updates) do |_key, existing_example_value, _new_inherited_value|
+          existing_example_value
+        end
+      end
+
       # @attr_reader
       #
       # Returns the first exception raised in the context of running this
@@ -229,8 +236,7 @@ module RSpec
       def run(example_group_instance, reporter)
         @example_group_instance = example_group_instance
         @reporter = reporter
-        hooks.register_global_singleton_context_hooks(self, RSpec.configuration.hooks)
-        RSpec.configuration.configure_example(self)
+        RSpec.configuration.configure_example(self, hooks)
         RSpec.current_example = self
 
         start(reporter)
