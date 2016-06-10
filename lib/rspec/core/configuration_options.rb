@@ -35,6 +35,9 @@ module RSpec
       # @return [Hash] the final merged options, drawn from all external sources
       attr_reader :options
 
+      # @return [Array<String>] the original command-line arguments
+      attr_reader :args
+
     private
 
       def organize_options

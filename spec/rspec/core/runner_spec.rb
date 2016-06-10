@@ -255,71 +255,39 @@ module RSpec::Core
     end
 
     describe ".run" do
+      let(:args) { double(:args) }
       let(:err) { StringIO.new }
       let(:out) { StringIO.new }
+      let(:options) { { } }
+      let(:configuration_options) { double(:configuration_options, :options => options) }
 
-      context "with --drb or -X" do
-        before(:each) do
-          @options = RSpec::Core::ConfigurationOptions.new(%w[--drb --drb-port 8181 --color])
-          allow(RSpec::Core::ConfigurationOptions).to receive(:new) { @options }
-        end
+      before(:each) do
+        allow(RSpec::Core::ConfigurationOptions).to receive(:new).and_return(configuration_options)
+      end
 
-        def run_specs
-          RSpec::Core::Runner.run(%w[ --drb ], err, out)
-        end
+      context 'when the options contain a runner callable' do
+        let(:runner) { double(:runner, :call => nil) }
+        let(:options) { { :runner => runner } }
 
-        context 'and a DRb server is running' do
-          it "builds a DRbRunner and runs the specs" do
-            drb_proxy = double(RSpec::Core::DRbRunner, :run => true)
-            expect(drb_proxy).to receive(:run).with(err, out)
+        it 'invokes the runner callable' do
+          RSpec::Core::Runner.run([], err, out)
 
-            expect(RSpec::Core::DRbRunner).to receive(:new).and_return(drb_proxy)
-
-            run_specs
-          end
-        end
-
-        context 'and a DRb server is not running' do
-          before(:each) do
-            expect(RSpec::Core::DRbRunner).to receive(:new).and_raise(DRb::DRbConnError)
-          end
-
-          it "outputs a message" do
-            allow(RSpec.configuration).to receive(:files_to_run) { [] }
-            expect(err).to receive(:puts).with(
-              "No DRb server is running. Running in local process instead ..."
-            )
-            run_specs
-          end
-
-          it "builds a runner instance and runs the specs" do
-            process_proxy = double(RSpec::Core::Runner, :run => 0)
-            expect(process_proxy).to receive(:run).with(err, out)
-
-            expect(RSpec::Core::Runner).to receive(:new).and_return(process_proxy)
-
-            run_specs
-          end
-
-          if RSpec::Support::RubyFeatures.supports_exception_cause?
-            it "prevents the DRb error from being listed as the cause of expectation failures" do
-              subclass = Class.new(RSpec::Core::Runner) do
-                include RSpec::Matchers
-
-                def run(err, out)
-                  expect(1).to eq(2)
-                end
-              end
-
-              expect {
-                subclass.run([], StringIO.new, StringIO.new)
-              }.to raise_error(RSpec::Expectations::ExpectationNotMetError) do |e|
-                expect(e.cause).to be_nil
-              end
-            end
-          end
+          expect(runner).to have_received(:call).with(configuration_options, err, out)
         end
       end
+
+      context 'when no runner callable is set' do
+        it 'instantiates a Runner instance and runs it' do
+          process_proxy = double(RSpec::Core::Runner, :run => 0)
+          allow(RSpec::Core::Runner).to receive(:new).and_return(process_proxy)
+
+          RSpec::Core::Runner.run([], err, out)
+
+          expect(RSpec::Core::Runner).to have_received(:new)
+          expect(process_proxy).to have_received(:run).with(err, out)
+        end
+      end
+
     end
 
     context "when run" do
