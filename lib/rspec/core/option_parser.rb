@@ -36,6 +36,7 @@ module RSpec::Core
     # rubocop:disable MethodLength
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable CyclomaticComplexity
+    # rubocop:disable PerceivedComplexity
     def parser(options)
       OptionParser.new do |parser|
         parser.banner = "Usage: rspec [options] [files or directories]\n\n"
@@ -270,6 +271,7 @@ FILTERING
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable MethodLength
     # rubocop:enable CyclomaticComplexity
+    # rubocop:enable PerceivedComplexity
 
     def add_tag_filter(options, filter_type, tag_name, value=true)
       (options[filter_type] ||= {})[tag_name] = value
