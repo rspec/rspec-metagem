@@ -19,6 +19,17 @@ Feature: `respond_to` matcher
     ```ruby
     expect(obj).to respond_to(:foo).with(1).argument
     expect(obj).to respond_to(:bar).with(2).arguments
+    expect(obj).to respond_to(:baz).with(1..2).arguments
+    expect(obj).to respond_to(:xyz).with_unlimited_arguments
+    ```
+
+  If your Ruby version supports keyword arguments, you can specify a list of keywords accepted
+  by the method.
+
+    ```ruby
+    expect(obj).to respond_to(:foo).with_keywords(:ichi, :ni)
+    expect(obj).to respond_to(:bar).with(2).arguments.and_keywords(:san, :yon)
+    expect(obj).to respond_to(:baz).with_arbitrary_keywords
     ```
 
   Note that this matcher relies entirely upon `#respond_to?`.  If an object dynamically responds
