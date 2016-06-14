@@ -1,4 +1,5 @@
-require 'rspec/core/project_initializer'
+require 'rspec/core/drb'
+require 'rspec/core/bisect/coordinator'
 
 module RSpec::Core
   RSpec.describe OptionParser do
@@ -67,42 +68,55 @@ module RSpec::Core
       end
     end
 
-    it "won't display invalid options in the help output" do
-      def generate_help_text
-        parser = Parser.new(["--help"])
-        allow(parser).to receive(:exit)
-        parser.parse
+    %w[ -h --help ].each do |option|
+      it 'sets the `:runner` option with the `PrintHelp` invocation' do
+        parser = Parser.new([option])
+
+        options = parser.parse
+
+        expect(options[:runner]).to be_instance_of(RSpec::Core::Invocations::PrintHelp)
       end
-
-      useless_lines = /^\s*--?\w+\s*$\n/
-
-      expect { generate_help_text }.to_not output(useless_lines).to_stdout
     end
 
     %w[ -v --version ].each do |option|
       describe option do
-        it "prints the version and exits" do
+        it 'sets the `:runner` option with the `PrintVersion` invocation' do
           parser = Parser.new([option])
-          expect(parser).to receive(:exit)
 
-          expect {
-            parser.parse
-          }.to output("#{RSpec::Core::Version::STRING}\n").to_stdout
+          options = parser.parse
+
+          expect(options[:runner]).to be_instance_of(RSpec::Core::Invocations::PrintVersion)
         end
       end
     end
 
-    describe "--init" do
-      it "initializes a project and exits" do
-        project_init = instance_double(ProjectInitializer)
-        allow(ProjectInitializer).to receive_messages(:new => project_init)
+    %w[ -X --drb ].each do |option|
+      describe option do
+        let(:parser) { Parser.new([option]) }
 
+        it 'sets the `:drb` option to true' do
+          options = parser.parse
+
+          expect(options[:drb]).to be_truthy
+        end
+
+        it 'sets the `:runner` option with the `DrbWithFallback` invocation' do
+          options = parser.parse
+
+          expect(options[:runner]).to be_instance_of(RSpec::Core::Invocations::DRbWithFallback)
+        end
+      end
+    end
+
+    describe '--init' do
+      let(:initialize_project) { double(:initialize_project) }
+
+      it 'sets the `:runner` option with the `InitializeProject` invocation' do
         parser = Parser.new(["--init"])
 
-        expect(project_init).to receive(:run).ordered
-        expect(parser).to receive(:exit).ordered
+        options = parser.parse
 
-        parser.parse
+        expect(options[:runner]).to be_instance_of(RSpec::Core::Invocations::InitializeProject)
       end
     end
 
@@ -314,6 +328,22 @@ module RSpec::Core
       it "sets the order to rand:SEED" do
         options = Parser.parse(%w[--seed 123])
         expect(options[:order]).to eq("rand:123")
+      end
+    end
+
+    describe "--bisect" do
+      it "sets the `:bisect` option" do
+        options = Parser.parse(%w[ --bisect ])
+
+        expect(options[:bisect]).to be_truthy
+      end
+
+      it "sets the `:runner` option with the `Bisect` invocation" do
+        parser = Parser.new(['--bisect'])
+
+        options = parser.parse
+
+        expect(options[:runner]).to be_instance_of(RSpec::Core::Invocations::Bisect)
       end
     end
 

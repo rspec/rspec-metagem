@@ -1,5 +1,6 @@
 RSpec::Support.require_rspec_core "shell_escape"
 require 'open3'
+require 'shellwords'
 
 module RSpec
   module Core
@@ -71,12 +72,15 @@ module RSpec
         # https://github.com/jruby/jruby/issues/2766
         if Open3.respond_to?(:capture2e) && !RSpec::Support::Ruby.jruby?
           def run_command(cmd)
-            Open3.capture2e(cmd).first
+            Open3.capture2e(bisect_environment_hash, cmd).first
           end
         else # for 1.8.7
           # :nocov:
           def run_command(cmd)
             out = err = nil
+
+            original_spec_opts = ENV['SPEC_OPTS']
+            ENV['SPEC_OPTS'] = spec_opts_without_bisect
 
             Open3.popen3(cmd) do |_, stdout, stderr|
               # Reading the streams blocks until the process is complete
@@ -85,8 +89,26 @@ module RSpec
             end
 
             "Stdout:\n#{out}\n\nStderr:\n#{err}"
+          ensure
+            ENV['SPEC_OPTS'] = original_spec_opts
           end
           # :nocov:
+        end
+
+        def bisect_environment_hash
+          if ENV.key?('SPEC_OPTS')
+            { 'SPEC_OPTS' => spec_opts_without_bisect }
+          else
+            {}
+          end
+        end
+
+        def spec_opts_without_bisect
+          Shellwords.join(
+            Shellwords.split(ENV.fetch('SPEC_OPTS', '')).reject do |arg|
+              arg =~ /^--bisect/
+            end
+          )
         end
 
         def reusable_cli_options

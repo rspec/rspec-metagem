@@ -65,17 +65,11 @@ module RSpec
         trap_interrupt
         options = ConfigurationOptions.new(args)
 
-        if options.options[:drb]
-          require 'rspec/core/drb'
-          begin
-            DRbRunner.new(options).run(err, out)
-            return
-          rescue DRb::DRbConnError
-            err.puts "No DRb server is running. Running in local process instead ..."
-          end
+        if options.options[:runner]
+          options.options[:runner].call(options, err, out)
+        else
+          new(options).run(err, out)
         end
-
-        new(options).run(err, out)
       end
 
       def initialize(options, configuration=RSpec.configuration, world=RSpec.world)

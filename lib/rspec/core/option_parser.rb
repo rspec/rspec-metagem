@@ -36,6 +36,7 @@ module RSpec::Core
     # rubocop:disable MethodLength
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable CyclomaticComplexity
+    # rubocop:disable PerceivedComplexity
     def parser(options)
       OptionParser.new do |parser|
         parser.banner = "Usage: rspec [options] [files or directories]\n\n"
@@ -68,7 +69,8 @@ module RSpec::Core
 
         parser.on('--bisect[=verbose]', 'Repeatedly runs the suite in order to isolate the failures to the ',
                   '  smallest reproducible case.') do |argument|
-          bisect_and_exit(argument)
+          options[:bisect] = argument || true
+          options[:runner] = RSpec::Core::Invocations::Bisect.new
         end
 
         parser.on('--[no-]fail-fast[=COUNT]', 'Abort the run after a certain number of failures (1 by default).') do |argument|
@@ -96,8 +98,9 @@ module RSpec::Core
           options[:dry_run] = true
         end
 
-        parser.on('-X', '--[no-]drb', 'Run examples via DRb.') do |o|
-          options[:drb] = o
+        parser.on('-X', '--[no-]drb', 'Run examples via DRb.') do |use_drb|
+          options[:drb] = use_drb
+          options[:runner] = RSpec::Core::Invocations::DRbWithFallback.new if use_drb
         end
 
         parser.on('--drb-port PORT', 'Port to connect to the DRb server.') do |o|
@@ -105,7 +108,7 @@ module RSpec::Core
         end
 
         parser.on('--init', 'Initialize your project with RSpec.') do |_cmd|
-          initialize_project_and_exit
+          options[:runner] = RSpec::Core::Invocations::InitializeProject.new
         end
 
         parser.separator("\n  **** Output ****\n\n")
@@ -242,7 +245,7 @@ FILTERING
         parser.separator("\n  **** Utility ****\n\n")
 
         parser.on('-v', '--version', 'Display the version.') do
-          print_version_and_exit
+          options[:runner] = RSpec::Core::Invocations::PrintVersion.new
         end
 
         # These options would otherwise be confusing to users, so we forcibly
@@ -254,7 +257,7 @@ FILTERING
         invalid_options = %w[-d --I]
 
         parser.on_tail('-h', '--help', "You're looking at it.") do
-          print_help_and_exit(parser, invalid_options)
+          options[:runner] = RSpec::Core::Invocations::PrintHelp.new(parser, invalid_options)
         end
 
         # This prevents usage of the invalid_options.
@@ -268,6 +271,7 @@ FILTERING
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable MethodLength
     # rubocop:enable CyclomaticComplexity
+    # rubocop:enable PerceivedComplexity
 
     def add_tag_filter(options, filter_type, tag_name, value=true)
       (options[filter_type] ||= {})[tag_name] = value
@@ -280,40 +284,6 @@ FILTERING
     def configure_only_failures(options)
       options[:only_failures] = true
       add_tag_filter(options, :inclusion_filter, :last_run_status, 'failed')
-    end
-
-    def initialize_project_and_exit
-      RSpec::Support.require_rspec_core "project_initializer"
-      ProjectInitializer.new.run
-      exit
-    end
-
-    def bisect_and_exit(argument)
-      RSpec::Support.require_rspec_core "bisect/coordinator"
-
-      success = Bisect::Coordinator.bisect_with(
-        original_args,
-        RSpec.configuration,
-        bisect_formatter_for(argument)
-      )
-
-      exit(success ? 0 : 1)
-    end
-
-    def bisect_formatter_for(argument)
-      return Formatters::BisectDebugFormatter if argument == "verbose"
-      Formatters::BisectProgressFormatter
-    end
-
-    def print_version_and_exit
-      puts RSpec::Core::Version::STRING
-      exit
-    end
-
-    def print_help_and_exit(parser, invalid_options)
-      # Removing the blank invalid options from the output.
-      puts parser.to_s.gsub(/^\s+(#{invalid_options.join('|')})\s*$\n/, '')
-      exit
     end
   end
 end
