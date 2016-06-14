@@ -1,6 +1,5 @@
 require 'rspec/core/drb'
 require 'rspec/core/bisect/coordinator'
-require 'rspec/core/project_initializer'
 
 module RSpec::Core
   RSpec.describe OptionParser do
@@ -69,28 +68,24 @@ module RSpec::Core
       end
     end
 
-    it "won't display invalid options in the help output" do
-      def generate_help_text
-        parser = Parser.new(["--help"])
+    %w[ -h --help ].each do |option|
+      it 'sets the `:runner` option with the `PrintHelp` invocation' do
+        parser = Parser.new([option])
+
         options = parser.parse
-        options[:runner].call
+
+        expect(options[:runner]).to be_instance_of(RSpec::Core::Invocations::PrintHelp)
       end
-
-      useless_lines = /^\s*--?\w+\s*$\n/
-
-      expect { generate_help_text }.to_not output(useless_lines).to_stdout
     end
 
     %w[ -v --version ].each do |option|
       describe option do
-        it "prints the version and returns a zero exit code" do
+        it 'sets the `:runner` option with the `PrintVersion` invocation' do
           parser = Parser.new([option])
 
-          expect {
-            options = parser.parse
-            exit_code = options[:runner].call
-            expect(exit_code).to eq(0)
-          }.to output("#{RSpec::Core::Version::STRING}\n").to_stdout
+          options = parser.parse
+
+          expect(options[:runner]).to be_instance_of(RSpec::Core::Invocations::PrintVersion)
         end
       end
     end
@@ -98,9 +93,6 @@ module RSpec::Core
     %w[ -X --drb ].each do |option|
       describe option do
         let(:parser) { Parser.new([option]) }
-        let(:configuration_options) { double(:configuration_options) }
-        let(:err) { StringIO.new }
-        let(:out) { StringIO.new }
 
         it 'sets the `:drb` option to true' do
           options = parser.parse
@@ -108,76 +100,23 @@ module RSpec::Core
           expect(options[:drb]).to be_truthy
         end
 
-        context 'when a DRb server is running' do
-          it "builds a DRbRunner and runs the specs" do
-            drb_proxy = instance_double(RSpec::Core::DRbRunner, :run => 0)
-            allow(RSpec::Core::DRbRunner).to receive(:new).and_return(drb_proxy)
+        it 'sets the `:runner` option with the `DrbWithFallback` invocation' do
+          options = parser.parse
 
-            options = parser.parse
-            exit_code = options[:runner].call(configuration_options, err, out)
-
-            expect(drb_proxy).to have_received(:run).with(err, out)
-            expect(exit_code).to eq(0)
-          end
-        end
-
-        context 'when a DRb server is not running' do
-          let(:runner) { instance_double(RSpec::Core::Runner, :run => 0) }
-
-          before(:each) do
-            allow(RSpec::Core::Runner).to receive(:new).and_return(runner)
-            allow(RSpec::Core::DRbRunner).to receive(:new).and_raise(DRb::DRbConnError)
-          end
-
-          it "outputs a message" do
-            options = parser.parse
-            options[:runner].call(configuration_options, err, out)
-
-            expect(err.string).to include(
-              "No DRb server is running. Running in local process instead ..."
-            )
-          end
-
-          it "builds a runner instance and runs the specs" do
-            options = parser.parse
-            options[:runner].call(configuration_options, err, out)
-
-            expect(RSpec::Core::Runner).to have_received(:new).with(configuration_options)
-            expect(runner).to have_received(:run).with(err, out)
-          end
-
-          if RSpec::Support::RubyFeatures.supports_exception_cause?
-            it "prevents the DRb error from being listed as the cause of expectation failures" do
-              allow(RSpec::Core::Runner).to receive(:new) do |configuration_options|
-                raise RSpec::Expectations::ExpectationNotMetError
-              end
-
-              expect {
-                options = parser.parse
-                options[:runner].call(configuration_options, err, out)
-
-              }.to raise_error(RSpec::Expectations::ExpectationNotMetError) do |e|
-                expect(e.cause).to be_nil
-              end
-            end
-          end
+          expect(options[:runner]).to be_instance_of(RSpec::Core::Invocations::DRbWithFallback)
         end
       end
     end
 
-    describe "--init" do
-      it "initializes a project and returns a 0 exit code" do
-        project_init = instance_double(ProjectInitializer)
-        allow(ProjectInitializer).to receive_messages(:new => project_init)
+    describe '--init' do
+      let(:initialize_project) { double(:initialize_project) }
 
+      it 'sets the `:runner` option with the `InitializeProject` invocation' do
         parser = Parser.new(["--init"])
 
-        expect(project_init).to receive(:run).ordered
-
         options = parser.parse
-        exit_code = options[:runner].call
 
-        expect(exit_code).to eq(0)
+        expect(options[:runner]).to be_instance_of(RSpec::Core::Invocations::InitializeProject)
       end
     end
 
@@ -399,78 +338,12 @@ module RSpec::Core
         expect(options[:bisect]).to be_truthy
       end
 
-      it "sets a the `:runner` option with a callable" do
-        options = Parser.parse(%w[ --bisect ])
+      it "sets the `:runner` option with the `Bisect` invocation" do
+        parser = Parser.new(['--bisect'])
 
-        expect(options[:runner]).to respond_to(:call)
-      end
+        options = parser.parse
 
-      context "when the verbose option is specified" do
-        it "records this in the options" do
-          options = Parser.parse(%w[ --bisect=verbose ])
-
-          expect(options[:bisect]).to eq("verbose")
-        end
-      end
-
-      context 'when the runner is called' do
-        let(:args) { double(:args) }
-        let(:err) { double(:stderr) }
-        let(:out) { double(:stdout) }
-        let(:success) { true }
-        let(:configuration_options) { double(:options, :args => args) }
-
-        before do
-          allow(RSpec::Core::Bisect::Coordinator).to receive(:bisect_with).and_return(success)
-        end
-
-        it "starts the bisection coordinator" do
-          options = Parser.parse(%w[ --bisect ])
-          allow(configuration_options).to receive(:options).and_return(options)
-          options[:runner].call(configuration_options, err, out)
-
-          expect(RSpec::Core::Bisect::Coordinator).to have_received(:bisect_with).with(
-            args,
-            RSpec.configuration,
-            Formatters::BisectProgressFormatter
-          )
-        end
-
-        context "when the bisection is successful" do
-          it "returns 0" do
-            options = Parser.parse(%w[ --bisect ])
-            allow(configuration_options).to receive(:options).and_return(options)
-            exit_code = options[:runner].call(configuration_options, err, out)
-
-            expect(exit_code).to eq(0)
-          end
-        end
-
-        context "when the bisection is unsuccessful" do
-          let(:success) { false }
-
-          it "returns 1" do
-            options = Parser.parse(%w[ --bisect ])
-            allow(configuration_options).to receive(:options).and_return(options)
-            exit_code = options[:runner].call(configuration_options, err, out)
-
-            expect(exit_code).to eq(1)
-          end
-        end
-
-        context "and the verbose option is specified" do
-          it "starts the bisection coordinator with the debug formatter" do
-            options = Parser.parse(%w[ --bisect=verbose ])
-            allow(configuration_options).to receive(:options).and_return(options)
-            options[:runner].call(configuration_options, err, out)
-
-            expect(RSpec::Core::Bisect::Coordinator).to have_received(:bisect_with).with(
-              args,
-              RSpec.configuration,
-              Formatters::BisectDebugFormatter
-            )
-          end
-        end
+        expect(options[:runner]).to be_instance_of(RSpec::Core::Invocations::Bisect)
       end
     end
 

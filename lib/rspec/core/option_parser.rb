@@ -70,7 +70,7 @@ module RSpec::Core
         parser.on('--bisect[=verbose]', 'Repeatedly runs the suite in order to isolate the failures to the ',
                   '  smallest reproducible case.') do |argument|
           options[:bisect] = argument || true
-          options[:runner] = Callables.bisect
+          options[:runner] = RSpec::Core::Invocations::Bisect.new
         end
 
         parser.on('--[no-]fail-fast[=COUNT]', 'Abort the run after a certain number of failures (1 by default).') do |argument|
@@ -100,7 +100,7 @@ module RSpec::Core
 
         parser.on('-X', '--[no-]drb', 'Run examples via DRb.') do |use_drb|
           options[:drb] = use_drb
-          options[:runner] = Callables.drb_with_fallback if use_drb
+          options[:runner] = RSpec::Core::Invocations::DRbWithFallback.new if use_drb
         end
 
         parser.on('--drb-port PORT', 'Port to connect to the DRb server.') do |o|
@@ -108,7 +108,7 @@ module RSpec::Core
         end
 
         parser.on('--init', 'Initialize your project with RSpec.') do |_cmd|
-          options[:runner] = Callables.initialize_project
+          options[:runner] = RSpec::Core::Invocations::InitializeProject.new
         end
 
         parser.separator("\n  **** Output ****\n\n")
@@ -245,7 +245,7 @@ FILTERING
         parser.separator("\n  **** Utility ****\n\n")
 
         parser.on('-v', '--version', 'Display the version.') do
-          options[:runner] = Callables.print_version
+          options[:runner] = RSpec::Core::Invocations::PrintVersion.new
         end
 
         # These options would otherwise be confusing to users, so we forcibly
@@ -257,7 +257,7 @@ FILTERING
         invalid_options = %w[-d --I]
 
         parser.on_tail('-h', '--help', "You're looking at it.") do
-          options[:runner] = Callables.print_help(parser, invalid_options)
+          options[:runner] = RSpec::Core::Invocations::PrintHelp.new(parser, invalid_options)
         end
 
         # This prevents usage of the invalid_options.
@@ -284,63 +284,6 @@ FILTERING
     def configure_only_failures(options)
       options[:only_failures] = true
       add_tag_filter(options, :inclusion_filter, :last_run_status, 'failed')
-    end
-
-    # @private
-    module Callables
-      def self.initialize_project
-        lambda do |*_args|
-          RSpec::Support.require_rspec_core "project_initializer"
-          ProjectInitializer.new.run
-          0
-        end
-      end
-
-      def self.drb_with_fallback
-        lambda do |options, err, out|
-          require 'rspec/core/drb'
-          begin
-            return DRbRunner.new(options).run(err, out)
-          rescue DRb::DRbConnError
-            err.puts "No DRb server is running. Running in local process instead ..."
-          end
-          RSpec::Core::Runner.new(options).run(err, out)
-        end
-      end
-
-      def self.bisect
-        lambda do |options, _err, _out|
-          RSpec::Support.require_rspec_core "bisect/coordinator"
-
-          success = Bisect::Coordinator.bisect_with(
-            options.args,
-            RSpec.configuration,
-            bisect_formatter_for(options.options[:bisect])
-          )
-
-          success ? 0 : 1
-        end
-      end
-
-      def self.print_version
-        lambda do |*_args|
-          puts RSpec::Core::Version::STRING
-          0
-        end
-      end
-
-      def self.print_help(parser, invalid_options)
-        lambda do |*_args|
-          # Removing the blank invalid options from the output.
-          puts parser.to_s.gsub(/^\s+(#{invalid_options.join('|')})\s*$\n/, '')
-          0
-        end
-      end
-
-      def self.bisect_formatter_for(argument)
-        return Formatters::BisectDebugFormatter if argument == "verbose"
-        Formatters::BisectProgressFormatter
-      end
     end
   end
 end
