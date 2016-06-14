@@ -1,6 +1,11 @@
 ### 3.5 Development
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.0.beta4...master)
 
+Bug Fixes:
+
+* Handle `--bisect` in `SPEC_OPTS` environment variable correctly so as
+  to avoid infinite recursion. (Simon Coffey, #2271)
+
 ### 3.5.0.beta4 / 2016-06-05
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.0.beta3...v3.5.0.beta4)
 
