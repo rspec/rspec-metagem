@@ -167,6 +167,13 @@ module RSpec::Core
         expect(cmd).to include("--seed 1234").and exclude("spec/unit ")
       end
 
+      it 'includes the original SPEC_OPTS but excludes the --bisect flag' do
+        with_env_vars('SPEC_OPTS' => '--bisect --seed 1234') do
+          cmd = repro_command_from(%w[ ./spec/unit/1_spec.rb[1:1] ])
+          expect(cmd).to include('SPEC_OPTS="--seed 1234"').and exclude("--bisect")
+        end
+      end
+
       it 'includes original options that `command_for` excludes' do
         original_cli_args << "--format" << "progress"
         expect(runner.command_for(%w[ ./foo.rb[1:1] ])).to exclude("--format progress")

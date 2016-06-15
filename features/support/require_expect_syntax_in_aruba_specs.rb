@@ -1,6 +1,6 @@
 if defined?(Cucumber)
   require 'shellwords'
-  Before('~@allow-should-syntax') do
+  Before('~@allow-should-syntax', '~@with-clean-spec-opts') do
     set_env('SPEC_OPTS', "-r#{Shellwords.escape(__FILE__)}")
   end
 

@@ -1,3 +1,4 @@
+@with-clean-spec-opts
 Feature: Bisect
 
   RSpec's `--order random` and `--seed` options help surface flickering examples that only fail when one or more other examples are executed first. It can be very difficult to isolate the exact combination of examples that triggers the failure. The `--bisect` flag helps solve that problem.
