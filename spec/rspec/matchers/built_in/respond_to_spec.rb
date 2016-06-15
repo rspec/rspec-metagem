@@ -508,6 +508,14 @@ if RSpec::Support::RubyFeatures.kw_args_supported?
       }.to fail_with(/expected .* to respond to :foo with keywords :a and :b/)
     end
 
+    it "fails if :sym does not expect many specified keywords" do
+      obj = Object.new
+      def obj.foo; end
+      expect {
+        expect(obj).to respond_to(:foo).with_keywords(:a, :b, :c, :d, :e, :f)
+      }.to fail_with(/expected .* to respond to :foo with keywords :a, :b, :c, :d, :e, and :f/)
+    end
+
     if RSpec::Support::RubyFeatures.required_kw_args_supported?
       it "passes if target responds to :sym with specified required keywords" do
         obj = Object.new

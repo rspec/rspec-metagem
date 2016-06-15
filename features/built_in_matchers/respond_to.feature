@@ -92,3 +92,180 @@ Feature: `respond_to` matcher
       | expected 7 not to respond to :zero? with 0 arguments    |
       | expected 7 to respond to :between? with 7 arguments     |
       | expected 7 not to respond to :between? with 2 arguments |
+
+  @skip-when-splat-args-unsupported
+  Scenario: specify arguments range
+    Given a file named "respond_to_matcher_argument_range_checking_spec.rb" with:
+      """ruby
+      class MyClass
+        def build(name, options = {})
+        end
+
+        def inspect
+          'my_object'
+        end
+      end
+
+      RSpec.describe MyClass do
+        it { is_expected.to respond_to(:build).with(1..2).arguments }
+        it { is_expected.not_to respond_to(:build).with(0..1).arguments }
+        it { is_expected.not_to respond_to(:build).with(2..3).arguments }
+        it { is_expected.not_to respond_to(:build).with(0..3).arguments }
+
+        # deliberate failures
+        it { is_expected.not_to respond_to(:build).with(1..2).arguments }
+        it { is_expected.to respond_to(:build).with(0..1).arguments }
+        it { is_expected.to respond_to(:build).with(2..3).arguments }
+        it { is_expected.to respond_to(:build).with(0..3).arguments }
+      end
+      """
+    When I run `rspec respond_to_matcher_argument_range_checking_spec.rb`
+    Then the output should contain all of these:
+      | 8 examples, 4 failures                                          |
+      | expected my_object not to respond to :build with 1..2 arguments |
+      | expected my_object to respond to :build with 0..1 arguments     |
+      | expected my_object to respond to :build with 2..3 arguments     |
+      | expected my_object to respond to :build with 0..3 arguments     |
+
+  @skip-when-splat-args-unsupported
+  Scenario: specify unlimited arguments
+  Given a file named "respond_to_matcher_unlimited_argument_checking_spec.rb" with:
+      """ruby
+      class MyClass
+        def greet(message = 'Hello', *people)
+        end
+
+        def hail(person)
+        end
+
+        def inspect
+          'my_object'
+        end
+      end
+
+      RSpec.describe MyClass do
+        it { is_expected.to respond_to(:greet).with_unlimited_arguments }
+        it { is_expected.to respond_to(:greet).with(1).argument.and_unlimited_arguments }
+        it { is_expected.not_to respond_to(:hail).with_unlimited_arguments }
+        it { is_expected.not_to respond_to(:hail).with(1).argument.and_unlimited_arguments }
+
+        # deliberate failures
+        it { is_expected.not_to respond_to(:greet).with_unlimited_arguments }
+        it { is_expected.not_to respond_to(:greet).with(1).argument.and_unlimited_arguments }
+        it { is_expected.to respond_to(:hail).with_unlimited_arguments }
+        it { is_expected.to respond_to(:hail).with(1).argument.and_unlimited_arguments }
+      end
+      """
+    When I run `rspec respond_to_matcher_unlimited_argument_checking_spec.rb`
+    Then the output should contain all of these:
+      | 8 examples, 4 failures                                                              |
+      | expected my_object not to respond to :greet with unlimited arguments                |
+      | expected my_object not to respond to :greet with 1 argument and unlimited arguments |
+      | expected my_object to respond to :hail with unlimited arguments                     |
+      | expected my_object to respond to :hail with 1 argument and unlimited arguments      |
+
+  @skip-when-keyword-args-unsupported
+  Scenario: specify keywords
+    Given a file named "respond_to_matcher_keyword_checking_spec.rb" with:
+      """ruby
+      class MyClass
+        def find(name = 'id', limit: 1_000, offset: 0)
+          []
+        end
+
+        def inspect
+          'my_object'
+        end
+      end
+
+      RSpec.describe MyClass do
+        it { is_expected.to respond_to(:find).with_keywords(:limit, :offset) }
+        it { is_expected.to respond_to(:find).with(1).argument.and_keywords(:limit, :offset) }
+
+        it { is_expected.not_to respond_to(:find).with_keywords(:limit, :offset, :page) }
+        it { is_expected.not_to respond_to(:find).with(1).argument.and_keywords(:limit, :offset, :page) }
+
+        # deliberate failures
+        it { is_expected.to respond_to(:find).with_keywords(:limit, :offset, :page) }
+        it { is_expected.to respond_to(:find).with(1).argument.and_keywords(:limit, :offset, :page) }
+
+        it { is_expected.not_to respond_to(:find).with_keywords(:limit, :offset) }
+        it { is_expected.not_to respond_to(:find).with(1).argument.and_keywords(:limit, :offset) }
+      end
+      """
+    When I run `rspec respond_to_matcher_keyword_checking_spec.rb`
+    Then the output should contain all of these:
+      | 8 examples, 4 failures                                                                         |
+      | expected my_object to respond to :find with keywords :limit, :offset, and :page                |
+      | expected my_object to respond to :find with 1 argument and keywords :limit, :offset, and :page |
+      | expected my_object not to respond to :find with keywords :limit and :offset                    |
+      | expected my_object not to respond to :find with 1 argument and keywords :limit and :offset     |
+
+  @skip-when-keyword-args-unsupported
+  Scenario: specify any keywords
+    Given a file named "respond_to_matcher_any_keywords_checking_spec.rb" with:
+      """ruby
+      class MyClass
+        def build(name: 'object', **opts)
+        end
+
+        def create(name: 'object', type: String)
+        end
+
+        def inspect
+          'my_object'
+        end
+      end
+
+      RSpec.describe MyClass do
+        it { is_expected.to respond_to(:build).with_any_keywords }
+        it { is_expected.to respond_to(:build).with_keywords(:name).and_any_keywords }
+        it { is_expected.not_to respond_to(:create).with_any_keywords }
+        it { is_expected.not_to respond_to(:create).with_keywords(:name).and_any_keywords }
+
+        # deliberate failures
+        it { is_expected.not_to respond_to(:build).with_any_keywords }
+        it { is_expected.not_to respond_to(:build).with_keywords(:name).and_any_keywords }
+        it { is_expected.to respond_to(:create).with_any_keywords }
+        it { is_expected.to respond_to(:create).with_keywords(:name).and_any_keywords }
+      end
+      """
+    When I run `rspec respond_to_matcher_any_keywords_checking_spec.rb`
+    Then the output should contain all of these:
+      | 8 examples, 4 failures                                          |
+      | expected my_object not to respond to :build with any keywords |
+      | expected my_object not to respond to :build with keyword :name and any keywords |
+      | expected my_object to respond to :create with any keywords |
+      | expected my_object to respond to :create with keyword :name and any keywords |
+
+  @skip-when-required-keyword-args-unsupported
+  Scenario: specify required keywords
+    Given a file named "respond_to_matcher_required_keyword_checking_spec.rb" with:
+      """ruby
+      class MyClass
+        def plant(seed:, fertilizer: nil, water: 'daily')
+          []
+        end
+
+        def inspect
+          'my_object'
+        end
+      end
+
+      RSpec.describe MyClass do
+        it { is_expected.to respond_to(:plant).with_keywords(:seed) }
+        it { is_expected.to respond_to(:plant).with_keywords(:seed, :fertilizer, :water) }
+        it { is_expected.not_to respond_to(:plant).with_keywords(:fertilizer, :water) }
+
+        # deliberate failures
+        it { is_expected.not_to respond_to(:plant).with_keywords(:seed) }
+        it { is_expected.not_to respond_to(:plant).with_keywords(:seed, :fertilizer, :water) }
+        it { is_expected.to respond_to(:plant).with_keywords(:fertilizer, :water) }
+      end
+      """
+    When I run `rspec respond_to_matcher_required_keyword_checking_spec.rb`
+    Then the output should contain all of these:
+      | 6 examples, 3 failures                                                                   |
+      | expected my_object not to respond to :plant with keyword :seed                           |
+      | expected my_object not to respond to :plant with keywords :seed, :fertilizer, and :water |
+      | expected my_object to respond to :plant with keywords :fertilizer and :water             |
