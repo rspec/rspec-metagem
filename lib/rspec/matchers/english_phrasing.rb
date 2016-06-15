@@ -37,6 +37,22 @@ module RSpec
           " #{items[0...-1].join(', ')}, and #{items[-1]}"
         end
       end
+
+      if RUBY_VERSION == '1.8.7'
+        # Not sure why, but on travis on 1.8.7 we have gotten these warnings:
+        # lib/rspec/matchers/english_phrasing.rb:28: warning: default `to_a' will be obsolete
+        # So it appears that `Array` can trigger that (e.g. by calling `to_a` on the passed object?)
+        # So here we replace `Kernel#Array` with our own warning-free implementation for 1.8.7.
+        # @private
+        # rubocop:disable Style/MethodName
+        def self.Array(obj)
+          case obj
+          when Array then obj
+          else [obj]
+          end
+        end
+        # rubocop:enable Style/MethodName
+      end
     end
   end
 end
