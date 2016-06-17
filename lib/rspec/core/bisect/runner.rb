@@ -38,6 +38,7 @@ module RSpec
         def repro_command_from(locations)
           parts = []
 
+          parts.concat environment_repro_parts
           parts << "rspec"
           parts.concat Formatters::Helpers.organize_ids(locations)
           parts.concat original_cli_args_without_locations
@@ -100,6 +101,12 @@ module RSpec
             { 'SPEC_OPTS' => spec_opts_without_bisect }
           else
             {}
+          end
+        end
+
+        def environment_repro_parts
+          bisect_environment_hash.map do |k, v|
+            %Q(#{k}="#{v}")
           end
         end
 
