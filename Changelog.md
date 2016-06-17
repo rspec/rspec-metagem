@@ -1,6 +1,11 @@
 ### 3.5 Development
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.0.beta4...master)
 
+Enhancements:
+
+* Include any `SPEC_OPTS` in reproduction command printed at the end of
+  a bisect run. (Simon Coffey, #2274)
+
 Bug Fixes:
 
 * Handle `--bisect` in `SPEC_OPTS` environment variable correctly so as
