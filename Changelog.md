@@ -1,5 +1,7 @@
-### 3.5 Development
-[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.5.0.beta4...master)
+### 3.5.0 / 2016-07-01
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.5.0.beta4...v3.5.0)
+
+**No user facing changes since beta4**
 
 ### 3.5.0.beta4 / 2016-06-05
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.5.0.beta3...v3.5.0.beta4)
