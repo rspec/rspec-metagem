@@ -26,8 +26,8 @@ group :documentation do
   gem 'github-markup', '0.7.2', :platform => :mri
 end
 
-platforms :ruby_18, :jruby do
-  gem 'json'
+if RUBY_VERSION < '2.0.0' || RUBY_ENGINE == 'java'
+  gem 'json', '< 2.0.0'
 end
 
 platforms :jruby do
