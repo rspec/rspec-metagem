@@ -213,20 +213,35 @@ module RSpec
 
         def warn_if_key_taken(context, key, new_block)
           existing_module = shared_example_groups[context][key]
-
           return unless existing_module
 
-          RSpec.warn_with <<-WARNING.gsub(/^ +\|/, ''), :call_site => nil
-            |WARNING: Shared example group '#{key}' has been previously defined at:
-            |  #{formatted_location existing_module.definition}
-            |...and you are now defining it at:
-            |  #{formatted_location new_block}
-            |The new definition will overwrite the original one.
-          WARNING
+          old_definition_location = formatted_location existing_module.definition
+          new_definition_location = formatted_location new_block
+          loaded_spec_files = RSpec.configuration.loaded_spec_files
+
+          if loaded_spec_files.include?(new_definition_location) && old_definition_location == new_definition_location
+            RSpec.warn_with <<-WARNING.gsub(/^ +\|/, ''), :call_site => nil
+              |WARNING: Your shared example group, '#{key}', defined at:
+              | #{old_definition_location}
+              |was automatically loaded by RSpec because the file name
+              |matches the configured autoloading pattern (#{RSpec.configuration.pattern}),
+              |and is also being required from somewhere else. To fix this
+              |warning, either rename the file to not match the pattern, or
+              |do not explicitly require the file.
+            WARNING
+          else
+            RSpec.warn_with <<-WARNING.gsub(/^ +\|/, ''), :call_site => nil
+              |WARNING: Shared example group '#{key}' has been previously defined at:
+              |  #{old_definition_location}
+              |...and you are now defining it at:
+              |  #{new_definition_location}
+              |The new definition will overwrite the original one.
+            WARNING
+          end
         end
 
         def formatted_location(block)
-          block.source_location.join ":"
+          block.source_location.join(":").gsub(/:in.*$/, '')
         end
 
         if Proc.method_defined?(:source_location)

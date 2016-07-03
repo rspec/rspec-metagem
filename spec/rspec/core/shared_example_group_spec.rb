@@ -69,7 +69,7 @@ module RSpec
             expect(Kernel).to_not respond_to(shared_method_name)
           end
 
-          it "displays a warning when adding a second shared example group with the same name" do
+          it 'displays a warning when adding a second shared example group with the same name' do
             group.send(shared_method_name, 'some shared group') {}
             original_declaration = [__FILE__, __LINE__ - 1].join(':')
 
@@ -79,6 +79,22 @@ module RSpec
             group.send(shared_method_name, 'some shared group') {}
             second_declaration = [__FILE__, __LINE__ - 1].join(':')
             expect(warning).to include('some shared group', original_declaration, second_declaration)
+            expect(warning).to_not include 'Called from'
+          end
+
+          it 'displays a helpful message when you define a shared example group in *_spec.rb file' do
+            warning = nil
+            allow(::Kernel).to receive(:warn) { |msg| warning = msg }
+            declaration = nil
+
+            2.times do
+              group.send(shared_method_name, 'some shared group') {}
+              declaration = [__FILE__, __LINE__ - 1].join(':')
+              RSpec.configuration.loaded_spec_files << declaration
+            end
+
+            better_error = 'was automatically loaded by RSpec because the file name'
+            expect(warning).to include('some shared group', declaration, better_error)
             expect(warning).to_not include 'Called from'
           end
 
