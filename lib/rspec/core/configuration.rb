@@ -1749,7 +1749,7 @@ module RSpec
         handle_suite_hook(scope, meta) do
           @before_suite_hooks << Hooks::BeforeHook.new(block, {})
         end || begin
-          on_existing_matching_groups({}) { |g| g.before(scope, *meta, &block) }
+          add_hook_to_existing_groups(:append, :before, scope, *meta, &block)
           super(scope, *meta, &block)
         end
       end
@@ -1772,7 +1772,7 @@ module RSpec
         handle_suite_hook(scope, meta) do
           @before_suite_hooks.unshift Hooks::BeforeHook.new(block, {})
         end || begin
-          on_existing_matching_groups({}) { |g| g.prepend_before(scope, *meta, &block) }
+          add_hook_to_existing_groups(:prepend, :before, scope, *meta, &block)
           super(scope, *meta, &block)
         end
       end
@@ -1790,7 +1790,7 @@ module RSpec
         handle_suite_hook(scope, meta) do
           @after_suite_hooks.unshift Hooks::AfterHook.new(block, {})
         end || begin
-          on_existing_matching_groups({}) { |g| g.after(scope, *meta, &block) }
+          add_hook_to_existing_groups(:prepend, :after, scope, *meta, &block)
           super(scope, *meta, &block)
         end
       end
@@ -1813,7 +1813,7 @@ module RSpec
         handle_suite_hook(scope, meta) do
           @after_suite_hooks << Hooks::AfterHook.new(block, {})
         end || begin
-          on_existing_matching_groups({}) { |g| g.append_after(scope, *meta, &block) }
+          add_hook_to_existing_groups(:append, :after, scope, *meta, &block)
           super(scope, *meta, &block)
         end
       end
@@ -1822,8 +1822,7 @@ module RSpec
       #
       # See {Hooks#around} for full `around` hook docs.
       def around(scope=nil, *meta, &block)
-        on_existing_matching_groups({}) { |g| g.around(scope, *meta, &block) }
-
+        add_hook_to_existing_groups(:prepend, :around, scope, *meta, &block)
         super(scope, *meta, &block)
       end
 
@@ -2030,6 +2029,12 @@ module RSpec
       def on_existing_matching_groups(meta)
         world.all_example_groups.each do |group|
           yield group if meta.empty? || MetadataFilter.apply?(:any?, meta, group.metadata)
+        end
+      end
+
+      def add_hook_to_existing_groups(prepend_or_append, position, *meta, &block)
+        world.example_groups.each do |group|
+          group.hooks.register_global_hook(prepend_or_append, position, *meta, &block)
         end
       end
 
