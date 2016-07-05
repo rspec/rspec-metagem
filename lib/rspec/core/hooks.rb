@@ -438,18 +438,6 @@ EOS
           process(example, parent_groups, globals, :after,  :context) { {} }
         end
 
-        def register_global_hook(prepend_or_append, position, *args, &block)
-          scope, options = scope_and_options_from(*args)
-
-          if scope == :example || options.empty? || MetadataFilter.apply?(:all?, options, @owner.metadata)
-            register_hook(prepend_or_append, position, scope, options, &block)
-          else
-            @owner.children.each do |group|
-              group.hooks.register_global_hook(prepend_or_append, position, *args, &block)
-            end
-          end
-        end
-
         def register(prepend_or_append, position, *args, &block)
           scope, options = scope_and_options_from(*args)
 
@@ -463,7 +451,8 @@ EOS
             return
           end
 
-          register_hook(prepend_or_append, position, scope, options, &block)
+          hook = HOOK_TYPES[position][scope].new(block, options)
+          ensure_hooks_initialized_for(position, scope).__send__(prepend_or_append, hook, options)
         end
 
         # @private
@@ -562,11 +551,6 @@ EOS
           else # around
             @around_example_hooks ||= @filterable_item_repo_class.new(:all?)
           end
-        end
-
-        def register_hook(prepend_or_append, position, scope, options, &block)
-          hook = HOOK_TYPES[position][scope].new(block, options)
-          ensure_hooks_initialized_for(position, scope).__send__(prepend_or_append, hook, options)
         end
 
         def process(host, parent_groups, globals, position, scope)
