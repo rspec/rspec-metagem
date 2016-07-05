@@ -451,6 +451,20 @@ module RSpec
       end
 
       # @private
+      # Traverses the tree of groups, starting with `self`, then the children, recursively.
+      # Halts the traversal of a branch of the tree as soon as the passed block returns true.
+      # Note that siblings groups and their sub-trees will continue to be explored.
+      # This is intended to make it easy to find the top-most group that satisfies some
+      # condition.
+      def self.traverse_tree_until(&block)
+        return if yield self
+
+        children.each do |child|
+          child.traverse_tree_until(&block)
+        end
+      end
+
+      # @private
       def self.next_runnable_index_for(file)
         if self == ExampleGroup
           # We add 1 so the ids start at 1 instead of 0. This is
