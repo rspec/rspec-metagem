@@ -1749,7 +1749,8 @@ module RSpec
         handle_suite_hook(scope, meta) do
           @before_suite_hooks << Hooks::BeforeHook.new(block, {})
         end || begin
-          on_existing_matching_groups({}) { |g| g.before(scope, *meta, &block) }
+          metadata = Metadata.build_hash_from(meta.dup)
+          on_existing_matching_groups(metadata, scope) { |g| g.before(scope, *meta, &block) }
           super(scope, *meta, &block)
         end
       end
@@ -1772,7 +1773,8 @@ module RSpec
         handle_suite_hook(scope, meta) do
           @before_suite_hooks.unshift Hooks::BeforeHook.new(block, {})
         end || begin
-          on_existing_matching_groups({}) { |g| g.prepend_before(scope, *meta, &block) }
+          metadata = Metadata.build_hash_from(meta.dup)
+          on_existing_matching_groups(metadata, scope) { |g| g.prepend_before(scope, *meta, &block) }
           super(scope, *meta, &block)
         end
       end
@@ -1790,7 +1792,8 @@ module RSpec
         handle_suite_hook(scope, meta) do
           @after_suite_hooks.unshift Hooks::AfterHook.new(block, {})
         end || begin
-          on_existing_matching_groups({}) { |g| g.after(scope, *meta, &block) }
+          metadata = Metadata.build_hash_from(meta.dup)
+          on_existing_matching_groups(metadata, scope) { |g| g.after(scope, *meta, &block) }
           super(scope, *meta, &block)
         end
       end
@@ -1813,7 +1816,8 @@ module RSpec
         handle_suite_hook(scope, meta) do
           @after_suite_hooks << Hooks::AfterHook.new(block, {})
         end || begin
-          on_existing_matching_groups({}) { |g| g.append_after(scope, *meta, &block) }
+          metadata = Metadata.build_hash_from(meta.dup)
+          on_existing_matching_groups(metadata, scope) { |g| g.append_after(scope, *meta, &block) }
           super(scope, *meta, &block)
         end
       end
@@ -1822,8 +1826,8 @@ module RSpec
       #
       # See {Hooks#around} for full `around` hook docs.
       def around(scope=nil, *meta, &block)
-        on_existing_matching_groups({}) { |g| g.around(scope, *meta, &block) }
-
+        metadata = Metadata.build_hash_from(meta.dup)
+        on_existing_matching_groups(metadata, scope) { |g| g.around(scope, *meta, &block) }
         super(scope, *meta, &block)
       end
 
@@ -2027,9 +2031,18 @@ module RSpec
         end
       end
 
-      def on_existing_matching_groups(meta)
-        world.all_example_groups.each do |group|
-          yield group if meta.empty? || MetadataFilter.apply?(:any?, meta, group.metadata)
+      def on_existing_matching_groups(meta, scope=:ignore)
+        groups = world.example_groups.dup
+
+        until groups.empty?
+          group = groups.shift
+
+          if scope == :example || scope == :each || scope.nil? ||
+              meta.empty? || MetadataFilter.apply?(:any?, meta, group.metadata)
+            yield group
+          else
+            groups.concat(group.children)
+          end
         end
       end
 

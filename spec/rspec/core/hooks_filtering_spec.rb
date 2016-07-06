@@ -129,6 +129,62 @@ module RSpec::Core
         group.run
         expect(sequence).to eq [:example]
       end
+
+      it "only runs example hooks once when there are multiple nested example groups" do
+        sequence = []
+
+        group = RSpec.describe do
+          context do
+            example { sequence << :ex_1 }
+            example { sequence << :ex_2 }
+          end
+        end
+
+        RSpec.configure do |c|
+          c.before(:example) { sequence << :before_ex_2 }
+          c.prepend_before(:example) { sequence << :before_ex_1 }
+
+          c.after(:example)  { sequence << :after_ex_1 }
+          c.append_after(:example) { sequence << :after_ex_2 }
+
+          c.around(:example) do |ex|
+            sequence << :around_before_ex
+            ex.run
+            sequence << :around_after_ex
+          end
+        end
+
+        group.run
+
+        expect(sequence).to eq [
+          :around_before_ex, :before_ex_1, :before_ex_2, :ex_1, :after_ex_1, :after_ex_2, :around_after_ex,
+          :around_before_ex, :before_ex_1, :before_ex_2, :ex_2, :after_ex_1, :after_ex_2, :around_after_ex
+        ]
+      end
+
+      it "only runs context hooks around the highest level group with matching filters" do
+        sequence = []
+
+        group = RSpec.describe do
+          before(:context) { sequence << :before_context }
+          after(:context)  { sequence << :after_context }
+
+          context "", :match do
+            context "", :match do
+              example { sequence << :example }
+            end
+          end
+        end
+
+        RSpec.configure do |config|
+          config.before(:context, :match) { sequence << :before_hook }
+          config.after(:context, :match)  { sequence << :after_hook }
+        end
+
+        group.run
+
+        expect(sequence).to eq [:before_context, :before_hook, :example, :after_hook, :after_context]
+      end
     end
 
     describe "unfiltered hooks" do
