@@ -92,6 +92,19 @@ module RSpec
         FlatMap.flat_map(all_example_groups) { |g| g.examples }
       end
 
+      # @private
+      # Traverses the tree of each top level group.
+      # For each it yields the group, then the children, recursively.
+      # Halts the traversal of a branch of the tree as soon as the passed block returns true.
+      # Note that siblings groups and their sub-trees will continue to be explored.
+      # This is intended to make it easy to find the top-most group that satisfies some
+      # condition.
+      def traverse_example_group_trees_until(&block)
+        example_groups.each do |group|
+          group.traverse_tree_until(&block)
+        end
+      end
+
       # @api private
       #
       # Find line number of previous declaration.
@@ -213,6 +226,9 @@ module RSpec
       module Null
         def self.registered_example_group_files
           []
+        end
+
+        def self.traverse_example_group_trees_until
         end
 
         # :nocov:
