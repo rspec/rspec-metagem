@@ -83,33 +83,36 @@ module RSpec::Core
         ]
       end
 
-      it "applies only to examples with matching metadata" do
-        sequence = []
+      { ":example" => [:example], ":each" => [:each] }.each do |label, args|
+        args << :run_hooks
+        it "applies only to examples with matching metadata (for hooks declared with #{label})" do
+          sequence = []
 
-        group = RSpec.describe do
-          example("") { sequence << :ex_1 }
-          example("", :run_hooks) { sequence << :ex_2 }
-        end
-
-        RSpec.configure do |c|
-          c.before(:example, :run_hooks) { sequence << :before_ex_2 }
-          c.prepend_before(:example, :run_hooks) { sequence << :before_ex_1 }
-
-          c.after(:example, :run_hooks)  { sequence << :after_ex_1 }
-          c.append_after(:example, :run_hooks) { sequence << :after_ex_2 }
-
-          c.around(:example, :run_hooks) do |ex|
-            sequence << :around_before_ex
-            ex.run
-            sequence << :around_after_ex
+          group = RSpec.describe do
+            example("") { sequence << :ex_1 }
+            example("", :run_hooks) { sequence << :ex_2 }
           end
-        end
 
-        group.run
-        expect(sequence).to eq [
-          :ex_1,
-          :around_before_ex, :before_ex_1, :before_ex_2, :ex_2, :after_ex_1, :after_ex_2, :around_after_ex,
-        ]
+          RSpec.configure do |c|
+            c.before(*args) { sequence << :before_ex_2 }
+            c.prepend_before(*args) { sequence << :before_ex_1 }
+
+            c.after(*args)  { sequence << :after_ex_1 }
+            c.append_after(*args) { sequence << :after_ex_2 }
+
+            c.around(*args) do |ex|
+              sequence << :around_before_ex
+              ex.run
+              sequence << :around_after_ex
+            end
+          end
+
+          group.run
+          expect(sequence).to eq [
+            :ex_1,
+            :around_before_ex, :before_ex_1, :before_ex_2, :ex_2, :after_ex_1, :after_ex_2, :around_after_ex,
+          ]
+        end
       end
 
       it "does not apply `suite` hooks to groups (or print warnings about suite hooks applied to example groups)" do
