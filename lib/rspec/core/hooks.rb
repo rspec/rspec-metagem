@@ -191,7 +191,7 @@ module RSpec
       #
       # @note The `:example` and `:context` scopes are also available as
       #       `:each` and `:all`, respectively. Use whichever you prefer.
-      # @note The `:scope` alias is only supported for hooks registered on
+      # @note The `:suite` scope is only supported for hooks registered on
       #       `RSpec.configuration` since they exist independently of any
       #       example or example group.
       def before(*args, &block)
@@ -265,7 +265,7 @@ module RSpec
       #
       # @note The `:example` and `:context` scopes are also available as
       #       `:each` and `:all`, respectively. Use whichever you prefer.
-      # @note The `:scope` alias is only supported for hooks registered on
+      # @note The `:suite` scope is only supported for hooks registered on
       #       `RSpec.configuration` since they exist independently of any
       #       example or example group.
       def after(*args, &block)
