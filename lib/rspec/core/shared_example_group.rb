@@ -240,8 +240,16 @@ module RSpec
           end
         end
 
-        def formatted_location(block)
-          block.source_location.join(":").gsub(/:in.*$/, '')
+        if RUBY_VERSION.to_f >= 1.9
+          def formatted_location(block)
+            block.source_location.join(":")
+          end
+        else # 1.8.7
+          # :nocov:
+          def formatted_location(block)
+            block.source_location.join(":").gsub(/:in.*$/, '')
+          end
+          # :nocov:
         end
 
         if Proc.method_defined?(:source_location)

@@ -1,6 +1,11 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.1...master)
 
+Enhancements:
+
+* Warn when duplicate shared exmaples definitions are loaded due to being
+  defined in files matching the spec pattern (e.g. `_spec.rb`) (#2278, Devon Estes)
+
 ### 3.5.1 / 2016-07-06
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.0...v3.5.1)
 
