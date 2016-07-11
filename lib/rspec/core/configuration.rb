@@ -1835,12 +1835,11 @@ module RSpec
       def with_suite_hooks
         return yield if dry_run?
 
-        hook_context = SuiteHookContext.new
         begin
-          run_hooks_with(@before_suite_hooks, hook_context)
+          run_suite_hooks("a `before(:suite)` hook", @before_suite_hooks)
           yield
         ensure
-          run_hooks_with(@after_suite_hooks, hook_context)
+          run_suite_hooks("an `after(:suite)` hook", @after_suite_hooks)
         end
       end
 
@@ -1880,8 +1879,16 @@ module RSpec
         yield
       end
 
-      def run_hooks_with(hooks, hook_context)
-        hooks.each { |h| h.run(hook_context) }
+      def run_suite_hooks(hook_description, hooks)
+        context = SuiteHookContext.new(hook_description, reporter)
+
+        hooks.each do |hook|
+          begin
+            hook.run(context)
+          rescue Support::AllExceptionsExceptOnesWeMustNotRescue => ex
+            context.set_exception(ex)
+          end
+        end
       end
 
       def get_files_to_run(paths)

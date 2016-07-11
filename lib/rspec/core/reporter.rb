@@ -156,6 +156,8 @@ module RSpec::Core
     # particular exception (such as an exception encountered in a :suite hook).
     # Exceptions will be formatted the same way they normally are.
     def notify_non_example_exception(exception, context_description)
+      @configuration.world.non_example_failure = true
+
       example = Example.new(AnonymousExampleGroup, context_description, {})
       presenter = Formatters::ExceptionPresenter.new(exception, example, :indentation => 0)
       message presenter.fully_formatted(nil)

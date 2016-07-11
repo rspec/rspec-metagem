@@ -632,16 +632,16 @@ module RSpec
     # @private
     # Provides an execution context for before/after :suite hooks.
     class SuiteHookContext < Example
-      def initialize
-        super(AnonymousExampleGroup, "", {})
+      def initialize(hook_description, reporter)
+        super(AnonymousExampleGroup, hook_description, {})
         @example_group_instance = AnonymousExampleGroup.new
+        @reporter = reporter
       end
 
       # rubocop:disable Style/AccessorMethodName
-
-      # To ensure we don't silence errors.
       def set_exception(exception)
-        raise exception
+        reporter.notify_non_example_exception(exception, "An error occurred in #{description}.")
+        RSpec.world.wants_to_quit = true
       end
       # rubocop:enable Style/AccessorMethodName
     end

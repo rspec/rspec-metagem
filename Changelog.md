@@ -19,6 +19,8 @@ Bug Fixes:
   conflicting keys if the value in the host group was inherited from
   a parent group instead of being specified at that level.
   (Myron Marston, #2307)
+* Handle errors in `:suite` hooks and provided the same nicely formatted
+  output as errors that happen in examples. (Myron Marston, #2316)
 
 ### 3.5.2 / 2016-07-28
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.1...v3.5.2)
