@@ -461,15 +461,14 @@ module RSpec
       def finish(reporter)
         pending_message = execution_result.pending_message
 
-        reporter.example_finished(self)
         if @exception
-          record_finished :failed
           execution_result.exception = @exception
+          record_finished :failed
           reporter.example_failed self
           false
         elsif pending_message
-          record_finished :pending
           execution_result.pending_message = pending_message
+          record_finished :pending
           reporter.example_pending self
           true
         else
@@ -481,6 +480,7 @@ module RSpec
 
       def record_finished(status)
         execution_result.record_finished(status, clock.now)
+        reporter.example_finished(self)
       end
 
       def run_before_example

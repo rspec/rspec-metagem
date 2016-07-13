@@ -555,6 +555,70 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
   end
 
+  describe "reporting example_finished" do
+    let(:reporter) { RSpec::Core::Reporter.new(RSpec::Core::Configuration.new) }
+
+    def capture_reported_execution_result_for_example(&block)
+      reporter = RSpec::Core::Reporter.new(RSpec::Core::Configuration.new)
+
+      reported_execution_result = nil
+
+      listener = double("Listener")
+      allow(listener).to receive(:example_finished) do |notification|
+        reported_execution_result = notification.example.execution_result.dup
+      end
+
+      reporter.register_listener(listener, :example_finished)
+
+      RSpec.describe do
+        it(&block)
+      end.run(reporter)
+
+      reported_execution_result
+    end
+
+    it "fills in the execution result details before reporting a passed example as finished" do
+      execution_result = capture_reported_execution_result_for_example do
+        expect(1).to eq 1
+      end
+
+      expect(execution_result).to have_attributes(
+        :status => :passed,
+        :exception => nil,
+        :finished_at => a_value_within(1).of(Time.now),
+        :run_time => a_value >= 0
+      )
+    end
+
+    it "fills in the execution result details before reporting a failed example as finished" do
+      execution_result = capture_reported_execution_result_for_example do
+        expect(1).to eq 2
+      end
+
+      expect(execution_result).to have_attributes(
+        :status => :failed,
+        :exception => RSpec::Expectations::ExpectationNotMetError,
+        :finished_at => a_value_within(1).of(Time.now),
+        :run_time => a_value >= 0
+      )
+    end
+
+    it "fills in the execution result details before reporting a pending example as finished" do
+      execution_result = capture_reported_execution_result_for_example do
+        pending "because"
+        expect(1).to eq 2
+      end
+
+      expect(execution_result).to have_attributes(
+        :status => :pending,
+        :pending_message => "because",
+        :pending_exception => RSpec::Expectations::ExpectationNotMetError,
+        :finished_at => a_value_within(1).of(Time.now),
+        :run_time => a_value >= 0
+      )
+    end
+  end
+
   describe "#pending" do
     def expect_pending_result(example)
       expect(example).to be_pending
