@@ -107,6 +107,16 @@ module RSpec
           }.to raise_error(ArgumentError)
         end
 
+        it "matches an arbitrary object that has implemented `===` for matching" do
+          matcher = Object.new
+          def matcher.===(str)
+            str.include?("T")
+          end
+
+          expect(filter_applies?(:foo, matcher, {:foo => "a sing"})).to be false
+          expect(filter_applies?(:foo, matcher, {:foo => "a sTring"})).to be true
+        end
+
         context "with an :ids filter" do
           it 'matches examples with a matching id and rerun_file_path' do
             metadata = { :scoped_id => "1:2", :rerun_file_path => "some/file" }
