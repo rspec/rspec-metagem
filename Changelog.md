@@ -5,6 +5,9 @@ Enhancements:
 
 * Warn when duplicate shared exmaples definitions are loaded due to being
   defined in files matching the spec pattern (e.g. `_spec.rb`) (#2278, Devon Estes)
+* Improve metadata filtering so that it can match against any object
+  that implements `===` instead of treating regular expressions as
+  special. (Myron Marston, #2294)
 
 Bug Fixes:
 

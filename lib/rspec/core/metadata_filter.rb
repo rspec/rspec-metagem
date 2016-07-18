@@ -13,24 +13,19 @@ module RSpec
         end
 
         # @private
-        def filter_applies?(key, value, metadata)
+        def filter_applies?(key, filter_value, metadata)
           silence_metadata_example_group_deprecations do
-            return location_filter_applies?(value, metadata) if key == :locations
-            return id_filter_applies?(value, metadata)       if key == :ids
-            return filters_apply?(key, value, metadata)      if Hash === value
+            return location_filter_applies?(filter_value, metadata) if key == :locations
+            return id_filter_applies?(filter_value, metadata)       if key == :ids
+            return filters_apply?(key, filter_value, metadata)      if Hash === filter_value
 
-            return false unless metadata.key?(key)
-            return true if TrueClass === value && !!metadata[key]
-            return filter_applies_to_any_value?(key, value, metadata) if Array === metadata[key] && !(Proc === value)
+            meta_value = metadata.fetch(key) { return false }
 
-            case value
-            when Regexp
-              metadata[key] =~ value
-            when Proc
-              proc_filter_applies?(key, value, metadata)
-            else
-              metadata[key].to_s == value.to_s
-            end
+            return true if TrueClass === filter_value && !!meta_value
+            return proc_filter_applies?(key, filter_value, metadata) if Proc === filter_value
+            return filter_applies_to_any_value?(key, filter_value, metadata) if Array === meta_value
+
+            filter_value === meta_value || filter_value.to_s == meta_value.to_s
           end
         end
 
