@@ -21,7 +21,7 @@ module RSpec
 
             meta_value = metadata.fetch(key) { return false }
 
-            return true if TrueClass === filter_value && !!meta_value
+            return true if TrueClass === filter_value && meta_value
             return proc_filter_applies?(key, filter_value, metadata) if Proc === filter_value
             return filter_applies_to_any_value?(key, filter_value, metadata) if Array === meta_value
 
