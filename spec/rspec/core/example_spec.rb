@@ -84,13 +84,17 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
   describe '#duplicate_with' do
     it 'successfully duplicates an example' do
-      example = example_group.example { raise 'first' }
+      error_string = 'first'
+      example = example_group.example { raise error_string }
       example2 = example.duplicate_with({ :custom_key => :custom_value })
 
       # ensure metadata is unique for each example
       expect(example.metadata.object_id).to_not eq(example2.metadata.object_id)
       expect(example.metadata[:custom_key]).to eq(nil)
+      expect(&example.metadata[:block]).to raise_error(error_string)
+
       expect(example2.metadata[:custom_key]).to eq(:custom_value)
+      expect(&example2.metadata[:block]).to raise_error(error_string)
 
       # cloned examples must have unique ids
       expect(example.id).to_not eq(example2.id)
