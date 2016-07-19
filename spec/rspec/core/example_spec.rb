@@ -650,7 +650,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
         expect(blah).to be(:success)
       end
 
-      it 'sets the backtrace to the example definition so it can be located by the user' do
+      it 'sets the backtrace to the example definition so it can be located by the user', :pending => RSpec::Support::Ruby.jruby_9000? do
         file = RSpec::Core::Metadata.relative_path(__FILE__)
         expected = [file, __LINE__ + 2].map(&:to_s)
         group = RSpec.describe do
