@@ -2,13 +2,6 @@ require 'rubygems' if RUBY_VERSION.to_f < 1.9
 
 require 'rspec/support/spec'
 
-if RUBY_PLATFORM == 'java'
-  # Works around https://jira.codehaus.org/browse/JRUBY-5678
-  require 'fileutils'
-  ENV['TMPDIR'] = File.expand_path('../../tmp', __FILE__)
-  FileUtils.mkdir_p(ENV['TMPDIR'])
-end
-
 $rspec_core_without_stderr_monkey_patch = RSpec::Core::Configuration.new
 
 class RSpec::Core::Configuration
