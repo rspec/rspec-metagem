@@ -131,12 +131,46 @@ module RSpec::Core
     end
 
     describe Invocations::PrintVersion do
-      it "prints the version and returns a zero exit code" do
+      it "prints the major.minor version of RSpec as a whole" do
+        stub_const("RSpec::Core::Version::STRING", "9.18.23")
+        run_invocation
+        expect(out.string).to include("RSpec 9.18\n")
+      end
 
-        exit_code = run_invocation
+      it "prints off the whole version if it's a pre-release" do
+        stub_const("RSpec::Core::Version::STRING", "9.18.0-beta1")
+        run_invocation
+        expect(out.string).to include("RSpec 9.18.0-beta1\n")
+      end
 
-        expect(exit_code).to eq(0)
-        expect(out.string).to include("#{RSpec::Core::Version::STRING}\n")
+      it "prints off the version of each part of RSpec" do
+        [:Core, :Expectations, :Mocks, :Support].each_with_index do |const_name, index|
+          # validate that this is an existing const
+          expect(RSpec.const_get(const_name)::Version::STRING).to be_a String
+
+          stub_const("RSpec::#{const_name}::Version::STRING", "9.2.#{index}")
+        end
+
+        run_invocation
+
+        expect(out.string).to include(
+          "- rspec-core 9.2.0",
+          "- rspec-expectations 9.2.1",
+          "- rspec-mocks 9.2.2",
+          "- rspec-support 9.2.3"
+        )
+      end
+
+      it "indicates a part is not installed if it cannot be loaded" do
+        expect { require 'rspec/rails/version' }.to raise_error(LoadError)
+
+        run_invocation
+
+        expect(out.string).not_to include("rspec-rails")
+      end
+
+      it "returns a zero exit code" do
+        expect(run_invocation).to eq 0
       end
     end
 
