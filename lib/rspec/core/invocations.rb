@@ -49,7 +49,25 @@ module RSpec
       # @private
       class PrintVersion
         def call(_options, _err, out)
-          out.puts RSpec::Core::Version::STRING
+          overall_version = RSpec::Core::Version::STRING
+          unless overall_version =~ /[a-zA-Z]+/
+            overall_version = overall_version.split('.').first(2).join('.')
+          end
+
+          out.puts "RSpec #{overall_version}"
+
+          [:Core, :Expectations, :Mocks, :Rails, :Support].each do |const_name|
+            lib_name = const_name.to_s.downcase
+            begin
+              require "rspec/#{lib_name}/version"
+            rescue LoadError
+              # Not worth mentioning libs that are not installed
+              nil
+            else
+              out.puts "  - rspec-#{lib_name} #{RSpec.const_get(const_name)::Version::STRING}"
+            end
+          end
+
           0
         end
       end

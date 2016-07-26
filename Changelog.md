@@ -8,6 +8,8 @@ Enhancements:
 * Improve metadata filtering so that it can match against any object
   that implements `===` instead of treating regular expressions as
   special. (Myron Marston, #2294)
+* Improve `rspec -v` so that it prints out the versions of each part of
+  RSpec to prevent confusion. (Myron Marston, #2304)
 
 Bug Fixes:
 
