@@ -102,6 +102,7 @@ module RSpec
         if ENV['SPEC']
           FileList[ENV['SPEC']].sort
         elsif String === pattern && !File.exist?(pattern)
+          return if rspec_opts =~ /--pattern/
           "--pattern #{escape pattern}"
         else
           # Before RSpec 3.1, we used `FileList` to get the list of matched
