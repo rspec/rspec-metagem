@@ -221,7 +221,7 @@ module RSpec
               ))
             end
 
-            it "does not overwrite existing metdata values set at that level when included via `include_context`" do
+            it "does not overwrite existing metadata values set at that level when included via `include_context`" do
               shared_ex_metadata = nil
               host_ex_metadata = nil
 
@@ -238,7 +238,7 @@ module RSpec
               expect(shared_ex_metadata[:foo]).to eq :host
             end
 
-            it "overwrites existing metdata values set at a parent level when included via `include_context`" do
+            it "overwrites existing metadata values set at a parent level when included via `include_context`" do
               shared_ex_metadata = nil
               host_ex_metadata = nil
 
