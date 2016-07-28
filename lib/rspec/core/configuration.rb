@@ -199,6 +199,10 @@ module RSpec
       # The exit code to return if there are any failures (default: 1).
       add_setting :failure_exit_code
 
+      # @macro add_setting
+      # Whether or not to fail when there are no RSpec examples (default: false).
+      add_setting :fail_if_no_examples
+
       # @macro define_reader
       # Indicates files configured to be required.
       define_reader :requires
@@ -425,6 +429,7 @@ module RSpec
         @pattern = '**{,/*/**}/*_spec.rb'
         @exclude_pattern = ''
         @failure_exit_code = 1
+        @fail_if_no_examples = false
         @spec_files_loaded = false
 
         @backtrace_formatter = BacktraceFormatter.new

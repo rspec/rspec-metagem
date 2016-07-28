@@ -42,6 +42,22 @@ module RSpec::Core
       end
     end
 
+    describe 'fail_if_no_examples' do
+      it 'defaults to false' do
+        expect(RSpec::Core::Configuration.new.fail_if_no_examples).to be(false)
+      end
+
+      it 'can be set to true' do
+        config.fail_if_no_examples = true
+        expect(config.fail_if_no_examples).to eq(true)
+      end
+
+      it 'can be set to false' do
+        config.fail_if_no_examples = false
+        expect(config.fail_if_no_examples).to eq(false)
+      end
+    end
+
     describe '#deprecation_stream' do
       it 'defaults to standard error' do
         expect($rspec_core_without_stderr_monkey_patch.deprecation_stream).to eq STDERR

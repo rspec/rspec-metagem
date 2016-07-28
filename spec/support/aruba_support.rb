@@ -10,7 +10,7 @@ RSpec.shared_context "aruba support" do
   let(:stderr) { StringIO.new }
   let(:stdout) { StringIO.new }
 
-  attr_reader :last_cmd_stdout, :last_cmd_stderr
+  attr_reader :last_cmd_stdout, :last_cmd_stderr, :last_cmd_exit_status
 
   def run_command(cmd)
     RSpec.configuration.color = true
@@ -24,7 +24,7 @@ RSpec.shared_context "aruba support" do
 
     handle_current_dir_change do
       in_current_dir do
-        RSpec::Core::Runner.run(cmd_parts, temp_stderr, temp_stdout)
+        @last_cmd_exit_status = RSpec::Core::Runner.run(cmd_parts, temp_stderr, temp_stdout)
       end
     end
   ensure

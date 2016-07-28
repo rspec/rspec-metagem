@@ -108,8 +108,12 @@ module RSpec
       #   or the configured failure exit code (1 by default) if specs
       #   failed.
       def run_specs(example_groups)
-        @configuration.reporter.report(@world.example_count(example_groups)) do |reporter|
+        examples_count = @world.example_count(example_groups)
+        @configuration.reporter.report(examples_count) do |reporter|
           @configuration.with_suite_hooks do
+            if examples_count == 0 && @configuration.fail_if_no_examples
+              return @configuration.failure_exit_code
+            end
             example_groups.map { |g| g.run(reporter) }.all? ? 0 : @configuration.failure_exit_code
           end
         end
