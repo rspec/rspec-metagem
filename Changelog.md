@@ -1,5 +1,5 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.1...master)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.2...master)
 
 Enhancements:
 
@@ -13,14 +13,17 @@ Enhancements:
 * Add `config.fail_if_no_examples` option which causes RSpec to fail if
   no examples are found. (Ewa Czechowska, #2302)
 
+### 3.5.2 / 2016-07-28
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.1...v3.5.2)
+
 Bug Fixes:
 
 * Wait to report `example_finished` until the example's `execution_result`
   has been completely filled in. (Myron Marston, #2291)
 * Make sure example block is still available when using `duplicate_with`
   to clone examples. (bootstraponline, #2298)
-* Don't include the default `--pattern` in the Rake task when `rspec_opts`
-  specifies its own. (Jon Rowe, #2305)
+* Don't include the default `--pattern` in the Rake task when
+  `rspec_opts` specifies its own. (Jon Rowe, #2305)
 
 ### 3.5.1 / 2016-07-06
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.0...v3.5.1)
