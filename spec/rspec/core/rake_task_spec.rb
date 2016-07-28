@@ -66,6 +66,13 @@ module RSpec::Core
         task.rspec_opts = "-Ifoo"
         expect(spec_command).to match(/#{task.rspec_path}.*-Ifoo/)
       end
+
+      it 'correctly excludes the default pattern if rspec_opts includes --pattern' do
+        task.rspec_opts = "--pattern some_specs"
+        expect(spec_command).to include("--pattern some_specs").and(
+          exclude(RSpec::Core::RakeTask::DEFAULT_PATTERN)
+        )
+      end
     end
 
     context "with pattern" do
