@@ -220,6 +220,59 @@ module RSpec
                 {:foo => 1}.inspect
               ))
             end
+
+            it "does not overwrite existing metadata values set at that level when included via `include_context`" do
+              shared_ex_metadata = nil
+              host_ex_metadata = nil
+
+              define_top_level_shared_group("name", :foo => :shared) do
+                it { |ex| shared_ex_metadata = ex.metadata }
+              end
+
+              describe_successfully("Group", :foo => :host) do
+                include_context "name"
+                it { |ex| host_ex_metadata = ex.metadata }
+              end
+
+              expect(host_ex_metadata[:foo]).to eq :host
+              expect(shared_ex_metadata[:foo]).to eq :host
+            end
+
+            it "overwrites existing metadata values set at a parent level when included via `include_context`" do
+              shared_ex_metadata = nil
+              host_ex_metadata = nil
+
+              define_top_level_shared_group("name", :foo => :shared) do
+                it { |ex| shared_ex_metadata = ex.metadata }
+              end
+
+              describe_successfully("Group", :foo => :host) do
+                context "nested" do
+                  include_context "name"
+                  it { |ex| host_ex_metadata = ex.metadata }
+                end
+              end
+
+              expect(host_ex_metadata[:foo]).to eq :shared
+              expect(shared_ex_metadata[:foo]).to eq :shared
+            end
+
+            it "propagates conflicted metadata to examples defined in the shared group when included via `it_behaves_like` since it makes a nested group" do
+              shared_ex_metadata = nil
+              host_ex_metadata = nil
+
+              define_top_level_shared_group("name", :foo => :shared) do
+                it { |ex| shared_ex_metadata = ex.metadata }
+              end
+
+              describe_successfully("Group", :foo => :host) do
+                it_behaves_like "name"
+                it { |ex| host_ex_metadata = ex.metadata }
+              end
+
+              expect(host_ex_metadata[:foo]).to eq :host
+              expect(shared_ex_metadata[:foo]).to eq :shared
+            end
           end
 
           context "when the group is included via `config.include_context` and matching metadata" do

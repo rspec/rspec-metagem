@@ -458,7 +458,7 @@ module RSpec
             expect(value).to be(String)
           end
 
-          it "can override a parent group's described class using metdata" do
+          it "can override a parent group's described class using metadata" do
             parent_value = child_value = grandchild_value = nil
 
             RSpec.describe(String) do

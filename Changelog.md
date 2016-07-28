@@ -13,6 +13,13 @@ Enhancements:
 * Add `config.fail_if_no_examples` option which causes RSpec to fail if
   no examples are found. (Ewa Czechowska, #2302)
 
+Bug Fixes:
+
+* When applying shared group metadata to a host group, overwrite
+  conflicting keys if the value in the host group was inherited from
+  a parent group instead of being specified at that level.
+  (Myron Marston, #2307)
+
 ### 3.5.2 / 2016-07-28
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.1...v3.5.2)
 
