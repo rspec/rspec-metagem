@@ -10,6 +10,8 @@ Enhancements:
   special. (Myron Marston, #2294)
 * Improve `rspec -v` so that it prints out the versions of each part of
   RSpec to prevent confusion. (Myron Marston, #2304)
+* Add `--fail-no-examples` causing RSpec to fail if no matching examples
+  are found. (Ewa Czechowska, #2302)
 
 Bug Fixes:
 
