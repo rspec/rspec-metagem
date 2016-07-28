@@ -19,6 +19,8 @@ Bug Fixes:
   has been completely filled in. (Myron Marston, #2291)
 * Make sure example block is still available when using `duplicate_with`
   to clone examples. (bootstraponline, #2298)
+* Don't include the default `--pattern` in the Rake task when `rspec_opts`
+  specifies its own. (Jon Rowe, #2305)
 
 ### 3.5.1 / 2016-07-06
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.0...v3.5.1)
