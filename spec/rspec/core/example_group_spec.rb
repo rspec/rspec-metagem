@@ -1542,12 +1542,24 @@ module RSpec::Core
         expect(group.metadata).to include(:foo => 1, :bar => 2)
       end
 
-      it "does not overwrite existing metadata since group metadata takes precedence over inherited metadata" do
+      it "does not overwrite existing metadata originating from that level" do
         group = RSpec.describe("group", :foo => 1)
 
         expect {
           group.update_inherited_metadata(:foo => 2)
         }.not_to change { group.metadata[:foo] }.from(1)
+      end
+
+      it "overwrites metadata originating from a parent" do
+        group = nil
+        RSpec.describe("group", :foo => 1) do
+          group = context do
+          end
+        end
+
+        expect {
+          group.update_inherited_metadata(:foo => 2)
+        }.to change { group.metadata[:foo] }.from(1).to(2)
       end
 
       it "does not replace the existing metadata object with a new one or change its default proc" do

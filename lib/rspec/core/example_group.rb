@@ -415,10 +415,10 @@ module RSpec
         # not be applied where they should.
         registration_collection << self
 
-        user_metadata = Metadata.build_hash_from(args)
+        @user_metadata = Metadata.build_hash_from(args)
 
         @metadata = Metadata::ExampleGroupHash.create(
-          superclass_metadata, user_metadata,
+          superclass_metadata, @user_metadata,
           superclass.method(:next_runnable_index_for),
           description, *args, &example_group_block
         )
@@ -705,8 +705,8 @@ module RSpec
 
       # @private
       def self.update_inherited_metadata(updates)
-        metadata.update(updates) do |_key, existing_group_value, _new_inherited_value|
-          existing_group_value
+        metadata.update(updates) do |key, existing_group_value, new_inherited_value|
+          @user_metadata.key?(key) ? existing_group_value : new_inherited_value
         end
 
         RSpec.configuration.configure_group(self)
