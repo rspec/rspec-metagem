@@ -76,7 +76,7 @@ Feature: shared examples
       and require files in that directory from `spec/spec_helper.rb`:
 
       ```ruby
-      Dir["./spec/support/**/*.rb"].sort.each { |f| require f}
+      Dir["./spec/support/**/*.rb"].sort.each { |f| require f }
       ```
 
       Historically, this was included in the generated `spec/spec_helper.rb` file in
