@@ -51,6 +51,18 @@ module RSpec::Core
         EOS
       end
 
+      it "prints no identifier when no number argument is given" do
+        expect(presenter.fully_formatted(nil)).to eq(<<-EOS.gsub(/^ +\|/, ''))
+          |
+          |  Example
+          |  Failure/Error: # The failure happened here!#{ encoding_check }
+          |
+          |    Boom
+          |    Bam
+          |  # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
+        EOS
+      end
+
       it "allows the caller to specify additional indentation" do
         the_presenter = Formatters::ExceptionPresenter.new(exception, example, :indentation => 4)
 
