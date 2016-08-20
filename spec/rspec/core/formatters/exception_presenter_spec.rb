@@ -136,6 +136,7 @@ module RSpec::Core
         instance_double(Exception, :cause => first_exception, :message => "Second\nexception", :backtrace => ["#{__FILE__}:#{__LINE__}"])
       end
 
+      caused_by_line_num = __LINE__ + 2
       let(:first_exception) do
         instance_double(Exception, :cause => nil, :message => "Real\nculprit", :backtrace => ["#{__FILE__}:#{__LINE__}"])
       end
@@ -155,7 +156,7 @@ module RSpec::Core
           |     # --- Caused by: ---
           |     #   Real
           |     #   culprit
-          |     #   ./spec/rspec/core/formatters/exception_presenter_spec.rb:140
+          |     #   ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{caused_by_line_num}
         EOS
       end
 
