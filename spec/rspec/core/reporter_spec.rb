@@ -280,5 +280,27 @@ module RSpec::Core
         reporter.finish
       end
     end
+
+    describe "#notify_non_example_exception" do
+      it "sends a `message` notification that contains the formatted exception details" do
+        formatter_out = StringIO.new
+        formatter = Formatters::ProgressFormatter.new(formatter_out)
+        reporter.register_listener formatter, :message
+
+        line = __LINE__ + 1
+        exception = 1 / 0 rescue $!
+        reporter.notify_non_example_exception(exception, "NonExample Context")
+
+        expect(formatter_out.string).to start_with(<<-EOS.gsub(/^ +\|/, '').chomp)
+          |
+          |NonExample Context
+          |Failure/Error: exception = 1 / 0 rescue $!
+          |
+          |ZeroDivisionError:
+          |  divided by 0
+          |# #{Metadata.relative_path(__FILE__)}:#{line}
+        EOS
+      end
+    end
   end
 end

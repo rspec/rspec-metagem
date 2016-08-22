@@ -152,6 +152,16 @@ module RSpec::Core
     end
 
     # @private
+    # Provides a way to notify of an exception that is not tied to any
+    # particular exception (such as an exception encountered in a :suite hook).
+    # Exceptions will be formatted the same way they normally are.
+    def notify_non_example_exception(exception, context_description)
+      example = Example.new(AnonymousExampleGroup, context_description, {})
+      presenter = Formatters::ExceptionPresenter.new(exception, example, :indentation => 0)
+      message presenter.fully_formatted(nil)
+    end
+
+    # @private
     def finish
       close_after do
         stop
