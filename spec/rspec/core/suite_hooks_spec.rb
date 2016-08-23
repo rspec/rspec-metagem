@@ -41,10 +41,17 @@ module RSpec::Core
         end
 
         it 'allows access to rspec-expectation methods within the hook' do
-          RSpec.configuration.__send__(registration_method, :suite) { expect(true).to be false }
-          expect {
+          notified_failure = nil
+
+          RSpec::Support.with_failure_notifier(lambda { |e, _opts| notified_failure = e }) do
+            RSpec.configuration.__send__(registration_method, :suite) do
+              expect(true).to be false
+            end
+
             RSpec.configuration.with_suite_hooks { }
-          }.to raise_error RSpec::Expectations::ExpectationNotMetError
+          end
+
+          expect(notified_failure).to be_a(RSpec::Expectations::ExpectationNotMetError)
         end
 
         context "registered on an example group" do
