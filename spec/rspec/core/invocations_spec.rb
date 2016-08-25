@@ -131,6 +131,11 @@ module RSpec::Core
     end
 
     describe Invocations::PrintVersion do
+      before do
+        allow(subject).to receive(:require).and_call_original
+        allow(subject).to receive(:require).with("rspec/rails/version").and_raise(LoadError)
+      end
+
       it "prints the major.minor version of RSpec as a whole" do
         stub_const("RSpec::Core::Version::STRING", "9.18.23")
         run_invocation
@@ -162,8 +167,6 @@ module RSpec::Core
       end
 
       it "indicates a part is not installed if it cannot be loaded" do
-        expect { require 'rspec/rails/version' }.to raise_error(LoadError)
-
         run_invocation
 
         expect(out.string).not_to include("rspec-rails")
