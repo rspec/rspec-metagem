@@ -153,7 +153,7 @@ module RSpec::Core
 
     # @private
     # Provides a way to notify of an exception that is not tied to any
-    # particular exception (such as an exception encountered in a :suite hook).
+    # particular example (such as an exception encountered in a :suite hook).
     # Exceptions will be formatted the same way they normally are.
     def notify_non_example_exception(exception, context_description)
       @configuration.world.non_example_failure = true

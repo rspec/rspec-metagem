@@ -1887,6 +1887,12 @@ module RSpec
             hook.run(context)
           rescue Support::AllExceptionsExceptOnesWeMustNotRescue => ex
             context.set_exception(ex)
+
+            # Do not run subsequent `before` hooks if one fails.
+            # But for `after` hooks, we run them all so that all
+            # cleanup bits get a chance to complete, minimizing the
+            # chance that resources get left behind.
+            break if hooks.equal?(@before_suite_hooks)
           end
         end
       end

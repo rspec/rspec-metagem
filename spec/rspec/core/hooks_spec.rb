@@ -18,6 +18,64 @@ module RSpec::Core
       end
     end
 
+    [:example, :context, :suite].each do |scope|
+      describe "#before(#{scope})" do
+        it "stops running subsequent hooks of the same type when an error is encountered" do
+          sequence = []
+
+          RSpec.configure do |c|
+            c.output_stream = StringIO.new
+
+            c.before(scope) do
+              sequence << :hook_1
+              raise "boom"
+            end
+
+            c.before(scope) do
+              sequence << :hook_2
+              raise "boom"
+            end
+          end
+
+          RSpec.configuration.with_suite_hooks do
+            RSpec.describe do
+              example { sequence << :example }
+            end.run
+          end
+
+          expect(sequence).to eq [:hook_1]
+        end
+      end
+
+      describe "#after(#{scope})" do
+        it "runs subsequent hooks of the same type when an error is encountered so all cleanup can complete" do
+          sequence = []
+
+          RSpec.configure do |c|
+            c.output_stream = StringIO.new
+
+            c.after(scope) do
+              sequence << :hook_2
+              raise "boom"
+            end
+
+            c.after(scope) do
+              sequence << :hook_1
+              raise "boom"
+            end
+          end
+
+          RSpec.configuration.with_suite_hooks do
+            RSpec.describe do
+              example { sequence << :example }
+            end.run
+          end
+
+          expect(sequence).to eq [:example, :hook_1, :hook_2]
+        end
+      end
+    end
+
     [:before, :after, :around].each do |type|
       [:example, :context].each do |scope|
         next if type == :around && scope == :context

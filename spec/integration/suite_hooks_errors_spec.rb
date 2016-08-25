@@ -110,13 +110,6 @@ RSpec.describe 'Suite hook errors' do
         before 1
       # ./the_spec.rb:3#{spec_line_suffix}
 
-      An error occurred in a `before(:suite)` hook.
-      Failure/Error: c.before(:suite) { raise 'before 2' }
-
-      RuntimeError:
-        before 2
-      # ./the_spec.rb:4#{spec_line_suffix}
-
       An error occurred in an `after(:suite)` hook.
       Failure/Error: c.after(:suite) { raise 'after 2' }
 
