@@ -178,6 +178,7 @@ module RSpec
 
         def build_description_from(parent_description=nil, my_description=nil)
           return parent_description.to_s unless my_description
+          return my_description.to_s if parent_description.to_s == ''
           separator = description_separator(parent_description, my_description)
           (parent_description.to_s + separator) << my_description.to_s
         end

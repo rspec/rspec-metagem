@@ -550,6 +550,26 @@ module RSpec
           end
         end
 
+        it "omits description from groups with a `nil` description" do
+          value = nil
+
+          RSpec.describe do
+            value = example("example").metadata[:full_description]
+          end
+
+          expect(value).to eq("example")
+        end
+
+        it "omits description from groups with a description of `''`" do
+          value = nil
+
+          RSpec.describe "" do
+            value = example("example").metadata[:full_description]
+          end
+
+          expect(value).to eq("example")
+        end
+
         it "concats nested example group descriptions" do
           group_value = example_value = nil
 

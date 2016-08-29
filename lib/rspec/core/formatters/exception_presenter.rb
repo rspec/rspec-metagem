@@ -122,7 +122,8 @@ module RSpec
         end
 
         def indent_lines(lines, failure_number)
-          alignment_basis = "#{' ' * @indentation}#{failure_number}) "
+          alignment_basis = ' ' * @indentation
+          alignment_basis <<  "#{failure_number}) " if failure_number
           indentation = ' ' * alignment_basis.length
 
           lines.each_with_index.map do |line, index|

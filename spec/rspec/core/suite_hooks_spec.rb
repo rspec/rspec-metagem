@@ -15,12 +15,23 @@ module RSpec::Core
           }.not_to yield_control
         end
 
-        it 'allows errors in the hook to propagate to the user' do
+        it 'notifies about errors in the hook' do
           RSpec.configuration.__send__(registration_method, :suite) { 1 / 0 }
+
+          expect(RSpec.configuration.reporter).to receive(:notify_non_example_exception).with(
+            ZeroDivisionError, /suite\)` hook/
+          )
+
+          RSpec.configuration.with_suite_hooks { }
+        end
+
+        it 'sets `wants_to_quit` when an error occurs so that the suite does not get run' do
+          RSpec.configuration.__send__(registration_method, :suite) { 1 / 0 }
+          allow(RSpec.configuration.reporter).to receive(:notify_non_example_exception)
 
           expect {
             RSpec.configuration.with_suite_hooks { }
-          }.to raise_error(ZeroDivisionError)
+          }.to change(RSpec.world, :wants_to_quit).from(a_falsey_value).to(true)
         end
 
         it 'runs in the context of an example group' do
@@ -41,10 +52,17 @@ module RSpec::Core
         end
 
         it 'allows access to rspec-expectation methods within the hook' do
-          RSpec.configuration.__send__(registration_method, :suite) { expect(true).to be false }
-          expect {
+          notified_failure = nil
+
+          RSpec::Support.with_failure_notifier(lambda { |e, _opts| notified_failure = e }) do
+            RSpec.configuration.__send__(registration_method, :suite) do
+              expect(true).to be false
+            end
+
             RSpec.configuration.with_suite_hooks { }
-          }.to raise_error RSpec::Expectations::ExpectationNotMetError
+          end
+
+          expect(notified_failure).to be_a(RSpec::Expectations::ExpectationNotMetError)
         end
 
         context "registered on an example group" do

@@ -3,6 +3,7 @@ module RSpec::Core
     include FormatterSupport
 
     let(:config)   { Configuration.new }
+    let(:world)    { World.new(config) }
     let(:reporter) { Reporter.new config }
     let(:start_time) { Time.now }
     let(:example) { super() }
@@ -278,6 +279,38 @@ module RSpec::Core
         end
 
         reporter.finish
+      end
+    end
+
+    describe "#notify_non_example_exception" do
+      it "sends a `message` notification that contains the formatted exception details" do
+        if RSpec::Support::Ruby.jruby_9000?
+          pending "RSpec gets `Unable to find matching line from backtrace` on JRuby 9000"
+        end
+
+        formatter_out = StringIO.new
+        formatter = Formatters::ProgressFormatter.new(formatter_out)
+        reporter.register_listener formatter, :message
+
+        line = __LINE__ + 1
+        exception = 1 / 0 rescue $!
+        reporter.notify_non_example_exception(exception, "NonExample Context")
+
+        expect(formatter_out.string).to start_with(<<-EOS.gsub(/^ +\|/, '').chomp)
+          |
+          |NonExample Context
+          |Failure/Error: exception = 1 / 0 rescue $!
+          |
+          |ZeroDivisionError:
+          |  divided by 0
+          |# #{Metadata.relative_path(__FILE__)}:#{line}
+        EOS
+      end
+
+      it "records the fact that a non example failure has occurred" do
+        expect {
+          reporter.notify_non_example_exception(Exception.new, "NonExample Context")
+        }.to change(world, :non_example_failure).from(a_falsey_value).to(true)
       end
     end
   end

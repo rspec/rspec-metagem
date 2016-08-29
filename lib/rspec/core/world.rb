@@ -10,6 +10,12 @@ module RSpec
       # Used internally to determine what to do when a SIGINT is received.
       attr_accessor :wants_to_quit
 
+      # Used internally to signal that a failure outside of an example
+      # has occurred, and that therefore the exit status should indicate
+      # the run failed.
+      # @private
+      attr_accessor :non_example_failure
+
       def initialize(configuration=RSpec.configuration)
         @configuration = configuration
         configuration.world = self
@@ -224,6 +230,9 @@ module RSpec
       # @private
       # Provides a null implementation for initial use by configuration.
       module Null
+        def self.non_example_failure; end
+        def self.non_example_failure=(_); end
+
         def self.registered_example_group_files
           []
         end

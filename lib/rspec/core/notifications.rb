@@ -51,8 +51,7 @@ module RSpec::Core
                   FailedExampleNotification
                 end
 
-        exception_presenter = Formatters::ExceptionPresenter::Factory.new(example).build
-        klass.new(example, exception_presenter)
+        klass.new(example)
       end
 
       private_class_method :new
@@ -202,7 +201,7 @@ module RSpec::Core
 
     private
 
-      def initialize(example, exception_presenter)
+      def initialize(example, exception_presenter=Formatters::ExceptionPresenter::Factory.new(example).build)
         @exception_presenter = exception_presenter
         super(example)
       end
