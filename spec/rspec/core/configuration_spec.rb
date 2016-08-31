@@ -1230,6 +1230,62 @@ module RSpec::Core
     end
 
     describe "#color=" do
+      context "given false" do
+        before { config.color = false }
+
+        context "with config.tty? and output.tty?" do
+          it "does not set color_enabled?" do
+            output = StringIO.new
+            config.output_stream = output
+
+            config.tty = true
+            allow(config.output_stream).to receive_messages :tty? => true
+
+            expect(config.color_enabled?).to be_falsy
+            expect(config.color_enabled?(output)).to be_falsy
+          end
+        end
+
+        context "with config.tty? and !output.tty?" do
+          it "does not set color_enabled?" do
+            output = StringIO.new
+            config.output_stream = output
+
+            config.tty = true
+            allow(config.output_stream).to receive_messages :tty? => false
+
+            expect(config.color_enabled?).to be_falsy
+            expect(config.color_enabled?(output)).to be_falsy
+          end
+        end
+
+        context "with !config.tty? and output.tty?" do
+          it "does not set color_enabled?" do
+            output = StringIO.new
+            config.output_stream = output
+
+            config.tty = false
+            allow(config.output_stream).to receive_messages :tty? => true
+
+            expect(config.color_enabled?).to be_falsy
+            expect(config.color_enabled?(output)).to be_falsy
+          end
+        end
+
+        context "with !config.tty? and !output.tty?" do
+          it "does not set color_enabled?" do
+            output = StringIO.new
+            config.output_stream = output
+
+            config.tty = false
+            allow(config.output_stream).to receive_messages :tty? => false
+
+            expect(config.color_enabled?).to be_falsey
+            expect(config.color_enabled?(output)).to be_falsey
+          end
+        end
+      end
+
       context "given true" do
         before { config.color = true }
 
