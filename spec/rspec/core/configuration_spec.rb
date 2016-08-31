@@ -1259,8 +1259,8 @@ module RSpec::Core
           end
         end
 
-        context "with config.tty? and !output.tty?" do
-          it "does not set color_enabled?" do
+        context "with !config.tty? and output.tty?" do
+          it "sets color_enabled?" do
             output = StringIO.new
             config.output_stream = output
 
