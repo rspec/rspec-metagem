@@ -268,8 +268,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
   describe "custom_colors" do
     it "uses the custom success color" do
       RSpec.configure do |config|
-        config.color = true
-        config.tty = true
+        config.color_mode = :on
         config.success_color = :cyan
       end
       send_notification :dump_summary, summary_notification(0, examples(1), [], [], 0)

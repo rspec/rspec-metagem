@@ -398,6 +398,7 @@ module RSpec
       add_setting :max_displayed_failure_line_count
 
       # @private
+      # @deprecated Use {#color_mode} = :on, instead of {#color} with {#tty}
       add_setting :tty
       # @private
       attr_writer :files_to_run
@@ -426,6 +427,7 @@ module RSpec
         @files_or_directories_to_run = []
         @loaded_spec_files = Set.new
         @color = false
+        @color_mode = :automatic
         @pattern = '**{,/*/**}/*_spec.rb'
         @exclude_pattern = ''
         @failure_exit_code = 1
@@ -778,13 +780,31 @@ module RSpec
         @backtrace_formatter.full_backtrace = true_or_false
       end
 
-      # Returns the configuration option for color, but should not
-      # be used to check if color is supported.
+      # Enables color output if the output is a TTY.  As of RSpec 3.6, this is
+      # the default behavior and this option is retained only for backwards
+      # compatibility.
       #
+      # @deprecated No longer recommended because of complex behavior. Instead,
+      #   rely on the fact that TTYs will display color by default, or set
+      #   {#color_mode} to :on to display color on a non-TTY output.
+      # @see color_mode
       # @see color_enabled?
       # @return [Boolean]
       def color
         value_for(:color) { @color }
+      end
+
+      # The mode for determining whether to display output in color. One of:
+      #
+      # - :automatic - the output will be in color if the output is a TTY (the
+      #   default)
+      # - :on - the output will be in color, whether or not the output is a TTY
+      # - :off - the output will not be in color
+      #
+      # @see color_enabled?
+      # @return [Boolean]
+      def color_mode
+        value_for(:color_mode) { @color_mode }
       end
 
       # Check if color is enabled for a particular output.
@@ -792,10 +812,22 @@ module RSpec
       #        `output_stream`
       # @return [Boolean]
       def color_enabled?(output=output_stream)
-        output_to_tty?(output) && color
+        case color_mode
+        when :on then true
+        when :off then false
+        else # automatic
+          output_to_tty?(output) || (color && tty?)
+        end
       end
 
+      # Set the color mode.
+      attr_writer :color_mode
+
       # Toggle output color.
+      #
+      # @deprecated No longer recommended because of complex behavior. Instead,
+      #   rely on the fact that TTYs will display color by default, or set
+      #   {:color_mode} to :on to display color on a non-TTY output.
       attr_writer :color
 
       # @private
@@ -2005,7 +2037,7 @@ module RSpec
       end
 
       def output_to_tty?(output=output_stream)
-        tty? || (output.respond_to?(:tty?) && output.tty?)
+        output.respond_to?(:tty?) && output.tty?
       end
 
       def conditionally_disable_mocks_monkey_patching

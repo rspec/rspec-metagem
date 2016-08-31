@@ -17,7 +17,7 @@ Feature: `--init` option
   Scenario: `.rspec` file already exists
     Given a file named ".rspec" with:
       """
-      --color
+      --force-color
       """
     When I run `rspec --init`
     Then the output should contain "exist   .rspec"

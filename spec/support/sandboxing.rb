@@ -10,6 +10,8 @@ RSpec.configure do |c|
       # something like `pending`
       config.before(:context) { RSpec.current_example = nil }
 
+      config.color_mode = :off
+
       orig_load_path = $LOAD_PATH.dup
       ex.run
       $LOAD_PATH.replace(orig_load_path)

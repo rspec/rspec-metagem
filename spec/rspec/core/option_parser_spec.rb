@@ -33,12 +33,8 @@ module RSpec::Core
     end
 
     it "proposes you to use --help and returns an error on incorrect argument" do
-      parser = Parser.new([option = "--my_wrong_arg"])
-
-      expect(parser).to receive(:abort) do |msg|
-        expect(msg).to include('use --help', option)
-      end
-
+      parser = Parser.new(["--my_wrong_arg"])
+      expect(parser).to receive(:abort).with(a_string_including('use --help'))
       parser.parse
     end
 
@@ -58,11 +54,7 @@ module RSpec::Core
       shorts.each do |option|
         it "won't parse #{option} as a shorthand for #{long}" do
           parser = Parser.new([option])
-
-          expect(parser).to receive(:abort) do |msg|
-            expect(msg).to include('use --help', option)
-          end
-
+          expect(parser).to receive(:abort).with(a_string_including('use --help'))
           parser.parse
         end
       end
@@ -394,5 +386,20 @@ module RSpec::Core
       end
     end
 
+    describe '--force-color' do
+      it 'aborts if --no-color was previously set' do
+        parser = Parser.new(%w[--no-color --force-color])
+        expect(parser).to receive(:abort).with(a_string_including('only use one of `--force-color` and `--no-color`'))
+        parser.parse
+      end
+    end
+
+    describe '--no-color' do
+      it 'aborts if --force-color was previously set' do
+        parser = Parser.new(%w[--force-color --no-color])
+        expect(parser).to receive(:abort).with(a_string_including('only use one of --force-color and --no-color'))
+        parser.parse
+      end
+    end
   end
 end

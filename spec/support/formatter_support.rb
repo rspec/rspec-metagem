@@ -67,7 +67,7 @@ module FormatterSupport
         |     # ./spec/rspec/core/resources/formatter_specs.rb:18
         |     # ./spec/support/formatter_support.rb:39:in `run_rspec_with_formatter'
         |     # ./spec/support/formatter_support.rb:3:in `run_example_specs_with_formatter'
-        |     # ./spec/support/sandboxing.rb:14
+        |     # ./spec/support/sandboxing.rb:16
         |     # ./spec/support/sandboxing.rb:7
         |
         |Failures:
@@ -87,7 +87,7 @@ module FormatterSupport
         |     # ./spec/rspec/core/resources/formatter_specs.rb:33
         |     # ./spec/support/formatter_support.rb:39:in `run_rspec_with_formatter'
         |     # ./spec/support/formatter_support.rb:3:in `run_example_specs_with_formatter'
-        |     # ./spec/support/sandboxing.rb:14
+        |     # ./spec/support/sandboxing.rb:16
         |     # ./spec/support/sandboxing.rb:7
         |
         |  3) a failing spec with odd backtraces fails with a backtrace that has no file
@@ -142,7 +142,7 @@ module FormatterSupport
         |     # ./spec/rspec/core/resources/formatter_specs.rb:18:in `block (3 levels) in <top (required)>'
         |     # ./spec/support/formatter_support.rb:39:in `run_rspec_with_formatter'
         |     # ./spec/support/formatter_support.rb:3:in `run_example_specs_with_formatter'
-        |     # ./spec/support/sandboxing.rb:14:in `block (3 levels) in <top (required)>'
+        |     # ./spec/support/sandboxing.rb:16:in `block (3 levels) in <top (required)>'
         |     # ./spec/support/sandboxing.rb:7:in `block (2 levels) in <top (required)>'
         |
         |Failures:
@@ -162,7 +162,7 @@ module FormatterSupport
         |     # ./spec/rspec/core/resources/formatter_specs.rb:33:in `block (2 levels) in <top (required)>'
         |     # ./spec/support/formatter_support.rb:39:in `run_rspec_with_formatter'
         |     # ./spec/support/formatter_support.rb:3:in `run_example_specs_with_formatter'
-        |     # ./spec/support/sandboxing.rb:14:in `block (3 levels) in <top (required)>'
+        |     # ./spec/support/sandboxing.rb:16:in `block (3 levels) in <top (required)>'
         |     # ./spec/support/sandboxing.rb:7:in `block (2 levels) in <top (required)>'
         |
         |  3) a failing spec with odd backtraces fails with a backtrace that has no file
@@ -174,7 +174,7 @@ module FormatterSupport
         |     # ./spec/rspec/core/resources/formatter_specs.rb:41:in `block (2 levels) in <top (required)>'
         |     # ./spec/support/formatter_support.rb:39:in `run_rspec_with_formatter'
         |     # ./spec/support/formatter_support.rb:3:in `run_example_specs_with_formatter'
-        |     # ./spec/support/sandboxing.rb:14:in `block (3 levels) in <top (required)>'
+        |     # ./spec/support/sandboxing.rb:16:in `block (3 levels) in <top (required)>'
         |     # ./spec/support/sandboxing.rb:7:in `block (2 levels) in <top (required)>'
         |
         |  4) a failing spec with odd backtraces fails with a backtrace containing an erb file

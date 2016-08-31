@@ -2,7 +2,7 @@ require 'rspec/core/source/syntax_highlighter'
 
 class RSpec::Core::Source
   RSpec.describe SyntaxHighlighter do
-    let(:config)      { RSpec::Core::Configuration.new.tap { |c| c.color = true } }
+    let(:config)      { RSpec::Core::Configuration.new.tap { |config| config.color_mode = :on } }
     let(:highlighter) { SyntaxHighlighter.new(config)  }
 
     context "when CodeRay is available", :unless => RSpec::Support::OS.windows? do
@@ -25,16 +25,16 @@ class RSpec::Core::Source
       end
 
       it 'returns the provided lines unmodified if color is disabled' do
-        config.color = false
+        config.color_mode = :off
         expect(highlighter.highlight(['[:ok, "ok"]'])).to eq(['[:ok, "ok"]'])
       end
 
       it 'dynamically adjusts to changing color config' do
-        config.color = false
+        config.color_mode = :off
         expect(highlighter.highlight(['[:ok, "ok"]']).first).not_to be_highlighted
-        config.color = true
+        config.color_mode = :on
         expect(highlighter.highlight(['[:ok, "ok"]']).first).to be_highlighted
-        config.color = false
+        config.color_mode = :off
         expect(highlighter.highlight(['[:ok, "ok"]']).first).not_to be_highlighted
       end
 
@@ -69,8 +69,8 @@ class RSpec::Core::Source
         expect(highlighter.highlight([])).to eq([])
       end
 
-      it 'does not add the comment about coderay if color id disabled even when given a multiline snippet' do
-        config.color = false
+      it 'does not add the comment about coderay if color is disabled even when given a multiline snippet' do
+        config.color_mode = :off
         lines = ["a = 1", "b = 2"]
         expect(highlighter.highlight(lines)).to eq(lines)
       end

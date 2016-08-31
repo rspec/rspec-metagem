@@ -39,6 +39,8 @@ module RSpec::Core
     # rubocop:disable PerceivedComplexity
     def parser(options)
       OptionParser.new do |parser|
+        parser.summary_width = 34
+
         parser.banner = "Usage: rspec [options] [files or directories]\n\n"
 
         parser.on('-I PATH', 'Specify PATH to add to $LOAD_PATH (may be used more than once).') do |dirs|
@@ -131,8 +133,23 @@ module RSpec::Core
           options[:full_backtrace] = true
         end
 
-        parser.on('-c', '--[no-]color', '--[no-]colour', 'Enable color in the output.') do |o|
-          options[:color] = o
+        parser.on('-c', '--color', '--colour', 'Enable color in the output.') do |_o|
+          options[:color] = true
+          options[:color_mode] = :automatic
+        end
+
+        parser.on('--force-color', '--force-colour', 'Force the output to be in color, even if the output is not a TTY') do |_o|
+          if options[:color_mode] == :off
+            abort "Please only use one of `--force-color` and `--no-color`"
+          end
+          options[:color_mode] = :on
+        end
+
+        parser.on('--no-color', '--no-colour', 'Force the output to not be in color, even if the output is a TTY') do |_o|
+          if options[:color_mode] == :on
+            abort "Please only use one of --force-color and --no-color"
+          end
+          options[:color_mode] = :off
         end
 
         parser.on('-p', '--[no-]profile [COUNT]',

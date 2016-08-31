@@ -137,6 +137,19 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
     it "forces color" do
       opts = config_options_object(*%w[--color])
       expect(config).to receive(:force).with(:color => true)
+      expect(config).to receive(:force).with(:color_mode => :automatic)
+      opts.configure(config)
+    end
+
+    it "forces force_color" do
+      opts = config_options_object(*%w[--force-color])
+      expect(config).to receive(:force).with(:color_mode => :on)
+      opts.configure(config)
+    end
+
+    it "forces no_color" do
+      opts = config_options_object(*%w[--no-color])
+      expect(config).to receive(:force).with(:color_mode => :off)
       opts.configure(config)
     end
 
@@ -190,24 +203,34 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
   end
 
   describe "-c, --color, and --colour" do
-    it "sets :color => true" do
-      expect(parse_options('-c')).to include(:color => true)
-      expect(parse_options('--color')).to include(:color => true)
-      expect(parse_options('--colour')).to include(:color => true)
+    it "sets :color_mode => :automatic" do
+      expect(parse_options('-c')).to include(:color_mode => :automatic)
+      expect(parse_options('--color')).to include(:color_mode => :automatic)
+      expect(parse_options('--colour')).to include(:color_mode => :automatic)
+    end
+
+    it "overrides previous color flag" do
+      expect(parse_options('--no-color', '--color')).to include(:color_mode => :automatic)
     end
   end
 
   describe "--no-color" do
-    it "sets :color => false" do
-      expect(parse_options('--no-color')).to include(:color => false)
+    it "sets :color_mode => :off" do
+      expect(parse_options('--no-color')).to include(:color_mode => :off)
     end
 
-    it "overrides previous :color => true" do
-      expect(parse_options('--color', '--no-color')).to include(:color => false)
+    it "overrides previous color flag" do
+      expect(parse_options('--color', '--no-color')).to include(:color_mode => :off)
+    end
+  end
+
+  describe "--force-color" do
+    it "sets :color_mode => :on" do
+      expect(parse_options('--force-color')).to include(:color_mode => :on)
     end
 
-    it "gets overriden by a subsequent :color => true" do
-      expect(parse_options('--no-color', '--color')).to include(:color => true)
+    it "overrides previous color flag" do
+      expect(parse_options('--color', '--force-color')).to include(:color_mode => :on)
     end
   end
 
@@ -419,10 +442,10 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
     it "merges global, local, SPEC_OPTS, and CLI" do
       File.open("./.rspec", "w") {|f| f << "--require some_file"}
       File.open("./.rspec-local", "w") {|f| f << "--format global"}
-      File.open(File.expand_path("~/.rspec"), "w") {|f| f << "--color"}
+      File.open(File.expand_path("~/.rspec"), "w") {|f| f << "--force-color"}
       with_env_vars 'SPEC_OPTS' => "--example 'foo bar'" do
         options = parse_options("--drb")
-        expect(options[:color]).to be_truthy
+        expect(options[:color_mode]).to eq(:on)
         expect(options[:requires]).to eq(["some_file"])
         expect(options[:full_description]).to eq([/foo\ bar/])
         expect(options[:drb]).to be_truthy
@@ -487,10 +510,10 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
       it "ignores project and global options files" do
         File.open("./.rspec", "w") {|f| f << "--format project"}
         File.open(File.expand_path("~/.rspec"), "w") {|f| f << "--format global"}
-        File.open("./custom.opts", "w") {|f| f << "--color"}
+        File.open("./custom.opts", "w") {|f| f << "--force-color"}
         options = parse_options("-O", "./custom.opts")
         expect(options[:format]).to be_nil
-        expect(options[:color]).to be_truthy
+        expect(options[:color_mode]).to eq(:on)
       end
 
       it "parses -e 'full spec description'" do
