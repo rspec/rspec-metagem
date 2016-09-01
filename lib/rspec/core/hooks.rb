@@ -365,14 +365,7 @@ module RSpec
         def run(example)
           example.instance_exec(example, &block)
         rescue Support::AllExceptionsExceptOnesWeMustNotRescue => e
-          # TODO: Come up with a better solution for this.
-          RSpec.configuration.reporter.message <<-EOS
-
-An error occurred in an `after(:context)` hook.
-  #{e.class}: #{e.message}
-  occurred at #{e.backtrace.first}
-
-EOS
+          RSpec.configuration.reporter.notify_non_example_exception(e, "An error occurred in an `after(:context)` hook.")
         end
       end
 
