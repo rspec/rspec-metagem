@@ -1,5 +1,5 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.2...master)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.3...master)
 
 Enhancements:
 
@@ -12,6 +12,9 @@ Enhancements:
   RSpec to prevent confusion. (Myron Marston, #2304)
 * Add `config.fail_if_no_examples` option which causes RSpec to fail if
   no examples are found. (Ewa Czechowska, #2302)
+
+### 3.5.3 / 2016-09-02
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.2...v3.5.3)
 
 Bug Fixes:
 
