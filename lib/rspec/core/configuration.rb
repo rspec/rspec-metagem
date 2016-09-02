@@ -1437,7 +1437,7 @@ module RSpec
 
         files_to_run.uniq.each do |f|
           file = File.expand_path(f)
-          load file
+          load_spec_file_handling_errors(file)
           loaded_spec_files << file
         end
 
@@ -1863,6 +1863,14 @@ module RSpec
       end
 
     private
+
+      def load_spec_file_handling_errors(file)
+        load file
+      rescue Support::AllExceptionsExceptOnesWeMustNotRescue => ex
+        relative_file = Metadata.relative_path(file)
+        reporter.notify_non_example_exception(ex, "An error occurred while loading #{relative_file}.")
+        RSpec.world.wants_to_quit = true
+      end
 
       def handle_suite_hook(scope, meta)
         return nil unless scope == :suite

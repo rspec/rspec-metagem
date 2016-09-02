@@ -3,7 +3,7 @@
 
 Enhancements:
 
-* Warn when duplicate shared exmaples definitions are loaded due to being
+* Warn when duplicate shared examples definitions are loaded due to being
   defined in files matching the spec pattern (e.g. `_spec.rb`) (#2278, Devon Estes)
 * Improve metadata filtering so that it can match against any object
   that implements `===` instead of treating regular expressions as
@@ -12,6 +12,8 @@ Enhancements:
   RSpec to prevent confusion. (Myron Marston, #2304)
 * Add `config.fail_if_no_examples` option which causes RSpec to fail if
   no examples are found. (Ewa Czechowska, #2302)
+* Nicely format errors encountered while loading spec files.
+  (Myron Marston, #2323)
 
 ### 3.5.3 / 2016-09-02
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.2...v3.5.3)
