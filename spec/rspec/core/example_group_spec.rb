@@ -1014,6 +1014,12 @@ module RSpec::Core
           self.group.run
           expect(hooks_run).to eq [:two,:one]
         end
+
+        it "sets `world.non_example_failure` so the exit status will be non-zero" do
+          expect {
+            self.group.run
+          }.to change { RSpec.world.non_example_failure }.from(a_falsey_value).to(true)
+        end
       end
     end
 

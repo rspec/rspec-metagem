@@ -174,11 +174,14 @@ Feature: `before` and `after` hooks
       end
       """
     When I run `rspec after_context_spec.rb`
-    Then the examples should all pass
-    And the output should contain:
+    Then it should fail with:
       """
       An error occurred in an `after(:context)` hook.
-        StandardError: Boom!
+      Failure/Error: raise StandardError.new("Boom!")
+
+      StandardError:
+        Boom!
+      # ./after_context_spec.rb:3
       """
 
   Scenario: Define `before` and `after` blocks in configuration
