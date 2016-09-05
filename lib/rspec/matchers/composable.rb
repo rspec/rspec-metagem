@@ -8,6 +8,7 @@ module RSpec
     #
     # @api public
     module Composable
+      require 'set'
       # Creates a compound `and` expectation. The matcher will
       # only pass if both sub-matchers pass.
       # This can be chained together to form an arbitrarily long
@@ -130,6 +131,8 @@ module RSpec
           object.clone
         elsif Hash === object
           Hash[with_matchers_cloned(object.to_a)]
+        elsif Set === object
+          object
         elsif Struct === object || unreadable_io?(object)
           object
         elsif should_enumerate?(object)
