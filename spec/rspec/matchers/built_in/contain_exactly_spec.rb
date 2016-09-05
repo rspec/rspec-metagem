@@ -135,6 +135,16 @@ RSpec.describe "using contain_exactly with expect" do
       expect([dbl_1, dbl_2]).to contain_exactly(dbl_1)
     }.to fail
   end
+
+  it "does not support strings (which have no standard way to be enumerated: bytes, chars or lines)" do
+    expect {
+      expect("abcd").to contain_exactly("d", "c", "a", "b")
+    }.to fail_with('expected a collection that can be converted to an array with `#to_ary` or `#to_a`, but got "abcd"')
+  end
+
+  it "supports ranges" do
+    expect(1..3).to contain_exactly(1, 2, 3)
+  end
 end
 
 RSpec.describe "expect(array).to contain_exactly(*other_array)" do

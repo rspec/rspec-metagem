@@ -55,6 +55,32 @@ RSpec.describe "expect { ... }.to change(actual, message)" do
     end
   end
 
+  context "with set values" do
+    it "passes when it should" do
+      in_sub_process_if_possible do
+        require 'set'
+
+        set = Set.new([1])
+        expect {
+          set << 2
+        }.to change { set }.from([1].to_set).to([2, 1].to_set)
+      end
+    end
+
+    it "fails when it should" do
+      in_sub_process_if_possible do
+        require 'set'
+
+        expect {
+          set = Set.new([1])
+          expect {
+            set << 2
+          }.to change { set }.from([1].to_set).to([2, 1, 3].to_set)
+        }.to fail_with("expected result to have changed to #{[2, 1, 3].to_set.inspect}, but is now #{[1, 2].to_set.inspect}")
+      end
+    end
+  end
+
   context "with an IO stream" do
     it "fails when the stream does not change" do
       expect {

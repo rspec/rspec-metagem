@@ -10,8 +10,7 @@ RSpec.describe "RSpec::Expectations" do
     ],
     :allowed_loaded_feature_regexps => [
       /stringio/, # Used by `output` matcher. Can't be easily avoided.
-      /rbconfig/,  # required by rspec-support
-      /set/  # used by 'composable' matcher
+      /rbconfig/  # required by rspec-support
     ]
 
   it 'does not allow expectation failures to be caught by a bare rescue' do

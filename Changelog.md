@@ -1,3 +1,11 @@
+### Development
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.5.0...master)
+
+Bug Fixes:
+
+* Fix `contain_exactly` to work correctly with ranges. (Myron Marston, #940)
+* Fix `change` to work correctly with sets. (Marcin Gajewski, #939)
+
 ### 3.5.0 / 2016-07-01
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.5.0.beta4...v3.5.0)
 
