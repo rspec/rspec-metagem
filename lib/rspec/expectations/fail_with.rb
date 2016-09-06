@@ -2,9 +2,17 @@ module RSpec
   module Expectations
     class << self
       # @private
+      class Differ
+        # @private
+        OBJECT_PREPARER = lambda do |object|
+          RSpec::Matchers::Composable.surface_descriptions_in(object)
+        end
+      end
+
+      # @private
       def differ
         RSpec::Support::Differ.new(
-          :object_preparer => lambda { |object| RSpec::Matchers::Composable.surface_descriptions_in(object) },
+          :object_preparer => Differ::OBJECT_PREPARER,
           :color => RSpec::Matchers.configuration.color?
         )
       end
