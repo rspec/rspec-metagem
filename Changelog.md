@@ -9,8 +9,6 @@ Bug Fixes:
 ### 3.5.0 / 2016-07-01
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.5.0.beta4...v3.5.0)
 
-**No user facing changes since beta4**
-
 Enhancements:
 
 * Add support for keyword arguments to the `respond_to` matcher. (Rob Smith, #915).
