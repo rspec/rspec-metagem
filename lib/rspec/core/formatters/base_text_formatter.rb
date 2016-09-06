@@ -1,5 +1,4 @@
 RSpec::Support.require_rspec_core "formatters/base_formatter"
-RSpec::Support.require_rspec_core "formatters/console_codes"
 
 module RSpec
   module Core
