@@ -1,6 +1,7 @@
 module RSpec
   module Matchers
     module BuiltIn
+      # rubocop:disable ClassLength
       # @api private
       # Provides the implementation for `contain_exactly` and `match_array`.
       # Not intended to be instantiated directly.
@@ -85,7 +86,7 @@ module RSpec
         def convert_actual_to_an_array
           if actual.respond_to?(:to_ary)
             @actual = actual.to_ary
-          elsif should_enumerate?(actual) && actual.respond_to?(:to_a)
+          elsif actual.respond_to?(:to_a) && !to_a_disallowed?(actual)
             @actual = actual.to_a
           else
             return false
@@ -96,6 +97,19 @@ module RSpec
           array.sort
         rescue Support::AllExceptionsExceptOnesWeMustNotRescue
           array
+        end
+
+        if RUBY_VERSION == "1.8.7"
+          def to_a_disallowed?(object)
+            case object
+            when NilClass, String then true
+            else Kernel == RSpec::Support.method_handle_for(object, :to_a).owner
+            end
+          end
+        else
+          def to_a_disallowed?(object)
+            NilClass === object
+          end
         end
 
         def missing_items
@@ -281,6 +295,7 @@ module RSpec
           end
         end
       end
+      # rubocop:enable ClassLength
     end
   end
 end

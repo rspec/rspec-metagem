@@ -130,8 +130,6 @@ module RSpec
           object.clone
         elsif Hash === object
           Hash[with_matchers_cloned(object.to_a)]
-        elsif Struct === object || unreadable_io?(object)
-          object
         elsif should_enumerate?(object)
           object.map { |subobject| with_matchers_cloned(subobject) }
         else
@@ -139,24 +137,10 @@ module RSpec
         end
       end
 
-      if String.ancestors.include?(Enumerable) # 1.8.7
-        # :nocov:
-        # Strings are not enumerable on 1.9, and on 1.8 they are an infinitely
-        # nested enumerable: since ruby lacks a character class, it yields
-        # 1-character strings, which are themselves enumerable, composed of a
-        # a single 1-character string, which is an enumerable, etc.
-        #
-        # @api private
-        def should_enumerate?(item)
-          return false if String === item
-          Enumerable === item && !(Range === item) && item.none? { |subitem| subitem.equal?(item) }
-        end
-        # :nocov:
-      else
-        # @api private
-        def should_enumerate?(item)
-          Enumerable === item && !(Range === item) && item.none? { |subitem| subitem.equal?(item) }
-        end
+      # @api private
+      # We should enumerate arrays as long as they are not recursive.
+      def should_enumerate?(item)
+        Array === item && item.none? { |subitem| subitem.equal?(item) }
       end
 
       # @api private
