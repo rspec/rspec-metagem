@@ -7,7 +7,7 @@ module RSpec
       #     split_words(:banana_creme_pie) #=> "banana creme pie"
       #
       def self.split_words(sym)
-        sym.to_s.gsub(/_/, ' ')
+        sym.to_s.tr('_', ' ')
       end
 
       # @note The returned string has a leading space except
