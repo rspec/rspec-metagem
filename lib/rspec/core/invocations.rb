@@ -73,10 +73,10 @@ module RSpec
       end
 
       # @private
-      PrintHelp = Struct.new(:parser, :invalid_options) do
+      PrintHelp = Struct.new(:parser, :hidden_options) do
         def call(_options, _err, out)
-          # Removing the blank invalid options from the output.
-          out.puts parser.to_s.gsub(/^\s+(#{invalid_options.join('|')})\s*$\n/, '')
+          # Removing the hidden options from the output.
+          out.puts parser.to_s.gsub(/^\s+(#{hidden_options.join('|')})\b.*$\n/, '')
           0
         end
       end

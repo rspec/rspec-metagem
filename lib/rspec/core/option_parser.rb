@@ -133,7 +133,8 @@ module RSpec::Core
           options[:full_backtrace] = true
         end
 
-        parser.on('-c', '--color', '--colour', 'Enable color in the output.') do |_o|
+        parser.on('-c', '--color', '--colour', '') do |_o|
+          # flag will be excluded from `--help` output because it is deprecated
           options[:color] = true
           options[:color_mode] = :automatic
         end
@@ -273,8 +274,10 @@ FILTERING
         #     trigger --default-path.
         invalid_options = %w[-d --I]
 
+        hidden_options = invalid_options + %w[-c]
+
         parser.on_tail('-h', '--help', "You're looking at it.") do
-          options[:runner] = RSpec::Core::Invocations::PrintHelp.new(parser, invalid_options)
+          options[:runner] = RSpec::Core::Invocations::PrintHelp.new(parser, hidden_options)
         end
 
         # This prevents usage of the invalid_options.
