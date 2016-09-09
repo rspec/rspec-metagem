@@ -200,6 +200,12 @@ module RSpec::Core
         @exception_presenter.fully_formatted(failure_number, colorizer)
       end
 
+      # @return [Array] The failure information fully formatted in the way that
+      #   RSpec's built-in formatters emit, split by line.
+      def fully_formatted_lines(failure_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
+        @exception_presenter.fully_formatted_lines(failure_number, colorizer)
+      end
+
     private
 
       def initialize(example, exception_presenter=Formatters::ExceptionPresenter::Factory.new(example).build)
