@@ -32,6 +32,11 @@ RSpec.describe "failing spec" do
   it "fails" do
     expect(1).to eq(2)
   end
+
+  it "fails twice", :aggregate_failures do
+    expect(1).to eq(2)
+    expect(3).to eq(4)
+  end
 end
 
 RSpec.describe "a failing spec with odd backtraces" do

@@ -45,7 +45,7 @@ RSpec.describe RSpec::Core::Formatters::ProgressFormatter do
     output.gsub!(/ +$/, '') # strip trailing whitespace
 
     expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
-      |**F.FFFF
+      |**F.FFFFF
       |
       |#{expected_summary_output_for_example_specs}
     EOS

@@ -285,7 +285,7 @@ a {
     <script type="text/javascript">makeYellow('rspec-header');</script>
     <script type="text/javascript">makeYellow('div_group_1');</script>
     <script type="text/javascript">makeYellow('example_group_1');</script>
-    <script type="text/javascript">moveProgressBar('12.5');</script>
+    <script type="text/javascript">moveProgressBar('11.1');</script>
     <dd class="example not_implemented"><span class="not_implemented_spec_name">is pending (PENDING: Not yet implemented)</span></dd>
   </dl>
 </div>
@@ -300,7 +300,7 @@ a {
     <script type="text/javascript">makeYellow('rspec-header');</script>
     <script type="text/javascript">makeYellow('div_group_3');</script>
     <script type="text/javascript">makeYellow('example_group_3');</script>
-    <script type="text/javascript">moveProgressBar('25.0');</script>
+    <script type="text/javascript">moveProgressBar('22.2');</script>
     <dd class="example not_implemented"><span class="not_implemented_spec_name">is pending (PENDING: No reason given)</span></dd>
   </dl>
 </div>
@@ -310,7 +310,7 @@ a {
     <script type="text/javascript">makeRed('rspec-header');</script>
     <script type="text/javascript">makeRed('div_group_4');</script>
     <script type="text/javascript">makeRed('example_group_4');</script>
-    <script type="text/javascript">moveProgressBar('37.5');</script>
+    <script type="text/javascript">moveProgressBar('33.3');</script>
     <dd class="example pending_fixed">
       <span class="failed_spec_name">is marked as pending but passes</span>
       <span class="duration">n.nnnns</span>
@@ -330,7 +330,7 @@ Shared Example Group: &quot;shared&quot; called from ./spec/rspec/core/resources
 <div id="div_group_5" class="example_group passed">
   <dl style="margin-left: 0px;">
   <dt id="example_group_5" class="passed">passing spec</dt>
-    <script type="text/javascript">moveProgressBar('50.0');</script>
+    <script type="text/javascript">moveProgressBar('44.4');</script>
     <dd class="example passed"><span class="passed_spec_name">passes</span><span class='duration'>n.nnnns</span></dd>
   </dl>
 </div>
@@ -339,7 +339,7 @@ Shared Example Group: &quot;shared&quot; called from ./spec/rspec/core/resources
   <dt id="example_group_6" class="passed">failing spec</dt>
     <script type="text/javascript">makeRed('div_group_6');</script>
     <script type="text/javascript">makeRed('example_group_6');</script>
-    <script type="text/javascript">moveProgressBar('62.5');</script>
+    <script type="text/javascript">moveProgressBar('55.5');</script>
     <dd class="example failed">
       <span class="failed_spec_name">fails</span>
       <span class="duration">n.nnnns</span>
@@ -354,8 +354,17 @@ Shared Example Group: &quot;shared&quot; called from ./spec/rspec/core/resources
     <pre class="ruby"><code><span class="linenum">31</span><span class="constant">RSpec</span>.describe <span class="string"><span class="delimiter">&quot;</span><span class="content">failing spec</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
 <span class="linenum">32</span>  it <span class="string"><span class="delimiter">&quot;</span><span class="content">fails</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
 <span class="offending"><span class="linenum">33</span>    expect(<span class="integer">1</span>).to eq(<span class="integer">2</span>)</span>
-<span class="linenum">34</span>  <span class="keyword">end</span>
-<span class="linenum">35</span><span class="keyword">end</span></code></pre>
+<span class="linenum">34</span>  <span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+    <script type="text/javascript">moveProgressBar('66.6');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">fails twice</span>
+      <span class="duration">n.nnnns</span>
+      <div class="failure" id="failure_3">
+        <div class="message"><pre></pre></div>
+        <div class="backtrace"><pre></pre></div>
+    <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for </span></code></pre>
       </div>
     </dd>
   </dl>
@@ -365,27 +374,27 @@ Shared Example Group: &quot;shared&quot; called from ./spec/rspec/core/resources
   <dt id="example_group_7" class="passed">a failing spec with odd backtraces</dt>
     <script type="text/javascript">makeRed('div_group_7');</script>
     <script type="text/javascript">makeRed('example_group_7');</script>
-    <script type="text/javascript">moveProgressBar('75.0');</script>
+    <script type="text/javascript">moveProgressBar('77.7');</script>
     <dd class="example failed">
       <span class="failed_spec_name">fails with a backtrace that has no file</span>
       <span class="duration">n.nnnns</span>
-      <div class="failure" id="failure_3">
+      <div class="failure" id="failure_4">
         <div class="message"><pre>Failure/Error: ERB.new(&quot;&lt;%= raise &#39;foo&#39; %&gt;&quot;).result
 
 RuntimeError:
   foo</pre></div>
-        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:41:in `block (2 levels) in &lt;top (required)&gt;&#39;</pre></div>
-    <pre class="ruby"><code><span class="linenum">39</span>    require <span class="string"><span class="delimiter">'</span><span class="content">erb</span><span class="delimiter">'</span></span>
-<span class="linenum">40</span>
-<span class="offending"><span class="linenum">41</span>    <span class="constant">ERB</span>.new(<span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;%= raise 'foo' %&gt;</span><span class="delimiter">&quot;</span></span>).result</span>
-<span class="linenum">42</span>  <span class="keyword">end</span></code></pre>
+        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:46:in `block (2 levels) in &lt;top (required)&gt;&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">44</span>    require <span class="string"><span class="delimiter">'</span><span class="content">erb</span><span class="delimiter">'</span></span>
+<span class="linenum">45</span>
+<span class="offending"><span class="linenum">46</span>    <span class="constant">ERB</span>.new(<span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;%= raise 'foo' %&gt;</span><span class="delimiter">&quot;</span></span>).result</span>
+<span class="linenum">47</span>  <span class="keyword">end</span></code></pre>
       </div>
     </dd>
-    <script type="text/javascript">moveProgressBar('87.5');</script>
+    <script type="text/javascript">moveProgressBar('88.8');</script>
     <dd class="example failed">
       <span class="failed_spec_name">fails with a backtrace containing an erb file</span>
       <span class="duration">n.nnnns</span>
-      <div class="failure" id="failure_4">
+      <div class="failure" id="failure_5">
         <div class="message"><pre>Failure/Error: Unable to find /foo.html.erb to read failed line
 
 Exception:
@@ -410,7 +419,7 @@ Exception:
     <dd class="example failed">
       <span class="failed_spec_name">raises</span>
       <span class="duration">n.nnnns</span>
-      <div class="failure" id="failure_5">
+      <div class="failure" id="failure_6">
         <div class="message"><pre>Failure/Error: Unable to find matching line from backtrace
 
 RuntimeError:
@@ -422,7 +431,7 @@ RuntimeError:
   </dl>
 </div>
 <script type="text/javascript">document.getElementById('duration').innerHTML = "Finished in <strong>n.nnnn seconds</strong>";</script>
-<script type="text/javascript">document.getElementById('totals').innerHTML = "8 examples, 5 failures, 2 pending";</script>
+<script type="text/javascript">document.getElementById('totals').innerHTML = "9 examples, 6 failures, 2 pending";</script>
 </div>
 </div>
 </body>

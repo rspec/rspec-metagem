@@ -101,12 +101,13 @@ root
         |
         |failing spec
         |  fails (FAILED - 2)
+        |  fails twice (FAILED - 3)
         |
         |a failing spec with odd backtraces
-        |  fails with a backtrace that has no file (FAILED - 3)
-        |  fails with a backtrace containing an erb file (FAILED - 4)
+        |  fails with a backtrace that has no file (FAILED - 4)
+        |  fails with a backtrace containing an erb file (FAILED - 5)
         |  with a `nil` backtrace
-        |    raises (FAILED - 5)
+        |    raises (FAILED - 6)
         |
         |#{expected_summary_output_for_example_specs}
       EOS
