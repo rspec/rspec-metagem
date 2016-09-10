@@ -25,7 +25,12 @@ module RSpec
           self.files_or_directories_to_run = files_or_directories_to_run
           self.latest_run_results = nil
           run_output = yield
-          latest_run_results || raise_bisect_failed(run_output)
+
+          if latest_run_results.nil? || latest_run_results.all_example_ids.empty?
+            raise_bisect_failed(run_output)
+          end
+
+          latest_run_results
         end
 
         def start

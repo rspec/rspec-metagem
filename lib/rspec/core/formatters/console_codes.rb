@@ -23,9 +23,12 @@ module RSpec
         module_function
 
         # @private
-        CONFIG_COLORS_TO_METHODS = Configuration.instance_methods.grep(/_color\z/).inject({}) do |hash, method|
-          hash[method.to_s.sub(/_color\z/, '').to_sym] = method
-          hash
+        def config_colors_to_methods
+          @config_colors_to_methods ||=
+            Configuration.instance_methods.grep(/_color\z/).inject({}) do |hash, method|
+              hash[method.to_s.sub(/_color\z/, '').to_sym] = method
+              hash
+            end
         end
 
         # Fetches the correct code for the supplied symbol, or checks
@@ -34,7 +37,7 @@ module RSpec
         # @param code_or_symbol [Symbol, Fixnum] Symbol or code to check
         # @return [Fixnum] a console code
         def console_code_for(code_or_symbol)
-          if (config_method = CONFIG_COLORS_TO_METHODS[code_or_symbol])
+          if (config_method = config_colors_to_methods[code_or_symbol])
             console_code_for RSpec.configuration.__send__(config_method)
           elsif VT100_CODE_VALUES.key?(code_or_symbol)
             code_or_symbol

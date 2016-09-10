@@ -1,4 +1,5 @@
 # encoding: utf-8
+RSpec::Support.require_rspec_core "formatters/console_codes"
 RSpec::Support.require_rspec_core "formatters/snippet_extractor"
 RSpec::Support.require_rspec_support "encoded_string"
 
