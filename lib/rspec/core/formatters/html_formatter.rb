@@ -72,8 +72,7 @@ module RSpec
           message_lines = failure.fully_formatted_lines(nil, RSpec::Core::Notifications::NullColorizer)
           exception_details = if exception
                                 {
-                                  # the regular expression here removes the CLI leading indentation, and any trailing spaces.
-                                  :message => message_lines.drop(2).join("\n").gsub(/^  (.*?)( +)?$/, '\1'),
+                                  :message => message_lines.drop(2).join("\n"),
                                   :backtrace => failure.formatted_backtrace.join("\n")
                                 }
                               end

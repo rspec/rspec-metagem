@@ -315,9 +315,9 @@ a {
       <span class="failed_spec_name">is marked as pending but passes</span>
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_1">
-        <div class="message"><pre>Expected pending &#39;No reason given&#39; to fail. No Error was raised.
-Shared Example Group: &quot;shared&quot; called from ./spec/rspec/core/resources/formatter_specs.rb:22
-# ./spec/rspec/core/resources/formatter_specs.rb:4</pre></div>
+        <div class="message"><pre>  Expected pending &#39;No reason given&#39; to fail. No Error was raised.
+  Shared Example Group: &quot;shared&quot; called from ./spec/rspec/core/resources/formatter_specs.rb:22
+  # ./spec/rspec/core/resources/formatter_specs.rb:4</pre></div>
         <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:4</pre></div>
     <pre class="ruby"><code><span class="linenum">2</span>
 <span class="linenum">3</span><span class="constant">RSpec</span>.shared_examples_for <span class="string"><span class="delimiter">&quot;</span><span class="content">shared</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
@@ -345,13 +345,13 @@ Shared Example Group: &quot;shared&quot; called from ./spec/rspec/core/resources
       <span class="failed_spec_name">fails</span>
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_2">
-        <div class="message"><pre>Failure/Error: expect(1).to eq(2)
+        <div class="message"><pre>  Failure/Error: expect(1).to eq(2)
 
-  expected: 2
-       got: 1
+    expected: 2
+         got: 1
 
-  (compared using ==)
-# ./spec/rspec/core/resources/formatter_specs.rb:33:in `block (2 levels) in &lt;top (required)&gt;&#39;</pre></div>
+    (compared using ==)
+  # ./spec/rspec/core/resources/formatter_specs.rb:33:in `block (2 levels) in &lt;top (required)&gt;&#39;</pre></div>
         <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:33:in `block (2 levels) in &lt;top (required)&gt;&#39;</pre></div>
     <pre class="ruby"><code><span class="linenum">31</span><span class="constant">RSpec</span>.describe <span class="string"><span class="delimiter">&quot;</span><span class="content">failing spec</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
 <span class="linenum">32</span>  it <span class="string"><span class="delimiter">&quot;</span><span class="content">fails</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
@@ -364,23 +364,23 @@ Shared Example Group: &quot;shared&quot; called from ./spec/rspec/core/resources
       <span class="failed_spec_name">fails twice</span>
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_3">
-        <div class="message"><pre>Got 2 failures:
+        <div class="message"><pre>  Got 2 failures:
 
-.1) Failure/Error: expect(1).to eq(2)
+  .1) Failure/Error: expect(1).to eq(2)
 
-      expected: 2
-           got: 1
+        expected: 2
+             got: 1
 
-      (compared using ==)
-    # ./spec/rspec/core/resources/formatter_specs.rb:37:in `block (2 levels) in &lt;top (required)&gt;&#39;
+        (compared using ==)
+      # ./spec/rspec/core/resources/formatter_specs.rb:37:in `block (2 levels) in &lt;top (required)&gt;&#39;
 
-.2) Failure/Error: expect(3).to eq(4)
+  .2) Failure/Error: expect(3).to eq(4)
 
-      expected: 4
-           got: 3
+        expected: 4
+             got: 3
 
-      (compared using ==)
-    # ./spec/rspec/core/resources/formatter_specs.rb:38:in `block (2 levels) in &lt;top (required)&gt;&#39;</pre></div>
+        (compared using ==)
+      # ./spec/rspec/core/resources/formatter_specs.rb:38:in `block (2 levels) in &lt;top (required)&gt;&#39;</pre></div>
         <div class="backtrace"><pre></pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for </span></code></pre>
       </div>
@@ -397,11 +397,11 @@ Shared Example Group: &quot;shared&quot; called from ./spec/rspec/core/resources
       <span class="failed_spec_name">fails with a backtrace that has no file</span>
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_4">
-        <div class="message"><pre>Failure/Error: ERB.new(&quot;&lt;%= raise &#39;foo&#39; %&gt;&quot;).result
+        <div class="message"><pre>  Failure/Error: ERB.new(&quot;&lt;%= raise &#39;foo&#39; %&gt;&quot;).result
 
-RuntimeError:
-  foo
-# ./spec/rspec/core/resources/formatter_specs.rb:46:in `block (2 levels) in &lt;top (required)&gt;&#39;</pre></div>
+  RuntimeError:
+    foo
+  # ./spec/rspec/core/resources/formatter_specs.rb:46:in `block (2 levels) in &lt;top (required)&gt;&#39;</pre></div>
         <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:46:in `block (2 levels) in &lt;top (required)&gt;&#39;</pre></div>
     <pre class="ruby"><code><span class="linenum">44</span>    require <span class="string"><span class="delimiter">'</span><span class="content">erb</span><span class="delimiter">'</span></span>
 <span class="linenum">45</span>
@@ -414,16 +414,16 @@ RuntimeError:
       <span class="failed_spec_name">fails with a backtrace containing an erb file</span>
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_5">
-        <div class="message"><pre>Failure/Error: Unable to find /foo.html.erb to read failed line
+        <div class="message"><pre>  Failure/Error: Unable to find /foo.html.erb to read failed line
 
-Exception:
-  Exception
-# /foo.html.erb:1:in `&lt;main&gt;&#39;: foo (RuntimeError)
-#    from /lib/ruby/1.9.1/erb.rb:753:in `eval&#39;
-#
-#   Showing full backtrace because every line was filtered out.
-#   See docs for RSpec::Configuration#backtrace_exclusion_patterns and
-#   RSpec::Configuration#backtrace_inclusion_patterns for more information.</pre></div>
+  Exception:
+    Exception
+  # /foo.html.erb:1:in `&lt;main&gt;&#39;: foo (RuntimeError)
+  #    from /lib/ruby/1.9.1/erb.rb:753:in `eval&#39;
+  # 
+  #   Showing full backtrace because every line was filtered out.
+  #   See docs for RSpec::Configuration#backtrace_exclusion_patterns and
+  #   RSpec::Configuration#backtrace_inclusion_patterns for more information.</pre></div>
         <div class="backtrace"><pre>/foo.html.erb:1:in `&lt;main&gt;&#39;: foo (RuntimeError)
    from /lib/ruby/1.9.1/erb.rb:753:in `eval&#39;
 
@@ -445,10 +445,10 @@ Exception:
       <span class="failed_spec_name">raises</span>
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_6">
-        <div class="message"><pre>Failure/Error: Unable to find matching line from backtrace
+        <div class="message"><pre>  Failure/Error: Unable to find matching line from backtrace
 
-RuntimeError:
-  boom</pre></div>
+  RuntimeError:
+    boom</pre></div>
         <div class="backtrace"><pre></pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for </span></code></pre>
       </div>
