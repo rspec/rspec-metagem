@@ -98,6 +98,8 @@ root
         |
         |passing spec
         |  passes
+        |  passes with a multiple
+        |     line description
         |
         |failing spec
         |  fails (FAILED - 2)

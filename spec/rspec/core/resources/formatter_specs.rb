@@ -26,6 +26,10 @@ RSpec.describe "passing spec" do
   it "passes" do
     expect(1).to eq(1)
   end
+
+  it 'passes with a multiple
+     line description' do
+  end
 end
 
 RSpec.describe "failing spec" do
