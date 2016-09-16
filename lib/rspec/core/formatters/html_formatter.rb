@@ -72,6 +72,7 @@ module RSpec
           message_lines = failure.fully_formatted_lines(nil, RSpec::Core::Notifications::NullColorizer)
           exception_details = if exception
                                 {
+                                  # drop 2 removes the description (regardless of newlines) and leading blank line
                                   :message => message_lines.drop(2).join("\n"),
                                   :backtrace => failure.formatted_backtrace.join("\n"),
                                 }
