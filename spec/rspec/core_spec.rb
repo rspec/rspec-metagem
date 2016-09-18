@@ -124,6 +124,14 @@ RSpec.describe RSpec do
       expect(RSpec.configuration).not_to equal(config_before_reset)
       expect(RSpec.world).not_to equal(world_before_reset)
     end
+
+    it 'removes the previously assigned example group constants' do
+        RSpec.describe "group"
+
+        expect {
+          RSpec.world.reset
+        }.to change(RSpec::ExampleGroups, :constants).to([])
+    end
   end
 
   describe ".clear_examples" do

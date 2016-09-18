@@ -140,12 +140,6 @@ module RSpec::Core
         expect(child).to have_class_const("SomeParentGroup::Hash")
       end
 
-      it 'removes it\'s constants' do
-        groups = RSpec::ExampleGroups
-        groups.remove_all_constants
-        expect(groups.constants).to be_empty
-      end
-
       it 'disambiguates name collisions by appending a number', :unless => RUBY_VERSION == '1.9.2' do
         groups = 10.times.map { RSpec.describe("Collision") }
         expect(groups[0]).to have_class_const("Collision")
