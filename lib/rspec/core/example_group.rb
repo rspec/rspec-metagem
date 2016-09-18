@@ -828,8 +828,8 @@ module RSpec
     end
 
     def self.remove_all_constants
-      self.constants.each do |constant|
-        self.send(:remove_const, constant)
+      constants.each do |constant|
+        __send__(:remove_const, constant)
       end
     end
 
