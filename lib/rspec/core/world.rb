@@ -38,7 +38,7 @@ module RSpec
       #
       # Reset world to 'scratch' before running suite.
       def reset
-        example_groups.reduce(&:remove_all_constants)
+        RSpec::ExampleGroups.remove_all_constants
         example_groups.clear
         @shared_example_group_registry = nil
       end
