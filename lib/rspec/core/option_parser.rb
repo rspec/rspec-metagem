@@ -93,11 +93,6 @@ module RSpec::Core
           options[:failure_exit_code] = code
         end
 
-        parser.on('--dry-run', 'Print the formatter output of your suite without',
-                  '  running any examples or hooks') do |_o|
-          options[:dry_run] = true
-        end
-
         parser.on('-X', '--[no-]drb', 'Run examples via DRb.') do |use_drb|
           options[:drb] = use_drb
           options[:runner] = RSpec::Core::Invocations::DRbWithFallback.new if use_drb
@@ -105,10 +100,6 @@ module RSpec::Core
 
         parser.on('--drb-port PORT', 'Port to connect to the DRb server.') do |o|
           options[:drb_port] = o.to_i
-        end
-
-        parser.on('--init', 'Initialize your project with RSpec.') do |_cmd|
-          options[:runner] = RSpec::Core::Invocations::InitializeProject.new
         end
 
         parser.separator("\n  **** Output ****\n\n")
@@ -161,6 +152,11 @@ module RSpec::Core
                                            true
                                          end
                                        end
+        end
+
+        parser.on('--dry-run', 'Print the formatter output of your suite without',
+                  '  running any examples or hooks') do |_o|
+          options[:dry_run] = true
         end
 
         parser.on('-w', '--warnings', 'Enable ruby warnings') do
@@ -243,6 +239,10 @@ FILTERING
         end
 
         parser.separator("\n  **** Utility ****\n\n")
+
+        parser.on('--init', 'Initialize your project with RSpec.') do |_cmd|
+          options[:runner] = RSpec::Core::Invocations::InitializeProject.new
+        end
 
         parser.on('-v', '--version', 'Display the version.') do
           options[:runner] = RSpec::Core::Invocations::PrintVersion.new
