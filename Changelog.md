@@ -15,6 +15,11 @@ Enhancements:
 * Nicely format errors encountered while loading spec files.
   (Myron Marston, #2323)
 
+Bug Fixes:
+
+* Remove accumulated `ExampleGroup` constants when reseting RSpec,
+  preventing a memory leak. (TravisSpangle, #2328)
+
 ### 3.5.3 / 2016-09-02
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.2...v3.5.3)
 
