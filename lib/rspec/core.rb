@@ -56,6 +56,7 @@ module RSpec
   # they use the runner multiple times within the same process. Users must deal
   # themselves with re-configuration of RSpec before run.
   def self.reset
+    RSpec::ExampleGroups.remove_all_constants
     @world = nil
     @configuration = nil
   end

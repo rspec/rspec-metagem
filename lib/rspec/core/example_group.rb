@@ -827,6 +827,12 @@ module RSpec
       const_scope
     end
 
+    def self.remove_all_constants
+      constants.each do |constant|
+        __send__(:remove_const, constant)
+      end
+    end
+
     def self.base_name_for(group)
       return "Anonymous" if group.description.empty?
 

@@ -13,6 +13,14 @@ module RSpec::Core
         world.reset
         expect(world.example_groups).to be_empty
       end
+
+      it 'removes the previously assigned example group constants' do
+        RSpec.describe "group"
+
+        expect {
+          RSpec.world.reset
+        }.to change(RSpec::ExampleGroups, :constants).to([])
+      end
     end
 
     describe "#example_groups" do
