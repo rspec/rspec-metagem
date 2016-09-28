@@ -24,7 +24,7 @@ RSpec::Support.require_rspec_support "directory_maker"
 # ## Custom Formatters
 #
 # You can tell RSpec to use a custom formatter by passing its path and name to
-# the `rspec` commmand. For example, if you define MyCustomFormatter in
+# the `rspec` command. For example, if you define MyCustomFormatter in
 # path/to/my_custom_formatter.rb, you would type this command:
 #
 #     rspec --require path/to/my_custom_formatter.rb --format MyCustomFormatter
