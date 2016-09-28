@@ -1877,7 +1877,7 @@ project's root directory or in your home directory:
 
     require "autotest/bundler"
 
-Now you can just type 'autotest' on the commmand line and it will work as you expect.
+Now you can just type 'autotest' on the command line and it will work as you expect.
 
 If you don't want 'bundle exec', there is nothing you have to do.
 
@@ -2065,7 +2065,7 @@ Bug fixes
 Enhancements
 
 * implicitly require unknown formatters so you don't have to require the file
-  explicitly on the commmand line (Michael Grosser)
+  explicitly on the command line (Michael Grosser)
 * add --out/-o option to assign output target
 * added fail_fast configuration option to abort on first failure
 * support a Hash subject (its([:key]) { should == value }) (Josep M. Bach)
