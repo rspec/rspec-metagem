@@ -1,5 +1,5 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.3...master)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.4...master)
 
 Enhancements:
 
@@ -14,6 +14,9 @@ Enhancements:
   no examples are found. (Ewa Czechowska, #2302)
 * Nicely format errors encountered while loading spec files.
   (Myron Marston, #2323)
+
+### 3.5.4 / 2016-09-30
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.3...v3.5.4)
 
 Bug Fixes:
 
