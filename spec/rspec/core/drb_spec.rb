@@ -100,10 +100,9 @@ RSpec.describe RSpec::Core::DRbRunner, :isolated_directory => true, :isolated_ho
       expect(result).to be(1)
     end
 
-    it "outputs colorized text when running with --color option" do
+    it "outputs colorized text when running with --force-color option" do
       failure_symbol = "\e[#{RSpec::Core::Formatters::ConsoleCodes.console_code_for(:red)}mF"
-      allow(out).to receive_messages(:tty? => true)
-      runner(failing_spec_filename, "--color", "--drb-port", @drb_port).run(err, out)
+      runner(failing_spec_filename, "--force-color", "--drb-port", @drb_port).run(err, out)
       expect(out.string).to include(failure_symbol)
     end
   end
@@ -129,7 +128,7 @@ RSpec.describe RSpec::Core::DRbOptions, :isolated_directory => true, :isolated_h
       expect(drb_argv_for(%w[ a --drb b --color c ])).to match_array %w[ --color a b c ]
     end
 
-    %w(--color --fail-fast --profile --backtrace --tty).each do |option|
+    %w(--color --force-color --no-color --fail-fast --profile --backtrace --tty).each do |option|
       it "includes #{option}" do
         expect(drb_argv_for([option])).to include(option)
       end

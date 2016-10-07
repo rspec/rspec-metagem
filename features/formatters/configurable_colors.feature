@@ -18,8 +18,7 @@ Feature: Configurable colors
       """ruby
       RSpec.configure do |config|
         config.failure_color = :magenta
-        config.tty = true
-        config.color = true
+        config.color_mode = :on
       end
 
       RSpec.describe "failure" do

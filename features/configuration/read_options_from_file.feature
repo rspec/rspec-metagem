@@ -19,18 +19,12 @@ Feature: read command line configuration options from files
   Scenario: Color set in `.rspec`
     Given a file named ".rspec" with:
       """
-      --color
+      --force-color
       """
     And a file named "spec/example_spec.rb" with:
       """ruby
       RSpec.describe "color_enabled?" do
         context "when set with RSpec.configure" do
-          before do
-            # color is disabled for non-tty output, so stub the output stream
-            # to say it is tty, even though we're running this with cucumber
-            allow(RSpec.configuration.output_stream).to receive(:tty?) { true }
-          end
-
           it "is true" do
             expect(RSpec.configuration).to be_color_enabled
           end
@@ -64,13 +58,13 @@ Feature: read command line configuration options from files
       """
     And a file named ".rspec" with:
       """
-      --color
+      --no-color
       """
     And a file named "spec/example_spec.rb" with:
       """ruby
       RSpec.describe "custom options file" do
         it "causes .rspec to be ignored" do
-          expect(RSpec.configuration.color).to be_falsey
+          expect(RSpec.configuration.color_mode).to eq(:automatic)
         end
       end
       """

@@ -19,7 +19,7 @@ module RSpec::Core
 
           it "generates a .rspec" do
             command_line_config.run
-            expect(File.read('.rspec')).to match(/--color/m)
+            expect(File.read('.rspec')).to match(/--require spec_helper/m)
           end
         end
 
@@ -86,7 +86,7 @@ module RSpec::Core
       context "with no .rspec file" do
         it "generates a .rspec" do
           command_line_config.run
-          expect(File.read(File.join(tmpdir, '.rspec'))).to match(/--color/m)
+          expect(File.read(File.join(tmpdir, '.rspec'))).to match(/--require spec_helper/m)
         end
       end
 
