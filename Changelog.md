@@ -14,6 +14,15 @@ Enhancements:
   no examples are found. (Ewa Czechowska, #2302)
 * Nicely format errors encountered while loading spec files.
   (Myron Marston, #2323)
+* Improve the API for enabling and disabling color output (Josh
+  Justice, #2321):
+  * Automatically enable color if the output is a TTY, since color is
+    nearly always desirable if the output can handle it.
+  * Introduce new CLI flag to force color on (`--force-color`), even
+    if the output is not a TTY. `--no-color` continues to work as well.
+  * Introduce `config.color_mode` for configuring the color from Ruby.
+    `:automatic` is the default and will produce color if the output is
+    a TTY. `:on` forces it on and `:off` forces it off.
 
 ### 3.5.4 / 2016-09-30
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.3...v3.5.4)
