@@ -48,7 +48,7 @@ module RSpec
 
       # Defines instance {ExpectationTarget} instance methods. These are defined
       # in a module so we can include it in `Minitest::Expectation` when
-      # `rspec/expectations/minitest_integration` is laoded in order to
+      # `rspec/expectations/minitest_integration` is loaded in order to
       # support usage with Minitest.
       module InstanceMethods
         # Runs the given expectation, passing if `matcher` returns true.
