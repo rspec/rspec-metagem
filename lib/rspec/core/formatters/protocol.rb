@@ -33,7 +33,7 @@ module RSpec
         # This will only be invoked once, and the next one to be invoked
         # is {#example_group_started}.
         #
-        # @param notification [StartNotification]
+        # @param notification [Notifications::StartNotification]
 
         # @method example_group_started
         # @api public
@@ -45,8 +45,8 @@ module RSpec
         # The next method to be invoked after this is {#example_passed},
         # {#example_pending}, or {#example_group_finished}.
         #
-        # @param notification [GroupNotification] containing example_group
-        #   subclass of `RSpec::Core::ExampleGroup`
+        # @param notification [Notifications::GroupNotification] containing example_group
+        #   subclass of {ExampleGroup}
 
         # @method example_group_finished
         # @api public
@@ -54,8 +54,8 @@ module RSpec
         #
         # Invoked at the end of the execution of each example group.
         #
-        # @param notification [GroupNotification] containing example_group
-        #   subclass of `RSpec::Core::ExampleGroup`
+        # @param notification [Notifications::GroupNotification] containing example_group
+        #   subclass of {ExampleGroup}
 
         # @method example_started
         # @api public
@@ -63,8 +63,8 @@ module RSpec
         #
         # Invoked at the beginning of the execution of each example.
         #
-        # @param notification [ExampleNotification] containing example subclass
-        #   of `RSpec::Core::Example`
+        # @param notification [Notifications::ExampleNotification] containing example subclass
+        #   of {Example}
 
         # @method example_finished
         # @api public
@@ -72,8 +72,8 @@ module RSpec
         #
         # Invoked at the end of the execution of each example.
         #
-        # @param notification [ExampleNotification] containing example subclass
-        #   of `RSpec::Core::Example`
+        # @param notification [Notifications::ExampleNotification] containing example subclass
+        #   of {Example}
 
         # @method example_passed
         # @api public
@@ -81,8 +81,8 @@ module RSpec
         #
         # Invoked when an example passes.
         #
-        # @param notification [ExampleNotification] containing example subclass
-        #   of `RSpec::Core::Example`
+        # @param notification [Notifications::ExampleNotification] containing example subclass
+        #   of {Example}
 
         # @method example_pending
         # @api public
@@ -90,8 +90,8 @@ module RSpec
         #
         # Invoked when an example is pending.
         #
-        # @param notification [ExampleNotification] containing example subclass
-        #   of `RSpec::Core::Example`
+        # @param notification [Notifications::ExampleNotification] containing example subclass
+        #   of {Example}
 
         # @method example_failed
         # @api public
@@ -99,8 +99,8 @@ module RSpec
         #
         # Invoked when an example fails.
         #
-        # @param notification [ExampleNotification] containing example subclass
-        #   of `RSpec::Core::Example`
+        # @param notification [Notifications::ExampleNotification] containing example subclass
+        #   of {Example}
 
         # @method message
         # @api public
@@ -108,7 +108,7 @@ module RSpec
         #
         # Used by the reporter to send messages to the output stream.
         #
-        # @param notification [MessageNotification] containing message
+        # @param notification [Notifications::MessageNotification] containing message
 
         # @method stop
         # @api public
@@ -117,7 +117,7 @@ module RSpec
         # Invoked after all examples have executed, before dumping post-run
         # reports.
         #
-        # @param notification [NullNotification]
+        # @param notification [Notifications::NullNotification]
 
         # @method start_dump
         # @api public
@@ -128,7 +128,7 @@ module RSpec
         # (BaseTextFormatter then calls {#dump_failures} once for each failed
         # example).
         #
-        # @param notification [NullNotification]
+        # @param notification [Notifications::NullNotification]
 
         # @method dump_failures
         # @api public
@@ -136,7 +136,7 @@ module RSpec
         #
         # Dumps detailed information about each example failure.
         #
-        # @param notification [NullNotification]
+        # @param notification [Notifications::NullNotification]
 
         # @method dump_summary
         # @api public
@@ -145,7 +145,7 @@ module RSpec
         # This method is invoked after the dumping of examples and failures.
         # Each parameter is assigned to a corresponding attribute.
         #
-        # @param summary [SummaryNotification] containing duration,
+        # @param summary [Notifications::SummaryNotification] containing duration,
         #   example_count, failure_count and pending_count
 
         # @method dump_profile
@@ -155,7 +155,7 @@ module RSpec
         # This method is invoked after the dumping the summary if profiling is
         # enabled.
         #
-        # @param profile [ProfileNotification] containing duration,
+        # @param profile [Notifications::ProfileNotification] containing duration,
         #   slowest_examples and slowest_example_groups
 
         # @method dump_pending
@@ -165,7 +165,7 @@ module RSpec
         # Outputs a report of pending examples. This gets invoked
         # after the summary if option is set to do so.
         #
-        # @param notification [NullNotification]
+        # @param notification [Notifications::NullNotification]
 
         # @method close
         # @api public
@@ -174,7 +174,7 @@ module RSpec
         # Invoked at the very end, `close` allows the formatter to clean
         # up resources, e.g. open streams, etc.
         #
-        # @param notification [NullNotification]
+        # @param notification [Notifications::NullNotification]
       end
     end
   end
