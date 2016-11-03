@@ -38,9 +38,12 @@ gem 'simplecov', '~> 0.8'
 
 # There is no platform :ruby_193 and Rubocop only supports >= 1.9.3
 unless RUBY_VERSION == "1.9.2"
+  platforms = [:ruby_19, :ruby_20, :ruby_21, :ruby_22]
+  # There is no platform :ruby_23 on Travis jruby.
+  platforms << :ruby_23 if Bundler::Dependency::PLATFORM_MAP[:ruby_23]
   gem "rubocop",
       "~> 0.32.1",
-      :platform => [:ruby_19, :ruby_20, :ruby_21, :ruby_22]
+      :platform => platforms
 end
 
 gem 'test-unit', '~> 3.0' if RUBY_VERSION.to_f >= 2.2
