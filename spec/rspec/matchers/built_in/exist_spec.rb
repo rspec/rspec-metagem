@@ -118,6 +118,14 @@ RSpec.describe "exist matcher" do
         end
       end
     end
+
+    context "when one predicate is deprecated" do
+      context 'File has deprecated exists?' do
+        it 'will not call exists? triggering the warning' do
+          expect(File).to exist __FILE__
+        end
+      end
+    end
   end
 
   it 'passes any provided arguments to the call to #exist?' do
