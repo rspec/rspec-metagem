@@ -42,7 +42,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
 
     it 'with errors includes that count' do
       send_notification :dump_summary, summary_notification(2, examples(2), examples(2), examples(2), 0, 3)
-      expect(formatter_output.string).to match("2 examples, 2 failures, 2 pending, 3 errors occurred")
+      expect(formatter_output.string).to match("2 examples, 2 failures, 2 pending, 3 errors occurred outside of examples")
     end
 
     describe "rerun command for failed examples" do

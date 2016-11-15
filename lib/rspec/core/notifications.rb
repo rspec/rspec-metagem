@@ -311,7 +311,8 @@ module RSpec::Core
         summary << ", " << Formatters::Helpers.pluralize(failure_count, "failure")
         summary << ", #{pending_count} pending" if pending_count > 0
         if errors > 0
-          summary << ", " << Formatters::Helpers.pluralize(errors, "error") << " occurred"
+          summary << ", " << Formatters::Helpers.pluralize(errors, "error")
+          summary << " occurred outside of examples"
         end
         summary
       end
