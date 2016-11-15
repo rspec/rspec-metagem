@@ -40,6 +40,11 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
       expect(formatter_output.string).to match("2 examples, 2 failures, 2 pending")
     end
 
+    it 'with errors includes that count' do
+      send_notification :dump_summary, summary_notification(2, examples(2), examples(2), examples(2), 0, 3)
+      expect(formatter_output.string).to match("2 examples, 2 failures, 2 pending, 3 errors occurred")
+    end
+
     describe "rerun command for failed examples" do
       it "uses the location to identify the example" do
         line = __LINE__ + 2
