@@ -1,3 +1,11 @@
+### Development
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.6.0.beta1...master)
+
+Enhancements:
+
+* Include count of errors occurring outside examples in default summaries.
+  (#2351, Jon Rowe)
+
 ### 3.6.0.beta1 / 2016-10-09
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.4...v3.6.0.beta1)
 

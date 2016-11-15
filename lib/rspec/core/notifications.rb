@@ -281,8 +281,12 @@ module RSpec::Core
     # @attr pending_examples [Array<RSpec::Core::Example>] the pending examples
     # @attr load_time [Float] the number of seconds taken to boot RSpec
     #                         and load the spec files
+    # @attr errors_outside_of_examples_count [Integer] the number of errors that
+    #                                                  have occurred processing
+    #                                                  the spec suite
     SummaryNotification = Struct.new(:duration, :examples, :failed_examples,
-                                     :pending_examples, :load_time)
+                                     :pending_examples, :load_time,
+                                     :errors_outside_of_examples_count)
     class SummaryNotification
       # @api
       # @return [Fixnum] the number of examples run
@@ -308,6 +312,11 @@ module RSpec::Core
         summary = Formatters::Helpers.pluralize(example_count, "example")
         summary << ", " << Formatters::Helpers.pluralize(failure_count, "failure")
         summary << ", #{pending_count} pending" if pending_count > 0
+        if errors_outside_of_examples_count > 0
+          summary << ", "
+          summary << Formatters::Helpers.pluralize(errors_outside_of_examples_count, "error")
+          summary << " occurred outside of examples"
+        end
         summary
       end
 

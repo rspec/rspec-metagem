@@ -18,6 +18,7 @@ module RSpec::Core
       @failed_examples = []
       @pending_examples = []
       @duration = @start = @load_time = nil
+      @non_example_exception_count = 0
     end
 
     # @private
@@ -157,6 +158,7 @@ module RSpec::Core
     # Exceptions will be formatted the same way they normally are.
     def notify_non_example_exception(exception, context_description)
       @configuration.world.non_example_failure = true
+      @non_example_exception_count += 1
 
       example = Example.new(AnonymousExampleGroup, context_description, {})
       presenter = Formatters::ExceptionPresenter.new(exception, example, :indentation => 0)
@@ -177,7 +179,8 @@ module RSpec::Core
                                                                        @profiler.example_groups)
         end
         notify :dump_summary, Notifications::SummaryNotification.new(@duration, @examples, @failed_examples,
-                                                                     @pending_examples, @load_time)
+                                                                     @pending_examples, @load_time,
+                                                                     @non_example_exception_count)
         notify :seed, Notifications::SeedNotification.new(@configuration.seed, seed_used?)
       end
     end
