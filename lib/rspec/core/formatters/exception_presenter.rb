@@ -346,7 +346,10 @@ module RSpec
 
                 failure   = common_backtrace_truncater.with_truncated_backtrace(failure)
                 presenter = ExceptionPresenter.new(failure, @example, options)
-                presenter.fully_formatted_lines("#{failure_number}.#{index + 1}", colorizer)
+                presenter.fully_formatted_lines(
+                  "#{failure_number ? "#{failure_number}." : ''}#{index + 1}",
+                  colorizer
+                )
               end
             end
           end
