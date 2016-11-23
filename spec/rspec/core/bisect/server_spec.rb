@@ -69,7 +69,9 @@ module RSpec::Core
             ./spec/rspec/core/resources/formatter_specs.rb[2:1:1]
             ./spec/rspec/core/resources/formatter_specs.rb[2:2:1]
             ./spec/rspec/core/resources/formatter_specs.rb[3:1]
+            ./spec/rspec/core/resources/formatter_specs.rb[3:2]
             ./spec/rspec/core/resources/formatter_specs.rb[4:1]
+            ./spec/rspec/core/resources/formatter_specs.rb[4:2]
             ./spec/rspec/core/resources/formatter_specs.rb[5:1]
             ./spec/rspec/core/resources/formatter_specs.rb[5:2]
             ./spec/rspec/core/resources/formatter_specs.rb[5:3:1]
@@ -78,6 +80,7 @@ module RSpec::Core
           expect(results.failed_example_ids).to eq %w[
             ./spec/rspec/core/resources/formatter_specs.rb[2:2:1]
             ./spec/rspec/core/resources/formatter_specs.rb[4:1]
+            ./spec/rspec/core/resources/formatter_specs.rb[4:2]
             ./spec/rspec/core/resources/formatter_specs.rb[5:1]
             ./spec/rspec/core/resources/formatter_specs.rb[5:2]
             ./spec/rspec/core/resources/formatter_specs.rb[5:3:1]
@@ -102,6 +105,7 @@ module RSpec::Core
               ./spec/rspec/core/resources/formatter_specs.rb[2:1:1]
               ./spec/rspec/core/resources/formatter_specs.rb[2:2:1]
               ./spec/rspec/core/resources/formatter_specs.rb[3:1]
+              ./spec/rspec/core/resources/formatter_specs.rb[3:2]
               ./spec/rspec/core/resources/formatter_specs.rb[4:1]
             ],
             :failed_example_ids => %w[

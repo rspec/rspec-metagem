@@ -26,11 +26,20 @@ RSpec.describe "passing spec" do
   it "passes" do
     expect(1).to eq(1)
   end
+
+  it 'passes with a multiple
+     line description' do
+  end
 end
 
 RSpec.describe "failing spec" do
   it "fails" do
     expect(1).to eq(2)
+  end
+
+  it "fails twice", :aggregate_failures do
+    expect(1).to eq(2)
+    expect(3).to eq(4)
   end
 end
 

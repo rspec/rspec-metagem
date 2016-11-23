@@ -69,10 +69,12 @@ module RSpec
           example = failure.example
 
           exception = failure.exception
+          message_lines = failure.fully_formatted_lines(nil, RSpec::Core::Notifications::NullColorizer)
           exception_details = if exception
                                 {
-                                  :message => failure.message_lines.join("\n"),
-                                  :backtrace => failure.formatted_backtrace.join("\n")
+                                  # drop 2 removes the description (regardless of newlines) and leading blank line
+                                  :message => message_lines.drop(2).join("\n"),
+                                  :backtrace => failure.formatted_backtrace.join("\n"),
                                 }
                               end
           extra = extra_failure_content(failure)
