@@ -69,6 +69,19 @@ module RSpec
             expect(Kernel).to_not respond_to(shared_method_name)
           end
 
+          it "displays a warning when adding an example group without a block", :unless => RUBY_VERSION == '1.8.7' do
+            expect_warning_with_call_site(__FILE__, __LINE__ + 1)
+            group.send(shared_method_name, 'name but no block')
+          end
+
+          it "displays a warning when adding an example group without a block", :if => RUBY_VERSION == '1.8.7' do
+            # In 1.8.7 this spec breaks unless we run it isolated like this
+            in_sub_process do
+              expect_warning_with_call_site(__FILE__, __LINE__ + 1)
+              group.send(shared_method_name, 'name but no block')
+            end
+          end
+
           it 'displays a warning when adding a second shared example group with the same name' do
             group.send(shared_method_name, 'some shared group') {}
             original_declaration = [__FILE__, __LINE__ - 1].join(':')
@@ -214,7 +227,7 @@ module RSpec
 
             it "requires a valid name" do
               expect {
-                define_shared_group(:foo => 1)
+                define_shared_group(:foo => 1) { }
               }.to raise_error(ArgumentError, a_string_including(
                 "Shared example group names",
                 {:foo => 1}.inspect
@@ -520,4 +533,3 @@ module RSpec
     end
   end
 end
-
