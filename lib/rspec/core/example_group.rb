@@ -793,8 +793,12 @@ module RSpec
       # @private
       def self.with_frame(name, location)
         current_stack = shared_example_group_inclusions
-        current_stack << new(name, location)
-        yield
+        if current_stack.any? { |frame| frame.shared_group_name == name }
+          raise ArgumentError, "can't include shared examples recursively"
+        else
+          current_stack << new(name, location)
+          yield
+        end
       ensure
         current_stack.pop
       end

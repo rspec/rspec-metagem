@@ -1680,6 +1680,16 @@ module RSpec::Core
           end.to raise_error(ArgumentError, /Could not find .* "shared stuff"/)
         end
 
+        it "raises a helpful error message when shared content is accessed recursively" do
+          self.group.shared_examples "named otherwise" do
+            example("does something") {}
+            self.send(name, "named otherwise")
+          end
+          expect do
+            self.group.send(name, "named otherwise")
+          end.to raise_error(ArgumentError, /can't include shared examples recursively/)
+        end
+
         it "leaves RSpec's thread metadata unchanged" do
           expect {
             self.group.send(name, "named this")
