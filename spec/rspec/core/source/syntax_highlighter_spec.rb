@@ -43,6 +43,52 @@ class RSpec::Core::Source
         lines = [":ok"]
         expect(highlighter.highlight(lines)).to eq(lines)
       end
+
+      it "highlights core RSpec keyword-like methods" do
+        highlighted_terms = find_highlighted_terms_in <<-EOS
+          describe stuff do
+            before { }
+            after { }
+            around { }
+            let(stuff) { }
+            subject { }
+            context do
+              it stuff do
+                expect(thing).to foo
+                allow(thing).to foo
+              end
+              example { }
+              specify { }
+            end
+          end
+        EOS
+
+        expect(highlighted_terms).to match_array %w[
+          describe context
+          it specify example
+          before after around
+          let subject
+          expect allow
+          do end
+        ]
+      end
+
+      it "does not blow up if the coderay constant we update with our keywords is missing" do
+        hide_const("CodeRay::Scanners::Ruby::Patterns::IDENT_KIND")
+        expect(highlighter.highlight(['[:ok, "ok"]']).first).to be_highlighted
+      end
+
+      def find_highlighted_terms_in(code_snippet)
+        lines = code_snippet.split("\n")
+        highlighted = highlighter.highlight(lines)
+        highlighted_terms = []
+
+        highlighted.join("\n").scan(/\e\[1;[1-9]\dm(\w+)\e\[0m/) do |first_capture, _|
+          highlighted_terms << first_capture
+        end
+
+        highlighted_terms.uniq
+      end
     end
 
     context "when CodeRay is unavailable" do

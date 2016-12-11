@@ -31,11 +31,31 @@ module RSpec
         def color_enabled_implementation
           @color_enabled_implementation ||= begin
             require 'coderay'
+            self.class.attempt_to_add_rspec_terms_to_coderay_keywords
             CodeRayImplementation
           rescue LoadError
             NoSyntaxHighlightingImplementation
           end
         end
+
+        # rubocop:disable Lint/RescueException
+        # rubocop:disable Lint/HandleExceptions
+        def self.attempt_to_add_rspec_terms_to_coderay_keywords
+          CodeRay::Scanners::Ruby::Patterns::IDENT_KIND.add(%w[
+            describe context
+            it specify example
+            before after around
+            let subject
+            expect allow
+          ], :keyword)
+        rescue Exception
+          # Mutating CodeRay's contants like this is not a public API
+          # and might not always work. If we cannot add our keywords
+          # to CodeRay it is not a big deal and not worth raising an
+          # error over, so we ignore it.
+        end
+        # rubocop:enable Lint/HandleExceptions
+        # rubocop:enable Lint/RescueException
 
         # @private
         module CodeRayImplementation

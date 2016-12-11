@@ -6,6 +6,8 @@ Enhancements:
 * Include count of errors occurring outside examples in default summaries.
   (#2351, Jon Rowe)
 * Warn when including shared example groups recursively. (#2356, Jon Rowe)
+* Improve failure snippet syntax highlighting with CodeRay to highlight
+  RSpec "keywords" like `expect`. (#2358, Myron Marston)
 
 ### 3.6.0.beta1 / 2016-10-09
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.5.4...v3.6.0.beta1)

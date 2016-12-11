@@ -321,9 +321,9 @@ a {
         <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:4</pre></div>
     <pre class="ruby"><code><span class="linenum">2</span>
 <span class="linenum">3</span><span class="constant">RSpec</span>.shared_examples_for <span class="string"><span class="delimiter">&quot;</span><span class="content">shared</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
-<span class="offending"><span class="linenum">4</span>  it <span class="string"><span class="delimiter">&quot;</span><span class="content">is marked as pending but passes</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span></span>
+<span class="offending"><span class="linenum">4</span>  <span class="keyword">it</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">is marked as pending but passes</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span></span>
 <span class="linenum">5</span>    pending
-<span class="linenum">6</span>    expect(<span class="integer">1</span>).to eq(<span class="integer">1</span>)</code></pre>
+<span class="linenum">6</span>    <span class="keyword">expect</span>(<span class="integer">1</span>).to eq(<span class="integer">1</span>)</code></pre>
       </div>
     </dd>
   </dl>
@@ -357,8 +357,8 @@ a {
   # ./spec/rspec/core/resources/formatter_specs.rb:37:in `block (2 levels) in &lt;top (required)&gt;&#39;</pre></div>
         <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:37:in `block (2 levels) in &lt;top (required)&gt;&#39;</pre></div>
     <pre class="ruby"><code><span class="linenum">35</span><span class="constant">RSpec</span>.describe <span class="string"><span class="delimiter">&quot;</span><span class="content">failing spec</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
-<span class="linenum">36</span>  it <span class="string"><span class="delimiter">&quot;</span><span class="content">fails</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
-<span class="offending"><span class="linenum">37</span>    expect(<span class="integer">1</span>).to eq(<span class="integer">2</span>)</span>
+<span class="linenum">36</span>  <span class="keyword">it</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">fails</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
+<span class="offending"><span class="linenum">37</span>    <span class="keyword">expect</span>(<span class="integer">1</span>).to eq(<span class="integer">2</span>)</span>
 <span class="linenum">38</span>  <span class="keyword">end</span></code></pre>
       </div>
     </dd>
