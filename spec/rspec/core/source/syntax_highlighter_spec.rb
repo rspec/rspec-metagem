@@ -65,7 +65,7 @@ class RSpec::Core::Source
 
         expect(highlighted_terms).to match_array %w[
           describe context
-          it specify example
+          it specify
           before after around
           let subject
           expect allow
