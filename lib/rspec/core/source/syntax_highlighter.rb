@@ -43,7 +43,7 @@ module RSpec
         def self.attempt_to_add_rspec_terms_to_coderay_keywords
           CodeRay::Scanners::Ruby::Patterns::IDENT_KIND.add(%w[
             describe context
-            it specify example
+            it specify
             before after around
             let subject
             expect allow
