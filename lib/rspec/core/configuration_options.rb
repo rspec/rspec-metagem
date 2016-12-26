@@ -186,8 +186,10 @@ module RSpec
       def global_options_file
         File.join(File.expand_path("~"), ".rspec")
       rescue ArgumentError
+        # :nocov:
         RSpec.warning "Unable to find ~/.rspec because the HOME environment variable is not set"
         nil
+        # :nocov:
       end
     end
   end

@@ -4,7 +4,9 @@ require 'rspec/core/drb'
 RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolated_home => true do
   include ConfigOptionsHelper
 
-  it "warns when HOME env var is not set", :unless => (RUBY_PLATFORM == 'java' || RSpec::Support::OS.windows?) do
+  # On Ruby 2.4, `File.expand("~")` works even if `ENV['HOME']` is not set.
+  # But on earlier versions, it fails.
+  it "warns when HOME env var is not set", :unless => (RUBY_PLATFORM == 'java' || RSpec::Support::OS.windows? || RUBY_VERSION >= '2.4') do
     without_env_vars 'HOME' do
       expect_warning_with_call_site(__FILE__, __LINE__ + 1)
       RSpec::Core::ConfigurationOptions.new([]).options
