@@ -481,18 +481,18 @@ RSpec.describe "yield_with_args matcher" do
     end
   end
 
-  describe "expect {...}.to yield_with_args(String, Fixnum)" do
+  describe "expect {...}.to yield_with_args(String, Integer)" do
     it "passes if the block yields objects of the given classes" do
-      expect { |b| _yield_with_args("string", 15, &b) }.to yield_with_args(String, Fixnum)
+      expect { |b| _yield_with_args("string", 15, &b) }.to yield_with_args(String, Integer)
     end
 
     it "passes if the block yields the given classes" do
-      expect { |b| _yield_with_args(String, Fixnum, &b) }.to yield_with_args(String, Fixnum)
+      expect { |b| _yield_with_args(String, Integer, &b) }.to yield_with_args(String, Integer)
     end
 
     it "fails if the block yields objects of different classes" do
       expect {
-        expect { |b| _yield_with_args(15, "string", &b) }.to yield_with_args(String, Fixnum)
+        expect { |b| _yield_with_args(15, "string", &b) }.to yield_with_args(String, Integer)
       }.to fail_with(/expected given block to yield with arguments, but yielded with unexpected arguments/)
     end
   end
@@ -630,18 +630,18 @@ RSpec.describe "yield_successive_args matcher" do
     end
   end
 
-  describe "expect {...}.to yield_successive_args(String, Fixnum)" do
+  describe "expect {...}.to yield_successive_args(String, Integer)" do
     it "passes if the block successively yields objects of the given classes" do
-      expect { |b| ["string", 15].each(&b) }.to yield_successive_args(String, Fixnum)
+      expect { |b| ["string", 15].each(&b) }.to yield_successive_args(String, Integer)
     end
 
     it "passes if the block yields the given classes" do
-      expect { |b| [String, Fixnum].each(&b) }.to yield_successive_args(String, Fixnum)
+      expect { |b| [String, Integer].each(&b) }.to yield_successive_args(String, Integer)
     end
 
     it "fails if the block yields objects of different classes" do
       expect {
-        expect { |b| [15, "string"].each(&b) }.to yield_successive_args(String, Fixnum)
+        expect { |b| [15, "string"].each(&b) }.to yield_successive_args(String, Integer)
       }.to fail_with(/expected given block to yield successively with arguments/)
     end
   end

@@ -2,12 +2,12 @@ module RSpec
   module Matchers
     [:be_an_instance_of, :be_instance_of].each do |method|
       RSpec.describe "expect(actual).to #{method}(expected)" do
-        it_behaves_like "an RSpec matcher", :valid_value => 5, :invalid_value => "a" do
-          let(:matcher) { send(method, Fixnum) }
+        it_behaves_like "an RSpec matcher", :valid_value => "a", :invalid_value => 5 do
+          let(:matcher) { send(method, String) }
         end
 
         it "passes if actual is instance of expected class" do
-          expect(5).to send(method, Fixnum)
+          expect("a").to send(method, String)
         end
 
         it "fails if actual is instance of subclass of expected class" do
@@ -23,9 +23,9 @@ module RSpec
         end
 
         it "provides a description" do
-          matcher = be_an_instance_of(Fixnum)
+          matcher = be_an_instance_of(Integer)
           matcher.matches?(Numeric)
-          expect(matcher.description).to eq "be an instance of Fixnum"
+          expect(matcher.description).to eq "be an instance of Integer"
         end
 
         context "when expected provides an expanded inspect, e.g. AR::Base" do

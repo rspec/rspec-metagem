@@ -139,13 +139,13 @@ Feature: `yield` matchers
       RSpec.describe "yield_successive_args matcher" do
         specify { expect { |b| array.each(&b) }.to yield_successive_args(1, 2, 3) }
         specify { expect { |b| array_of_tuples.each(&b) }.to yield_successive_args([:a, :b], [:c, :d]) }
-        specify { expect { |b| array.each(&b) }.to yield_successive_args(Fixnum, Fixnum, Fixnum) }
+        specify { expect { |b| array.each(&b) }.to yield_successive_args(Integer, Integer, Integer) }
         specify { expect { |b| array.each(&b) }.not_to yield_successive_args(1, 2) }
 
         # deliberate failures
         specify { expect { |b| array.each(&b) }.not_to yield_successive_args(1, 2, 3) }
         specify { expect { |b| array_of_tuples.each(&b) }.not_to yield_successive_args([:a, :b], [:c, :d]) }
-        specify { expect { |b| array.each(&b) }.not_to yield_successive_args(Fixnum, Fixnum, Fixnum) }
+        specify { expect { |b| array.each(&b) }.not_to yield_successive_args(Integer, Integer, Integer) }
         specify { expect { |b| array.each(&b) }.to yield_successive_args(1, 2) }
       end
       """

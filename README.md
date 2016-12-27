@@ -150,7 +150,7 @@ expect { |b| 5.tap(&b) }.to yield_control # passes regardless of yielded args
 expect { |b| yield_if_true(true, &b) }.to yield_with_no_args # passes only if no args are yielded
 
 expect { |b| 5.tap(&b) }.to yield_with_args(5)
-expect { |b| 5.tap(&b) }.to yield_with_args(Fixnum)
+expect { |b| 5.tap(&b) }.to yield_with_args(Integer)
 expect { |b| "a string".tap(&b) }.to yield_with_args(/str/)
 
 expect { |b| [1, 2, 3].each(&b) }.to yield_successive_args(1, 2, 3)
@@ -263,7 +263,7 @@ expect(hash).to match(
   :a => {
     :b => a_collection_containing_exactly(
       a_string_starting_with("f"),
-      an_instance_of(Fixnum)
+      an_instance_of(Integer)
     ),
     :c => { :d => (a_value < 3) }
   }

@@ -133,5 +133,5 @@ e.g.
     expect { |b| User.transaction(&b) }.to yield_with_no_args
     expect { |b| 5.tap(&b)            }.not_to yield_with_no_args         # because it yields with `5`
     expect { |b| 5.tap(&b)            }.to yield_with_args(5)             # because 5 == 5
-    expect { |b| 5.tap(&b)            }.to yield_with_args(Fixnum)        # because Fixnum === 5
+    expect { |b| 5.tap(&b)            }.to yield_with_args(Integer)       # because Integer === 5
     expect { |b| [1, 2, 3].each(&b)   }.to yield_successive_args(1, 2, 3)

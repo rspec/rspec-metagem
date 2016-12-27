@@ -770,7 +770,7 @@ end
 
 RSpec.describe "be_an_instance_of" do
   it "passes when direct class matches" do
-    expect(5).to be_an_instance_of(Fixnum)
+    expect("string").to be_an_instance_of(String)
   end
 
   it "fails when class is higher up hierarchy" do
