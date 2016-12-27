@@ -41,9 +41,9 @@ module RSpec
   #
   #     expect("a string").to be_an_instance_of(String) # =>"a string".instance_of?(String) # passes
   #
-  #     expect(3).to be_a_kind_of(Fixnum)        # => 3.kind_of?(Numeric)     | passes
-  #     expect(3).to be_a_kind_of(Numeric)       # => 3.kind_of?(Numeric)     | passes
-  #     expect(3).to be_an_instance_of(Fixnum)   # => 3.instance_of?(Fixnum)  | passes
+  #     expect(3).to be_a_kind_of(Integer)          # => 3.kind_of?(Numeric)     | passes
+  #     expect(3).to be_a_kind_of(Numeric)          # => 3.kind_of?(Numeric)     | passes
+  #     expect(3).to be_an_instance_of(Integer)     # => 3.instance_of?(Integer) | passes
   #     expect(3).not_to be_an_instance_of(Numeric) # => 3.instance_of?(Numeric) | fails
   #
   # RSpec will also create custom matchers for predicates like `has_key?`. To
@@ -367,7 +367,7 @@ module RSpec
     # Passes if actual.instance_of?(expected)
     #
     # @example
-    #   expect(5).to     be_an_instance_of(Fixnum)
+    #   expect(5).to     be_an_instance_of(Integer)
     #   expect(5).not_to be_an_instance_of(Numeric)
     #   expect(5).not_to be_an_instance_of(Float)
     def be_an_instance_of(expected)
@@ -379,7 +379,7 @@ module RSpec
     # Passes if actual.kind_of?(expected)
     #
     # @example
-    #   expect(5).to     be_a_kind_of(Fixnum)
+    #   expect(5).to     be_a_kind_of(Integer)
     #   expect(5).to     be_a_kind_of(Numeric)
     #   expect(5).not_to be_a_kind_of(Float)
     def be_a_kind_of(expected)
@@ -585,7 +585,7 @@ module RSpec
     # information about equality in Ruby.
     #
     # @example
-    #   expect(5).to       equal(5)   # Fixnums are equal
+    #   expect(5).to       equal(5)   # Integers are equal
     #   expect("5").not_to equal("5") # Strings that look the same are not the same object
     def equal(expected)
       BuiltIn::Equal.new(expected)
@@ -688,7 +688,7 @@ module RSpec
     #     :a => {
     #       :b => a_collection_containing_exactly(
     #         a_string_starting_with("f"),
-    #         an_instance_of(Fixnum)
+    #         an_instance_of(Integer)
     #       ),
     #       :c => { :d => (a_value < 3) }
     #     }
@@ -905,7 +905,7 @@ module RSpec
     # @example
     #   expect { |b| 5.tap(&b) }.to yield_with_args # because #tap yields an arg
     #   expect { |b| 5.tap(&b) }.to yield_with_args(5) # because 5 == 5
-    #   expect { |b| 5.tap(&b) }.to yield_with_args(Fixnum) # because Fixnum === 5
+    #   expect { |b| 5.tap(&b) }.to yield_with_args(Integer) # because Integer === 5
     #   expect { |b| File.open("f.txt", &b) }.to yield_with_args(/txt/) # because /txt/ === "f.txt"
     #
     #   expect { |b| User.transaction(&b) }.not_to yield_with_args # because it yields no args

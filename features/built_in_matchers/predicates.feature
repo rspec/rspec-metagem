@@ -47,7 +47,7 @@ Feature: Predicate matchers
 
   Any arguments passed to the matcher will be passed on to the predicate method.
 
-  Scenario: should be_zero (based on Fixnum#zero?)
+  Scenario: should be_zero (based on Integer#zero?)
     Given a file named "should_be_zero_spec.rb" with:
       """ruby
       RSpec.describe 0 do
@@ -118,7 +118,7 @@ Feature: Predicate matchers
    Scenario: matcher arguments are passed on to the predicate method
      Given a file named "predicate_matcher_argument_spec.rb" with:
        """ruby
-       class Fixnum
+       class Integer
          def multiple_of?(x)
            (self % x).zero?
          end

@@ -590,16 +590,16 @@ module RSpec::Matchers::DSL
           end
         end
 
-        expect(Fixnum).to descend_from(Object)
-        expect(Fixnum).not_to descend_from(Array)
+        expect(Integer).to descend_from(Object)
+        expect(Integer).not_to descend_from(Array)
 
         expect {
-          expect(Fixnum).to descend_from(Array)
-        }.to fail_with(/expected Fixnum to descend from Array/)
+          expect(Integer).to descend_from(Array)
+        }.to fail_with(/expected Integer to descend from Array/)
 
         expect {
-          expect(Fixnum).not_to descend_from(Object)
-        }.to fail_with(/expected Fixnum not to descend from Object/)
+          expect(Integer).not_to descend_from(Object)
+        }.to fail_with(/expected Integer not to descend from Object/)
       end
 
       it "can use the `match` matcher from a `match` block" do

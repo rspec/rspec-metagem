@@ -122,7 +122,7 @@ Feature: Composing Matchers
         specify "you can match nested data structures against matchers" do
           hash = {
             :a => {
-              :b => ["foo", 5],
+              :b => ["foo", 5.0],
               :c => { :d => 2.05 }
             }
           }
@@ -131,7 +131,7 @@ Feature: Composing Matchers
             :a => {
               :b => a_collection_containing_exactly(
                 a_string_starting_with("f"),
-                an_instance_of(Fixnum)
+                an_instance_of(Float)
               ),
               :c => { :d => (a_value < 3) }
             }

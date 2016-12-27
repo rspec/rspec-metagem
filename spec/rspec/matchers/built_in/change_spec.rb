@@ -28,14 +28,14 @@ RSpec.describe "expect { ... }.to change(actual, message)" do
     val = nil
 
     expect {
-      val = 42
-    }.to change { val.class }.from(NilClass).to(Fixnum)
+      val = "string"
+    }.to change { val.class }.from(NilClass).to(String)
 
     expect {
       expect {
-        val = "string"
-      }.to change { val.class }.from(Fixnum).to(NilClass)
-    }.to fail_with(/but is now String/)
+        val = :symbol
+      }.to change { val.class }.from(String).to(NilClass)
+    }.to fail_with(/but is now Symbol/)
   end
 
   context "with boolean values" do

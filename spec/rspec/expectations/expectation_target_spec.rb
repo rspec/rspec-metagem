@@ -52,16 +52,16 @@ module RSpec
         end
 
         it 'fails an invalid negative expectation' do
-          message = /expected 5 not to be a kind of Fixnum/
+          message = /expected 5 not to be a kind of Integer/
           expect {
-            expect(5).not_to be_a(Fixnum)
+            expect(5).not_to be_an(Integer)
           }.to fail_with(message)
         end
 
         it 'fails an invalid negative expectation with a split infinitive' do
-          message = /expected 5 not to be a kind of Fixnum/
+          message = /expected 5 not to be a kind of Integer/
           expect {
-            expect(5).to_not be_a(Fixnum)
+            expect(5).to_not be_an(Integer)
           }.to fail_with(message)
         end
 
