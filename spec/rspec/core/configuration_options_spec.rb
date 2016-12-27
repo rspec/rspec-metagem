@@ -4,7 +4,9 @@ require 'rspec/core/drb'
 RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolated_home => true do
   include ConfigOptionsHelper
 
-  it "warns when HOME env var is not set", :unless => (RUBY_PLATFORM == 'java' || RSpec::Support::OS.windows?) do
+  # On Ruby 2.4, `File.expand("~")` works even if `ENV['HOME']` is not set.
+  # But on earlier versions, it fails.
+  it "warns when HOME env var is not set", :unless => (RUBY_PLATFORM == 'java' || RSpec::Support::OS.windows? || RUBY_VERSION >= '2.4') do
     without_env_vars 'HOME' do
       expect_warning_with_call_site(__FILE__, __LINE__ + 1)
       RSpec::Core::ConfigurationOptions.new([]).options
@@ -395,7 +397,7 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
       expect {
         parse_options(*options)
       }.to raise_error(SystemExit).and output(a_string_including(
-        "invalid option: --default_path (defined in #{source})",
+        "invalid option: --foo_bar (defined in #{source})",
         "Please use --help for a listing of valid options"
       )).to_stderr
     end
@@ -404,7 +406,7 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
       context "defined in #{file_name}" do
         it "mentions the file name in the error so users know where to look for it" do
           file_name = File.expand_path(file_name) if file_name.start_with?("~")
-          File.open(File.expand_path(file_name), "w") { |f| f << "--default_path" }
+          File.open(File.expand_path(file_name), "w") { |f| f << "--foo_bar" }
           expect_parsing_to_fail_mentioning_source(file_name)
         end
       end
@@ -412,7 +414,7 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
 
     context "defined in SPEC_OPTS" do
       it "mentions ENV['SPEC_OPTS'] as the source in the error so users know where to look for it" do
-        with_env_vars 'SPEC_OPTS' => "--default_path" do
+        with_env_vars 'SPEC_OPTS' => "--foo_bar" do
           expect_parsing_to_fail_mentioning_source("ENV['SPEC_OPTS']")
         end
       end
@@ -420,7 +422,7 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
 
     context "defined in a custom file" do
       it "mentions the custom file as the source of the error so users know where to look for it" do
-        File.open("./custom.opts", "w") {|f| f << "--default_path"}
+        File.open("./custom.opts", "w") {|f| f << "--foo_bar"}
 
         expect_parsing_to_fail_mentioning_source("./custom.opts", %w[-O ./custom.opts])
       end
@@ -428,9 +430,9 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
       context "passed at the command line" do
         it "does not mention the source since it is obvious where it came from" do
           expect {
-            parse_options("--default_path")
+            parse_options("--foo_bar")
           }.to raise_error(SystemExit).and output(a_string_including(
-            "invalid option: --default_path\n",
+            "invalid option: --foo_bar\n",
             "Please use --help for a listing of valid options"
           )).to_stderr
         end
