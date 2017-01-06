@@ -36,6 +36,8 @@ end
 
 if RUBY_VERSION >= '1.9' && RUBY_VERSION <= '2.1'
   gem 'rubocop', "~> 0.23.0"
+  # The latest version (2.2.1) breaks on ruby 1.9.2
+  gem 'rainbow', "~> 2.1.0" if RUBY_VERSION == "1.9.2"
 end
 
 eval File.read('Gemfile-custom') if File.exist?('Gemfile-custom')
