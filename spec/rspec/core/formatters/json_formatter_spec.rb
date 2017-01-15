@@ -20,10 +20,11 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
   end
 
   it "outputs expected json (brittle high level functional test)" do
+    its = []
     group = RSpec.describe("one apiece") do
-      it("succeeds") { expect(1).to eq 1 }
-      it("fails") { fail "eek" }
-      it("pends") { pending "world peace"; fail "eek" }
+      its.push it("succeeds") { expect(1).to eq 1 }
+      its.push it("fails") { fail "eek" }
+      its.push it("pends") { pending "world peace"; fail "eek" }
     end
     succeeding_line = __LINE__ - 4
     failing_line = __LINE__ - 4
@@ -44,6 +45,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
       :version => RSpec::Core::Version::STRING,
       :examples => [
         {
+          :id => its[0].id,
           :description => "succeeds",
           :full_description => "one apiece succeeds",
           :status => "passed",
@@ -53,6 +55,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
           :pending_message => nil,
         },
         {
+          :id => its[1].id,
           :description => "fails",
           :full_description => "one apiece fails",
           :status => "failed",
@@ -67,6 +70,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
           },
         },
         {
+          :id => its[2].id,
           :description => "pends",
           :full_description => "one apiece pends",
           :status => "pending",
