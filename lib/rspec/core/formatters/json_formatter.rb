@@ -81,6 +81,7 @@ module RSpec
 
         def format_example(example)
           {
+            :id => example.id,
             :description => example.description,
             :full_description => example.full_description,
             :status => example.execution_result.status.to_s,
