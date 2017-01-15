@@ -107,6 +107,11 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
         :version => RSpec::Core::Version::STRING
       }.to_json)
     end
+
+    it "does not close the stream so that it can be reused within a process" do
+      formatter.close(RSpec::Core::Notifications::NullNotification)
+      expect(formatter_output.closed?).to be(false)
+    end
   end
 
   describe "#message" do
