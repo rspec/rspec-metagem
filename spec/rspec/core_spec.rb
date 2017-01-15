@@ -253,6 +253,15 @@ RSpec.describe RSpec do
       expect(deprecations).to     include("second deprecation")
       expect(deprecations).to_not include("first deprecation")
     end
+
+    it 'does not clear shared examples' do
+      RSpec.shared_examples_for("shared") { }
+
+      RSpec.clear_examples
+
+      registry = RSpec.world.shared_example_group_registry
+      expect(registry.find([:main], "shared")).to_not be_nil
+    end
   end
 
   it 'uses only one thread local variable', :run_last do
