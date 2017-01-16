@@ -30,6 +30,10 @@ if RUBY_VERSION < '2.0.0' || RUBY_ENGINE == 'java'
   gem 'json', '< 2.0.0'
 end
 
+if RUBY_VERSION < '2.0.0' && !!(RbConfig::CONFIG['host_os'] =~ /cygwin|mswin|mingw|bccwin|wince|emx/)
+  gem 'ffi', '< 1.9.15' # allow ffi to be installed on older rubies on windows
+end
+
 platforms :jruby do
   gem "jruby-openssl"
 end
