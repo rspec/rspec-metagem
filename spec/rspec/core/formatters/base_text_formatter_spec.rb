@@ -35,6 +35,11 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
       expect(formatter_output.string).to match("1 example, 1 failure, 1 pending")
     end
 
+    it "with 1s outputs singular (only pending)" do
+      send_notification :dump_summary, summary_notification(1, examples(1), examples(0), examples(1), 0)
+      expect(formatter_output.string).to match("1 example, 0 failures, 1 pending")
+    end
+
     it "with 2s outputs pluralized (including pending)" do
       send_notification :dump_summary, summary_notification(2, examples(2), examples(2), examples(2), 0)
       expect(formatter_output.string).to match("2 examples, 2 failures, 2 pending")
