@@ -1471,6 +1471,16 @@ module RSpec::Core
         expect(config.formatters).to be_empty
       end
 
+      it 'buffers deprecations until the reporter is ready' do
+        allow(config.formatter_loader).to receive(:prepare_default).and_wrap_original do |original, *args|
+          config.reporter.deprecation :message => 'Test deprecation'
+          original.call(*args)
+        end
+        expect {
+          config.reporter.notify :deprecation_summary, Notifications::NullNotification
+        }.to change { config.deprecation_stream.string }.to include 'Test deprecation'
+      end
+
       it 'allows registering listeners without doubling up formatters' do
         config.reporter.register_listener double(:message => nil), :message
 
