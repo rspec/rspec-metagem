@@ -1488,6 +1488,8 @@ module RSpec::Core
           config.formatter = :documentation
         }.to change { config.formatters.size }.from(0).to(1)
 
+        # notify triggers the formatter setup, there are two due to the already configured
+        # documentation formatter and deprecation formatter
         expect {
           config.reporter.notify :message, double(:message => 'Triggers formatter setup')
         }.to change { config.formatters.size }.from(1).to(2)
@@ -1495,6 +1497,9 @@ module RSpec::Core
 
       it 'still configures a default formatter when none specified' do
         config.reporter.register_listener double(:message => nil), :message
+
+        # notify triggers the formatter setup, there are two due to the default
+        # (progress) and deprecation formatter
         expect {
           config.reporter.notify :message, double(:message => 'Triggers formatter setup')
         }.to change { config.formatters.size }.from(0).to(2)
