@@ -930,7 +930,7 @@ module RSpec
         @reporter_buffer || @reporter ||=
           begin
             @reporter_buffer = DeprecationReporterBuffer.new
-            formatter_loader.setup_default output_stream, deprecation_stream
+            formatter_loader.prepare_default output_stream, deprecation_stream
             @reporter_buffer.play_onto(formatter_loader.reporter)
             @reporter_buffer = nil
             formatter_loader.reporter

@@ -3,6 +3,8 @@
 Bug Fixes:
 
 * Include example id in the JSON formatter output. (#2369, Xavier Shay)
+* Delay formatter loading until the last minute to allow accessing the reporter
+  without triggering formatter setup. (Jon Rowe, #2243)
 
 ### 3.6.0.beta2 / 2016-12-12
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.6.0.beta1...v3.6.0.beta2)
