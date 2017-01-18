@@ -1465,7 +1465,7 @@ module RSpec::Core
         config.deprecation_stream = StringIO.new
       end
 
-      it 'doesnt immediately trigger formatter setup' do
+      it 'does not immediately trigger formatter setup' do
         config.reporter
 
         expect(config.formatters).to be_empty
