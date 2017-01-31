@@ -136,7 +136,10 @@ RSpec.describe RSpec do
 
   describe ".clear_examples" do
     let(:listener) { double("listener") }
-    let(:reporter) { RSpec.configuration.reporter }
+
+    def reporter
+      RSpec.configuration.reporter
+    end
 
     before do
       RSpec.configuration.output_stream = StringIO.new
@@ -175,6 +178,8 @@ RSpec.describe RSpec do
       reporter.example_pending(pending_ex)
       reporter.finish
 
+      RSpec.clear_examples
+
       reporter.register_listener(listener, :dump_summary)
 
       expect(listener).to receive(:dump_summary) do |notification|
@@ -183,7 +188,6 @@ RSpec.describe RSpec do
         expect(notification.pending_examples).to be_empty
       end
 
-      RSpec.clear_examples
       reporter.start(0)
       reporter.finish
     end
@@ -223,6 +227,40 @@ RSpec.describe RSpec do
       expect(
         RSpec.configuration.filter_manager.exclusions.rules
       ).to eq(:slow => true)
+    end
+
+    it 'clears the deprecation buffer' do
+      RSpec.configuration.deprecation_stream = StringIO.new
+
+      group = RSpec.describe do
+        example { RSpec.deprecate("first deprecation") }
+      end.run
+
+      reporter.start(1)
+      reporter.finish
+
+      RSpec.clear_examples
+
+      RSpec.configuration.deprecation_stream = StringIO.new(deprecations = "")
+
+      group = RSpec.describe do
+        example { RSpec.deprecate("second deprecation") }
+      end.run
+
+      reporter.start(1)
+      reporter.finish
+
+      expect(deprecations).to     include("second deprecation")
+      expect(deprecations).to_not include("first deprecation")
+    end
+
+    it 'does not clear shared examples' do
+      RSpec.shared_examples_for("shared") { }
+
+      RSpec.clear_examples
+
+      registry = RSpec.world.shared_example_group_registry
+      expect(registry.find([:main], "shared")).to_not be_nil
     end
   end
 

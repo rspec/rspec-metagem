@@ -27,14 +27,6 @@ module RSpec::Core
     attr_reader :examples, :failed_examples, :pending_examples
 
     # @private
-    def reset
-      @examples = []
-      @failed_examples = []
-      @pending_examples = []
-      @profiler = Profiler.new if defined?(@profiler)
-    end
-
-    # @private
     def setup_profiler
       @profiler = Profiler.new
       register_listener @profiler, *Profiler::NOTIFICATIONS

@@ -26,24 +26,25 @@ module RSpec::Core
 
     it 'notifies the bisect progress formatter of progress and closes the output' do
       tempfile = Tempfile.new("bisect")
-      output_file = File.open(tempfile.path, "w")
-      expect { find_minimal_repro(output_file) }.to change(output_file, :closed?).from(false).to(true)
-      output = normalize_durations(File.read(tempfile.path)).chomp
+      File.open(tempfile.path, "w") do |output_file|
+        find_minimal_repro(output_file)
+        output = normalize_durations(File.read(tempfile.path)).chomp
 
-      expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
-        |Bisect started using options: ""
-        |Running suite to find failures... (n.nnnn seconds)
-        |Starting bisect with 2 failing examples and 6 non-failing examples.
-        |Checking that failure(s) are order-dependent... failure appears to be order-dependent
-        |
-        |Round 1: bisecting over non-failing examples 1-6 .. ignoring examples 4-6 (n.nnnn seconds)
-        |Round 2: bisecting over non-failing examples 1-3 .. multiple culprits detected - splitting candidates (n.nnnn seconds)
-        |Round 3: bisecting over non-failing examples 1-2 .. ignoring example 2 (n.nnnn seconds)
-        |Bisect complete! Reduced necessary non-failing examples from 6 to 2 in n.nnnn seconds.
-        |
-        |The minimal reproduction command is:
-        |  rspec 1.rb[1:1] 2.rb[1:1] 4.rb[1:1] 5.rb[1:1]
-      EOS
+        expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
+          |Bisect started using options: ""
+          |Running suite to find failures... (n.nnnn seconds)
+          |Starting bisect with 2 failing examples and 6 non-failing examples.
+          |Checking that failure(s) are order-dependent... failure appears to be order-dependent
+          |
+          |Round 1: bisecting over non-failing examples 1-6 .. ignoring examples 4-6 (n.nnnn seconds)
+          |Round 2: bisecting over non-failing examples 1-3 .. multiple culprits detected - splitting candidates (n.nnnn seconds)
+          |Round 3: bisecting over non-failing examples 1-2 .. ignoring example 2 (n.nnnn seconds)
+          |Bisect complete! Reduced necessary non-failing examples from 6 to 2 in n.nnnn seconds.
+          |
+          |The minimal reproduction command is:
+          |  rspec 1.rb[1:1] 2.rb[1:1] 4.rb[1:1] 5.rb[1:1]
+        EOS
+      end
     end
 
     it 'can use the bisect debug formatter to get detailed progress' do

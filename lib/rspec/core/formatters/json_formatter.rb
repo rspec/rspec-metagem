@@ -48,7 +48,6 @@ module RSpec
 
         def close(_notification)
           output.write @output_hash.to_json
-          output.close if IO === output && output != $stdout
         end
 
         def dump_profile(profile)

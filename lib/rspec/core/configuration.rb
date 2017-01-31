@@ -485,6 +485,12 @@ module RSpec
       end
 
       # @private
+      def reset_reporter
+        @reporter = nil
+        @formatter_loader = nil
+      end
+
+      # @private
       def reset_filters
         self.filter_manager = FilterManager.new
         filter_manager.include_only(

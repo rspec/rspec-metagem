@@ -8,7 +8,13 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
     let(:output_to_close) { File.new("./output_to_close", "w") }
     let(:formatter) { described_class.new(output_to_close) }
 
-    it 'does not close an already closed output stream' do
+    after do
+      # Windows appears to not let the `:isolated_directory` shared group
+      # cleanup if the file isn't closed.
+      output_to_close.close unless output_to_close.closed?
+    end
+
+    it 'does not error on an already closed output stream' do
       output_to_close.close
 
       expect { formatter.close(RSpec::Core::Notifications::NullNotification) }.not_to raise_error
@@ -16,11 +22,13 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
 
     it "flushes output before closing the stream so buffered bytes are not lost if we exit right away" do
       expect(output_to_close).to receive(:flush).ordered.and_call_original
-      # Windows appears to not let the `:isolated_directory` shared group cleanup if
-      # the file isn't closed, so we need to use `and_call_original` here.
-      expect(output_to_close).to receive(:close).ordered.and_call_original
 
       formatter.close(RSpec::Core::Notifications::NullNotification)
+    end
+
+    it "does not close the stream so that it can be reused within a process" do
+      formatter.close(RSpec::Core::Notifications::NullNotification)
+      expect(output_to_close.closed?).to be(false)
     end
   end
 
