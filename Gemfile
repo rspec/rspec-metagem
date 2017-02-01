@@ -40,7 +40,7 @@ end
 
 gem 'simplecov', '~> 0.8'
 
-if RUBY_VERSION >= '1.9.3' && RUBY_VERSION < '2.4.0'
+if RUBY_VERSION >= '1.9.3' && RUBY_VERSION < '2.4.0' && !(%w[java jruby].include? RUBY_ENGINE)
   gem "rubocop", "~> 0.32.1"
 end
 
