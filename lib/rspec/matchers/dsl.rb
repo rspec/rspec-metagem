@@ -266,7 +266,7 @@ module RSpec
         #
         # This compiles the user block into an actual method, allowing
         # them to use normal method constructs like `return`
-        # (e.g. for a early guard statement), while allowing us to define
+        # (e.g. for an early guard statement), while allowing us to define
         # an override that can provide the wrapped handling
         # (e.g. assigning `@actual`, rescueing errors, etc) and
         # can `super` to the user's definition.
