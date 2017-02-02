@@ -89,7 +89,7 @@ PercentLiteralDelimiters:
     '%x': ()      # a shell command as a string
 
 # We have too many special cases where we allow generator methods or prefer a
-# prefixed predicate due to it's improved readability.
+# prefixed predicate due to its improved readability.
 PredicateName:
   Enabled: false
 
