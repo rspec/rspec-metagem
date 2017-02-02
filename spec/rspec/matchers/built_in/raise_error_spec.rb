@@ -18,7 +18,7 @@ RSpec.describe "expect { ... }.to raise_error" do
     expect { raise StandardError.new, 'boom'}.to raise_error
   end
 
-  it 'issues a warning that does not include current error when its not present' do
+  it "issues a warning that does not include current error when it's not present" do
     expect(::Kernel).to receive(:warn) do |message|
       ex = /Actual error raised was/
       expect(message).not_to match ex

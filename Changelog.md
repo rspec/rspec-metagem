@@ -92,7 +92,7 @@ Bug Fixes:
 
 * Fix failure message from dynamic predicate matchers when the object
   does not respond to the predicate so that it is inspected rather
-  than relying upon it's `to_s` -- that way for `nil`, `"nil"` is
+  than relying upon its `to_s` -- that way for `nil`, `"nil"` is
   printed rather than an empty string. (Myron Marston, #841)
 * Fix SystemStackError raised when diffing an Enumerable object
   whose `#each` includes the object itself. (Yuji Nakayama, #857)
