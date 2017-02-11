@@ -72,7 +72,6 @@ Feature: configure expectation framework
       """
     And  the output should contain "3 examples, 1 failure"
 
-  @broken-on-jruby-9000
   Scenario: Configure minitest assertions
     Given rspec-expectations is not installed
       And a file named "example_spec.rb" with:

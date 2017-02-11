@@ -39,7 +39,7 @@ RSpec.describe 'Failed line detection' do
     expect(last_cmd_stdout).to include("expect(1).to eq(2)")
   end
 
-  it "finds the direct source of failure in any lib, app or spec file, and allows the user to configure what is considered a project source dir", :pending => RSpec::Support::Ruby.jruby_9000? do
+  it "finds the direct source of failure in any lib, app or spec file, and allows the user to configure what is considered a project source dir" do
     write_file "lib/lib_mod.rb", "
       module LibMod
         def self.trigger_failure
@@ -101,7 +101,7 @@ RSpec.describe 'Failed line detection' do
                            and exclude("raise 'AppMod failure'")
   end
 
-  it "finds the callsite of a method provided by a gem that fails (rather than the line in the gem)", :pending => RSpec::Support::Ruby.jruby_9000? do
+  it "finds the callsite of a method provided by a gem that fails (rather than the line in the gem)" do
     write_file "vendor/gems/assertions/lib/assertions.rb", "
       module Assertions
         AssertionFailed = Class.new(StandardError)
@@ -135,7 +135,7 @@ RSpec.describe 'Failed line detection' do
                            and exclude("raise(AssertionFailed, msg)")
   end
 
-  it "falls back to finding a line in a gem when there are no backtrace lines in the app, lib or spec directories", :pending => RSpec::Support::Ruby.jruby_9000? do
+  it "falls back to finding a line in a gem when there are no backtrace lines in the app, lib or spec directories" do
     write_file "vendor/gems/before_failure/lib/before_failure.rb", "
       RSpec.configure do |c|
         c.before { raise 'before failure!' }

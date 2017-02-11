@@ -123,7 +123,6 @@ Feature: Excluding lines from the backtrace
     And the output should contain "lib/rspec/expectations"
     And the output should contain "lib/rspec/core"
 
-  @broken-on-jruby-9000
   Scenario: Using `filter_gems_from_backtrace` to filter the named gem
     Given a vendored gem named "my_gem" containing a file named "lib/my_gem.rb" with:
       """ruby
