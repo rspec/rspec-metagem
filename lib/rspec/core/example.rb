@@ -465,22 +465,22 @@ module RSpec
 
         if @exception
           execution_result.exception = @exception
-          record_finished :failed
+          record_finished :failed, reporter
           reporter.example_failed self
           false
         elsif pending_message
           execution_result.pending_message = pending_message
-          record_finished :pending
+          record_finished :pending, reporter
           reporter.example_pending self
           true
         else
-          record_finished :passed
+          record_finished :passed, reporter
           reporter.example_passed self
           true
         end
       end
 
-      def record_finished(status)
+      def record_finished(status, reporter)
         execution_result.record_finished(status, clock.now)
         reporter.example_finished(self)
       end
