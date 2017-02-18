@@ -2,6 +2,70 @@ module RSpec
   module Matchers
     # Defines the custom matcher DSL.
     module DSL
+      # Defines a matcher alias. The returned matcher's `description` will be overriden
+      # to reflect the phrasing of the new name, which will be used in failure messages
+      # when passed as an argument to another matcher in a composed matcher expression.
+      #
+      # @param new_name [Symbol] the new name for the matcher
+      # @param old_name [Symbol] the original name for the matcher
+      # @param options  [Hash] options for the aliased matcher
+      # @option options [Class] :klass the ruby class to use as the decorator. (Not normally used).
+      # @yield [String] optional block that, when given, is used to define the overriden
+      #   logic. The yielded arg is the original description or failure message. If no
+      #   block is provided, a default override is used based on the old and new names.
+      #
+      # @example
+      #   RSpec::Matchers.alias_matcher :a_list_that_sums_to, :sum_to
+      #   sum_to(3).description # => "sum to 3"
+      #   a_list_that_sums_to(3).description # => "a list that sums to 3"
+      #
+      # @example
+      #   RSpec::Matchers.alias_matcher :a_list_sorted_by, :be_sorted_by do |description|
+      #     description.sub("be sorted by", "a list sorted by")
+      #   end
+      #
+      #   be_sorted_by(:age).description # => "be sorted by age"
+      #   a_list_sorted_by(:age).description # => "a list sorted by age"
+      #
+      # @!macro [attach] alias_matcher
+      #   @!parse
+      #     alias $1 $2
+      def alias_matcher(new_name, old_name, options={}, &description_override)
+        description_override ||= lambda do |old_desc|
+          old_desc.gsub(EnglishPhrasing.split_words(old_name), EnglishPhrasing.split_words(new_name))
+        end
+        klass = options.fetch(:klass) { AliasedMatcher }
+
+        define_method(new_name) do |*args, &block|
+          matcher = __send__(old_name, *args, &block)
+          klass.new(matcher, description_override)
+        end
+      end
+
+      # Defines a negated matcher. The returned matcher's `description` and `failure_message`
+      # will be overriden to reflect the phrasing of the new name, and the match logic will
+      # be based on the original matcher but negated.
+      #
+      # @param negated_name [Symbol] the name for the negated matcher
+      # @param base_name [Symbol] the name of the original matcher that will be negated
+      # @yield [String] optional block that, when given, is used to define the overriden
+      #   logic. The yielded arg is the original description or failure message. If no
+      #   block is provided, a default override is used based on the old and new names.
+      #
+      # @example
+      #   RSpec::Matchers.define_negated_matcher :exclude, :include
+      #   include(1, 2).description # => "include 1 and 2"
+      #   exclude(1, 2).description # => "exclude 1 and 2"
+      #
+      # @note While the most obvious negated form may be to add a `not_` prefix,
+      #   the failure messages you get with that form can be confusing (e.g.
+      #   "expected [actual] to not [verb], but did not"). We've found it works
+      #   best to find a more positive name for the negated form, such as
+      #   `avoid_changing` rather than `not_change`.
+      def define_negated_matcher(negated_name, base_name, &description_override)
+        alias_matcher(negated_name, base_name, :klass => AliasedNegatedMatcher, &description_override)
+      end
+
       # Defines a custom matcher.
       # @see RSpec::Matchers
       def define(name, &declarations)
