@@ -64,7 +64,7 @@ module RSpec
   #
   # ## Alias Matchers
   #
-  # With {RSpec::Matchers::DSL#alias_matcher}, you can easily create an
+  # With {RSpec::Matchers.alias_matcher}, you can easily create an
   # alternate name for a given matcher.
   #
   # ### Matcher DSL
@@ -223,12 +223,12 @@ module RSpec
   # which reads better when the matcher is passed as an argument in a composed matcher
   # expressions, and also uses the noun-phrase wording in the matcher's `description`,
   # for readable failure messages. You can alias your custom matchers in similar fashion
-  # using {RSpec::Matchers::DSL#alias_matcher}.
+  # using {RSpec::Matchers.alias_matcher}.
   #
   # ## Negated Matchers
   #
   # Sometimes if you want to test for the opposite using a more descriptive name
-  # instead of using `not_to`, you can use {RSpec::Matchers::DSL#define_negated_matcher}
+  # instead of using `not_to`, you can use {RSpec::Matchers.define_negated_matcher}:
   #
   #     RSpec::Matchers.define_negated_matcher :exclude, :include
   #     include(1, 2).description # => "include 1 and 2"
@@ -242,6 +242,15 @@ module RSpec
   #
   module Matchers
     extend ::RSpec::Matchers::DSL
+
+    # @!method self.alias_matcher(new_name, old_name, options={}, &description_override)
+    #   Extended from {RSpec::Matchers::DSL#alias_matcher}.
+
+    # @!method self.define(name, &declarations)
+    #   Extended from {RSpec::Matchers::DSL#define}.
+
+    # @!method self.define_negated_matcher(negated_name, base_name, &description_override)
+    #   Extended from {RSpec::Matchers::DSL#define_negated_matcher}.
 
     # @method expect
     # Supports `expect(actual).to matcher` syntax by wrapping `actual` in an
