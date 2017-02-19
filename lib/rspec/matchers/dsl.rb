@@ -41,6 +41,10 @@ module RSpec
       end
 
       # Defines a custom matcher.
+      #
+      # @param name [Symbol] the name for the matcher
+      # @yield [Object] block that is used to define the matcher.
+      #   The yielded arg, when specified, is the expected value.
       # @see RSpec::Matchers
       def define(name, &declarations)
         warn_about_block_args(name, declarations)
