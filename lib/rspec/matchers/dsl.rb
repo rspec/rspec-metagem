@@ -500,5 +500,3 @@ module RSpec
     end
   end
 end
-
-RSpec::Matchers.extend RSpec::Matchers::DSL

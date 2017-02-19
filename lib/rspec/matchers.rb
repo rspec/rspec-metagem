@@ -241,6 +241,8 @@ module RSpec
   # `avoid_changing` rather than `not_change`.
   #
   module Matchers
+    extend ::RSpec::Matchers::DSL
+
     # @method expect
     # Supports `expect(actual).to matcher` syntax by wrapping `actual` in an
     # `ExpectationTarget`.
