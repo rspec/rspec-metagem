@@ -35,17 +35,7 @@ module RSpec
       # @yield [String] optional block that, when given, is used to define the overriden
       #   logic. The yielded arg is the original description or failure message. If no
       #   block is provided, a default override is used based on the old and new names.
-      #
-      # @example
-      #   RSpec::Matchers.define_negated_matcher :exclude, :include
-      #   include(1, 2).description # => "include 1 and 2"
-      #   exclude(1, 2).description # => "exclude 1 and 2"
-      #
-      # @note While the most obvious negated form may be to add a `not_` prefix,
-      #   the failure messages you get with that form can be confusing (e.g.
-      #   "expected [actual] to not [verb], but did not"). We've found it works
-      #   best to find a more positive name for the negated form, such as
-      #   `avoid_changing` rather than `not_change`.
+      # @see RSpec::Matchers
       def define_negated_matcher(negated_name, base_name, &description_override)
         alias_matcher(negated_name, base_name, :klass => AliasedNegatedMatcher, &description_override)
       end
