@@ -62,6 +62,28 @@ module RSpec
   #     RSpec::Matchers.alias_matcher :a_user_who_is_an_admin, :be_an_admin
   #     expect(user_list).to include(a_user_who_is_an_admin)
   #
+  # ## Alias Matchers
+  #
+  # With {RSpec::Matchers::DSL#alias_matcher}, you can easily create an
+  # alternate name for a given matcher.
+  #
+  # ### Matcher DSL
+  #
+  # The description will also change according to the new name:
+  #
+  #     RSpec::Matchers.alias_matcher :a_list_that_sums_to, :sum_to
+  #     sum_to(3).description # => "sum to 3"
+  #     a_list_that_sums_to(3).description # => "a list that sums to 3"
+  #
+  # or you can specify a custom description like this:
+  #
+  #     RSpec::Matchers.alias_matcher :a_list_sorted_by, :be_sorted_by do |description|
+  #       description.sub("be sorted by", "a list sorted by")
+  #     end
+  #
+  #     be_sorted_by(:age).description # => "be sorted by age"
+  #     a_list_sorted_by(:age).description # => "a list sorted by age"
+  #
   # ## Custom Matchers
   #
   # When you find that none of the stock matchers provide a natural feeling
@@ -248,6 +270,10 @@ module RSpec
     def aggregate_failures(label=nil, metadata={}, &block)
       Expectations::FailureAggregator.new(label, metadata).aggregate(&block)
     end
+
+    # @!macro [attach] alias_matcher
+    #   @!parse
+    #     alias $1 $2
 
     # Passes if actual is truthy (anything but false or nil)
     def be_truthy

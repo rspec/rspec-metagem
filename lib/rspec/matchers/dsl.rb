@@ -13,23 +13,7 @@ module RSpec
       # @yield [String] optional block that, when given, is used to define the overriden
       #   logic. The yielded arg is the original description or failure message. If no
       #   block is provided, a default override is used based on the old and new names.
-      #
-      # @example
-      #   RSpec::Matchers.alias_matcher :a_list_that_sums_to, :sum_to
-      #   sum_to(3).description # => "sum to 3"
-      #   a_list_that_sums_to(3).description # => "a list that sums to 3"
-      #
-      # @example
-      #   RSpec::Matchers.alias_matcher :a_list_sorted_by, :be_sorted_by do |description|
-      #     description.sub("be sorted by", "a list sorted by")
-      #   end
-      #
-      #   be_sorted_by(:age).description # => "be sorted by age"
-      #   a_list_sorted_by(:age).description # => "a list sorted by age"
-      #
-      # @!macro [attach] alias_matcher
-      #   @!parse
-      #     alias $1 $2
+      # @see RSpec::Matchers
       def alias_matcher(new_name, old_name, options={}, &description_override)
         description_override ||= lambda do |old_desc|
           old_desc.gsub(EnglishPhrasing.split_words(old_name), EnglishPhrasing.split_words(new_name))
