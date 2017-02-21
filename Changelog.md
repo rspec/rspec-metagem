@@ -3,10 +3,10 @@
 Enhancements:
 
 * Add seed information to JSON formatter output. (#2388, Mitsutaka Mimura)
+* Include example id in the JSON formatter output. (#2369, Xavier Shay)
 
 Bug Fixes:
 
-* Include example id in the JSON formatter output. (#2369, Xavier Shay)
 * Delay formatter loading until the last minute to allow accessing the reporter
   without triggering formatter setup. (Jon Rowe, #2243)
 
