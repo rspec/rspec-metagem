@@ -1,5 +1,9 @@
 ### Development
 
+Enhancements:
+
+* Add seed information to JSON formatter output. (#2388, Mitsutaka Mimura)
+
 Bug Fixes:
 
 * Include example id in the JSON formatter output. (#2369, Xavier Shay)
