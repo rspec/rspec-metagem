@@ -6,7 +6,7 @@ module RSpec
     module Formatters
       # @private
       class JsonFormatter < BaseFormatter
-        Formatters.register self, :message, :dump_summary, :dump_profile, :stop, :close
+        Formatters.register self, :message, :dump_summary, :dump_profile, :stop, :seed, :close
 
         attr_reader :output_hash
 
@@ -44,6 +44,11 @@ module RSpec
               end
             end
           end
+        end
+
+        def seed(notification)
+          return unless notification.seed_used?
+          @output_hash[:seed] = notification.seed
         end
 
         def close(_notification)

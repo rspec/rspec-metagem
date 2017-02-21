@@ -14,9 +14,9 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
   include FormatterSupport
 
   it "can be loaded via `--format json`" do
-    output = run_example_specs_with_formatter("json", :normalize_output => false)
+    output = run_example_specs_with_formatter("json", :normalize_output => false, :seed => 42)
     parsed = JSON.parse(output)
-    expect(parsed.keys).to include("examples", "summary", "summary_line")
+    expect(parsed.keys).to include("examples", "summary", "summary_line", "seed")
   end
 
   it "outputs expected json (brittle high level functional test)" do
@@ -96,6 +96,22 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
     it "adds all examples to the output hash" do
       send_notification :stop, stop_notification
       expect(formatter.output_hash[:examples]).not_to be_nil
+    end
+  end
+
+  describe "#seed" do
+    context "use random seed" do
+      it "adds random seed" do
+        send_notification :seed, seed_notification(42)
+        expect(formatter.output_hash[:seed]).to eq(42)
+      end
+    end
+
+    context "don't use random seed" do
+      it "don't add random seed" do
+        send_notification :seed, seed_notification(42, false)
+        expect(formatter.output_hash[:seed]).to be_nil
+      end
     end
   end
 
