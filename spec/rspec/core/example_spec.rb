@@ -574,52 +574,85 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
       reporter.register_listener(listener, :example_finished)
 
-      RSpec.describe do
-        it(&block)
-      end.run(reporter)
+      RSpec.describe(&block).run(reporter)
 
       reported_execution_result
     end
 
-    it "fills in the execution result details before reporting a passed example as finished" do
-      execution_result = capture_reported_execution_result_for_example do
-        expect(1).to eq 1
+    shared_examples "when skipped or failed" do
+      it "fills in the execution result details before reporting a failed example as finished" do
+        execution_result = capture_reported_execution_result_for_example do
+          expect(1).to eq 2
+        end
+
+        expect(execution_result).to have_attributes(
+          :status => :failed,
+          :exception => RSpec::Expectations::ExpectationNotMetError,
+          :finished_at => a_value_within(1).of(Time.now),
+          :run_time => a_value >= 0
+        )
       end
 
-      expect(execution_result).to have_attributes(
-        :status => :passed,
-        :exception => nil,
-        :finished_at => a_value_within(1).of(Time.now),
-        :run_time => a_value >= 0
-      )
+      it "fills in the execution result details before reporting a skipped example as finished" do
+        execution_result = capture_reported_execution_result_for_example do
+          skip "because"
+          expect(1).to eq 2
+        end
+
+        expect(execution_result).to have_attributes(
+          :status => :pending,
+          :pending_message => "because",
+          :finished_at => a_value_within(1).of(Time.now),
+          :run_time => a_value >= 0
+        )
+      end
     end
 
-    it "fills in the execution result details before reporting a failed example as finished" do
-      execution_result = capture_reported_execution_result_for_example do
-        expect(1).to eq 2
+    context "from an example" do
+      def capture_reported_execution_result_for_example(&block)
+        super { it(&block) }
       end
 
-      expect(execution_result).to have_attributes(
-        :status => :failed,
-        :exception => RSpec::Expectations::ExpectationNotMetError,
-        :finished_at => a_value_within(1).of(Time.now),
-        :run_time => a_value >= 0
-      )
+      it "fills in the execution result details before reporting a passed example as finished" do
+        execution_result = capture_reported_execution_result_for_example do
+          expect(1).to eq 1
+        end
+
+        expect(execution_result).to have_attributes(
+          :status => :passed,
+          :exception => nil,
+          :finished_at => a_value_within(1).of(Time.now),
+          :run_time => a_value >= 0
+        )
+      end
+
+      it "fills in the execution result details before reporting a pending example as finished" do
+        execution_result = capture_reported_execution_result_for_example do
+          pending "because"
+          expect(1).to eq 2
+        end
+
+        expect(execution_result).to have_attributes(
+          :status => :pending,
+          :pending_message => "because",
+          :pending_exception => RSpec::Expectations::ExpectationNotMetError,
+          :finished_at => a_value_within(1).of(Time.now),
+          :run_time => a_value >= 0
+        )
+      end
+
+      include_examples "when skipped or failed"
     end
 
-    it "fills in the execution result details before reporting a pending example as finished" do
-      execution_result = capture_reported_execution_result_for_example do
-        pending "because"
-        expect(1).to eq 2
+    context "from a context hook" do
+      def capture_reported_execution_result_for_example(&block)
+        super do
+          before(:context, &block)
+          it { will_never_run }
+        end
       end
 
-      expect(execution_result).to have_attributes(
-        :status => :pending,
-        :pending_message => "because",
-        :pending_exception => RSpec::Expectations::ExpectationNotMetError,
-        :finished_at => a_value_within(1).of(Time.now),
-        :run_time => a_value >= 0
-      )
+      include_examples "when skipped or failed"
     end
   end
 
