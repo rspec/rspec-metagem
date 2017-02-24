@@ -67,8 +67,6 @@ module RSpec
   # With {RSpec::Matchers.alias_matcher}, you can easily create an
   # alternate name for a given matcher.
   #
-  # ### Matcher DSL
-  #
   # The description will also change according to the new name:
   #
   #     RSpec::Matchers.alias_matcher :a_list_that_sums_to, :sum_to

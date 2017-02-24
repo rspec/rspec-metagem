@@ -6,6 +6,19 @@ module RSpec
       # to reflect the phrasing of the new name, which will be used in failure messages
       # when passed as an argument to another matcher in a composed matcher expression.
       #
+      # @example
+      #   RSpec::Matchers.alias_matcher :a_list_that_sums_to, :sum_to
+      #   sum_to(3).description # => "sum to 3"
+      #   a_list_that_sums_to(3).description # => "a list that sums to 3"
+      #
+      # @example
+      #   RSpec::Matchers.alias_matcher :a_list_sorted_by, :be_sorted_by do |description|
+      #     description.sub("be sorted by", "a list sorted by")
+      #   end
+      #
+      #   be_sorted_by(:age).description # => "be sorted by age"
+      #   a_list_sorted_by(:age).description # => "a list sorted by age"
+      #
       # @param new_name [Symbol] the new name for the matcher
       # @param old_name [Symbol] the original name for the matcher
       # @param options  [Hash] options for the aliased matcher
@@ -30,6 +43,11 @@ module RSpec
       # will be overriden to reflect the phrasing of the new name, and the match logic will
       # be based on the original matcher but negated.
       #
+      # @example
+      #   RSpec::Matchers.define_negated_matcher :exclude, :include
+      #   include(1, 2).description # => "include 1 and 2"
+      #   exclude(1, 2).description # => "exclude 1 and 2"
+      #
       # @param negated_name [Symbol] the name for the negated matcher
       # @param base_name [Symbol] the name of the original matcher that will be negated
       # @yield [String] optional block that, when given, is used to define the overriden
@@ -44,7 +62,9 @@ module RSpec
       #
       # @param name [Symbol] the name for the matcher
       # @yield [Object] block that is used to define the matcher.
-      #   The yielded arg, when specified, is the expected value.
+      #   The block is evaluated in the context of your custom matcher class.
+      #   When args are passed to your matcher, they will be yielded here,
+      #   usually representing the expected value(s).
       # @see RSpec::Matchers
       def define(name, &declarations)
         warn_about_block_args(name, declarations)
