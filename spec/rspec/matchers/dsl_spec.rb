@@ -118,7 +118,7 @@ module RSpec::Matchers::DSL
       it "is not available in the current scope" do
         expect {
           expect(false).to be_untrue_in_this_scope
-        }.to raise_error(RSpec::Expectations::ExpectationNotMetError, "expected false to respond to `untrue_in_this_scope?`")
+        }.to fail_with("expected false to respond to `untrue_in_this_scope?`")
       end
     end
   end
@@ -136,7 +136,7 @@ module RSpec::Matchers::DSL
       it "is not available in the current scope" do
         expect {
           expect(false).to be_untrue_in_this_scope
-        }.to raise_error(RSpec::Expectations::ExpectationNotMetError, "expected false to respond to `untrue_in_this_scope?`")
+        }.to fail_with("expected false to respond to `untrue_in_this_scope?`")
       end
     end
   end
