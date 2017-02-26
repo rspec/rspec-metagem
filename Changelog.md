@@ -9,6 +9,8 @@ Bug Fixes:
 
 * Delay formatter loading until the last minute to allow accessing the reporter
   without triggering formatter setup. (Jon Rowe, #2243)
+* Ensure context hook failures running before an example can access the
+  reporter. (Jon Jensen, #2387)
 
 ### 3.6.0.beta2 / 2016-12-12
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.6.0.beta1...v3.6.0.beta2)
