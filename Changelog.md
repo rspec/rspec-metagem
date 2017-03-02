@@ -11,6 +11,10 @@ Bug Fixes:
   without triggering formatter setup. (Jon Rowe, #2243)
 * Ensure context hook failures running before an example can access the
   reporter. (Jon Jensen, #2387)
+* Multiple fixes to allow using the runner multiple times within the same
+  process: `RSpec.clear_examples` resets the formatter and no longer clears
+  shared examples, and streams can be used across multiple runs rather than
+  being closed after the first. (#2368, Xavier Shay)
 
 ### 3.6.0.beta2 / 2016-12-12
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.6.0.beta1...v3.6.0.beta2)
