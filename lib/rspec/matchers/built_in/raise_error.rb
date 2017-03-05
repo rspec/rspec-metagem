@@ -172,7 +172,7 @@ module RSpec
                          "including those raised by Ruby (e.g. NoMethodError, NameError " \
                          "and ArgumentError), meaning the code you are intending to test " \
                          "may not even get reached. Instead consider using " \
-                         "`expect {}.not_to raise_error` or `expect { }.to raise_error" \
+                         "`expect { }.not_to raise_error` or `expect { }.to raise_error" \
                          "(DifferentSpecificErrorClass)`. This message can be suppressed by " \
                          "setting: `RSpec::Expectations.configuration.on_potential_false" \
                          "_positives = :nothing`")
