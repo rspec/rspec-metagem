@@ -22,7 +22,7 @@ module RSpec
         end
 
         def example_group_finished(_notification)
-          @group_level -= 1
+          @group_level -= 1 if @group_level > 0
         end
 
         def example_passed(passed)

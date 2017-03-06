@@ -32,6 +32,19 @@ module RSpec::Core::Formatters
       expect(formatter_output.string).to match(/second example \(FAILED - 2\)/m)
     end
 
+    it 'group level will not go negative' do
+      send_notification :example_group_finished, nil
+      send_notification :example_group_finished, nil
+      send_notification :example_group_finished, nil
+      expect {
+        send_notification :example_group_started, group_notification(double("example 1",
+               :description => "first example",
+               :full_description => "group first example",
+               :metadata => {}
+              ))
+      }.not_to raise_error
+    end
+
     it "represents nested group using hierarchy tree" do
       group = RSpec.describe("root")
       context1 = group.describe("context 1")
