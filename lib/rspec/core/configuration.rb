@@ -1704,7 +1704,7 @@ module RSpec
       #       mocks.patch_marshal_to_support_partial_doubles = false
       #     end
       #
-      #     config.mock_with :rspec do |expectations|
+      #     config.expect_with :rspec do |expectations|
       #       expectations.syntax = :expect
       #     end
       #   end
