@@ -32,7 +32,7 @@ module RSpec::Core::Formatters
       expect(formatter_output.string).to match(/second example \(FAILED - 2\)/m)
     end
 
-    it 'group level will not go negative' do
+    it 'will not error if more finishes than starts are called' do
       send_notification :example_group_finished, nil
       send_notification :example_group_finished, nil
       send_notification :example_group_finished, nil
