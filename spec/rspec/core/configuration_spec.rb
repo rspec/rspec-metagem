@@ -1992,6 +1992,55 @@ module RSpec::Core
           expect(sequence).to eq [:before_group, :before_example, :callback, :after_example]
         end
       end
+
+      context 'when the value of the registered metadata is a Proc' do
+        pending 'does not fire when later matching examples are defined' do
+          sequence = []
+          RSpec.configuration.when_first_matching_example_defined(:foo => proc { true }) do
+            sequence << :callback
+          end
+
+          RSpec.describe do
+            example("ex 1", :foo)
+            sequence.clear
+
+            sequence << :before_second_matching_example_defined
+            example("ex 2", :foo)
+            sequence << :after_second_matching_example_defined
+          end
+
+          expect(sequence).to eq [:before_second_matching_example_defined, :after_second_matching_example_defined]
+        end
+      end
+
+      context 'when a matching example group with other registered metadata has been defined' do
+        pending 'does not fire when later matching examples with the other metadata are defined' do
+          sequence = []
+
+          RSpec.configuration.when_first_matching_example_defined(:foo) do
+            sequence << :callback
+          end
+
+          RSpec.configuration.when_first_matching_example_defined(:bar) do
+          end
+
+          # The hook is memoized for `:foo, :bar` in FilterableItemRepository::QueryOptimized
+          # but doesn't fire because this is an example group
+          RSpec.describe 'group', :foo, :bar do
+            # The hook fires here and is unregistered _only_ from memoized collection for `:foo`
+            # (i.e. still remains in the memoized collection for `:foo, :bar`)
+            example("ex 1", :foo)
+            sequence.clear
+
+            sequence << :before_second_matching_example_defined
+            # The hook unexpectedly fires
+            example("ex 2", :foo, :bar)
+            sequence << :after_second_matching_example_defined
+          end
+
+          expect(sequence).to eq [:before_second_matching_example_defined, :after_second_matching_example_defined]
+        end
+      end
     end
 
     describe "#add_setting" do
