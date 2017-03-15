@@ -17,6 +17,8 @@ Bug Fixes:
   being closed after the first. (#2368, Xavier Shay)
 * Prevent unexpected `example_group_finished` notifications causing an error.
   (#2396, VTJamie)
+* Fix bugs where `config.when_first_matching_example_defined` hooks would fire
+  multiple times in some cases. (Yuji Nakayama, #2400)
 
 ### 3.6.0.beta2 / 2016-12-12
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.6.0.beta1...v3.6.0.beta2)

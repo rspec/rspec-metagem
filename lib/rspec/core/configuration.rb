@@ -1767,7 +1767,7 @@ module RSpec
           return unless example_or_group_meta.key?(:example_group)
 
           # Ensure the callback only fires once.
-          @derived_metadata_blocks.items_for(specified_meta).delete(callback)
+          @derived_metadata_blocks.delete(callback, specified_meta)
 
           block.call
         end

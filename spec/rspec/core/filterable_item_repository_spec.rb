@@ -132,6 +132,39 @@ module RSpec
         it_behaves_like "adding items to the repository", :prepend do
           let(:items_in_expected_order) { [item_3, item_2, item_1] }
         end
+
+        describe '#delete' do
+          before do
+            repo.append item_1, {}
+            repo.append item_1, :foo => true
+            repo.append item_1, :foo => true, :bar => true
+            repo.append item_2, :foo => true
+          end
+
+          it 'deletes the specified item with the metadata' do
+            expect { repo.delete(item_1, :foo => true) }.
+              to change { repo.items_and_filters }.
+                from([
+                  [item_1, {}],
+                  [item_1, { :foo => true }],
+                  [item_1, { :foo => true, :bar => true }],
+                  [item_2, { :foo => true }]
+                ]).
+                to([
+                  [item_1, {}],
+                  [item_1, { :foo => true, :bar => true }],
+                  [item_2, { :foo => true }]
+                ]).
+              and change { repo.items_for({ :foo => true }) }.
+                from([item_1, item_1, item_1, item_2]).
+                to([item_1, item_1, item_2]).
+              and change { repo.items_for({ :foo => true, :bar => true }) }.
+                from([item_1, item_1, item_1, item_2]).
+                to([item_1, item_1, item_2]).
+              and avoid_changing { repo.items_for({}) }.
+                from([item_1])
+          end
+        end
       end
 
       describe FilterableItemRepository::UpdateOptimized do

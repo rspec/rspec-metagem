@@ -111,6 +111,10 @@ module RSpec
           @items_and_filters.unshift [item, metadata]
         end
 
+        def delete(item, metadata)
+          @items_and_filters.delete [item, metadata]
+        end
+
         def items_for(request_meta)
           @items_and_filters.each_with_object([]) do |(item, item_meta), to_return|
             to_return << item if item_meta.empty? ||
@@ -167,6 +171,11 @@ module RSpec
           handle_mutation(metadata)
         end
 
+        def delete(item, metadata)
+          super
+          reconstruct_caches
+        end
+
         def items_for(metadata)
           # The filtering of `metadata` to `applicable_metadata` is the key thing
           # that makes the memoization actually useful in practice, since each
@@ -190,6 +199,14 @@ module RSpec
         end
 
       private
+
+        def reconstruct_caches
+          @applicable_keys.clear
+          @proc_keys.clear
+          @items_and_filters.each do |_item, metadata|
+            handle_mutation(metadata)
+          end
+        end
 
         def handle_mutation(metadata)
           @applicable_keys.merge(metadata.keys)

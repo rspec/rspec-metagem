@@ -44,6 +44,11 @@ module RSpec
         end
         self
       end
+
+      def clear
+        @values.clear
+        self
+      end
     end
   end
 end
