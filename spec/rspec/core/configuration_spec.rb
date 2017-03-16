@@ -1992,6 +1992,50 @@ module RSpec::Core
           expect(sequence).to eq [:before_group, :before_example, :callback, :after_example]
         end
       end
+
+      context 'when the value of the registered metadata is a Proc' do
+        it 'does not fire when later matching examples are defined' do
+          sequence = []
+          RSpec.configuration.when_first_matching_example_defined(:foo => proc { true }) do
+            sequence << :callback
+          end
+
+          RSpec.describe do
+            example("ex 1", :foo)
+            sequence.clear
+
+            sequence << :before_second_matching_example_defined
+            example("ex 2", :foo)
+            sequence << :after_second_matching_example_defined
+          end
+
+          expect(sequence).to eq [:before_second_matching_example_defined, :after_second_matching_example_defined]
+        end
+      end
+
+      context 'when a matching example group with other registered metadata has been defined' do
+        it 'does not fire when later matching examples with the other metadata are defined' do
+          sequence = []
+
+          RSpec.configuration.when_first_matching_example_defined(:foo) do
+            sequence << :callback
+          end
+
+          RSpec.configuration.when_first_matching_example_defined(:bar) do
+          end
+
+          RSpec.describe 'group', :foo, :bar do
+            example("ex 1", :foo)
+            sequence.clear
+
+            sequence << :before_second_matching_example_defined
+            example("ex 2", :foo, :bar)
+            sequence << :after_second_matching_example_defined
+          end
+
+          expect(sequence).to eq [:before_second_matching_example_defined, :after_second_matching_example_defined]
+        end
+      end
     end
 
     describe "#add_setting" do

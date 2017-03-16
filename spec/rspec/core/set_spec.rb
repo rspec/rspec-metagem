@@ -33,4 +33,9 @@ RSpec.describe 'RSpec::Core::Set' do
       set << 1
     }.to change { set.empty? }.from(true).to(false)
   end
+
+  it 'can be cleared' do
+    expect { set.clear }.to change { set.empty? }.from(false).to(true)
+    expect(set.clear).to equal(set)
+  end
 end
