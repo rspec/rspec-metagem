@@ -8,6 +8,13 @@ Enhancements:
   `alias_matcher` or `define_negated_matcher` from within an example
   group. (Markus Reiter, #974)
 
+Bug Fixes:
+
+* Fix `yield_with_args` and `yield_successive_args` matchers so that
+  they compare expected to actual args at the time the args are yielded
+  instead of at the end, in case the method that is yielding mutates the
+  arguments after yielding. (Alyssa Ross, #965)
+
 ### 3.6.0.beta2 / 2016-12-12
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.6.0.beta1...v3.6.0.beta2)
 
