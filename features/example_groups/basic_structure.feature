@@ -38,6 +38,7 @@ Feature: basic structure (`describe`/`it`)
         it "does one thing" do
         end
       end
+
       context "in another context" do
         it "does another thing" do
         end
