@@ -2,7 +2,6 @@ require 'tmpdir'
 require 'rspec/support/spec/in_sub_process'
 
 module RSpec::Core
-
   RSpec.describe Configuration do
     include RSpec::Support::InSubProcess
 

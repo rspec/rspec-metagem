@@ -110,6 +110,44 @@ module RSpec::Core
         end
       end
 
+      context 'when the file at `example_status_persistence_file_path` is corrupt' do
+        before do
+          simulate_persisted_examples(
+            { :example_id => "./spec_1.rb[1:1]" },
+            { :example_id => "./spec_1.rb[1:2]", :status => ""  },
+            { :example_id => "./spec_2.rb[1:2]", :status => nil },
+            { :example_id => "./spec_3.rb[1:2]", :status => "wrong" },
+            { :example_id => "./spec_4.rb[1:2]", :status => "unknown" },
+            :example_id => "./spec_5.rb[1:2]", :status => "failed"
+          )
+        end
+
+        it 'should not crash' do
+          Array.new(9) do |i|
+            RSpec.describe("group") { it "example #{i}" do; end }
+          end
+          expectation = expect do
+            RSpec.world.example_groups
+          end
+          expectation.not_to raise_error
+        end
+        it 'should default invalid statuses to unknown' do
+          expect(spec_files_with_failures).to(
+            be_an(Array) &
+            contain_exactly("./spec_5.rb")
+          )
+          # Check that each example has the correct status
+          expect(config.last_run_statuses).to eq(
+            './spec_1.rb[1:1]' => 'unknown',
+            './spec_1.rb[1:2]' => 'unknown',
+            './spec_2.rb[1:2]' => 'unknown',
+            './spec_3.rb[1:2]' => 'unknown',
+            './spec_4.rb[1:2]' => 'unknown',
+            './spec_5.rb[1:2]' => 'failed'
+          )
+        end
+      end
+
       context "when `example_status_persistence_file_path` is not configured" do
         it "returns a memoized blank array" do
           config.example_status_persistence_file_path = nil

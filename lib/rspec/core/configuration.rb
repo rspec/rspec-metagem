@@ -980,7 +980,9 @@ module RSpec
           if (path = example_status_persistence_file_path)
             begin
               ExampleStatusPersister.load_from(path).inject(statuses) do |hash, example|
-                hash[example.fetch(:example_id)] = example.fetch(:status)
+                status = example[:status]
+                status = UNKNOWN_STATUS unless VALID_STATUSES.include?(status)
+                hash[example.fetch(:example_id)] = status
                 hash
               end
             rescue SystemCallError => e
@@ -999,6 +1001,12 @@ module RSpec
 
       # @private
       FAILED_STATUS = "failed".freeze
+
+      # @private
+      PASSED_STATUS = "passed".freeze
+
+      # @private
+      VALID_STATUSES = [UNKNOWN_STATUS, FAILED_STATUS, PASSED_STATUS]
 
       # @private
       def spec_files_with_failures
