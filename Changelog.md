@@ -19,6 +19,8 @@ Bug Fixes:
   (#2396, VTJamie)
 * Fix bugs where `config.when_first_matching_example_defined` hooks would fire
   multiple times in some cases. (Yuji Nakayama, #2400)
+* Default `last_run_status` to "unknown" when the `status` field in the
+  persistence file contains an unrecognized value. (#2360, matrinox)
 
 ### 3.6.0.beta2 / 2016-12-12
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.6.0.beta1...v3.6.0.beta2)

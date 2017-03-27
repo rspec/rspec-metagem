@@ -110,7 +110,7 @@ module RSpec::Core
         end
       end
 
-      context 'when the file at `example_status_persistence_file_path` is corrupt' do
+      context 'when the file at `example_status_persistence_file_path` has corrupted `status` values' do
         before do
           simulate_persisted_examples(
             { :example_id => "./spec_1.rb[1:1]" },
@@ -122,16 +122,7 @@ module RSpec::Core
           )
         end
 
-        it 'should not crash' do
-          Array.new(9) do |i|
-            RSpec.describe("group") { it "example #{i}" do; end }
-          end
-          expectation = expect do
-            RSpec.world.example_groups
-          end
-          expectation.not_to raise_error
-        end
-        it 'should default invalid statuses to unknown' do
+        it 'defaults invalid statuses to unknown' do
           expect(spec_files_with_failures).to(
             be_an(Array) &
             contain_exactly("./spec_5.rb")
