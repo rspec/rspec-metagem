@@ -118,7 +118,9 @@ module RSpec::Core
             { :example_id => "./spec_2.rb[1:2]", :status => nil },
             { :example_id => "./spec_3.rb[1:2]", :status => "wrong" },
             { :example_id => "./spec_4.rb[1:2]", :status => "unknown" },
-            :example_id => "./spec_5.rb[1:2]", :status => "failed"
+            { :example_id => "./spec_5.rb[1:2]", :status => "failed" },
+            { :example_id => "./spec_6.rb[1:2]", :status => "pending" },
+            :example_id => "./spec_7.rb[1:2]", :status => "passed"
           )
         end
 
@@ -134,7 +136,9 @@ module RSpec::Core
             './spec_2.rb[1:2]' => 'unknown',
             './spec_3.rb[1:2]' => 'unknown',
             './spec_4.rb[1:2]' => 'unknown',
-            './spec_5.rb[1:2]' => 'failed'
+            './spec_5.rb[1:2]' => 'failed',
+            './spec_6.rb[1:2]' => 'pending',
+            './spec_7.rb[1:2]' => 'passed'
           )
         end
       end

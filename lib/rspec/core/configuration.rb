@@ -1006,7 +1006,10 @@ module RSpec
       PASSED_STATUS = "passed".freeze
 
       # @private
-      VALID_STATUSES = [UNKNOWN_STATUS, FAILED_STATUS, PASSED_STATUS]
+      PENDING_STATUS = "pending".freeze
+
+      # @private
+      VALID_STATUSES = [UNKNOWN_STATUS, FAILED_STATUS, PASSED_STATUS, PENDING_STATUS]
 
       # @private
       def spec_files_with_failures
