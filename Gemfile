@@ -12,6 +12,7 @@ branch = File.read(File.expand_path("../maintenance-branch", __FILE__)).chomp
   end
 end
 
+gem 'coderay' # for syntax highlighting
 gem 'yard', '0.8.7.4', :require => false
 
 ### deps for rdoc.info

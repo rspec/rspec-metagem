@@ -63,12 +63,6 @@ module RSpec
           end
         end
 
-        def successive_yield_args
-          yielded_args.map do |arg_array|
-            arg_array.size == 1 ? arg_array.first : arg_array
-          end
-        end
-
         def assert_used!
           return if @used
           raise 'You must pass the argument yielded to your expect block on ' \
@@ -369,16 +363,18 @@ module RSpec
         # @private
         def matches?(block)
           @actual_formatted = []
+          @actual = []
           args_matched_when_yielded = true
           yield_count = 0
 
-          @probe = YieldProbe.probe(block) do |args|
-            @actual_formatted << RSpec::Support::ObjectFormatter.format(args)
-            args_matched_when_yielded &&= values_match?(@expected[yield_count], args)
+          @probe = YieldProbe.probe(block) do |*arg_array|
+            arg_or_args = arg_array.size == 1 ? arg_array.first : arg_array
+            @actual_formatted << RSpec::Support::ObjectFormatter.format(arg_or_args)
+            @actual << arg_or_args
+            args_matched_when_yielded &&= values_match?(@expected[yield_count], arg_or_args)
             yield_count += 1
           end
 
-          @actual = @probe.successive_yield_args
           return false unless @probe.has_block?
           args_matched_when_yielded && yield_count == @expected.length
         end

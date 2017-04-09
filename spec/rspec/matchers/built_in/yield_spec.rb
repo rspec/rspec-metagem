@@ -563,6 +563,30 @@ RSpec.describe "yield_successive_args matcher" do
     expect(val).to be_nil
   end
 
+  it "works correctly when the method yields multiple args each time (passing case)" do
+    expect { |block|
+      ['football', 'barstool'].each_with_index(&block)
+    }.to yield_successive_args(
+      [/foo/,                         0],
+      [a_string_starting_with('bar'), 1]
+    )
+  end
+
+  it "works correctly when the method yields multiple args each time (failing case)" do
+    expect {
+      expect { |block|
+        ['football', 'barstool'].each_with_index(&block)
+      }.to yield_successive_args(
+        [/foo/,                         0],
+        [a_string_starting_with('abr'), 1]
+      )
+    }.to fail_with(dedent <<-EOS)
+      |expected given block to yield successively with arguments, but yielded with unexpected arguments
+      |expected: [[/foo/, 0], [(a string starting with "abr"), 1]]
+      |     got: [["football", 0], ["barstool", 1]]
+    EOS
+  end
+
   describe "expect {...}.to yield_successive_args([:a, 1], [:b, 2])" do
     it 'passes when the block successively yields the given args' do
       expect { |b| [ [:a, 1], [:b, 2] ].each(&b) }.to yield_successive_args([:a, 1], [:b, 2])
