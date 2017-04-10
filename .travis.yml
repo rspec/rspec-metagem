@@ -1,4 +1,4 @@
-# This file was generated on 2016-12-27T00:15:16-08:00 from the rspec-dev repo.
+# This file was generated on 2017-04-10T21:23:36+10:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 language: ruby
@@ -20,9 +20,9 @@ rvm:
   - 1.9.3
   - 2.0.0
   - 2.1
-  - 2.2.5
-  - 2.3.3
-  - 2.4.0
+  - 2.2.7
+  - 2.3.4
+  - 2.4.1
   - ruby-head
   - ree
   - rbx
@@ -43,6 +43,7 @@ matrix:
       env: JRUBY_OPTS='--server -Xcompile.invokedynamic=false'
     - rvm: ruby-head
     - rvm: rbx
+    - rvm: 2.4.0-preview1
   fast_finish: true
 branches:
   only:
