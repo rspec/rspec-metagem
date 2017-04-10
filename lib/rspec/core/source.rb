@@ -1,6 +1,6 @@
 RSpec::Support.require_rspec_support "encoded_string"
+RSpec::Support.require_rspec_core 'formatters/syntax_highlighter'
 RSpec::Support.require_rspec_core 'source/node'
-RSpec::Support.require_rspec_core 'source/syntax_highlighter'
 RSpec::Support.require_rspec_core 'source/token'
 
 module RSpec
@@ -74,7 +74,7 @@ module RSpec
 
         def initialize(configuration)
           @sources_by_path = {}
-          @syntax_highlighter = SyntaxHighlighter.new(configuration)
+          @syntax_highlighter = Formatters::SyntaxHighlighter.new(configuration)
         end
 
         def source_from_file(path)

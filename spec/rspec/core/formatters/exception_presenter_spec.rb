@@ -247,7 +247,7 @@ module RSpec::Core
           end
 
           it 'uses our syntax highlighter on the code snippet to format it nicely' do
-            syntax_highlighter = instance_double(Source::SyntaxHighlighter)
+            syntax_highlighter = instance_double(Formatters::SyntaxHighlighter)
             allow(syntax_highlighter).to receive(:highlight) do |lines|
               lines.map { |l| "<highlighted>#{l.strip}</highlighted>" }
             end
