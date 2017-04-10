@@ -40,6 +40,7 @@ module RSpec
       def reset
         RSpec::ExampleGroups.remove_all_constants
         example_groups.clear
+        @sources_by_path.clear if defined?(@sources_by_path)
         @syntax_highlighter = nil
       end
 
@@ -129,11 +130,13 @@ module RSpec
       end
 
       # @private
-      def source_cache
-        @source_cache ||= begin
-          RSpec::Support.require_rspec_core "source"
-          Source::Cache.new
+      def source_from_file(path)
+        unless defined?(@sources_by_path)
+          RSpec::Support.require_rspec_support 'source'
+          @sources_by_path = {}
         end
+
+        @sources_by_path[path] ||= Support::Source.from_file(path)
       end
 
       # @private

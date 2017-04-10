@@ -1,5 +1,3 @@
-RSpec::Support.require_rspec_core "source"
-
 module RSpec
   module Core
     module Formatters
@@ -17,7 +15,7 @@ module RSpec
 
         def self.source_from_file(path)
           raise NoSuchFileError unless File.exist?(path)
-          RSpec.world.source_cache.source_from_file(path)
+          RSpec.world.source_from_file(path)
         end
 
         if RSpec::Support::RubyFeatures.ripper_supported?
