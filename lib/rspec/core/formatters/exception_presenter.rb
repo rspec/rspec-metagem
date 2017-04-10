@@ -1,6 +1,7 @@
 # encoding: utf-8
 RSpec::Support.require_rspec_core "formatters/console_codes"
 RSpec::Support.require_rspec_core "formatters/snippet_extractor"
+RSpec::Support.require_rspec_core 'formatters/syntax_highlighter'
 RSpec::Support.require_rspec_support "encoded_string"
 
 module RSpec
@@ -215,7 +216,7 @@ module RSpec
           file_path, line_number = file_and_line_number[1..2]
           max_line_count = RSpec.configuration.max_displayed_failure_line_count
           lines = SnippetExtractor.extract_expression_lines_at(file_path, line_number.to_i, max_line_count)
-          RSpec.world.source_cache.syntax_highlighter.highlight(lines)
+          RSpec.world.syntax_highlighter.highlight(lines)
         rescue SnippetExtractor::NoSuchFileError
           ["Unable to find #{file_path} to read failed line"]
         rescue SnippetExtractor::NoSuchLineError

@@ -1,5 +1,4 @@
 RSpec::Support.require_rspec_support "encoded_string"
-RSpec::Support.require_rspec_core 'formatters/syntax_highlighter'
 RSpec::Support.require_rspec_core 'source/node'
 RSpec::Support.require_rspec_core 'source/token'
 
@@ -70,11 +69,8 @@ module RSpec
 
       # @private
       class Cache
-        attr_reader :syntax_highlighter
-
-        def initialize(configuration)
+        def initialize
           @sources_by_path = {}
-          @syntax_highlighter = Formatters::SyntaxHighlighter.new(configuration)
         end
 
         def source_from_file(path)

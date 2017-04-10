@@ -40,6 +40,7 @@ module RSpec
       def reset
         RSpec::ExampleGroups.remove_all_constants
         example_groups.clear
+        @syntax_highlighter = nil
       end
 
       # @private
@@ -131,8 +132,13 @@ module RSpec
       def source_cache
         @source_cache ||= begin
           RSpec::Support.require_rspec_core "source"
-          Source::Cache.new(@configuration)
+          Source::Cache.new
         end
+      end
+
+      # @private
+      def syntax_highlighter
+        @syntax_highlighter ||= Formatters::SyntaxHighlighter.new(@configuration)
       end
 
       # @api private

@@ -252,7 +252,7 @@ module RSpec::Core
               lines.map { |l| "<highlighted>#{l.strip}</highlighted>" }
             end
 
-            allow(RSpec.world.source_cache).to receive_messages(:syntax_highlighter => syntax_highlighter)
+            allow(RSpec.world).to receive_messages(:syntax_highlighter => syntax_highlighter)
 
             formatted = presenter.fully_formatted(1)
             expect(formatted).to include("<highlighted>expect('RSpec').to be_a(Integer)</highlighted>")
