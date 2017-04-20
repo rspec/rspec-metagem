@@ -38,7 +38,7 @@ Feature: `pending` examples
     Then the exit status should not be 0
     And the output should contain "1 example, 1 failure"
     And the output should contain "FIXED"
-    And the output should contain "Expected pending 'something else getting finished' to fail. No Error was raised."
+    And the output should contain "Expected pending 'something else getting finished' to fail. No error was raised."
     And the output should contain "pending_with_passing_example_spec.rb:2"
 
   Scenario: `pending` for an example that is currently passing
@@ -54,7 +54,7 @@ Feature: `pending` examples
     Then the exit status should not be 0
     And the output should contain "1 example, 1 failure"
     And the output should contain "FIXED"
-    And the output should contain "Expected pending 'No reason given' to fail. No Error was raised."
+    And the output should contain "Expected pending 'No reason given' to fail. No error was raised."
     And the output should contain "pending_with_passing_block_spec.rb:2"
 
   Scenario: `pending` for an example that is currently passing with a reason
@@ -70,5 +70,5 @@ Feature: `pending` examples
     Then the exit status should not be 0
     And the output should contain "1 example, 1 failure"
     And the output should contain "FIXED"
-    And the output should contain "Expected pending 'unimplemented' to fail. No Error was raised."
+    And the output should contain "Expected pending 'unimplemented' to fail. No error was raised."
     And the output should contain "pending_with_passing_block_spec.rb:2"

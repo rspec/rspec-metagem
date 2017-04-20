@@ -279,7 +279,7 @@ module RSpec
                 :description   => "#{@example.full_description} FIXED",
                 :message_color => RSpec.configuration.fixed_color,
                 :failure_lines => [
-                  "Expected pending '#{@execution_result.pending_message}' to fail. No Error was raised."
+                  "Expected pending '#{@execution_result.pending_message}' to fail. No error was raised."
                 ]
               }
             elsif @execution_result.status == :pending

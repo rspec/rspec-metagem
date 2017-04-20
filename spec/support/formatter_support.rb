@@ -75,7 +75,7 @@ module FormatterSupport
         |Failures:
         |
         |  1) pending command with block format behaves like shared is marked as pending but passes FIXED
-        |     Expected pending 'No reason given' to fail. No Error was raised.
+        |     Expected pending 'No reason given' to fail. No error was raised.
         |     Shared Example Group: "shared" called from ./spec/rspec/core/resources/formatter_specs.rb:22
         |     # ./spec/rspec/core/resources/formatter_specs.rb:4
         |
@@ -170,7 +170,7 @@ module FormatterSupport
         |Failures:
         |
         |  1) pending command with block format behaves like shared is marked as pending but passes FIXED
-        |     Expected pending 'No reason given' to fail. No Error was raised.
+        |     Expected pending 'No reason given' to fail. No error was raised.
         |     Shared Example Group: "shared" called from ./spec/rspec/core/resources/formatter_specs.rb:22
         |     # ./spec/rspec/core/resources/formatter_specs.rb:4
         |
