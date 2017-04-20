@@ -520,6 +520,12 @@ module RSpec::Core
       end.to raise_error(/#let or #subject called without a block/)
     end
 
+    it 'raises an error when attempting to define a reserved method name' do
+      expect do
+        RSpec.describe { let(:initialize) { true }}
+      end.to raise_error(/#let or #subject called with a reserved name #initialize/)
+    end
+
     let(:a_value) { "a string" }
 
     context 'when overriding let in a nested context' do

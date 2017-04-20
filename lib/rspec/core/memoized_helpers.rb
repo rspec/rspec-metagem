@@ -285,6 +285,9 @@ EOS
           # We have to pass the block directly to `define_method` to
           # allow it to use method constructs like `super` and `return`.
           raise "#let or #subject called without a block" if block.nil?
+          raise(
+            "#let or #subject called with a reserved name #initialize"
+          ) if :initialize == name
           MemoizedHelpers.module_for(self).__send__(:define_method, name, &block)
 
           # Apply the memoization. The method has been defined in an ancestor
