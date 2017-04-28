@@ -31,7 +31,7 @@ Feature: implicit docstrings
     Given a file named "failing_implicit_docstrings_spec.rb" with:
     """ruby
     RSpec.describe "Failing examples with no descriptions" do
-      # description is auto-generated as "to equal(5)" based on the last #expect
+      # description is auto-generated per the last executed expectation
       specify do
         expect(3).to equal(2)
         expect(5).to equal(5)
