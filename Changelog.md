@@ -7,6 +7,9 @@ Enhancements:
 * Allow for scoped aliased and negated matchers--just call
   `alias_matcher` or `define_negated_matcher` from within an example
   group. (Markus Reiter, #974)
+* Improve failure message of `change` matcher with block by including the block
+  snippet instead of just describing it as `result` when Ripper is available.
+  (Yuji Nakayama, #987)
 
 Bug Fixes:
 

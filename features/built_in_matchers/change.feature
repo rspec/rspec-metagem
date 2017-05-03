@@ -26,6 +26,7 @@ Feature: `change` matcher
       end
       """
 
+  @skip-when-ripper-unsupported
   Scenario: expect change
     Given a file named "spec/example_spec.rb" with:
       """ruby
@@ -33,19 +34,20 @@ Feature: `change` matcher
 
       RSpec.describe Counter, "#increment" do
         it "should increment the count" do
-          expect { Counter.increment }.to change{Counter.count}.from(0).to(1)
+          expect { Counter.increment }.to change { Counter.count }.from(0).to(1)
         end
 
         # deliberate failure
         it "should increment the count by 2" do
-          expect { Counter.increment }.to change{Counter.count}.by(2)
+          expect { Counter.increment }.to change { Counter.count }.by(2)
         end
       end
       """
     When I run `rspec spec/example_spec.rb`
     Then the output should contain "1 failure"
-    Then the output should contain "expected result to have changed by 2, but was changed by 1"
+    Then the output should contain "expected `Counter.count` to have changed by 2, but was changed by 1"
 
+  @skip-when-ripper-unsupported
   Scenario: expect no change
     Given a file named "spec/example_spec.rb" with:
       """ruby
@@ -53,14 +55,14 @@ Feature: `change` matcher
 
       RSpec.describe Counter, "#increment" do
         it "should not increment the count by 1 (using not_to)" do
-          expect { Counter.increment }.not_to change{Counter.count}
+          expect { Counter.increment }.not_to change { Counter.count }
         end
 
         it "should not increment the count by 1 (using to_not)" do
-          expect { Counter.increment }.to_not change{Counter.count}
+          expect { Counter.increment }.to_not change { Counter.count }
         end
       end
       """
     When I run `rspec spec/example_spec.rb`
     Then the output should contain "2 failures"
-    Then the output should contain "expected result not to have changed, but did change from 1 to 2"
+    Then the output should contain "expected `Counter.count` not to have changed, but did change from 1 to 2"
