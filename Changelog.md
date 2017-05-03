@@ -4,6 +4,8 @@ Enhancements:
 
 * Add seed information to JSON formatter output. (#2388, Mitsutaka Mimura)
 * Include example id in the JSON formatter output. (#2369, Xavier Shay)
+* Respect changes to `config.output_stream` after formatters have been
+  setup. (#2401, #2419, Ilya Lavrov)
 
 Bug Fixes:
 
