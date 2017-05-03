@@ -106,21 +106,6 @@ module RSpec::Core::Formatters
         expect { loader.add :progresss, output }.to raise_error(ArgumentError)
       end
 
-      context "with a 2nd arg defining the output" do
-        it "creates a file at that path and sets it as the output" do
-          loader.add('doc', path)
-          expect(loader.formatters.first.output).to be_a(File)
-          expect(loader.formatters.first.output.path).to eq(path)
-        end
-
-        it "accepts Pathname objects for file paths" do
-          pathname = Pathname.new(path)
-          loader.add('doc', pathname)
-          expect(loader.formatters.first.output).to be_a(File)
-          expect(loader.formatters.first.output.path).to eq(path)
-        end
-      end
-
       context "when a duplicate formatter exists" do
         before { loader.add :documentation, output }
 

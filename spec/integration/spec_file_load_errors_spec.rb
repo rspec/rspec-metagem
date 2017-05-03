@@ -82,6 +82,7 @@ RSpec.describe 'Spec file load errors' do
 
       Finished in n.nnnn seconds (files took n.nnnn seconds to load)
       0 examples, 0 failures, 2 errors occurred outside of examples
+
     EOS
   end
 end

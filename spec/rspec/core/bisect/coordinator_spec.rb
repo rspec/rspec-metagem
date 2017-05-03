@@ -95,6 +95,7 @@ module RSpec::Core
         |
         |The minimal reproduction command is:
         |  rspec 1.rb[1:1] 2.rb[1:1] 4.rb[1:1] 5.rb[1:1]
+
       EOS
     end
 
@@ -115,6 +116,7 @@ module RSpec::Core
           |
           |The minimal reproduction command is:
           |  rspec 2.rb[1:1]
+
         EOS
       end
 
@@ -144,6 +146,7 @@ module RSpec::Core
           |
           |The minimal reproduction command is:
           |  rspec 2.rb[1:1]
+
         EOS
       end
     end
@@ -190,6 +193,7 @@ module RSpec::Core
           |
           |The most minimal reproduction command discovered so far is:
           |  rspec 1.rb[1:1] 2.rb[1:1] 3.rb[1:1] 4.rb[1:1] 5.rb[1:1]
+
         EOS
       end
     end

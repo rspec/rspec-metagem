@@ -142,10 +142,8 @@ module RSpec::Core::Formatters
     end
 
     # @private
-    def add(formatter_to_use, *paths)
+    def add(formatter_to_use, *args)
       formatter_class = find_formatter(formatter_to_use)
-
-      args = paths.map { |p| p.respond_to?(:puts) ? p : file_at(p) }
 
       if !Loader.formatters[formatter_class].nil?
         formatter = formatter_class.new(*args)
@@ -250,11 +248,6 @@ module RSpec::Core::Formatters
       word.tr!("-", "_")
       word.downcase!
       word
-    end
-
-    def file_at(path)
-      RSpec::Support::DirectoryMaker.mkdir_p(File.dirname(path))
-      File.new(path, 'w')
     end
   end
 end

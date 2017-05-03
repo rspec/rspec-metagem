@@ -1,6 +1,7 @@
 RSpec::Support.require_rspec_core "backtrace_formatter"
 RSpec::Support.require_rspec_core "ruby_project"
 RSpec::Support.require_rspec_core "formatters/deprecation_formatter"
+RSpec::Support.require_rspec_core "output_wrapper"
 
 module RSpec
   module Core
@@ -141,7 +142,7 @@ module RSpec
 
       # Determines where deprecation warnings are printed.
       # Defaults to `$stderr`.
-      # @return [IO, String] IO to write to or filename to write to
+      # @return [IO] IO to write to
       define_reader :deprecation_stream
 
       # Determines where deprecation warnings are printed.
@@ -154,7 +155,7 @@ module RSpec
             "it to take effect, or use the `--deprecation-out` CLI option. " \
             "(Called from #{CallerFilter.first_non_rspec_line})"
         else
-          @deprecation_stream = value
+          @deprecation_stream = prepare_stream(value)
         end
       end
 
@@ -218,7 +219,7 @@ module RSpec
       define_reader :output_stream
 
       # Set the output stream for reporter.
-      # @attr value [IO] value for output, defaults to $stdout
+      # @attr value [IO, String] IO to write to or filename to write to, defaults to $stdout
       def output_stream=(value)
         if @reporter && !value.equal?(@output_stream)
           warn "RSpec's reporter has already been initialized with " \
@@ -226,7 +227,8 @@ module RSpec
             "`output_stream` will be ignored. You should configure it earlier for " \
             "it to take effect. (Called from #{CallerFilter.first_non_rspec_line})"
         else
-          @output_stream = value
+          @output_stream = prepare_stream(value)
+          output_wrapper.output = @output_stream
         end
       end
 
@@ -471,7 +473,8 @@ module RSpec
       # Used to set higher priority option values from the command line.
       def force(hash)
         ordering_manager.force(hash)
-        @preferred_options.merge!(hash)
+
+        @preferred_options.merge!(hash).merge!(prepared_streams(hash))
 
         return unless hash.key?(:example_status_persistence_file_path)
         clear_values_derived_from_example_status_persistence_file_path
@@ -482,12 +485,14 @@ module RSpec
         @spec_files_loaded = false
         @reporter = nil
         @formatter_loader = nil
+        @output_wrapper = nil
       end
 
       # @private
       def reset_reporter
         @reporter = nil
         @formatter_loader = nil
+        @output_wrapper = nil
       end
 
       # @private
@@ -870,7 +875,8 @@ module RSpec
       # Adds a formatter to the set RSpec will use for this run.
       #
       # @see RSpec::Core::Formatters::Protocol
-      def add_formatter(formatter, output=output_stream)
+      def add_formatter(formatter, output=output_wrapper)
+        output = prepare_stream(output) unless output == output_wrapper
         formatter_loader.add(formatter, output)
       end
       alias_method :formatter=, :add_formatter
@@ -936,7 +942,7 @@ module RSpec
         @reporter_buffer || @reporter ||=
           begin
             @reporter_buffer = DeprecationReporterBuffer.new
-            formatter_loader.prepare_default output_stream, deprecation_stream
+            formatter_loader.prepare_default output_wrapper, deprecation_stream
             @reporter_buffer.play_onto(formatter_loader.reporter)
             @reporter_buffer = nil
             formatter_loader.reporter
@@ -2056,8 +2062,28 @@ module RSpec
         )
       end
 
+      def output_wrapper
+        @output_wrapper ||= OutputWrapper.new(output_stream)
+      end
+
       def output_to_tty?(output=output_stream)
         output.respond_to?(:tty?) && output.tty?
+      end
+
+      def prepare_stream(stream)
+        stream.respond_to?(:puts) ? stream : file_at(stream)
+      end
+
+      def prepared_streams(hash)
+        [:deprecation_stream, :output_stream].inject({}) do |result, stream|
+          result[stream] = prepare_stream(hash[stream]) if hash.key?(stream)
+          result
+        end
+      end
+
+      def file_at(path)
+        RSpec::Support::DirectoryMaker.mkdir_p(File.dirname(path))
+        File.new(path, 'w')
       end
 
       def conditionally_disable_mocks_monkey_patching

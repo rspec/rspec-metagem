@@ -125,6 +125,7 @@ root
         |    raises (FAILED - 6)
         |
         |#{expected_summary_output_for_example_specs}
+
       EOS
     end
   end

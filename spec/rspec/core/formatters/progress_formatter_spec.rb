@@ -48,6 +48,7 @@ RSpec.describe RSpec::Core::Formatters::ProgressFormatter do
       |**F..FFFFF
       |
       |#{expected_summary_output_for_example_specs}
+
     EOS
   end
 end

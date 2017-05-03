@@ -63,6 +63,7 @@ RSpec.describe 'Suite hook errors' do
 
       Finished in n.nnnn seconds (files took n.nnnn seconds to load)
       0 examples, 0 failures, 1 error occurred outside of examples
+
     EOS
   end
 
@@ -80,6 +81,7 @@ RSpec.describe 'Suite hook errors' do
 
       Finished in n.nnnn seconds (files took n.nnnn seconds to load)
       1 example, 0 failures, 1 error occurred outside of examples
+
     EOS
   end
 
@@ -127,6 +129,7 @@ RSpec.describe 'Suite hook errors' do
 
       Finished in n.nnnn seconds (files took n.nnnn seconds to load)
       0 examples, 0 failures, 3 errors occurred outside of examples
+
     EOS
   end
 end

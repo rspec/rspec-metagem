@@ -63,7 +63,6 @@ module RSpec
         #
         # @param _notification [NullNotification] (Ignored)
         def close(_notification)
-          return unless IO === output
           return if output.closed?
 
           output.puts
