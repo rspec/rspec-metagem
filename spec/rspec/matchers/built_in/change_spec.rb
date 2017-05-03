@@ -2,7 +2,7 @@ class SomethingExpected
   attr_accessor :some_value
 end
 
-RSpec.describe "expect { ... }.to change(actual, message)" do
+RSpec.describe "expect { ... }.to change ..." do
   context "with a numeric value" do
     before(:example) do
       @instance = SomethingExpected.new
@@ -202,7 +202,9 @@ RSpec.describe "expect { ... }.to change(actual, message)" do
       end.to fail_with(/^expected #some_value to have changed, but is still/)
     end
   end
+end
 
+RSpec.describe "expect { ... }.to change(actual, message)" do
   context "with a missing message" do
     it "fails with an ArgumentError" do
       expect do
@@ -230,7 +232,6 @@ RSpec.describe "expect { ... }.not_to change(actual, message)" do
 end
 
 RSpec.describe "expect { ... }.to change { block }" do
-
   before(:example) do
     @instance = SomethingExpected.new
     @instance.some_value = 5
@@ -255,13 +256,6 @@ RSpec.describe "expect { ... }.to change { block }" do
   it "provides a #description" do
     expect(change { @instance.some_value }.description).to eq "change result"
   end
-
-  context "with an IO stream" do
-    it "passes when the stream does not change" do
-      k = STDOUT
-      expect { }.not_to change { k }
-    end
-  end
 end
 
 RSpec.describe "expect { ... }.not_to change { block }" do
@@ -285,8 +279,14 @@ RSpec.describe "expect { ... }.not_to change { block }" do
       expect {}.not_to change do; end
     end.to raise_error(SyntaxError, /Block not received by the `change` matcher/)
   end
-end
 
+  context "with an IO stream" do
+    it "passes when the stream does not change" do
+      k = STDOUT
+      expect { }.not_to change { k }
+    end
+  end
+end
 
 RSpec.describe "expect { ... }.not_to change { }.from" do
   context 'when the value starts at the from value' do
@@ -466,7 +466,6 @@ RSpec.describe "expect { ... }.to change { block }.by_at_least(expected)" do
   end
 end
 
-
 RSpec.describe "expect { ... }.to change(actual, message).by_at_most(expected)" do
   before(:example) do
     @instance = SomethingExpected.new
@@ -534,6 +533,7 @@ RSpec.describe "expect { ... }.to change(actual, message).from(old)" do
       end.to fail_with("expected #some_value to have initially been false, but was true")
     end
   end
+
   context "with non-boolean values" do
     before(:example) do
       @instance = SomethingExpected.new
