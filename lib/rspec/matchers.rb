@@ -796,7 +796,7 @@ module RSpec
     # @example
     #   expect(5).to satisfy { |n| n > 3 }
     #   expect(5).to satisfy("be greater than 3") { |n| n > 3 }
-    def satisfy(description="satisfy block", &block)
+    def satisfy(description=nil, &block)
       BuiltIn::Satisfy.new(description, &block)
     end
     alias_matcher :an_object_satisfying, :satisfy

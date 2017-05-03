@@ -17,6 +17,7 @@ Feature: `satisfy` matcher
     end
     ```
 
+  @skip-when-ripper-unsupported
   Scenario: basic usage
     Given a file named "satisfy_matcher_spec.rb" with:
       """ruby
@@ -33,9 +34,8 @@ Feature: `satisfy` matcher
       """
     When I run `rspec satisfy_matcher_spec.rb`
     Then the output should contain all of these:
-      | 6 examples, 4 failures               |
-      | expected 10 not to satisfy block     |
-      | expected 10 to satisfy block         |
-      | expected 10 not to be greater than 5 |
-      | expected 10 to be greater than 15    |
-
+      | 6 examples, 4 failures                        |
+      | expected 10 not to satisfy expression `v > 5` |
+      | expected 10 to satisfy expression `v > 15`    |
+      | expected 10 not to be greater than 5          |
+      | expected 10 to be greater than 15             |
