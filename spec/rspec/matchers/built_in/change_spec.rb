@@ -283,6 +283,14 @@ RSpec.describe "expect { ... }.to change { block }" do
         expect(matcher.description).to eq "change result"
       end
     end
+
+    context 'when used with an alias name' do
+      alias_matcher :modify, :change
+
+      pending 'can extract the block snippet' do
+        expect(modify { @instance.some_value }.description).to eq "modify `@instance.some_value`"
+      end
+    end
   end
 
   context 'in Ripper unsupported environment', :unless => RSpec::Support::RubyFeatures.ripper_supported? do
