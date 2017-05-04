@@ -52,11 +52,15 @@ module RSpec
       end
 
       def file_path
-        proc.source_location.first
+        source_location.first
       end
 
       def beginning_line_number
-        proc.source_location.last
+        source_location.last
+      end
+
+      def source_location
+        proc.source_location || raise(TargetNotFoundError, 'Could not find the target block')
       end
 
       Error = Class.new(StandardError)

@@ -291,6 +291,16 @@ module RSpec::Expectations
           expect { body_content_lines }.to raise_error(BlockSnippetExtractor::TargetNotFoundError)
         end
       end
+
+      context 'with &:symbol syntax' do
+        let(:expression) do
+          target_method(&:positive?)
+        end
+
+        it 'raises TargetNotFoundError' do
+          expect { body_content_lines }.to raise_error(BlockSnippetExtractor::TargetNotFoundError)
+        end
+      end
     end
   end
 end
