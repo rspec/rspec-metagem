@@ -35,6 +35,7 @@ module RSpec
 
         define_method(new_name) do |*args, &block|
           matcher = __send__(old_name, *args, &block)
+          matcher.matcher_name = new_name if matcher.respond_to?(:matcher_name=)
           klass.new(matcher, description_override)
         end
       end
