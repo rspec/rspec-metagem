@@ -1,5 +1,12 @@
 require 'rspec/core/notifications'
 
+# ANSI codes aren't easy to read in failure output, so use tags instead
+class TagColorizer
+  def self.wrap(text, code_or_symbol)
+    "<#{code_or_symbol}>#{text}</#{code_or_symbol}>"
+  end
+end
+
 RSpec.describe "FailedExampleNotification" do
   include FormatterSupport
 
@@ -30,13 +37,6 @@ RSpec.describe "FailedExampleNotification" do
 
     def dedent(string)
       string.gsub(/^ +\|/, '')
-    end
-
-    # ANSI codes aren't easy to read in failure output, so use tags instead
-    class TagColorizer
-      def self.wrap(text, code_or_symbol)
-        "<#{code_or_symbol}>#{text}</#{code_or_symbol}>"
-      end
     end
 
     context "when the exception is a MultipleExpectationsNotMetError" do
@@ -353,6 +353,106 @@ module RSpec::Core::Notifications
         expect(notification.notifications).to match [
           an_instance_of(ExampleNotification) & an_object_having_attributes(:example => example)
         ]
+      end
+    end
+  end
+end
+
+module RSpec::Core::Notifications
+  RSpec.describe SummaryNotification do
+    include FormatterSupport
+
+    subject(:notification) do
+      summary_notification(
+        duration,
+        examples,
+        failed_examples,
+        pending_examples,
+        load_time,
+        errors_outside_of_examples_count
+      )
+    end
+
+    let(:duration) do
+      1.23
+    end
+
+    let(:examples) do
+      [
+        new_example(:status => :passed),
+        new_example(:status => :passed)
+      ]
+    end
+
+    let(:failed_examples) do
+      examples.select { |example| example.execution_result.status == :failed }
+    end
+
+    let(:pending_examples) do
+      examples.select { |example| example.execution_result.status == :pending }
+    end
+
+    let(:load_time) do
+      0.1
+    end
+
+    let(:errors_outside_of_examples_count) do
+      0
+    end
+
+    describe '#fully_formatted' do
+      subject(:fully_formatted) do
+        notification.fully_formatted(TagColorizer)
+      end
+
+      context 'when all examples are passed' do
+        let(:examples) do
+          [
+            new_example(:status => :passed),
+            new_example(:status => :passed)
+          ]
+        end
+
+        it 'turns the summary line green' do
+          expect(fully_formatted).to include('<green>2 examples, 0 failures</green>')
+        end
+      end
+
+      context "when there're a pending example and no failed example" do
+        let(:examples) do
+          [
+            new_example(:status => :passed),
+            new_example(:status => :pending)
+          ]
+        end
+
+        it 'turns the summary line yellow' do
+          expect(fully_formatted).to include('<yellow>2 examples, 0 failures, 1 pending</yellow>')
+        end
+      end
+
+      context "when there're a pending example and a failed example" do
+        let(:examples) do
+          [
+            new_example(:status => :passed),
+            new_example(:status => :pending),
+            new_example(:status => :failed)
+          ]
+        end
+
+        it 'turns the summary line red' do
+          expect(fully_formatted).to include('<red>3 examples, 1 failure, 1 pending</red>')
+        end
+      end
+
+      context "when there's an error outside of examples" do
+        let(:errors_outside_of_examples_count) do
+          1
+        end
+
+        it 'turns the summary line red' do
+          expect(fully_formatted).to include('<red>2 examples, 0 failures, 1 error occurred outside of examples</red>')
+        end
       end
     end
   end
