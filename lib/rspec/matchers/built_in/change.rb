@@ -8,7 +8,7 @@ module RSpec
         # @api public
         # Specifies the delta of the expected change.
         def by(expected_delta)
-          ChangeRelatively.new(@change_details, expected_delta, :by) do |actual_delta|
+          ChangeRelatively.new(change_details, expected_delta, :by) do |actual_delta|
             values_match?(expected_delta, actual_delta)
           end
         end
@@ -16,7 +16,7 @@ module RSpec
         # @api public
         # Specifies a minimum delta of the expected change.
         def by_at_least(minimum)
-          ChangeRelatively.new(@change_details, minimum, :by_at_least) do |actual_delta|
+          ChangeRelatively.new(change_details, minimum, :by_at_least) do |actual_delta|
             actual_delta >= minimum
           end
         end
@@ -24,7 +24,7 @@ module RSpec
         # @api public
         # Specifies a maximum delta of the expected change.
         def by_at_most(maximum)
-          ChangeRelatively.new(@change_details, maximum, :by_at_most) do |actual_delta|
+          ChangeRelatively.new(change_details, maximum, :by_at_most) do |actual_delta|
             actual_delta <= maximum
           end
         end
@@ -32,13 +32,13 @@ module RSpec
         # @api public
         # Specifies the new value you expect.
         def to(value)
-          ChangeToValue.new(@change_details, value)
+          ChangeToValue.new(change_details, value)
         end
 
         # @api public
         # Specifies the original value.
         def from(value)
-          ChangeFromValue.new(@change_details, value)
+          ChangeFromValue.new(change_details, value)
         end
 
         # @private
@@ -46,8 +46,8 @@ module RSpec
           @event_proc = event_proc
           return false unless Proc === event_proc
           raise_block_syntax_error if block_given?
-          @change_details.perform_change(event_proc)
-          @change_details.changed?
+          change_details.perform_change(event_proc)
+          change_details.changed?
         end
 
         def does_not_match?(event_proc)
@@ -58,21 +58,21 @@ module RSpec
         # @api private
         # @return [String]
         def failure_message
-          "expected #{@change_details.value_representation} to have changed, " \
+          "expected #{change_details.value_representation} to have changed, " \
           "but #{positive_failure_reason}"
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          "expected #{@change_details.value_representation} not to have changed, " \
+          "expected #{change_details.value_representation} not to have changed, " \
           "but #{negative_failure_reason}"
         end
 
         # @api private
         # @return [String]
         def description
-          "change #{@change_details.value_representation}"
+          "change #{change_details.value_representation}"
         end
 
         # @private
@@ -83,7 +83,13 @@ module RSpec
       private
 
         def initialize(receiver=nil, message=nil, &block)
-          @change_details = ChangeDetails.new(receiver, message, &block)
+          @receiver = receiver
+          @message = message
+          @block = block
+        end
+
+        def change_details
+          @change_details ||= ChangeDetails.new(matcher_name, @receiver, @message, &@block)
         end
 
         def raise_block_syntax_error
@@ -93,13 +99,13 @@ module RSpec
 
         def positive_failure_reason
           return "was not given a block" unless Proc === @event_proc
-          "is still #{description_of @change_details.actual_before}"
+          "is still #{description_of change_details.actual_before}"
         end
 
         def negative_failure_reason
           return "was not given a block" unless Proc === @event_proc
-          "did change from #{description_of @change_details.actual_before} " \
-          "to #{description_of @change_details.actual_after}"
+          "did change from #{description_of change_details.actual_before} " \
+          "to #{description_of change_details.actual_after}"
         end
       end
 
@@ -309,7 +315,7 @@ module RSpec
       class ChangeDetails
         attr_reader :actual_before, :actual_after
 
-        def initialize(receiver=nil, message=nil, &block)
+        def initialize(matcher_name, receiver=nil, message=nil, &block)
           if receiver && !message
             raise(
               ArgumentError,
@@ -319,6 +325,7 @@ module RSpec
             )
           end
 
+          @matcher_name = matcher_name
           @receiver = receiver
           @message = message
           @value_proc = block
@@ -367,7 +374,7 @@ module RSpec
         if RSpec::Support::RubyFeatures.ripper_supported?
           def extract_value_block_snippet
             return nil unless @value_proc
-            Expectations::BlockSnippetExtractor.try_extracting_single_line_body_of(@value_proc, 'change')
+            Expectations::BlockSnippetExtractor.try_extracting_single_line_body_of(@value_proc, @matcher_name)
           end
         else
           def extract_value_block_snippet
