@@ -22,6 +22,9 @@ module RSpec
         # @private
         attr_reader :actual, :expected, :rescued_exception
 
+        # @private
+        attr_writer :matcher_name
+
         def initialize(expected=UNDEFINED)
           @expected = expected unless UNDEFINED.equal?(expected)
         end
@@ -93,6 +96,15 @@ module RSpec
         # @private
         def self.matcher_name
           @matcher_name ||= underscore(name.split('::').last)
+        end
+
+        # @private
+        def matcher_name
+          if defined?(@matcher_name)
+            @matcher_name
+          else
+            self.class.matcher_name
+          end
         end
 
         # @private

@@ -27,6 +27,16 @@ RSpec.describe "expect(...).to satisfy { block }" do
           end
         end.to fail_with("expected false to satisfy expression `val`")
       end
+
+      context 'when used with an alias name' do
+        alias_matcher :fulfill, :satisfy
+
+        it 'can extract the block snippet' do
+          expect {
+            expect(false).to fulfill { |val| val }
+          }.to fail_with("expected false to fulfill expression `val`")
+        end
+      end
     end
 
     context 'in Ripper unsupported environment', :unless => RSpec::Support::RubyFeatures.ripper_supported? do

@@ -287,7 +287,7 @@ RSpec.describe "expect { ... }.to change { block }" do
     context 'when used with an alias name' do
       alias_matcher :modify, :change
 
-      pending 'can extract the block snippet' do
+      it 'can extract the block snippet' do
         expect(modify { @instance.some_value }.description).to eq "modify `@instance.some_value`"
       end
     end

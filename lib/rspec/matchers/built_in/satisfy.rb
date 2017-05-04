@@ -47,7 +47,7 @@ module RSpec
 
           def extract_block_snippet
             return nil unless @block
-            Expectations::BlockSnippetExtractor.try_extracting_single_line_body_of(@block, 'satisfy')
+            Expectations::BlockSnippetExtractor.try_extracting_single_line_body_of(@block, matcher_name)
           end
         else
           def block_representation
