@@ -336,7 +336,7 @@ module RSpec::Core
       #                          specific colors.
       # @return [String] A colorized results line.
       def colorized_totals_line(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        if failure_count > 0
+        if failure_count > 0 || errors_outside_of_examples_count > 0
           colorizer.wrap(totals_line, RSpec.configuration.failure_color)
         elsif pending_count > 0
           colorizer.wrap(totals_line, RSpec.configuration.pending_color)
