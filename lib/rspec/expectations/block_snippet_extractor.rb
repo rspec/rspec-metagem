@@ -87,7 +87,6 @@ module RSpec
             source.tokens.each do |token|
               invoke_state_handler(token)
             end
-            raise TargetNotFoundError, 'Could not find the target block'
           end
         end
 
