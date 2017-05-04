@@ -142,7 +142,7 @@ module RSpec
 
       # Determines where deprecation warnings are printed.
       # Defaults to `$stderr`.
-      # @return [IO] IO to write to
+      # @return [IO, String] IO or filename to write to
       define_reader :deprecation_stream
 
       # Determines where deprecation warnings are printed.
@@ -155,7 +155,7 @@ module RSpec
             "it to take effect, or use the `--deprecation-out` CLI option. " \
             "(Called from #{CallerFilter.first_non_rspec_line})"
         else
-          @deprecation_stream = prepare_stream(value)
+          @deprecation_stream = value
         end
       end
 
@@ -227,7 +227,7 @@ module RSpec
             "`output_stream` will be ignored. You should configure it earlier for " \
             "it to take effect. (Called from #{CallerFilter.first_non_rspec_line})"
         else
-          @output_stream = prepare_stream(value)
+          @output_stream = value
           output_wrapper.output = @output_stream
         end
       end
@@ -473,8 +473,7 @@ module RSpec
       # Used to set higher priority option values from the command line.
       def force(hash)
         ordering_manager.force(hash)
-
-        @preferred_options.merge!(hash).merge!(prepared_streams(hash))
+        @preferred_options.merge!(hash)
 
         return unless hash.key?(:example_status_persistence_file_path)
         clear_values_derived_from_example_status_persistence_file_path
@@ -483,9 +482,7 @@ module RSpec
       # @private
       def reset
         @spec_files_loaded = false
-        @reporter = nil
-        @formatter_loader = nil
-        @output_wrapper = nil
+        reset_reporter
       end
 
       # @private
@@ -876,7 +873,6 @@ module RSpec
       #
       # @see RSpec::Core::Formatters::Protocol
       def add_formatter(formatter, output=output_wrapper)
-        output = prepare_stream(output) unless output == output_wrapper
         formatter_loader.add(formatter, output)
       end
       alias_method :formatter=, :add_formatter
@@ -2068,22 +2064,6 @@ module RSpec
 
       def output_to_tty?(output=output_stream)
         output.respond_to?(:tty?) && output.tty?
-      end
-
-      def prepare_stream(stream)
-        stream.respond_to?(:puts) ? stream : file_at(stream)
-      end
-
-      def prepared_streams(hash)
-        [:deprecation_stream, :output_stream].inject({}) do |result, stream|
-          result[stream] = prepare_stream(hash[stream]) if hash.key?(stream)
-          result
-        end
-      end
-
-      def file_at(path)
-        RSpec::Support::DirectoryMaker.mkdir_p(File.dirname(path))
-        File.new(path, 'w')
       end
 
       def conditionally_disable_mocks_monkey_patching

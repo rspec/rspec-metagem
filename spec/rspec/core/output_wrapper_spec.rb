@@ -6,7 +6,7 @@ module RSpec::Core
     it 'redirects calls to the wrapped object' do
       wrapper.puts('message')
       wrapper.print('another message')
-      expect(output.string).to eq("message\nanother message")
+      expect(output.string).to eq("message\nanother message").and eq(wrapper.string)
     end
 
     describe '#output=' do
