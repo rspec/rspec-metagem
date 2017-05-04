@@ -3,6 +3,7 @@ Feature: Define negated matcher
   You can use `RSpec::Matchers.define_negated_matcher` to define a negated version of
   an existing matcher. This is particularly useful in composed matcher expressions.
 
+  @skip-when-ripper-unsupported
   Scenario: Composed negated matcher expression
     Given a file named "composed_negated_expression_spec.rb" with:
       """ruby
@@ -26,4 +27,4 @@ Feature: Define negated matcher
       | 2 examples, 1 failure                                                                                  |
       |  1) A negated matcher provides a good failure message based on the name                                |
       |     Failure/Error: expect { list.delete(1) }.to change { list }.to(an_array_excluding 5)               |
-      |       expected result to have changed to an array excluding 5, but is now [2, 3, 4, 5, 6, 7, 8, 9, 10] |
+      |       expected `list` to have changed to an array excluding 5, but is now [2, 3, 4, 5, 6, 7, 8, 9, 10] |
