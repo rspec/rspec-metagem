@@ -42,21 +42,27 @@ module RSpec
 
       if RSpec.respond_to?(:world)
         def source
+          raise TargetNotFoundError unless File.exist?(file_path)
           RSpec.world.source_from_file(file_path)
         end
       else
         RSpec::Support.require_rspec_support 'source'
         def source
+          raise TargetNotFoundError unless File.exist?(file_path)
           @source ||= RSpec::Support::Source.from_file(file_path)
         end
       end
 
       def file_path
-        proc.source_location.first
+        source_location.first
       end
 
       def beginning_line_number
-        proc.source_location.last
+        source_location.last
+      end
+
+      def source_location
+        proc.source_location || raise(TargetNotFoundError)
       end
 
       Error = Class.new(StandardError)
@@ -83,7 +89,6 @@ module RSpec
             source.tokens.each do |token|
               invoke_state_handler(token)
             end
-            raise TargetNotFoundError, 'Could not find the target block'
           end
         end
 
@@ -218,9 +223,9 @@ module RSpec
           when 1
             candidate_block_wrapper_nodes.first
           when 0
-            raise TargetNotFoundError, 'Could not find the target block'
+            raise TargetNotFoundError
           else
-            raise AmbiguousTargetError, "There're multiple blocks with the same name method call on the line"
+            raise AmbiguousTargetError
           end
         end
 
