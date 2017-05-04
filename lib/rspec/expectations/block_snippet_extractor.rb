@@ -60,7 +60,7 @@ module RSpec
       end
 
       def source_location
-        proc.source_location || raise(TargetNotFoundError, 'Could not find the target block')
+        proc.source_location || raise(TargetNotFoundError)
       end
 
       Error = Class.new(StandardError)
@@ -221,9 +221,9 @@ module RSpec
           when 1
             candidate_block_wrapper_nodes.first
           when 0
-            raise TargetNotFoundError, 'Could not find the target block'
+            raise TargetNotFoundError
           else
-            raise AmbiguousTargetError, "There're multiple blocks with the same name method call on the line"
+            raise AmbiguousTargetError
           end
         end
 
