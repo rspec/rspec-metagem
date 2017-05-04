@@ -42,11 +42,13 @@ module RSpec
 
       if RSpec.respond_to?(:world)
         def source
+          raise TargetNotFoundError unless File.exist?(file_path)
           RSpec.world.source_from_file(file_path)
         end
       else
         RSpec::Support.require_rspec_support 'source'
         def source
+          raise TargetNotFoundError unless File.exist?(file_path)
           @source ||= RSpec::Support::Source.from_file(file_path)
         end
       end
