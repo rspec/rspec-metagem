@@ -247,12 +247,12 @@ module RSpec::Core
           end
 
           it 'uses our syntax highlighter on the code snippet to format it nicely' do
-            syntax_highlighter = instance_double(Source::SyntaxHighlighter)
+            syntax_highlighter = instance_double(Formatters::SyntaxHighlighter)
             allow(syntax_highlighter).to receive(:highlight) do |lines|
               lines.map { |l| "<highlighted>#{l.strip}</highlighted>" }
             end
 
-            allow(RSpec.world.source_cache).to receive_messages(:syntax_highlighter => syntax_highlighter)
+            allow(RSpec.world).to receive_messages(:syntax_highlighter => syntax_highlighter)
 
             formatted = presenter.fully_formatted(1)
             expect(formatted).to include("<highlighted>expect('RSpec').to be_a(Integer)</highlighted>")
