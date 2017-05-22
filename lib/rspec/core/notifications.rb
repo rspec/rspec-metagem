@@ -111,7 +111,7 @@ module RSpec::Core
         formatted = "\nFailures:\n"
 
         failure_notifications.each_with_index do |failure, index|
-          formatted << failure.fully_formatted(index.next, colorizer)
+          formatted += failure.fully_formatted(index.next, colorizer)
         end
 
         formatted
@@ -315,13 +315,15 @@ module RSpec::Core
       # @api
       # @return [String] A line summarising the result totals of the spec run.
       def totals_line
-        summary = Formatters::Helpers.pluralize(example_count, "example")
-        summary << ", " << Formatters::Helpers.pluralize(failure_count, "failure")
-        summary << ", #{pending_count} pending" if pending_count > 0
+        summary = Formatters::Helpers.pluralize(example_count, "example") +
+          ", " + Formatters::Helpers.pluralize(failure_count, "failure")
+        summary += ", #{pending_count} pending" if pending_count > 0
         if errors_outside_of_examples_count > 0
-          summary << ", "
-          summary << Formatters::Helpers.pluralize(errors_outside_of_examples_count, "error")
-          summary << " occurred outside of examples"
+          summary += (
+            ", " +
+            Formatters::Helpers.pluralize(errors_outside_of_examples_count, "error") +
+            " occurred outside of examples"
+          )
         end
         summary
       end
@@ -380,7 +382,7 @@ module RSpec::Core
                     "#{colorized_totals_line(colorizer)}\n"
 
         unless failed_examples.empty?
-          formatted << colorized_rerun_commands(colorizer) << "\n"
+          formatted += (colorized_rerun_commands(colorizer) + "\n")
         end
 
         formatted

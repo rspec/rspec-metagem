@@ -841,7 +841,7 @@ module RSpec
       return "Anonymous" if group.description.empty?
 
       # Convert to CamelCase.
-      name = ' ' << group.description
+      name = ' ' + group.description
       name.gsub!(/[^0-9a-zA-Z]+([0-9a-zA-Z])/) do
         match = ::Regexp.last_match[1]
         match.upcase!

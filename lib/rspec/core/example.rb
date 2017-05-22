@@ -87,7 +87,7 @@ module RSpec
       def inspect_output
         inspect_output = "\"#{description}\""
         unless metadata[:description].to_s.empty?
-          inspect_output << " (#{location})"
+          inspect_output += " (#{location})"
         end
         inspect_output
       end
