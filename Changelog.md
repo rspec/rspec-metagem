@@ -1,3 +1,10 @@
+### Development
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.6.0...master)
+
+Bug Fixes:
+
+* Improve compatibility with frozen string literal flag. (#2425, Pat Allen)
+
 ### 3.6.0 / 2017-05-04
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.6.0.beta2...v3.6.0)
 
