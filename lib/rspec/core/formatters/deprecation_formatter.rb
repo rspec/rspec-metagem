@@ -59,6 +59,8 @@ module RSpec
 
         DEPRECATION_STREAM_NOTICE = "Pass `--deprecation-out` or set " \
           "`config.deprecation_stream` to a file for full output."
+        TOO_MANY_WARNINGS_NOTICE  = "Too many similar deprecation messages " \
+          "reported, disregarding further reports. #{DEPRECATION_STREAM_NOTICE}"
 
         SpecifiedDeprecationMessage = Struct.new(:type) do
           def initialize(data)
@@ -71,9 +73,7 @@ module RSpec
           end
 
           def too_many_warnings_message
-            msg = "Too many similar deprecation messages reported, disregarding further reports. "
-            msg << DEPRECATION_STREAM_NOTICE
-            msg
+            TOO_MANY_WARNINGS_NOTICE
           end
 
           private
@@ -96,16 +96,14 @@ module RSpec
           end
 
           def to_s
-            msg =  "#{@data.deprecated} is deprecated."
+            msg = String.new("#{@data.deprecated} is deprecated.")
             msg << " Use #{@data.replacement} instead." if @data.replacement
-            msg << " Called from #{@data.call_site}." if @data.call_site
+            msg << " Called from #{@data.call_site}."   if @data.call_site
             msg
           end
 
           def too_many_warnings_message
-            msg = "Too many uses of deprecated '#{type}'. "
-            msg << DEPRECATION_STREAM_NOTICE
-            msg
+            "Too many uses of deprecated '#{type}'. #{DEPRECATION_STREAM_NOTICE}"
           end
         end
 

@@ -59,7 +59,9 @@ module RSpec
         end
 
         def print_summary(duration, example_count, failure_count, pending_count)
-          totals =  "#{example_count} example#{'s' unless example_count == 1}, "
+          totals = String.new(
+            "#{example_count} example#{'s' unless example_count == 1}, "
+          )
           totals << "#{failure_count} failure#{'s' unless failure_count == 1}"
           totals << ", #{pending_count} pending" if pending_count > 0
 
