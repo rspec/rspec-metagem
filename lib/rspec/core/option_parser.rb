@@ -201,7 +201,7 @@ FILTERING
           configure_only_failures(options)
         end
 
-        parser.on("--next-failure", "Apply `--only-failures` and abort after one failure.",
+        parser.on("-n", "--next-failure", "Apply `--only-failures` and abort after one failure.",
                   "  (Equivalent to `--only-failures --fail-fast --order defined`)") do
           configure_only_failures(options)
           set_fail_fast(options, 1)

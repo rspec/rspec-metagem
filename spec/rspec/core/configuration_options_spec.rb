@@ -191,7 +191,7 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
       end
     end
 
-    %w[ --only-failures --next-failure ].each do |option|
+    %w[ --only-failures --next-failure -n].each do |option|
       describe option do
         it "changes `config.only_failures?` to true" do
           opts = config_options_object(option)
