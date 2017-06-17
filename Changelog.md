@@ -1,6 +1,10 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.6.0...master)
 
+Enhancements:
+
+* Add `-n` alias for `--next-failure`. (Ian Ker-Seymer, #2434)
+
 Bug Fixes:
 
 * Improve compatibility with frozen string literal flag. (#2425, Pat Allan)
