@@ -5,7 +5,7 @@ module RSpec
   module Core
     module Formatters
       # RSpec's built-in formatters are all subclasses of
-      # RSpec::Core::Formatters::BaseTextFormatter.
+      # RSpec::Core::Formatters::BaseFormatter.
       #
       # @see RSpec::Core::Formatters::BaseTextFormatter
       # @see RSpec::Core::Reporter
