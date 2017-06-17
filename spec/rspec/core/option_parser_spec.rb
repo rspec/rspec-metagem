@@ -185,22 +185,24 @@ module RSpec::Core
       end
     end
 
-    describe "--next-failure" do
-      it 'is equivalent to `--tag last_run_status:failed --fail-fast --order defined`' do
-        long_form = Parser.parse(%w[ --tag last_run_status:failed --fail-fast --order defined ])
-        next_failure = Parser.parse(%w[ --next-failure ])
+    %w[--next-failure -n].each do |option|
+      describe option do
+        it 'is equivalent to `--tag last_run_status:failed --fail-fast --order defined`' do
+          long_form = Parser.parse(%w[ --tag last_run_status:failed --fail-fast --order defined ])
+          next_failure = Parser.parse([option])
 
-        expect(next_failure).to include(long_form)
-      end
+          expect(next_failure).to include(long_form)
+        end
 
-      it 'does not force `--order defined` over a specified `--seed 1234` option that comes before it' do
-        options = Parser.parse(%w[ --seed 1234 --next-failure ])
-        expect(options).to include(:order => "rand:1234")
-      end
+        it 'does not force `--order defined` over a specified `--seed 1234` option that comes before it' do
+          options = Parser.parse(['--seed', '1234', option])
+          expect(options).to include(:order => "rand:1234")
+        end
 
-      it 'does not force `--order defined` over a specified `--seed 1234` option that comes after it' do
-        options = Parser.parse(%w[ --next-failure --seed 1234 ])
-        expect(options).to include(:order => "rand:1234")
+        it 'does not force `--order defined` over a specified `--seed 1234` option that comes after it' do
+          options = Parser.parse([option, '--seed', '1234'])
+          expect(options).to include(:order => "rand:1234")
+        end
       end
     end
 

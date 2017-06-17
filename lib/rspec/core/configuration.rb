@@ -161,7 +161,7 @@ module RSpec
 
       # @macro define_reader
       # The file path to use for persisting example statuses. Necessary for the
-      # `--only-failures` and `--next-failures` CLI options.
+      # `--only-failures` and `--next-failure` CLI options.
       #
       # @overload example_status_persistence_file_path
       #   @return [String] the file path
@@ -170,7 +170,7 @@ module RSpec
       define_reader :example_status_persistence_file_path
 
       # Sets the file path to use for persisting example statuses. Necessary for the
-      # `--only-failures` and `--next-failures` CLI options.
+      # `--only-failures` and `--next-failure` CLI options.
       def example_status_persistence_file_path=(value)
         @example_status_persistence_file_path = value
         clear_values_derived_from_example_status_persistence_file_path
