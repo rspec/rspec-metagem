@@ -1,12 +1,12 @@
-#`should` and `should_not` syntax
+# `should` and `should_not` syntax
 
 From the  beginning RSpec::Expectations provided `should` and `should_not` methods
 to define expectations on any object. In version 2.11 `expect` method was
 introduced which is now the recommended way to define expectations on an object.
 
-###Why switch over from `should` to `expect`
+### Why switch over from `should` to `expect`
 
-####Fix edge case issues
+#### Fix edge case issues
 
 `should` and `should_not` work by being added to every object. However, RSpec
 does not own every object and cannot ensure they work consistently on every object.
@@ -15,7 +15,7 @@ proxy objects.
 
 `expect` avoids these problems altogether by not needing to be available on all objects.
 
-####Unification of block and value syntaxes
+#### Unification of block and value syntaxes
 
 Before version 2.11 `expect` was just a more readable alternative for block
 expectations. Since version 2.11 `expect` can be used for both block and value
