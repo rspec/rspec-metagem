@@ -45,7 +45,7 @@ Feature: pattern
     Given a file named "spec/spec_helper.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.pattern << ',**/*.spec'
+        config.pattern += ',**/*.spec'
       end
       """
     And a file named "spec/two_examples.spec" with:
