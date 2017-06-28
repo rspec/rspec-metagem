@@ -838,7 +838,7 @@ module RSpec
     end
 
     def self.base_name_for(group)
-      return "Anonymous" if group.description.empty?
+      return "Anonymous".dup if group.description.empty?
 
       # Convert to CamelCase.
       name = ' ' + group.description

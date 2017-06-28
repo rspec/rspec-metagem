@@ -523,7 +523,7 @@ module RSpec
       def assign_generated_description
         if metadata[:description].empty? && (description = generate_description)
           metadata[:description] = description
-          metadata[:full_description] << description
+          metadata[:full_description] += description
         end
       ensure
         RSpec::Matchers.clear_generated_description
