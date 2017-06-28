@@ -733,9 +733,10 @@ RSpec.describe "yield_successive_args matcher" do
     end
 
     it 'fails when the successively yielded args match the matchers (at yield time only)' do
+      values = %w[ food barn ].collect { |value| value.dup }
       expect {
         expect { |b|
-          %w[ food barn ].each do |val|
+          values.each do |val|
             _yield_with_args(val, &b)
             val.sub!(/.+/, '')
           end

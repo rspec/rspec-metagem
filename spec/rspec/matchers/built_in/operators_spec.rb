@@ -15,7 +15,7 @@ end
 RSpec.describe "operator matchers", :uses_should do
   describe "should ==" do
     it "delegates message to target" do
-      subject = "apple"
+      subject = "apple".dup
       expect(subject).to receive(:==).with("apple").and_return(true)
       subject.should == "apple"
     end
@@ -75,7 +75,7 @@ RSpec.describe "operator matchers", :uses_should do
 
   describe "should_not ==" do
     it "delegates message to target" do
-      subject = "orange"
+      subject = "orange".dup
       expect(subject).to receive(:==).with("apple").and_return(false)
       subject.should_not == "apple"
     end
@@ -94,13 +94,13 @@ RSpec.describe "operator matchers", :uses_should do
 
   describe "should ===" do
     it "delegates message to target" do
-      subject = "apple"
+      subject = "apple".dup
       expect(subject).to receive(:===).with("apple").and_return(true)
       subject.should === "apple"
     end
 
     it "fails when target.===(actual) returns false" do
-      subject = "apple"
+      subject = "apple".dup
       expect(subject).to receive(:===).with("orange").and_return(false)
       expect(RSpec::Expectations).to receive(:fail_with).with(%[expected: "orange"\n     got: "apple" (using ===)], "orange", "apple")
       subject.should === "orange"
@@ -109,13 +109,13 @@ RSpec.describe "operator matchers", :uses_should do
 
   describe "should_not ===" do
     it "delegates message to target" do
-      subject = "orange"
+      subject = "orange".dup
       expect(subject).to receive(:===).with("apple").and_return(false)
       subject.should_not === "apple"
     end
 
     it "fails when target.===(actual) returns false" do
-      subject = "apple"
+      subject = "apple".dup
       expect(subject).to receive(:===).with("apple").and_return(true)
       expect(RSpec::Expectations).to receive(:fail_with).with(%[expected not: === "apple"\n         got:     "apple"], "apple", "apple")
       subject.should_not === "apple"
@@ -124,13 +124,13 @@ RSpec.describe "operator matchers", :uses_should do
 
   describe "should =~" do
     it "delegates message to target" do
-      subject = "foo"
+      subject = "foo".dup
       expect(subject).to receive(:=~).with(/oo/).and_return(true)
       subject.should =~ /oo/
     end
 
     it "fails when target.=~(actual) returns false" do
-      subject = "fu"
+      subject = "fu".dup
       expect(subject).to receive(:=~).with(/oo/).and_return(false)
       expect(RSpec::Expectations).to receive(:fail_with).with(%[expected: /oo/\n     got: "fu" (using =~)], /oo/, "fu")
       subject.should =~ /oo/
@@ -139,13 +139,13 @@ RSpec.describe "operator matchers", :uses_should do
 
   describe "should_not =~" do
     it "delegates message to target" do
-      subject = "fu"
+      subject = "fu".dup
       expect(subject).to receive(:=~).with(/oo/).and_return(false)
       subject.should_not =~ /oo/
     end
 
     it "fails when target.=~(actual) returns false" do
-      subject = "foo"
+      subject = "foo".dup
       expect(subject).to receive(:=~).with(/oo/).and_return(true)
       expect(RSpec::Expectations).to receive(:fail_with).with(%[expected not: =~ /oo/\n         got:    "foo"], /oo/, "foo")
       subject.should_not =~ /oo/

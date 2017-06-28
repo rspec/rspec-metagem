@@ -156,7 +156,7 @@ RSpec.describe "expect { ... }.to change ..." do
 
   context "with a string" do
     it "passes when actual is modified by the block" do
-      string = "ab"
+      string = "ab".dup
       expect { string << "c" }.to change { string }
     end
 

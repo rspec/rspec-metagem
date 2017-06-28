@@ -131,7 +131,7 @@ module RSpec
         end
 
         def with_arity
-          str = ''
+          str = ''.dup
           str << " with #{with_arity_string}" if @expected_arity
           str << " #{str.length == 0 ? 'with' : 'and'} #{with_keywords_string}" if @expected_keywords && @expected_keywords.count > 0
           str << " #{str.length == 0 ? 'with' : 'and'} unlimited arguments" if @unlimited_arguments

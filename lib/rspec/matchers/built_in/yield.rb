@@ -299,7 +299,7 @@ module RSpec
         # @private
         def description
           desc = 'yield with args'
-          desc << "(#{expected_arg_description})" unless @expected.empty?
+          desc = "#{desc}(#{expected_arg_description})" unless @expected.empty?
           desc
         end
 

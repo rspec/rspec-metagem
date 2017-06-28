@@ -165,7 +165,7 @@ module RSpec
           # you often only need to override `description`.
           # @return [String]
           def failure_message
-            "expected #{description_of @actual} to #{description}"
+            "expected #{description_of @actual} to #{description}".dup
           end
 
           # @api private
@@ -174,7 +174,7 @@ module RSpec
           # you often only need to override `description`.
           # @return [String]
           def failure_message_when_negated
-            "expected #{description_of @actual} not to #{description}"
+            "expected #{description_of @actual} not to #{description}".dup
           end
 
           # @private

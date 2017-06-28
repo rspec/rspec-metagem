@@ -1259,7 +1259,7 @@ module RSpec::Matchers::DSL
         end
 
         expected_msg = "RSpec::Matchers::DSL::Matcher"
-        expected_msg << " __raise_no_method_error" unless rbx?
+        expected_msg = "#{expected_msg} __raise_no_method_error" unless rbx?
 
         expect {
           expect(example).to __raise_no_method_error
