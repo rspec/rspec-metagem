@@ -1,3 +1,11 @@
+### 3.7 Development
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.6.0...master)
+
+Enhancements:
+
+* Improve compatibility with `--enable-frozen-string-literal` option
+  on Ruby 2.3+. (Pat Allan, #997)
+
 ### 3.6.0 / 2017-05-04
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.6.0.beta2...v3.6.0)
 
