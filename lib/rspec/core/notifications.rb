@@ -120,7 +120,7 @@ module RSpec::Core
       # @return [String] The list of pending examples, fully formatted in the
       #   way that RSpec's built-in formatters emit.
       def fully_formatted_pending_examples(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        formatted = "\nPending: (Failures listed here are expected and do not affect your suite's status)\n"
+        formatted = "\nPending: (Failures listed here are expected and do not affect your suite's status)\n".dup
 
         pending_notifications.each_with_index do |notification, index|
           formatted << notification.fully_formatted(index.next, colorizer)
@@ -232,9 +232,14 @@ module RSpec::Core
       #   RSpec's built-in formatters emit.
       def fully_formatted(pending_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         formatted_caller = RSpec.configuration.backtrace_formatter.backtrace_line(example.location)
-        colorizer.wrap("\n  #{pending_number}) #{example.full_description}", :pending) << "\n     " <<
-          Formatters::ExceptionPresenter::PENDING_DETAIL_FORMATTER.call(example, colorizer) <<
-          "\n" << colorizer.wrap("     # #{formatted_caller}\n", :detail)
+
+        [
+          colorizer.wrap("\n  #{pending_number}) #{example.full_description}", :pending),
+          "\n     ",
+          Formatters::ExceptionPresenter::PENDING_DETAIL_FORMATTER.call(example, colorizer),
+          "\n",
+          colorizer.wrap("     # #{formatted_caller}\n", :detail)
+        ].join("")
       end
     end
 

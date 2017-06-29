@@ -83,7 +83,7 @@ module RSpec::Core::Formatters
         highlighted = highlighter.highlight(lines)
         highlighted_terms = []
 
-        highlighted.join("\n").scan(/\e\[1;[1-9]\dm(\w+)\e\[0m/) do |first_capture, _|
+        highlighted.join("\n").scan(/\e\[[1-9]\dm(\w+)\e\[0m/) do |first_capture, _|
           highlighted_terms << first_capture
         end
 
@@ -124,7 +124,7 @@ module RSpec::Core::Formatters
     end
 
     def be_highlighted
-      include("\e[32m")
+      include("\e[31m")
     end
 
   end

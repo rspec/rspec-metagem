@@ -241,7 +241,7 @@ RSpec.describe RSpec do
 
       RSpec.clear_examples
 
-      RSpec.configuration.deprecation_stream = StringIO.new(deprecations = "")
+      RSpec.configuration.deprecation_stream = StringIO.new(deprecations = "".dup)
 
       group = RSpec.describe do
         example { RSpec.deprecate("second deprecation") }
