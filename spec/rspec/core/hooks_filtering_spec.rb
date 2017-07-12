@@ -319,6 +319,23 @@ module RSpec::Core
         expect(filters).to eq([])
       end
 
+      it "does not run :all|:context hooks if the entire context is skipped" do
+        filters = []
+        RSpec.configure do |c|
+          c.before(:all) { filters << "before all in config"}
+          c.after(:all) { filters << "after all in config"}
+          c.before(:context) { filters << "before context in config"}
+          c.after(:context) { filters << "after context in config"}
+        end
+        group = RSpec.xdescribe("skipped describe") do
+          xcontext("skipped context") do
+            it("is skipped") {}
+          end
+        end
+        group.run
+        expect(filters).to eq([])
+      end
+
       context "when the hook filters apply to individual examples instead of example groups" do
         let(:each_filters) { [] }
         let(:all_filters) { [] }
