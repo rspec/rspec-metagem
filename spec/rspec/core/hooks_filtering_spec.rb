@@ -319,7 +319,24 @@ module RSpec::Core
         expect(filters).to eq([])
       end
 
-      it "does not run :all|:context hooks if the entire context is skipped" do
+      it "runs :all|:context hooks even if there are no unskipped examples in that context" do
+        filters = []
+        group = RSpec.describe("un-skipped describe") do
+          before(:all) { filters << "before all in group"}
+          after(:all) { filters << "after all in group"}
+
+          xcontext("skipped context") do
+            before(:context) { filters << "before context in group"}
+            after(:context) { filters << "after context in group"}
+
+            it("is skipped") {}
+          end
+        end
+        group.run
+        expect(filters).to eq(["before all in group", "after all in group"])
+      end
+
+      it "does not run :all|:context hooks in global config if the entire context is skipped" do
         filters = []
         RSpec.configure do |c|
           c.before(:all) { filters << "before all in config"}
@@ -328,7 +345,24 @@ module RSpec::Core
           c.after(:context) { filters << "after context in config"}
         end
         group = RSpec.xdescribe("skipped describe") do
-          xcontext("skipped context") do
+          context("skipped context") do
+            it("is skipped") {}
+          end
+        end
+        group.run
+        expect(filters).to eq([])
+      end
+
+      it "does not run local :all|:context hooks if the entire context is skipped" do
+        filters = []
+        group = RSpec.xdescribe("skipped describe") do
+          before(:all) { filters << "before all in group"}
+          after(:all) { filters << "after all in group"}
+
+          context("skipped context") do
+            before(:context) { filters << "before context in group"}
+            after(:context) { filters << "after context in group"}
+
             it("is skipped") {}
           end
         end

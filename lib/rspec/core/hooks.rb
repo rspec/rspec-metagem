@@ -456,7 +456,9 @@ module RSpec
           return if RSpec.configuration.dry_run?
 
           if scope == :context
-            run_owned_hooks_for(position, :context, example_or_group)
+            unless example_or_group.class.metadata[:skip]
+              run_owned_hooks_for(position, :context, example_or_group)
+            end
           else
             case position
             when :before then run_example_hooks_for(example_or_group, :before, :reverse_each)
