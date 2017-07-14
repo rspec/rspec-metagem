@@ -5,7 +5,7 @@ Before do
   set_env('SHELL', '/usr/bin/bash')
 
   if RUBY_PLATFORM =~ /java/ || defined?(Rubinius)
-    @aruba_timeout_seconds = 60
+    @aruba_timeout_seconds = 120
   else
     @aruba_timeout_seconds = 10
   end
