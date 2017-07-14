@@ -50,8 +50,8 @@ Feature: Syntax Configuration
     Given a file named "spec/spec_helper.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.expect_with :rspec do |c|
-          c.syntax = :expect
+        config.expect_with :rspec do |expectations|
+          expectations.syntax = :expect
         end
       end
       """
@@ -64,11 +64,11 @@ Feature: Syntax Configuration
     Given a file named "spec/spec_helper.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.expect_with :rspec do |c|
-          c.syntax = :should
+        config.expect_with :rspec do |expectations|
+          expectations.syntax = :should
         end
-        config.mock_with :rspec do |c|
-          c.syntax = :should
+        config.mock_with :rspec do |mocks|
+          mocks.syntax = :should
         end
       end
       """
@@ -81,8 +81,8 @@ Feature: Syntax Configuration
     Given a file named "spec/spec_helper.rb" with:
       """ruby
       RSpec.configure do |config|
-        config.expect_with :rspec do |c|
-          c.syntax = [:should, :expect]
+        config.expect_with :rspec do |expectations|
+          expectations.syntax = [:should, :expect]
         end
       end
       """
