@@ -13,6 +13,21 @@ RSpec.describe RSpec do
   # JRuby appears to not respect `--disable=gem` so rubygems also gets loaded.
   allowed_loaded_features << /rubygems/ if RSpec::Support::Ruby.jruby?
 
+  disable_autorun_code =
+    if RSpec::Support::OS.windows?
+      # On Windows, the "redefine autorun" approach results in a different
+      # exit status for a reason I don't understand, so we just disable
+      # autorun outright.
+      'RSpec::Core::Runner.disable_autorun!'
+    else
+      # On JRuby, the `disable_autorun!` approach leads to a stderr warning
+      # related to a deprecation emited when `rspec/core/autorun` gets loaded,
+      # because of `caller_filter` issues, so we redefine the autorun method
+      # instead. That works fine on all Rubies when we're not on Windows as
+      # well.
+      'RSpec::Core::Runner.instance_exec { undef :autorun; def autorun; end }'
+    end
+
   it_behaves_like 'library wide checks', 'rspec-core',
     :preamble_for_lib => [
       # rspec-core loads a number of external libraries. We don't want them loaded
@@ -51,7 +66,7 @@ RSpec.describe RSpec do
       # Many files assume this has already been loaded and will have errors if it has not.
       'require "rspec/core"',
       # Prevent rspec/autorun from trying to run RSpec.
-      'RSpec::Core::Runner.disable_autorun!'
+      disable_autorun_code
     ], :skip_spec_files => %r{/fake_libs/}, :allowed_loaded_feature_regexps => allowed_loaded_features do
     if RUBY_VERSION == '1.8.7'
       before(:example, :description => /(issues no warnings when the spec files are loaded|stdlibs)/) do
