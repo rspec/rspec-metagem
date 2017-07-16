@@ -174,7 +174,10 @@ end
 
 Then(/^bisect should (succeed|fail) with output like:$/) do |succeed, expected_output|
   last_process = only_processes.last
-  expect(last_exit_status).to eq(succeed == "succeed" ? 0 : 1)
+  expected_status = succeed == "succeed" ? 0 : 1
+  expect(last_exit_status).to eq(expected_status),
+    "Expected exit status of #{expected_status} but got #{last_exit_status} \n\n" \
+    "Output:\n\n#{last_process.stdout}"
 
   expected = normalize_durations(expected_output)
   actual   = normalize_durations(last_process.stdout)
