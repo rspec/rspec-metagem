@@ -1,4 +1,4 @@
-# This file was generated on 2017-04-10T21:23:37+10:00 from the rspec-dev repo.
+# This file was generated on 2017-07-15T20:27:04+07:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 language: ruby
@@ -26,25 +26,18 @@ rvm:
   - ruby-head
   - ree
   - rbx
+  - jruby
+  - jruby-head
+  - jruby-18mode
+  - jruby-9.1.2.0
 matrix:
-  include:
-    - rvm: jruby
-      env: JRUBY_OPTS='--server -Xcompile.invokedynamic=false -Xcompat.version=2.0'
-    - rvm: jruby-head
-      env: JRUBY_OPTS='--server -Xcompile.invokedynamic=false'
-    - rvm: jruby-18mode
-      env: JRUBY_OPTS='--server -Xcompile.invokedynamic=false'
-    - rvm: jruby
-      env: JRUBY_OPTS='--server -Xcompile.invokedynamic=false'
-    - rvm: jruby-9.1.2.0
-      env: JRUBY_OPTS='--server -Xcompile.invokedynamic=false'
   allow_failures:
     - rvm: jruby-head
-      env: JRUBY_OPTS='--server -Xcompile.invokedynamic=false'
     - rvm: ruby-head
     - rvm: rbx
-    - rvm: 2.4.0-preview1
   fast_finish: true
+env:
+  - JRUBY_OPTS='--dev'
 branches:
   only:
     - master
