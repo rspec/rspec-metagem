@@ -6,6 +6,8 @@ Enhancements:
 * Add `-n` alias for `--next-failure`. (Ian Ker-Seymer, #2434)
 * Improve compatibility with `--enable-frozen-string-literal` option
   on Ruby 2.3+. (Pat Allan, #2425, #2427, #2437)
+* Do not run `:context` hooks for example groups that have been skipped.
+  (Devon Estes, #2442)
 
 Bug Fixes:
 
