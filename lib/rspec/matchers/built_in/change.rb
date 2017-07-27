@@ -372,10 +372,15 @@ module RSpec
         end
 
         def inspect_message_with_receiver(message, receiver)
-          if receiver.class == Class
+          case receiver
+          when Module
             "#{receiver}.#{message}"
+          when NilClass
+            "nil##{message}"
           else
-            "#{receiver.class}##{message}"
+            singleton_class = class << receiver; self; end
+            klass = singleton_class.ancestors.find { |ancestor| !ancestor.equal?(singleton_class) }
+            "#{klass}##{message}"
           end
         end
 
