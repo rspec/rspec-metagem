@@ -8,6 +8,8 @@ Enhancements:
   on Ruby 2.3+. (Pat Allan, #2425, #2427, #2437)
 * Do not run `:context` hooks for example groups that have been skipped.
   (Devon Estes, #2442)
+* Add `errors_outside_of_examples_count` to the JSON formatter.
+  (Takeshi Arabiki, #2448)
 
 Bug Fixes:
 
