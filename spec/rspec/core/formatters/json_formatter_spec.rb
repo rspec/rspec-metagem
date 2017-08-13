@@ -85,6 +85,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
         :example_count => 3,
         :failure_count => 1,
         :pending_count => 1,
+        :errors_outside_of_examples_count => 0,
       },
       :summary_line => "3 examples, 1 failure, 1 pending"
     }
@@ -139,13 +140,13 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
 
   describe "#dump_summary" do
     it "adds summary info to the output hash" do
-      send_notification :dump_summary, summary_notification(1.0, examples(10), examples(3), examples(4), 0)
+      send_notification :dump_summary, summary_notification(1.0, examples(10), examples(3), examples(4), 0, 1)
       expect(formatter.output_hash[:summary]).to include(
         :duration => 1.0, :example_count => 10, :failure_count => 3,
-        :pending_count => 4
+        :pending_count => 4, :errors_outside_of_examples_count => 1
       )
       summary_line = formatter.output_hash[:summary_line]
-      expect(summary_line).to eq "10 examples, 3 failures, 4 pending"
+      expect(summary_line).to eq "10 examples, 3 failures, 4 pending, 1 error occurred outside of examples"
     end
   end
 
