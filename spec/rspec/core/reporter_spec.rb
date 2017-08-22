@@ -284,10 +284,6 @@ module RSpec::Core
 
     describe "#notify_non_example_exception" do
       it "sends a `message` notification that contains the formatted exception details" do
-        if RSpec::Support::Ruby.jruby_9000?
-          pending "RSpec gets `Unable to find matching line from backtrace` on JRuby 9000"
-        end
-
         formatter_out = StringIO.new
         formatter = Formatters::ProgressFormatter.new(formatter_out)
         reporter.register_listener formatter, :message
