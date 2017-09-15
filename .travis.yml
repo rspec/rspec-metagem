@@ -1,4 +1,4 @@
-# This file was generated on 2017-08-10T01:31:46+09:00 from the rspec-dev repo.
+# This file was generated on 2017-09-15T10:18:21+09:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 language: ruby
@@ -8,6 +8,7 @@ cache:
   directories:
     - ../bundle
 before_install:
+  - unset _JAVA_OPTIONS
   - "script/clone_all_rspec_repos"
   # Note this doesn't work on JRUBY 2.0.0 mode so we don't do it, the excluded versions are broken on Ruby 2.3
   - if [ "jruby" != "$TRAVIS_RUBY_VERSION"  ]; then gem install bundler --version "1.11.2"; fi
