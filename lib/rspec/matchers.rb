@@ -241,6 +241,16 @@ module RSpec
   module Matchers
     extend ::RSpec::Matchers::DSL
 
+    # @!macro [attach] alias_matcher
+    #   @!parse
+    #     alias $1 $2
+    # @!visibility private
+    # We define this override here so we can attach a YARD macro to it.
+    # It ensures that our docs list all the matcher aliases.
+    def self.alias_matcher(*args, &block)
+      super(*args, &block)
+    end
+
     # @!method self.alias_matcher(new_name, old_name, options={}, &description_override)
     #   Extended from {RSpec::Matchers::DSL#alias_matcher}.
 
@@ -295,10 +305,6 @@ module RSpec
     def aggregate_failures(label=nil, metadata={}, &block)
       Expectations::FailureAggregator.new(label, metadata).aggregate(&block)
     end
-
-    # @!macro [attach] alias_matcher
-    #   @!parse
-    #     alias $1 $2
 
     # Passes if actual is truthy (anything but false or nil)
     def be_truthy
