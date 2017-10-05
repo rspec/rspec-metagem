@@ -21,7 +21,9 @@ module RSpec
         end
 
         # rubocop:disable Style/ClassVars
+        # @private
         @@converter = NullConverter
+
         begin
           require 'coderay'
           RSpec::Support.require_rspec_core 'formatters/syntax_highlighter'

@@ -413,6 +413,8 @@ module RSpec
 
       # rubocop:disable Metrics/AbcSize
       # rubocop:disable Metrics/MethodLength
+
+      # Build an object to store runtime configuration options and set defaults
       def initialize
         # rubocop:disable Style/GlobalVars
         @start_time = $_rspec_core_load_started_at || ::RSpec::Core::Time.now
