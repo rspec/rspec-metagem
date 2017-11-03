@@ -1,4 +1,4 @@
-# This file was generated on 2017-09-15T10:18:21+09:00 from the rspec-dev repo.
+# This file was generated on 2017-11-03T13:24:42+09:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 language: ruby
@@ -22,11 +22,11 @@ rvm:
   - 2.0.0
   - 2.1
   - 2.2.7
-  - 2.3.4
-  - 2.4.1
+  - 2.3.5
+  - 2.4.2
   - ruby-head
   - ree
-  - rbx
+  - rbx-3
   - jruby
   - jruby-head
   - jruby-1.7
@@ -39,7 +39,7 @@ matrix:
   allow_failures:
     - rvm: jruby-head
     - rvm: ruby-head
-    - rvm: rbx
+    - rvm: rbx-3
   fast_finish: true
 branches:
   only:
