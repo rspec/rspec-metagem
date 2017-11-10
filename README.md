@@ -27,6 +27,10 @@ See http://rspec.info/documentation/ for links to documentation for all gems.
 
     gem install rspec
 
+## Setup
+
+    rspec --init
+
 ## Contribute
 
 * [http://github.com/rspec/rspec-dev](http://github.com/rspec/rspec-dev)
