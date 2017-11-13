@@ -1,4 +1,4 @@
-# This file was generated on 2017-11-03T13:24:42+09:00 from the rspec-dev repo.
+# This file was generated on 2017-11-13T13:14:08+11:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 language: ruby
@@ -27,7 +27,7 @@ rvm:
   - ruby-head
   - ree
   - rbx-3
-  - jruby
+  - jruby-9.1.7.0 # pin JRuby to this until travis/rvm can install later versions
   - jruby-head
   - jruby-1.7
 env:
