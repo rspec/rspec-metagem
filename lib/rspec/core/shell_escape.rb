@@ -6,7 +6,7 @@ module RSpec
       module_function
 
       def quote(argument)
-        "'#{argument.gsub("'", "\\\\'")}'"
+        "'#{argument.to_s.gsub("'", "\\\\'")}'"
       end
 
       if RSpec::Support::OS.windows?
@@ -17,7 +17,7 @@ module RSpec
         require 'shellwords'
 
         def escape(shell_command)
-          shell_command.shellescape
+          Shellwords.escape(shell_command.to_s)
         end
       end
 

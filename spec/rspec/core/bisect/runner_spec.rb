@@ -148,6 +148,15 @@ module RSpec::Core
           expect(cmd).to first_include('-Il\ p/foo:l\ p/bar').then_include(RSpec::Core.path_to_executable)
         end
       end
+
+      it 'supports Pathnames in the load path' do
+        cmd = command_for([], :load_path => [Pathname('l p/foo'), Pathname('l p/bar') ])
+        if uses_quoting_for_escaping?
+          expect(cmd).to first_include("-I'l p/foo':'l p/bar'").then_include(RSpec::Core.path_to_executable)
+        else
+          expect(cmd).to first_include('-Il\ p/foo:l\ p/bar').then_include(RSpec::Core.path_to_executable)
+        end
+      end
     end
 
     describe "#repro_command_from", :simulate_shell_allowing_unquoted_ids do
