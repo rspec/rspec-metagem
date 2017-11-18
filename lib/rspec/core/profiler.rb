@@ -20,7 +20,9 @@ module RSpec
       def example_group_finished(notification)
         return unless notification.group.top_level?
 
-        @example_groups[notification.group][:total_time] =  Time.now - @example_groups[notification.group][:start]
+        group = @example_groups[notification.group]
+        return unless group.key?(:start)
+        group[:total_time] = Time.now - group[:start]
       end
 
       def example_started(notification)

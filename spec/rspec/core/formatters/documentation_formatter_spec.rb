@@ -33,15 +33,21 @@ module RSpec::Core::Formatters
     end
 
     it 'will not error if more finishes than starts are called' do
-      send_notification :example_group_finished, nil
-      send_notification :example_group_finished, nil
-      send_notification :example_group_finished, nil
-      expect {
-        send_notification :example_group_started, group_notification(double("example 1",
+      group =
+        double("example 1",
                :description => "first example",
                :full_description => "group first example",
-               :metadata => {}
-              ))
+               :metadata => {},
+               :top_level? => true,
+               :top_level_description => "Top group"
+              )
+
+      send_notification :example_group_finished, group_notification(group)
+      send_notification :example_group_finished, group_notification(group)
+      send_notification :example_group_finished, group_notification(group)
+
+      expect {
+        send_notification :example_group_started, group_notification(group)
       }.not_to raise_error
     end
 

@@ -36,6 +36,10 @@ module RSpec::Core
         reporter.finish
       end
 
+      it "will allow profiling when activated after formatter is used" do
+        config.profile_examples = 10
+        reporter.finish
+      end
     end
 
     describe 'start' do

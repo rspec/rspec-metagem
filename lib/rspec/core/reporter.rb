@@ -231,6 +231,7 @@ module RSpec::Core
       return if @setup
 
       @setup_default.call
+      setup_profiler
       @setup = true
     end
 
