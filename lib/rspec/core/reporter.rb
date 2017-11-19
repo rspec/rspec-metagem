@@ -21,16 +21,11 @@ module RSpec::Core
       @non_example_exception_count = 0
       @setup_default = lambda {}
       @setup = false
+      @profiler = nil
     end
 
     # @private
     attr_reader :examples, :failed_examples, :pending_examples
-
-    # @private
-    def setup_profiler
-      @profiler = Profiler.new
-      register_listener @profiler, *Profiler::NOTIFICATIONS
-    end
 
     # Registers a listener to a list of notifications. The reporter will send
     # notification of events to all registered listeners.
@@ -231,7 +226,8 @@ module RSpec::Core
       return if @setup
 
       @setup_default.call
-      setup_profiler
+      @profiler = Profiler.new
+      register_listener @profiler, *Profiler::NOTIFICATIONS
       @setup = true
     end
 

@@ -185,7 +185,6 @@ module RSpec::Core::Formatters
         context "without an existing profile formatter" do
           it "will add the profile formatter" do
             allow(reporter).to receive(:registered_listeners).with(:dump_profile) { [] }
-            expect(reporter).to receive(:setup_profiler)
             expect {
               setup_default
             }.to change { loader.formatters }.
@@ -197,7 +196,6 @@ module RSpec::Core::Formatters
         context "when a formatter that implement #dump_profile is added" do
           it "wont add the profile formatter" do
             allow(reporter).to receive(:registered_listeners).with(:dump_profile) { [:json] }
-            expect(reporter).to receive(:setup_profiler)
             setup_default
             expect(
               loader.formatters.map(&:class)

@@ -263,7 +263,6 @@ module FormatterSupport
 
   def setup_profiler
     config.profile_examples = true
-    reporter.setup_profiler
   end
 
   def formatter_output
