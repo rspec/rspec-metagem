@@ -27,7 +27,7 @@ See http://rspec.info/documentation/ for links to documentation for all gems.
 
     gem install rspec
 
-## Setup
+## Setup
 
     rspec --init
 
