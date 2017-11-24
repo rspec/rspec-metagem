@@ -143,7 +143,7 @@ RSpec.describe "#have_attributes matcher" do
     it "fails if target does not have any of the expected attributes" do
       expect {
         expect(person).to have_attributes(:name => correct_name, :age => wrong_age)
-      }.to fail_with(%r|expected #{object_inspect person} to have attributes #{hash_inspect :name => correct_name, :age => wrong_age}|)
+      }.to fail_with(%r|expected #{object_inspect person} to have attributes #{hash_inspect :age => wrong_age, :name => correct_name }|)
     end
 
     it 'diffs the attributes received with those expected' do
@@ -183,13 +183,13 @@ RSpec.describe "#have_attributes matcher" do
     it "fails if target has any of the expected attributes" do
       expect {
         expect(person).to_not have_attributes(:name => wrong_name, :age => correct_age)
-      }.to fail_with(%r|expected #{object_inspect person} not to have attributes #{hash_inspect :name => wrong_name, :age => correct_age}|)
+      }.to fail_with(%r|expected #{object_inspect person} not to have attributes #{hash_inspect :age => correct_age, :name => wrong_name }|)
     end
 
     it "fails if target has all of the expected attributes" do
       expect {
         expect(person).to_not have_attributes(:name => correct_name, :age => correct_age)
-      }.to fail_with(%r|expected #{object_inspect person} not to have attributes #{hash_inspect :name => correct_name, :age => correct_age}|)
+      }.to fail_with(%r|expected #{object_inspect person} not to have attributes #{hash_inspect :age => correct_age, :name => correct_name }|)
     end
 
     it "fails if target does not responds to any of the attributes" do
