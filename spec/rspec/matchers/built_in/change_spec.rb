@@ -207,22 +207,46 @@ RSpec.describe "expect { ... }.to change ..." do
 end
 
 RSpec.describe "expect { ... }.to change(actual, message)" do
-  it "provides a #description with the block snippet" do
+  it 'provides a #description with `SomeClass#some_message` notation' do
     expect(change('instance', :some_value).description).to eq 'change `String#some_value`'
   end
 
-  context "receiver is a instance of anonymous class" do
+  context "when the receiver is an instance of anonymous class" do
     let(:klass) do
       Class.new(SomethingExpected)
     end
 
-    it "provides a #description with the block snippet" do
+    it "can handle it" do
       expect(change(klass.new, :some_value).description).to match(/change `#<Class:.*?>#some_value`/)
     end
   end
 
-  context "receiver is a Module" do
-    it "provides a #description with the block snippet" do
+  context 'when the receiver is an object that does not respond to #class such as BasicObject' do
+    let(:basic_object) do
+      basic_object_class.new
+    end
+
+    let(:basic_object_class) do
+      defined?(BasicObject) ? BasicObject : fake_basic_object_class
+    end
+
+    let(:fake_basic_object_class) do
+      Class.new do
+        def self.to_s
+          'BasicObject'
+        end
+
+        undef class, inspect, respond_to?
+      end
+    end
+
+    it 'can properly extract the class name' do
+      expect(change(basic_object, :__id__).description).to eq 'change `BasicObject#__id__`'
+    end
+  end
+
+  context "when the receiver is a Module" do
+    it "provides a #description with `SomeModule.some_message` notation" do
       expect(change(SomethingExpected, :some_value).description).to match(/change `SomethingExpected.some_value`/)
     end
   end
