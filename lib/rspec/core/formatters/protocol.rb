@@ -17,12 +17,12 @@ module RSpec
       # @see RSpec::Core::Formatters::BaseTextFormatter
       # @see RSpec::Core::Reporter
       class Protocol
-        # @method initialize
+        # @method initialize(output)
         # @api public
         #
         # @param output [IO] the formatter output
 
-        # @method start
+        # @method start(notification)
         # @api public
         # @group Suite Notifications
         #
@@ -35,7 +35,7 @@ module RSpec
         #
         # @param notification [Notifications::StartNotification]
 
-        # @method example_group_started
+        # @method example_group_started(notification)
         # @api public
         # @group Group Notifications
         #
@@ -48,7 +48,7 @@ module RSpec
         # @param notification [Notifications::GroupNotification] containing example_group
         #   subclass of {ExampleGroup}
 
-        # @method example_group_finished
+        # @method example_group_finished(notification)
         # @api public
         # @group Group Notifications
         #
@@ -57,7 +57,7 @@ module RSpec
         # @param notification [Notifications::GroupNotification] containing example_group
         #   subclass of {ExampleGroup}
 
-        # @method example_started
+        # @method example_started(notification)
         # @api public
         # @group Example Notifications
         #
@@ -66,7 +66,7 @@ module RSpec
         # @param notification [Notifications::ExampleNotification] containing example subclass
         #   of {Example}
 
-        # @method example_finished
+        # @method example_finished(notification)
         # @api public
         # @group Example Notifications
         #
@@ -75,7 +75,7 @@ module RSpec
         # @param notification [Notifications::ExampleNotification] containing example subclass
         #   of {Example}
 
-        # @method example_passed
+        # @method example_passed(notification)
         # @api public
         # @group Example Notifications
         #
@@ -84,7 +84,7 @@ module RSpec
         # @param notification [Notifications::ExampleNotification] containing example subclass
         #   of {Example}
 
-        # @method example_pending
+        # @method example_pending(notification)
         # @api public
         # @group Example Notifications
         #
@@ -93,7 +93,7 @@ module RSpec
         # @param notification [Notifications::ExampleNotification] containing example subclass
         #   of {Example}
 
-        # @method example_failed
+        # @method example_failed(notification)
         # @api public
         # @group Example Notifications
         #
@@ -102,7 +102,7 @@ module RSpec
         # @param notification [Notifications::ExampleNotification] containing example subclass
         #   of {Example}
 
-        # @method message
+        # @method message(notification)
         # @api public
         # @group Suite Notifications
         #
@@ -110,7 +110,7 @@ module RSpec
         #
         # @param notification [Notifications::MessageNotification] containing message
 
-        # @method stop
+        # @method stop(notification)
         # @api public
         # @group Suite Notifications
         #
@@ -119,7 +119,7 @@ module RSpec
         #
         # @param notification [Notifications::NullNotification]
 
-        # @method start_dump
+        # @method start_dump(notification)
         # @api public
         # @group Suite Notifications
         #
@@ -130,7 +130,7 @@ module RSpec
         #
         # @param notification [Notifications::NullNotification]
 
-        # @method dump_failures
+        # @method dump_failures(notification)
         # @api public
         # @group Suite Notifications
         #
@@ -138,7 +138,7 @@ module RSpec
         #
         # @param notification [Notifications::NullNotification]
 
-        # @method dump_summary
+        # @method dump_summary(summary)
         # @api public
         # @group Suite Notifications
         #
@@ -148,7 +148,7 @@ module RSpec
         # @param summary [Notifications::SummaryNotification] containing duration,
         #   example_count, failure_count and pending_count
 
-        # @method dump_profile
+        # @method dump_profile(profile)
         # @api public
         # @group Suite Notifications
         #
@@ -158,7 +158,7 @@ module RSpec
         # @param profile [Notifications::ProfileNotification] containing duration,
         #   slowest_examples and slowest_example_groups
 
-        # @method dump_pending
+        # @method dump_pending(notification)
         # @api public
         # @group Suite Notifications
         #
@@ -167,7 +167,7 @@ module RSpec
         #
         # @param notification [Notifications::NullNotification]
 
-        # @method close
+        # @method close(notification)
         # @api public
         # @group Suite Notifications
         #
