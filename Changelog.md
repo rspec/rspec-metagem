@@ -1,6 +1,9 @@
 ### 3.8 Development
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.7.0...master)
 
+* Improve failure message of `change(receiver, :message)` by including the
+  receiver as `SomeClass#some_message`. (Tomohiro Hashidate, #1005)
+
 ### 3.7.0 / 2017-10-17
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.6.0...v3.7.0)
 
