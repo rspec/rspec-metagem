@@ -62,6 +62,7 @@ module RSpec
         TOO_MANY_WARNINGS_NOTICE  = "Too many similar deprecation messages " \
           "reported, disregarding further reports. #{DEPRECATION_STREAM_NOTICE}"
 
+        # @private
         SpecifiedDeprecationMessage = Struct.new(:type) do
           def initialize(data)
             @message = data.message
@@ -89,6 +90,7 @@ module RSpec
           end
         end
 
+        # @private
         GeneratedDeprecationMessage = Struct.new(:type) do
           def initialize(data)
             @data = data
