@@ -826,7 +826,7 @@ RSpec.describe "Composing a matcher with `change`" do
         expect(change(nil, :foo).
           from( a_value_within(0.1).of(0.5) ).
           to( a_value_within(0.1).of(1.5) ).description
-        ).to eq("change `nil#foo` from a value within 0.1 of 0.5 to a value within 0.1 of 1.5")
+        ).to eq("change `NilClass#foo` from a value within 0.1 of 0.5 to a value within 0.1 of 1.5")
       end
     end
 
@@ -860,7 +860,7 @@ RSpec.describe "Composing a matcher with `change`" do
         expect(change(nil, :foo).
           to( a_value_within(0.1).of(0.5) ).
           from( a_value_within(0.1).of(1.5) ).description
-        ).to eq("change `nil#foo` to a value within 0.1 of 0.5 from a value within 0.1 of 1.5")
+        ).to eq("change `NilClass#foo` to a value within 0.1 of 0.5 from a value within 0.1 of 1.5")
       end
     end
 
@@ -880,7 +880,7 @@ RSpec.describe "Composing a matcher with `change`" do
       it 'provides a description' do
         expect(change(nil, :foo).
           by( a_value_within(0.1).of(0.5) ).description
-        ).to eq("change `nil#foo` by a value within 0.1 of 0.5")
+        ).to eq("change `NilClass#foo` by a value within 0.1 of 0.5")
       end
     end
   end

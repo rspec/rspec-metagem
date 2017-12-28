@@ -375,12 +375,8 @@ module RSpec
           case receiver
           when Module
             "`#{receiver}.#{message}`"
-          when NilClass
-            "`nil##{message}`"
           else
-            singleton_class = class << receiver; self; end
-            klass = singleton_class.ancestors.find { |ancestor| !ancestor.equal?(singleton_class) }
-            "`#{klass}##{message}`"
+            "`#{Support.class_of(receiver)}##{message}`"
           end
         end
 
