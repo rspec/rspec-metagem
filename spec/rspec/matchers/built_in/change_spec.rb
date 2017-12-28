@@ -18,11 +18,11 @@ RSpec.describe "expect { ... }.to change ..." do
     it "fails when actual is not modified by the block" do
       expect do
         expect {}.to change(@instance, :some_value)
-      end.to fail_with("expected #some_value to have changed, but is still 5")
+      end.to fail_with("expected `SomethingExpected#some_value` to have changed, but is still 5")
     end
 
     it "provides a #description" do
-      expect(change(@instance, :some_value).description).to eq "change #some_value"
+      expect(change(@instance, :some_value).description).to eq "change `SomethingExpected#some_value`"
     end
   end
 
@@ -53,7 +53,7 @@ RSpec.describe "expect { ... }.to change ..." do
     it "fails when actual is not modified by the block" do
       expect do
         expect {}.to change(@instance, :some_value)
-      end.to fail_with("expected #some_value to have changed, but is still true")
+      end.to fail_with("expected `SomethingExpected#some_value` to have changed, but is still true")
     end
   end
 
@@ -105,7 +105,7 @@ RSpec.describe "expect { ... }.to change ..." do
     it "fails when actual is not modified by the block" do
       expect do
         expect {}.to change(@instance, :some_value)
-      end.to fail_with("expected #some_value to have changed, but is still nil")
+      end.to fail_with("expected `SomethingExpected#some_value` to have changed, but is still nil")
     end
   end
 
@@ -133,7 +133,7 @@ RSpec.describe "expect { ... }.to change ..." do
     it "fails when actual is not modified by the block" do
       expect do
         expect {}.to change(@instance, :some_value)
-      end.to fail_with("expected #some_value to have changed, but is still []")
+      end.to fail_with("expected `SomethingExpected#some_value` to have changed, but is still []")
     end
   end
 
@@ -201,14 +201,30 @@ RSpec.describe "expect { ... }.to change ..." do
     it "fails when actual is not modified by the block" do
       expect do
         expect {}.to change(@instance, :some_value)
-      end.to fail_with(/^expected #some_value to have changed, but is still/)
+      end.to fail_with(/^expected `SomethingExpected#some_value` to have changed, but is still/)
     end
   end
 end
 
 RSpec.describe "expect { ... }.to change(actual, message)" do
   it "provides a #description with the block snippet" do
-    expect(change('instance', :some_value).description).to eq 'change #some_value'
+    expect(change('instance', :some_value).description).to eq 'change `String#some_value`'
+  end
+
+  context "receiver is a instance of anonymous class" do
+    let(:klass) do
+      Class.new(SomethingExpected)
+    end
+
+    it "provides a #description with the block snippet" do
+      expect(change(klass.new, :some_value).description).to match(/change `#<Class:.*?>#some_value`/)
+    end
+  end
+
+  context "receiver is a Module" do
+    it "provides a #description with the block snippet" do
+      expect(change(SomethingExpected, :some_value).description).to match(/change `SomethingExpected.some_value`/)
+    end
   end
 
   context "with a missing message" do
@@ -233,7 +249,7 @@ RSpec.describe "expect { ... }.not_to change(actual, message)" do
   it "fails when actual is not modified by the block" do
     expect do
       expect {@instance.some_value = 6}.not_to change(@instance, :some_value)
-    end.to fail_with("expected #some_value not to have changed, but did change from 5 to 6")
+    end.to fail_with("expected `SomethingExpected#some_value` not to have changed, but did change from 5 to 6")
   end
 end
 
@@ -417,17 +433,17 @@ RSpec.describe "expect { ... }.to change(actual, message).by(expected)" do
   it "fails when the attribute is changed by unexpected amount" do
     expect do
       expect { @instance.some_value += 2 }.to change(@instance, :some_value).by(1)
-    end.to fail_with("expected #some_value to have changed by 1, but was changed by 2")
+    end.to fail_with("expected `SomethingExpected#some_value` to have changed by 1, but was changed by 2")
   end
 
   it "fails when the attribute is changed by unexpected amount in the opposite direction" do
     expect do
       expect { @instance.some_value -= 1 }.to change(@instance, :some_value).by(1)
-    end.to fail_with("expected #some_value to have changed by 1, but was changed by -1")
+    end.to fail_with("expected `SomethingExpected#some_value` to have changed by 1, but was changed by -1")
   end
 
   it "provides a #description" do
-    expect(change(@instance, :some_value).by(3).description).to eq "change #some_value by 3"
+    expect(change(@instance, :some_value).by(3).description).to eq "change `SomethingExpected#some_value` by 3"
   end
 end
 
@@ -483,11 +499,11 @@ RSpec.describe "expect { ... }.to change(actual, message).by_at_least(expected)"
   it "fails when the attribute is changed by less than the expected amount" do
     expect do
       expect { @instance.some_value += 1 }.to change(@instance, :some_value).by_at_least(2)
-    end.to fail_with("expected #some_value to have changed by at least 2, but was changed by 1")
+    end.to fail_with("expected `SomethingExpected#some_value` to have changed by at least 2, but was changed by 1")
   end
 
   it "provides a #description" do
-    expect(change(@instance, :some_value).by_at_least(3).description).to eq "change #some_value by at least 3"
+    expect(change(@instance, :some_value).by_at_least(3).description).to eq "change `SomethingExpected#some_value` by at least 3"
   end
 end
 
@@ -541,11 +557,11 @@ RSpec.describe "expect { ... }.to change(actual, message).by_at_most(expected)" 
   it "fails when the attribute is changed by greater than the expected amount" do
     expect do
       expect { @instance.some_value += 2 }.to change(@instance, :some_value).by_at_most(1)
-    end.to fail_with("expected #some_value to have changed by at most 1, but was changed by 2")
+    end.to fail_with("expected `SomethingExpected#some_value` to have changed by at most 1, but was changed by 2")
   end
 
   it "provides a #description" do
-    expect(change(@instance, :some_value).by_at_most(3).description).to eq "change #some_value by at most 3"
+    expect(change(@instance, :some_value).by_at_most(3).description).to eq "change `SomethingExpected#some_value` by at most 3"
   end
 end
 
@@ -596,7 +612,7 @@ RSpec.describe "expect { ... }.to change(actual, message).from(old)" do
     it "fails when attribute is not == to expected value before executing block" do
       expect do
         expect { @instance.some_value = 'foo' }.to change(@instance, :some_value).from(false)
-      end.to fail_with("expected #some_value to have initially been false, but was true")
+      end.to fail_with("expected `SomethingExpected#some_value` to have initially been false, but was true")
     end
   end
 
@@ -613,11 +629,11 @@ RSpec.describe "expect { ... }.to change(actual, message).from(old)" do
     it "fails when attribute does not match expected value before executing block" do
       expect do
         expect { @instance.some_value = "knot" }.to change(@instance, :some_value).from("cat")
-      end.to fail_with("expected #some_value to have initially been \"cat\", but was \"string\"")
+      end.to fail_with("expected `SomethingExpected#some_value` to have initially been \"cat\", but was \"string\"")
     end
 
     it "provides a #description" do
-      expect(change(@instance, :some_value).from(3).description).to eq "change #some_value from 3"
+      expect(change(@instance, :some_value).from(3).description).to eq "change `SomethingExpected#some_value` from 3"
     end
   end
 end
@@ -675,7 +691,7 @@ RSpec.describe "expect { ... }.to change(actual, message).to(new)" do
     it "fails when attribute is not == to expected value after executing block" do
       expect do
         expect { @instance.some_value = 1 }.to change(@instance, :some_value).from(true).to(false)
-      end.to fail_with("expected #some_value to have changed to false, but is now 1")
+      end.to fail_with("expected `SomethingExpected#some_value` to have changed to false, but is now 1")
     end
   end
 
@@ -692,13 +708,13 @@ RSpec.describe "expect { ... }.to change(actual, message).to(new)" do
     it "fails when attribute does not match expected value after executing block" do
       expect do
         expect { @instance.some_value = "cat" }.to change(@instance, :some_value).from("string").to("dog")
-      end.to fail_with("expected #some_value to have changed to \"dog\", but is now \"cat\"")
+      end.to fail_with("expected `SomethingExpected#some_value` to have changed to \"dog\", but is now \"cat\"")
     end
 
     it "fails with a clear message when it ends with the right value but did not change" do
       expect {
         expect { }.to change(@instance, :some_value).to("string")
-      }.to fail_with('expected #some_value to have changed to "string", but did not change')
+      }.to fail_with('expected `SomethingExpected#some_value` to have changed to "string", but did not change')
     end
   end
 end
@@ -741,13 +757,13 @@ RSpec.describe "expect { ... }.to change(actual, message).from(old).to(new)" do
   it "shows the correct messaging when #after and #to are different" do
     expect do
       expect { @instance.some_value = "cat" }.to change(@instance, :some_value).from("string").to("dog")
-    end.to fail_with("expected #some_value to have changed to \"dog\", but is now \"cat\"")
+    end.to fail_with("expected `SomethingExpected#some_value` to have changed to \"dog\", but is now \"cat\"")
   end
 
   it "shows the correct messaging when #before and #from are different" do
     expect do
       expect { @instance.some_value = "cat" }.to change(@instance, :some_value).from("not_string").to("cat")
-    end.to fail_with("expected #some_value to have initially been \"not_string\", but was \"string\"")
+    end.to fail_with("expected `SomethingExpected#some_value` to have initially been \"not_string\", but was \"string\"")
   end
 end
 
@@ -810,7 +826,7 @@ RSpec.describe "Composing a matcher with `change`" do
         expect(change(nil, :foo).
           from( a_value_within(0.1).of(0.5) ).
           to( a_value_within(0.1).of(1.5) ).description
-        ).to eq("change #foo from a value within 0.1 of 0.5 to a value within 0.1 of 1.5")
+        ).to eq("change `NilClass#foo` from a value within 0.1 of 0.5 to a value within 0.1 of 1.5")
       end
     end
 
@@ -844,7 +860,7 @@ RSpec.describe "Composing a matcher with `change`" do
         expect(change(nil, :foo).
           to( a_value_within(0.1).of(0.5) ).
           from( a_value_within(0.1).of(1.5) ).description
-        ).to eq("change #foo to a value within 0.1 of 0.5 from a value within 0.1 of 1.5")
+        ).to eq("change `NilClass#foo` to a value within 0.1 of 0.5 from a value within 0.1 of 1.5")
       end
     end
 
@@ -864,7 +880,7 @@ RSpec.describe "Composing a matcher with `change`" do
       it 'provides a description' do
         expect(change(nil, :foo).
           by( a_value_within(0.1).of(0.5) ).description
-        ).to eq("change #foo by a value within 0.1 of 0.5")
+        ).to eq("change `NilClass#foo` by a value within 0.1 of 0.5")
       end
     end
   end
