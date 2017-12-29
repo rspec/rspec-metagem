@@ -109,6 +109,58 @@ RSpec.describe "expect { ... }.to change ..." do
     end
   end
 
+  context "with a deeply nested object graph" do
+    it "passes when a leaf is changed" do
+      data = [{ :a => [1, 2] }]
+      expect { data[0][:a] << 3 }.to change { data }
+    end
+
+    it 'fails when no part of it is changed' do
+      data = [{ :a => [1, 2] }]
+      failure_msg = /expected #{value_pattern} to have changed, but is still #{regexp_inspect data}/
+
+      expect {
+        expect { data.to_s }.to change { data }
+      }.to fail_with(failure_msg)
+    end
+
+    it "passes when correctly specifying the exact mutation of a leaf" do
+      data = [{ :a => [1, 2] }]
+
+      expect { data[0][:a] << 3 }.to change { data }.
+          from([{ :a => [1, 2] }]).
+          to([{ :a => [1, 2, 3] }])
+    end
+
+    it "fails when wrongly specifying the `from` value" do
+      data = [{ :a => [1, 2] }]
+      expected_initial = [{ :a => [1] }]
+      failure_msg = /expected #{value_pattern} to have initially been #{regexp_inspect expected_initial}, but was #{regexp_inspect data}/
+
+      expect {
+        expect { data[0][:a] << 3 }.to change { data }.
+            from(expected_initial).
+            to([{ :a => [1, 2, 3] }])
+      }.to fail_with(failure_msg)
+    end
+
+    it "fails when wrongly specifying the `to` value" do
+      data = [{ :a => [1, 2] }]
+      expected_final = [{ :a => [1] }]
+      failure_msg = /expected #{value_pattern} to have changed to #{regexp_inspect expected_final}, but is now #{regexp_inspect [{ :a => [1, 2, 3] }]}/
+
+      expect {
+        expect { data[0][:a] << 3 }.to change { data }.
+            from([{ :a => [1, 2] }]).
+            to(expected_final)
+      }.to fail_with(failure_msg)
+    end
+
+    def regexp_inspect(object)
+      Regexp.escape(object.inspect)
+    end
+  end
+
   context "with an array" do
     before(:example) do
       @instance = SomethingExpected.new
@@ -190,6 +242,10 @@ RSpec.describe "expect { ... }.to change ..." do
 
         def ==(other)
           elements == other.elements
+        end
+
+        def hash
+          elements.hash
         end
       end.new
     end
@@ -366,6 +422,34 @@ RSpec.describe "expect { ... }.not_to change { block }" do
     it "passes when the stream does not change" do
       k = STDOUT
       expect { }.not_to change { k }
+    end
+  end
+
+  context "with a deeply nested object graph" do
+    it "passes when the object is changed" do
+      data = [{ :a => [1, 2] }]
+      expect { data.to_s }.not_to change { data }
+    end
+
+    it 'fails when part of it is changed' do
+      data = [{ :a => [1, 2] }]
+      failure_msg = /expected #{value_pattern} not to have changed, but did change from #{regexp_inspect data} to #{regexp_inspect [{:a=>[1, 2, 3]}]}/
+
+      expect {
+        expect { data[0][:a] << 3 }.not_to change { data }
+      }.to fail_with(failure_msg)
+    end
+
+    it "passes when correctly specifying the exact mutation of a leaf" do
+      data = [{ :a => [1, 2] }]
+
+      expect { data[0][:a] << 3 }.to change { data }.
+          from([{ :a => [1, 2] }]).
+          to([{ :a => [1, 2, 3] }])
+    end
+
+    def regexp_inspect(object)
+      Regexp.escape(object.inspect)
     end
   end
 end

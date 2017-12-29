@@ -43,16 +43,13 @@ module RSpec
 
         # @private
         def matches?(event_proc)
-          @event_proc = event_proc
-          return false unless Proc === event_proc
           raise_block_syntax_error if block_given?
-          change_details.perform_change(event_proc)
-          change_details.changed?
+          perform_change(event_proc) && change_details.changed?
         end
 
         def does_not_match?(event_proc)
           raise_block_syntax_error if block_given?
-          !matches?(event_proc) && Proc === event_proc
+          perform_change(event_proc) && !change_details.changed?
         end
 
         # @api private
@@ -92,6 +89,18 @@ module RSpec
           @change_details ||= ChangeDetails.new(matcher_name, @receiver, @message, &@block)
         end
 
+        def perform_change(event_proc)
+          @event_proc = event_proc
+          change_details.perform_change(event_proc) do |actual_before|
+            # pre-compute values derived from the `before` value before the
+            # mutation is applied, in case the specified mutation is mutation
+            # of a single object (rather than a changing what object a method
+            # returns). We need to cache these values before the `before` value
+            # they are based on potentially gets mutated.
+            @actual_before_description = description_of(actual_before)
+          end
+        end
+
         def raise_block_syntax_error
           raise SyntaxError, "Block not received by the `change` matcher. " \
           "Perhaps you want to use `{ ... }` instead of do/end?"
@@ -99,12 +108,12 @@ module RSpec
 
         def positive_failure_reason
           return "was not given a block" unless Proc === @event_proc
-          "is still #{description_of change_details.actual_before}"
+          "is still #{@actual_before_description}"
         end
 
         def negative_failure_reason
           return "was not given a block" unless Proc === @event_proc
-          "did change from #{description_of change_details.actual_before} " \
+          "did change from #{@actual_before_description} " \
           "to #{description_of change_details.actual_after}"
         end
       end
@@ -129,9 +138,7 @@ module RSpec
         # @private
         def matches?(event_proc)
           @event_proc = event_proc
-          return false unless Proc === event_proc
-          @change_details.perform_change(event_proc)
-          @comparer.call(@change_details.actual_delta)
+          @change_details.perform_change(event_proc) && @comparer.call(@change_details.actual_delta)
         end
 
         # @private
@@ -173,10 +180,7 @@ module RSpec
 
         # @private
         def matches?(event_proc)
-          @event_proc = event_proc
-          return false unless Proc === event_proc
-          @change_details.perform_change(event_proc)
-          @change_details.changed? && matches_before? && matches_after?
+          perform_change(event_proc) && @change_details.changed? && @matches_before && matches_after?
         end
 
         # @private
@@ -187,7 +191,7 @@ module RSpec
         # @private
         def failure_message
           return not_given_a_block_failure unless Proc === @event_proc
-          return before_value_failure      unless matches_before?
+          return before_value_failure      unless @matches_before
           return did_not_change_failure    unless @change_details.changed?
           after_value_failure
         end
@@ -199,8 +203,17 @@ module RSpec
 
       private
 
-        def matches_before?
-          values_match?(@expected_before, @change_details.actual_before)
+        def perform_change(event_proc)
+          @event_proc = event_proc
+          @change_details.perform_change(event_proc) do |actual_before|
+            # pre-compute values derived from the `before` value before the
+            # mutation is applied, in case the specified mutation is mutation
+            # of a single object (rather than a changing what object a method
+            # returns). We need to cache these values before the `before` value
+            # they are based on potentially gets mutated.
+            @matches_before = values_match?(@expected_before, actual_before)
+            @actual_before_description = description_of(actual_before)
+          end
         end
 
         def matches_after?
@@ -210,7 +223,7 @@ module RSpec
         def before_value_failure
           "expected #{@change_details.value_representation} " \
           "to have initially been #{description_of @expected_before}, " \
-          "but was #{description_of @change_details.actual_before}"
+          "but was #{@actual_before_description}"
         end
 
         def after_value_failure
@@ -226,7 +239,7 @@ module RSpec
 
         def did_change_failure
           "expected #{@change_details.value_representation} not to have changed, but " \
-          "did change from #{description_of @change_details.actual_before} " \
+          "did change from #{@actual_before_description} " \
           "to #{description_of @change_details.actual_after}"
         end
 
@@ -260,16 +273,13 @@ module RSpec
               "is not supported"
           end
 
-          @event_proc = event_proc
-          return false unless Proc === event_proc
-          @change_details.perform_change(event_proc)
-          !@change_details.changed? && matches_before?
+          perform_change(event_proc) && !@change_details.changed? && @matches_before
         end
 
         # @private
         def failure_message_when_negated
           return not_given_a_block_failure unless Proc === @event_proc
-          return before_value_failure unless matches_before?
+          return before_value_failure unless @matches_before
           did_change_failure
         end
 
@@ -312,8 +322,20 @@ module RSpec
 
       # @private
       # Encapsulates the details of the before/after values.
+      #
+      # Note that this class exposes the `actual_after` value, to allow the
+      # matchers above to derive failure messages, etc from the value on demand
+      # as needed, but it intentionally does _not_ expose the `actual_before`
+      # value. Some usages of the `change` matcher mutate a specific object
+      # returned by the value proc, which means that failure message snippets,
+      # etc, which are derived from the `before` value may not be accurate if
+      # they are lazily computed as needed. We must pre-compute them before
+      # applying the change in the `expect` block. To ensure that all `change`
+      # matchers do that properly, we do not expeose the `actual_before` value.
+      # Instead, matchers must pass a block to `perform_change`, which yields
+      # the `actual_before` value before applying the change.
       class ChangeDetails
-        attr_reader :actual_before, :actual_after
+        attr_reader :actual_after
 
         def initialize(matcher_name, receiver=nil, message=nil, &block)
           if receiver && !message
@@ -344,12 +366,27 @@ module RSpec
 
         def perform_change(event_proc)
           @actual_before = evaluate_value_proc
+          @before_hash = @actual_before.hash
+          yield @actual_before if block_given?
+
+          return false unless Proc === event_proc
           event_proc.call
+
           @actual_after = evaluate_value_proc
+          true
         end
 
         def changed?
-          @actual_before != @actual_after
+          if @actual_before.__id__ == @actual_after.__id__
+            # The same object was returned both before and after; to see if
+            # it changed we have to check the hash value since `x == x` for
+            # all objects, regardless of how the object was mutated.
+            @before_hash != @actual_after.hash
+          else
+            # We do not want to use the hash in the general case as objects of
+            # different classes can return the same hash value.
+            @actual_before != @actual_after
+          end
         end
 
         def actual_delta
@@ -359,16 +396,7 @@ module RSpec
       private
 
         def evaluate_value_proc
-          value_proc = @value_proc || lambda { @receiver.__send__(@message) }
-
-          case val = value_proc.call
-          when IO # enumerable, but we don't want to dup it.
-            val
-          when Enumerable, String
-            val.dup
-          else
-            val
-          end
+          @value_proc ? @value_proc.call : @receiver.__send__(@message)
         end
 
         def message_notation(receiver, message)

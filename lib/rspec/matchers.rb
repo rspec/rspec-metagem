@@ -480,7 +480,10 @@ module RSpec
     # == Notes
     #
     # Evaluates `receiver.message` or `block` before and after it
-    # evaluates the block passed to `expect`.
+    # evaluates the block passed to `expect`. If the value is the same
+    # object, its before/after `hash` value is used to see if it has changed.
+    # Therefore, your object needs to properly implement `hash` to work correctly
+    # with this matcher.
     #
     # `expect( ... ).not_to change` supports the form that specifies `from`
     # (which specifies what you expect the starting, unchanged value to be)

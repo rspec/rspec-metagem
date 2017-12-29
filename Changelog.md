@@ -3,6 +3,11 @@
 
 * Improve failure message of `change(receiver, :message)` by including the
   receiver as `SomeClass#some_message`. (Tomohiro Hashidate, #1005)
+* Improve `change` matcher so that it can correctly detect changes in
+  deeply nested mutable objects (such as arrays-of-hashes-of-arrays).
+  The improved logic uses the before/after `hash` value to see if the
+  object has been mutated, rather than shallow duping the object.
+  (Myron Marston, #1034)
 
 ### 3.7.0 / 2017-10-17
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.6.0...v3.7.0)
