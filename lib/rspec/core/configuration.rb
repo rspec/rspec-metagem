@@ -1520,8 +1520,6 @@ module RSpec
       end
 
       # @private
-      # @macro [attach] delegate_to_ordering_manager
-      #   @!method $1
       def self.delegate_to_ordering_manager(*methods)
         methods.each do |method|
           define_method method do |*args, &block|
@@ -1530,12 +1528,12 @@ module RSpec
         end
       end
 
-      # @macro delegate_to_ordering_manager
+      # @!method seed=(value)
       #
       # Sets the seed value and sets the default global ordering to random.
       delegate_to_ordering_manager :seed=
 
-      # @macro delegate_to_ordering_manager
+      # @!method seed
       # Seed for random ordering (default: generated randomly each run).
       #
       # When you run specs with `--order random`, RSpec generates a random seed
@@ -1549,7 +1547,7 @@ module RSpec
       # don't accidentally leave the seed encoded.
       delegate_to_ordering_manager :seed
 
-      # @macro delegate_to_ordering_manager
+      # @!method order=(value)
       #
       # Sets the default global ordering strategy. By default this can be one
       # of `:defined`, `:random`, but is customizable through the
@@ -1559,7 +1557,8 @@ module RSpec
       # @see #register_ordering
       delegate_to_ordering_manager :order=
 
-      # @macro delegate_to_ordering_manager
+      # @!method register_ordering(name)
+      #
       # Registers a named ordering strategy that can later be
       # used to order an example group's subgroups by adding
       # `:order => <name>` metadata to the example group.
