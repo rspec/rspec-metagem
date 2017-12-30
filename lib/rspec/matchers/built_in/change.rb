@@ -331,7 +331,7 @@ module RSpec
       # etc, which are derived from the `before` value may not be accurate if
       # they are lazily computed as needed. We must pre-compute them before
       # applying the change in the `expect` block. To ensure that all `change`
-      # matchers do that properly, we do not expeose the `actual_before` value.
+      # matchers do that properly, we do not expose the `actual_before` value.
       # Instead, matchers must pass a block to `perform_change`, which yields
       # the `actual_before` value before applying the change.
       class ChangeDetails
@@ -377,16 +377,18 @@ module RSpec
         end
 
         def changed?
-          if @actual_before.__id__ == @actual_after.__id__
-            # The same object was returned both before and after; to see if
-            # it changed we have to check the hash value since `x == x` for
-            # all objects, regardless of how the object was mutated.
-            @before_hash != @actual_after.hash
-          else
-            # We do not want to use the hash in the general case as objects of
-            # different classes can return the same hash value.
-            @actual_before != @actual_after
-          end
+          # Consider it changed if either:
+          #
+          # - The before/after values are unequal
+          # - The before/after values have different hash values
+          #
+          # The latter case specifically handles the case when the value proc
+          # returns the exact same object, but it has been mutated.
+          #
+          # Note that it is not sufficient to only check the hashes; it is
+          # possible for two values to be unequal (and of different classes)
+          # but to return the same hash value.
+          @actual_before != @actual_after || @before_hash != @actual_after.hash
         end
 
         def actual_delta

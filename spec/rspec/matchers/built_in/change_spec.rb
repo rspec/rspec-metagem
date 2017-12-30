@@ -92,6 +92,15 @@ RSpec.describe "expect { ... }.to change ..." do
     end
   end
 
+  it 'correctly detects a change that both mutates and replaces an object' do
+    obj = Struct.new(:x).new([])
+
+    expect {
+      obj.x << 1 # mutate it
+      obj.x = [1] # replace it
+    }.to change { obj.x }
+  end
+
   context "with nil value" do
     before(:example) do
       @instance = SomethingExpected.new
