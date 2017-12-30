@@ -503,7 +503,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       end
     end
 
-    it "leaves raised exceptions unmodified (GH-1103)" do
+    it "leaves raised exceptions unmodified (GH-1103)", :if => RUBY_VERSION < '2.5' do
       # set the backtrace, otherwise MRI will build a whole new object,
       # and thus mess with our expectations. Rubinius and JRuby are not
       # affected.
