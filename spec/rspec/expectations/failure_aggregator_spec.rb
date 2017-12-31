@@ -216,6 +216,19 @@ module RSpec::Expectations
     end
 
     context "when an expectation failure happens in another thread" do
+      # On Ruby 2.5+, the new `report_on_exception` causes the errors in the threads
+      # to print warnings, which our rspec-support test harness converts into a test
+      # failure since we want to enforce warnings-free code. To prevent the warning,
+      # we need to disable the setting here.
+      if Thread.respond_to?(:report_on_exception)
+        around do |example|
+          orig = Thread.report_on_exception
+          Thread.report_on_exception = false
+          example.run
+          Thread.report_on_exception = orig
+        end
+      end
+
       it "includes the failure in the failures array if there are other failures" do
         expect {
           aggregate_failures do
