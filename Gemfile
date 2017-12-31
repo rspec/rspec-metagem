@@ -20,7 +20,7 @@ else
   gem 'rake', '< 11.0.0' # rake 11 requires Ruby 1.9.3 or later
 end
 
-gem 'yard', '~> 0.8.7', :require => false
+gem 'yard', '~> 0.9.12', :require => false
 
 ### deps for rdoc.info
 group :documentation do

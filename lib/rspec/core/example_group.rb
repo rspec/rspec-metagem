@@ -107,6 +107,7 @@ module RSpec
       # @private
       # @macro [attach] define_example_method
       #   @!scope class
+      #   @method $1
       #   @overload $1
       #   @overload $1(&example_implementation)
       #     @param example_implementation [Block] The implementation of the example.

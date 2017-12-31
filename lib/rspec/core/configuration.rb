@@ -89,7 +89,6 @@ module RSpec
 
       # @macro [attach] add_setting
       #   @!attribute [rw] $1
-      #   @!method $1=(value)
       #
       # @macro [attach] define_reader
       #   @!attribute [r] $1
@@ -275,45 +274,45 @@ module RSpec
       add_setting :run_all_when_everything_filtered
 
       # @macro add_setting
-      # Color to use to indicate success.
-      # @param color [Symbol] defaults to `:green` but can be set to one of the
-      #   following: `[:black, :white, :red, :green, :yellow, :blue, :magenta,
-      #   :cyan]`
+      # Color to use to indicate success.  Defaults to `:green` but can be set
+      # to one of the following: `[:black, :white, :red, :green, :yellow,
+      # :blue, :magenta, :cyan]`
+      # @return [Symbol]
       add_setting :success_color
 
       # @macro add_setting
-      # Color to use to print pending examples.
-      # @param color [Symbol] defaults to `:yellow` but can be set to one of the
-      #   following: `[:black, :white, :red, :green, :yellow, :blue, :magenta,
-      #   :cyan]`
+      # Color to use to print pending examples.  Defaults to `:yellow` but can
+      # be set to one of the following: `[:black, :white, :red, :green,
+      # :yellow, :blue, :magenta, :cyan]`
+      # @return [Symbol]
       add_setting :pending_color
 
       # @macro add_setting
-      # Color to use to indicate failure.
-      # @param color [Symbol] defaults to `:red` but can be set to one of the
-      #   following: `[:black, :white, :red, :green, :yellow, :blue, :magenta,
-      #   :cyan]`
+      # Color to use to indicate failure.  Defaults to `:red` but can be set to
+      # one of the following: `[:black, :white, :red, :green, :yellow, :blue,
+      # :magenta, :cyan]`
+      # @return [Symbol]
       add_setting :failure_color
 
       # @macro add_setting
-      # The default output color.
-      # @param color [Symbol] defaults to `:white` but can be set to one of the
-      #   following: `[:black, :white, :red, :green, :yellow, :blue, :magenta,
-      #   :cyan]`
+      # The default output color. Defaults to `:white` but can be set to one of
+      # the following: `[:black, :white, :red, :green, :yellow, :blue,
+      # :magenta, :cyan]`
+      # @return [Symbol]
       add_setting :default_color
 
       # @macro add_setting
-      # Color used when a pending example is fixed.
-      # @param color [Symbol] defaults to `:blue` but can be set to one of the
-      #   following: `[:black, :white, :red, :green, :yellow, :blue, :magenta,
-      #   :cyan]`
+      # Color used when a pending example is fixed. Defaults to `:blue` but can
+      # be set to one of the following: `[:black, :white, :red, :green,
+      # :yellow, :blue, :magenta, :cyan]`
+      # @return [Symbol]
       add_setting :fixed_color
 
       # @macro add_setting
-      # Color used to print details.
-      # @param color [Symbol] defaults to `:cyan` but can be set to one of the
-      #   following: `[:black, :white, :red, :green, :yellow, :blue, :magenta,
-      #   :cyan]`
+      # Color used to print details.  Defaults to `:cyan` but can be set to one
+      # of the following: `[:black, :white, :red, :green, :yellow, :blue,
+      # :magenta, :cyan]`
+      # @return [Symbol]
       add_setting :detail_color
 
       # @macro add_setting
@@ -1521,8 +1520,6 @@ module RSpec
       end
 
       # @private
-      # @macro [attach] delegate_to_ordering_manager
-      #   @!method $1
       def self.delegate_to_ordering_manager(*methods)
         methods.each do |method|
           define_method method do |*args, &block|
@@ -1531,12 +1528,12 @@ module RSpec
         end
       end
 
-      # @macro delegate_to_ordering_manager
+      # @!method seed=(value)
       #
       # Sets the seed value and sets the default global ordering to random.
       delegate_to_ordering_manager :seed=
 
-      # @macro delegate_to_ordering_manager
+      # @!method seed
       # Seed for random ordering (default: generated randomly each run).
       #
       # When you run specs with `--order random`, RSpec generates a random seed
@@ -1550,7 +1547,7 @@ module RSpec
       # don't accidentally leave the seed encoded.
       delegate_to_ordering_manager :seed
 
-      # @macro delegate_to_ordering_manager
+      # @!method order=(value)
       #
       # Sets the default global ordering strategy. By default this can be one
       # of `:defined`, `:random`, but is customizable through the
@@ -1560,7 +1557,8 @@ module RSpec
       # @see #register_ordering
       delegate_to_ordering_manager :order=
 
-      # @macro delegate_to_ordering_manager
+      # @!method register_ordering(name)
+      #
       # Registers a named ordering strategy that can later be
       # used to order an example group's subgroups by adding
       # `:order => <name>` metadata to the example group.
