@@ -393,7 +393,7 @@ module RSpec
         end
       end
 
-      # rubocop:disable Style/AccessorMethodName
+      # rubocop:disable Naming/AccessorMethodName
 
       # @private
       #
@@ -420,7 +420,7 @@ module RSpec
         self.display_exception = exception
       end
 
-      # rubocop:enable Style/AccessorMethodName
+      # rubocop:enable Naming/AccessorMethodName
 
       # @private
       #
@@ -642,12 +642,12 @@ module RSpec
         @reporter = reporter
       end
 
-      # rubocop:disable Style/AccessorMethodName
+      # rubocop:disable Naming/AccessorMethodName
       def set_exception(exception)
         reporter.notify_non_example_exception(exception, "An error occurred in #{description}.")
         RSpec.world.wants_to_quit = true
       end
-      # rubocop:enable Style/AccessorMethodName
+      # rubocop:enable Naming/AccessorMethodName
     end
   end
 end

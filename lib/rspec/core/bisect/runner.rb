@@ -29,8 +29,8 @@ module RSpec
           parts << "--format"   << "bisect"
           parts << "--drb-port" << @server.drb_port
 
-          parts.concat reusable_cli_options
-          parts.concat locations.map { |l| open3_safe_escape(l) }
+          parts.concat(reusable_cli_options)
+          parts.concat(locations.map { |l| open3_safe_escape(l) })
 
           parts.join(" ")
         end

@@ -1771,7 +1771,7 @@ module RSpec
       #       require 'support/db'
       #     end
       #   end
-      def when_first_matching_example_defined(*filters, &block)
+      def when_first_matching_example_defined(*filters)
         specified_meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
 
         callback = lambda do |example_or_group_meta|
@@ -1782,7 +1782,7 @@ module RSpec
           # Ensure the callback only fires once.
           @derived_metadata_blocks.delete(callback, specified_meta)
 
-          block.call
+          yield
         end
 
         @derived_metadata_blocks.append(callback, specified_meta)

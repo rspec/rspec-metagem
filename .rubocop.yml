@@ -1,4 +1,5 @@
-inherit_from: .rubocop_rspec_base.yml
+inherit_from:
+  - .rubocop_rspec_base.yml
 
 AllCops:
   Exclude:
@@ -10,7 +11,6 @@ Metrics/ClassLength:
   Max: 330
 
 Encoding:
-  EnforcedStyle: when_needed
   Exclude:
     - lib/rspec/core/formatters/exception_presenter.rb
 
@@ -53,23 +53,17 @@ Style/StringLiteralsInInterpolation:
 Style/SymbolProc:
   Enabled: false
 
-Style/SpaceAroundOperators:
-  MultiSpaceAllowedForOperators:
-      - '='
-      - '||='
-      - '==='
-      - '=>'
-      - '<<'
-      - '||'
+Layout/SpaceAroundOperators:
+  AllowForAlignment: true
 
-Style/AccessModifierIndentation:
+Layout/AccessModifierIndentation:
   Enabled: false
 
 Style/RegexpLiteral:
   Enabled: false
 
 # This could change depending of the style used
-Style/MultilineOperationIndentation:
+Layout/MultilineOperationIndentation:
   Enabled: false
 
 Style/BarePercentLiterals:
@@ -95,3 +89,22 @@ Style/RaiseArgs:
     - lib/rspec/core/hooks.rb
     - lib/rspec/core/option_parser.rb
     - lib/rspec/core/pending.rb
+
+Performance/RedundantBlockCall:
+  Exclude:
+    - lib/rspec/core/rake_task.rb
+
+Lint/IneffectiveAccessModifier:
+  Exclude:
+    - lib/rspec/core/memoized_helpers.rb # Fixing this file was too much of a diff
+
+Performance/Caller:
+  Exclude:
+    # The suggested fix for this cop only works on more recent rubies. The
+    # speed up can be substantial (previous optimization work I've done on
+    # RSpec involved caller optimization) but I haven't benchmarked this
+    # particular case to see if it's worth introducing version branching.
+    - 'lib/rspec/core/example_group.rb'
+
+Metrics/BlockLength:
+  Max: 193

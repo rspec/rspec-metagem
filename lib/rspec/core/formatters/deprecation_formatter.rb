@@ -81,7 +81,7 @@ module RSpec
 
           def output_formatted(str)
             return str unless str.lines.count > 1
-            separator = "#{'-' * 80}"
+            separator = '-' * 80
             "#{separator}\n#{str.chomp}\n#{separator}"
           end
 

@@ -483,9 +483,9 @@ EOS
       def self.module_for(example_group)
         get_constant_or_yield(example_group, :LetDefinitions) do
           mod = Module.new do
-            include Module.new {
+            include(Module.new {
               example_group.const_set(:NamedSubjectPreventSuper, self)
-            }
+            })
           end
 
           example_group.const_set(:LetDefinitions, mod)

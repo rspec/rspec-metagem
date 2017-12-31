@@ -259,7 +259,7 @@ module RSpec
           # :nocov:
           def ensure_block_has_source_location(block)
             source_location = yield.split(':')
-            block.extend Module.new { define_method(:source_location) { source_location } }
+            block.extend(Module.new { define_method(:source_location) { source_location } })
           end
           # :nocov:
         end
