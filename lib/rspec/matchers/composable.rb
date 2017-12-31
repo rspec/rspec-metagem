@@ -156,10 +156,12 @@ module RSpec
       # Wraps an item in order to surface its `description` via `inspect`.
       # @api private
       DescribableItem = Struct.new(:item) do
+        # Inspectable version of the item description
         def inspect
           "(#{item.description})"
         end
 
+        # A pretty printed version of the item description.
         def pretty_print(pp)
           pp.text "(#{item.description})"
         end
