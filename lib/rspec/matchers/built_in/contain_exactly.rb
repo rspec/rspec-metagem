@@ -89,7 +89,7 @@ module RSpec
           elsif actual.respond_to?(:to_a) && !to_a_disallowed?(actual)
             @actual = actual.to_a
           else
-            return false
+            false
           end
         end
 

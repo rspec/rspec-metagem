@@ -77,7 +77,7 @@ module RSpec
         end
 
         def method_description
-          @method_name.to_s.gsub('_', ' ')
+          @method_name.to_s.tr('_', ' ')
         end
 
         def args_description

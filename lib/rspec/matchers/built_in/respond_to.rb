@@ -151,7 +151,7 @@ module RSpec
                      @expected_keywords.map(&:inspect).join(' and ')
                    else
                      "#{@expected_keywords[0...-1].map(&:inspect).join(', ')}, and #{@expected_keywords.last.inspect}"
-          end
+                   end
 
           "keyword#{@expected_keywords.count == 1 ? '' : 's'} #{kw_str}"
         end

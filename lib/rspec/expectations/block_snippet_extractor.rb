@@ -1,7 +1,7 @@
 module RSpec
   module Expectations
     # @private
-    class BlockSnippetExtractor # rubocop:disable Style/ClassLength
+    class BlockSnippetExtractor # rubocop:disable Metrics/ClassLength
       # rubocop should properly handle `Struct.new {}` as an inner class definition.
 
       attr_reader :proc, :method_name
