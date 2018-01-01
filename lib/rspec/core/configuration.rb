@@ -1808,6 +1808,12 @@ module RSpec
         handle_suite_hook(scope, meta) do
           @before_suite_hooks << Hooks::BeforeHook.new(block, {})
         end || begin
+          # defeat Ruby 2.5 lazy proc allocation to ensure
+          # the methods below are passed the same proc instances
+          # so `Hook` equality is preserved. For more info, see:
+          # https://bugs.ruby-lang.org/issues/14045#note-5
+          block.__id__
+
           add_hook_to_existing_matching_groups(meta, scope) { |g| g.before(scope, *meta, &block) }
           super(scope, *meta, &block)
         end
@@ -1831,6 +1837,12 @@ module RSpec
         handle_suite_hook(scope, meta) do
           @before_suite_hooks.unshift Hooks::BeforeHook.new(block, {})
         end || begin
+          # defeat Ruby 2.5 lazy proc allocation to ensure
+          # the methods below are passed the same proc instances
+          # so `Hook` equality is preserved. For more info, see:
+          # https://bugs.ruby-lang.org/issues/14045#note-5
+          block.__id__
+
           add_hook_to_existing_matching_groups(meta, scope) { |g| g.prepend_before(scope, *meta, &block) }
           super(scope, *meta, &block)
         end
@@ -1849,6 +1861,12 @@ module RSpec
         handle_suite_hook(scope, meta) do
           @after_suite_hooks.unshift Hooks::AfterHook.new(block, {})
         end || begin
+          # defeat Ruby 2.5 lazy proc allocation to ensure
+          # the methods below are passed the same proc instances
+          # so `Hook` equality is preserved. For more info, see:
+          # https://bugs.ruby-lang.org/issues/14045#note-5
+          block.__id__
+
           add_hook_to_existing_matching_groups(meta, scope) { |g| g.after(scope, *meta, &block) }
           super(scope, *meta, &block)
         end
@@ -1872,6 +1890,12 @@ module RSpec
         handle_suite_hook(scope, meta) do
           @after_suite_hooks << Hooks::AfterHook.new(block, {})
         end || begin
+          # defeat Ruby 2.5 lazy proc allocation to ensure
+          # the methods below are passed the same proc instances
+          # so `Hook` equality is preserved. For more info, see:
+          # https://bugs.ruby-lang.org/issues/14045#note-5
+          block.__id__
+
           add_hook_to_existing_matching_groups(meta, scope) { |g| g.append_after(scope, *meta, &block) }
           super(scope, *meta, &block)
         end
@@ -1881,6 +1905,12 @@ module RSpec
       #
       # See {Hooks#around} for full `around` hook docs.
       def around(scope=nil, *meta, &block)
+        # defeat Ruby 2.5 lazy proc allocation to ensure
+        # the methods below are passed the same proc instances
+        # so `Hook` equality is preserved. For more info, see:
+        # https://bugs.ruby-lang.org/issues/14045#note-5
+        block.__id__
+
         add_hook_to_existing_matching_groups(meta, scope) { |g| g.around(scope, *meta, &block) }
         super(scope, *meta, &block)
       end
