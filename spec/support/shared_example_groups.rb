@@ -16,8 +16,8 @@ RSpec.shared_examples_for "handling symlinked directories when loading spec file
   let(:project_dir) { Dir.getwd }
 
   before(:example) do
-    pending "Windows does not support symlinking"
-  end if RSpec::Support::OS.windows?
+    pending "Windows does not support symlinking on RUBY_VERSION < 2.3"
+  end if RSpec::Support::OS.windows? && RUBY_VERSION < '2.3'
 
   it "finds the files" do
     foos_dir = File.join(project_dir, "spec/foos")
