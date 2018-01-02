@@ -730,10 +730,9 @@ module RSpec
           end
 
           it 'can access the parent example group attributes via [:example_group][:example_group]' do
-            parent = child = nil
+            child = nil
             parent_line = __LINE__ + 1
             RSpec.describe(Object, "group", :foo => 3) do
-              parent = metadata
               describe("nested") { child = metadata }
             end
 
