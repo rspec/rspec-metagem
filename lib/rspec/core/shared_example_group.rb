@@ -103,7 +103,6 @@ module RSpec
       # Shared examples top level DSL.
       module TopLevelDSL
         # @private
-        # rubocop:disable Lint/NestedMethodDefinition
         def self.definitions
           proc do
             def shared_examples(name, *args, &block)
@@ -113,7 +112,6 @@ module RSpec
             alias shared_examples_for shared_examples
           end
         end
-        # rubocop:enable Lint/NestedMethodDefinition
 
         # @private
         def self.exposed_globally?
