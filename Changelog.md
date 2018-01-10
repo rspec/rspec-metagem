@@ -1,6 +1,8 @@
 ### 3.8 Development
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.7.0...master)
 
+Enhancements:
+
 * Improve failure message of `change(receiver, :message)` by including the
   receiver as `SomeClass#some_message`. (Tomohiro Hashidate, #1005)
 * Improve `change` matcher so that it can correctly detect changes in
@@ -8,6 +10,9 @@
   The improved logic uses the before/after `hash` value to see if the
   object has been mutated, rather than shallow duping the object.
   (Myron Marston, #1034)
+* Improve `include` matcher so that pseudo-hash objects (e.g. objects
+  that decorate a hash using a `SimpleDelegator` or similar) are treated
+  as a hash, as long as they implement `to_hash`. (Pablo Brasero, #1012)
 
 ### 3.7.0 / 2017-10-17
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.6.0...v3.7.0)
