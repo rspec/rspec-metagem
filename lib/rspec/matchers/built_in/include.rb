@@ -15,12 +15,14 @@ module RSpec
         # @api private
         # @return [Boolean]
         def matches?(actual)
+          actual = actual.to_hash if actual.respond_to?(:to_hash)
           perform_match(actual) { |v| v }
         end
 
         # @api private
         # @return [Boolean]
         def does_not_match?(actual)
+          actual = actual.to_hash if actual.respond_to?(:to_hash)
           perform_match(actual) { |v| !v }
         end
 

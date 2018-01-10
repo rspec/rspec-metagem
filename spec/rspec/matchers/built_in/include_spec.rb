@@ -3,6 +3,48 @@ RSpec.describe "#include matcher" do
     expect(include("a")).to be_diffable
   end
 
+  shared_examples_for "a Hash target" do
+    def build_target(hsh)
+      hsh
+    end
+
+    it 'passes if target has the expected as a key' do
+      expect(build_target(:key => 'value')).to include(:key)
+    end
+
+    it "fails if target does not include expected" do
+      expect {
+        expect(build_target(:key => 'value')).to include(:other)
+      }.to fail_matching(%Q|expected {:key => "value"} to include :other|)
+    end
+
+    it "fails if target doesn't have a key and we expect nil" do
+      expect {
+        expect(build_target({})).to include(:something => nil)
+      }.to fail_matching(%Q|expected {} to include {:something => nil}|)
+    end
+
+    it 'works even when an entry in the hash overrides #send' do
+      hash = build_target(:key => 'value')
+      def hash.send; :sent; end
+      expect(hash).to include(hash)
+    end
+
+    it 'provides a valid diff' do
+      allow(RSpec::Matchers.configuration).to receive(:color?).and_return(false)
+
+      expect {
+        expect(build_target(:foo => 1, :bar => 2)).to include(:foo => 1, :bar => 3)
+      }.to fail_including(dedent(<<-END))
+        |Diff:
+        |@@ -1,3 +1,3 @@
+        |-:bar => 3,
+        |+:bar => 2,
+        | :foo => 1,
+      END
+    end
+  end
+
   describe "expect(...).to include(with_one_arg)" do
     it_behaves_like "an RSpec matcher", :valid_value => [1, 2], :invalid_value => [1] do
       let(:matcher) { include(2) }
@@ -86,50 +128,26 @@ RSpec.describe "#include matcher" do
     end
 
     context "for a hash target" do
-      it 'passes if target has the expected as a key' do
-        expect({:key => 'value'}).to include(:key)
+      it_behaves_like "a Hash target"
+    end
+
+    context "for a target that can pass for a hash" do
+      def build_target(hsh)
+        PseudoHash.new(hsh)
       end
 
-      it "fails if target does not include expected" do
-        expect {
-          expect({:key => 'value'}).to include(:other)
-        }.to fail_matching(%Q|expected {:key => "value"} to include :other|)
-      end
+      around do |example|
+        in_sub_process_if_possible do
+          require 'delegate'
 
-      it "fails if target doesn't have a key and we expect nil" do
-        expect {
-          expect({}).to include(:something => nil)
-        }.to fail_matching(%Q|expected {} to include {:something => nil}|)
-      end
+          class PseudoHash < SimpleDelegator
+          end
 
-      it 'works even when an entry in the hash overrides #send' do
-        hash = { :key => 'value' }
-        def hash.send; :sent; end
-        expect(hash).to include(hash)
-      end
-
-      it 'provides a valid diff' do
-        allow(RSpec::Matchers.configuration).to receive(:color?).and_return(false)
-
-        expect {
-          expect(:foo => 1, :bar => 2).to include(:foo => 1, :bar => 3)
-        }.to fail_including(dedent(<<-END))
-          |Diff:
-          |@@ -1,3 +1,3 @@
-          |-:bar => 3,
-          |+:bar => 2,
-          | :foo => 1,
-        END
-      end
-
-      context 'that overrides #send' do
-        it 'still works' do
-          array = [1, 2]
-          def array.send; :sent; end
-
-          expect(array).to include(*array)
+          example.run
         end
       end
+
+      it_behaves_like "a Hash target"
     end
   end
 
