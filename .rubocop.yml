@@ -1,4 +1,5 @@
-inherit_from: .rubocop_rspec_base.yml
+inherit_from:
+  - .rubocop_rspec_base.yml
 
 # Over time we'd like to get this down, but this is what we're at now.
 LineLength:
@@ -7,3 +8,36 @@ LineLength:
 # We have some situations where we need to use `raise ExceptionClass.new(argument)`.
 Style/RaiseArgs:
   Enabled: false
+
+Metrics/AbcSize:
+  Max: 26
+
+# Offense count: 2
+# Configuration parameters: CountComments, ExcludedMethods.
+Metrics/BlockLength:
+  Max: 96
+
+# Offense count: 1
+# Configuration parameters: CountComments.
+Metrics/ModuleLength:
+  Max: 236
+
+# Offense count: 4
+Metrics/PerceivedComplexity:
+  Max: 14
+
+AccessModifierIndentation:
+  Exclude:
+    - 'lib/rspec/expectations/syntax.rb' # Too much diff to fix
+
+# Offense count: 6
+Lint/IneffectiveAccessModifier:
+  Exclude:
+    - 'lib/rspec/matchers.rb'
+    - 'lib/rspec/matchers/built_in/compound.rb'
+    - 'lib/rspec/matchers/expecteds_for_multiple_diffs.rb'
+    - 'lib/rspec/matchers/generated_descriptions.rb'
+
+Lint/InheritException:
+  Exclude:
+    - 'lib/rspec/expectations.rb'

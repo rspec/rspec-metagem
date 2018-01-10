@@ -44,14 +44,14 @@ module RSpec
         # So it appears that `Array` can trigger that (e.g. by calling `to_a` on the passed object?)
         # So here we replace `Kernel#Array` with our own warning-free implementation for 1.8.7.
         # @private
-        # rubocop:disable Style/MethodName
+        # rubocop:disable Naming/MethodName
         def self.Array(obj)
           case obj
           when Array then obj
           else [obj]
           end
         end
-        # rubocop:enable Style/MethodName
+        # rubocop:enable Naming/MethodName
       end
     end
   end

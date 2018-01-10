@@ -34,7 +34,7 @@ module RSpec
           "expected #{actual_formatted} not to #{description}"
         end
 
-      private # rubocop:disable Lint/UselessAccessModifier
+      private
 
         if RSpec::Support::RubyFeatures.ripper_supported?
           def block_representation
