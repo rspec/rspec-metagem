@@ -180,7 +180,7 @@ function check_documentation_coverage {
 
 function check_style_and_lint {
   echo "bin/rubocop lib"
-  bin/rubocop lib
+  eval "(unset RUBYOPT; exec bin/rubocop lib)"
 }
 
 function run_all_spec_suites {

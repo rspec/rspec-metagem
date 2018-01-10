@@ -42,8 +42,9 @@ end
 
 gem 'simplecov', '~> 0.8'
 
-if RUBY_VERSION >= '1.9.3' && RUBY_VERSION < '2.4.0' && !(%w[java jruby].include? RUBY_ENGINE)
-  gem "rubocop", "~> 0.32.1"
+# No need to run rubocop on earlier versions
+if RUBY_VERSION >= '2.4' && RUBY_ENGINE == 'ruby'
+  gem "rubocop", "~> 0.52.1"
 end
 
 gem 'test-unit', '~> 3.0' if RUBY_VERSION.to_f >= 2.2

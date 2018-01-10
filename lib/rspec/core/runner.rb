@@ -122,19 +122,6 @@ module RSpec
         success ? 0 : @configuration.failure_exit_code
       end
 
-    private
-
-      def persist_example_statuses
-        return unless (path = @configuration.example_status_persistence_file_path)
-
-        ExampleStatusPersister.persist(@world.all_examples, path)
-      rescue SystemCallError => e
-        RSpec.warning "Could not write example statuses to #{path} (configured as " \
-                      "`config.example_status_persistence_file_path`) due to a " \
-                      "system error: #{e.inspect}. Please check that the config " \
-                      "option is set to an accessible, valid file path", :call_site => nil
-      end
-
       # @private
       def self.disable_autorun!
         @autorun_disabled = true
@@ -187,6 +174,19 @@ module RSpec
           RSpec.world.wants_to_quit = true
           $stderr.puts "\nRSpec is shutting down and will print the summary report... Interrupt again to force quit."
         end
+      end
+
+    private
+
+      def persist_example_statuses
+        return unless (path = @configuration.example_status_persistence_file_path)
+
+        ExampleStatusPersister.persist(@world.all_examples, path)
+      rescue SystemCallError => e
+        RSpec.warning "Could not write example statuses to #{path} (configured as " \
+                      "`config.example_status_persistence_file_path`) due to a " \
+                      "system error: #{e.inspect}. Please check that the config " \
+                      "option is set to an accessible, valid file path", :call_site => nil
       end
     end
   end

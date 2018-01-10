@@ -115,7 +115,6 @@ module RSpec
           "style=\"margin-left: #{(number_of_parents - 1) * 15}px;\""
         end
 
-        # rubocop:disable LineLength
         REPORT_HEADER = <<-EOF
 <div class="rspec-report">
 
@@ -139,7 +138,6 @@ module RSpec
 
 <div class="results">
 EOF
-        # rubocop:enable LineLength
 
         GLOBAL_SCRIPTS = <<-EOF
 

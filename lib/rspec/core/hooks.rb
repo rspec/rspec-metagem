@@ -339,8 +339,6 @@ module RSpec
         @hooks ||= HookCollections.new(self, FilterableItemRepository::UpdateOptimized)
       end
 
-    private
-
       # @private
       Hook = Struct.new(:block, :options)
 
