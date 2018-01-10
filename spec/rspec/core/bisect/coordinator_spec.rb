@@ -16,7 +16,7 @@ module RSpec::Core
 
     def find_minimal_repro(output, formatter=Formatters::BisectProgressFormatter)
       allow(Bisect::Server).to receive(:run).and_yield(instance_double(Bisect::Server))
-      allow(Bisect::Runner).to receive(:new).and_return(fake_runner)
+      allow(Bisect::ShellRunner).to receive(:new).and_return(fake_runner)
 
       RSpec.configuration.output_stream = output
       Bisect::Coordinator.bisect_with([], RSpec.configuration, formatter)

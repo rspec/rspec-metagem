@@ -1,5 +1,6 @@
 RSpec::Support.require_rspec_core "bisect/server"
-RSpec::Support.require_rspec_core "bisect/runner"
+RSpec::Support.require_rspec_core "bisect/shell_command"
+RSpec::Support.require_rspec_core "bisect/shell_runner"
 RSpec::Support.require_rspec_core "bisect/example_minimizer"
 RSpec::Support.require_rspec_core "formatters/bisect_progress_formatter"
 
@@ -9,7 +10,7 @@ module RSpec
       # @private
       # The main entry point into the bisect logic. Coordinates among:
       #   - Bisect::Server: Receives suite results.
-      #   - Bisect::Runner: Runs a set of examples and directs the results
+      #   - Bisect::ShellRunner: Runs a set of examples and directs the results
       #     to the server.
       #   - Bisect::ExampleMinimizer: Contains the core bisect logic.
       #   - Formatters::BisectProgressFormatter: provides progress updates
@@ -20,9 +21,9 @@ module RSpec
         end
 
         def initialize(original_cli_args, configuration, formatter)
-          @original_cli_args = original_cli_args
-          @configuration     = configuration
-          @formatter         = formatter
+          @shell_command = ShellCommand.new(original_cli_args)
+          @configuration = configuration
+          @formatter     = formatter
         end
 
         def bisect
@@ -30,8 +31,8 @@ module RSpec
 
           reporter.close_after do
             repro = Server.run do |server|
-              runner    = Runner.new(server, @original_cli_args)
-              minimizer = ExampleMinimizer.new(runner, reporter)
+              runner    = ShellRunner.new(server, @shell_command)
+              minimizer = ExampleMinimizer.new(@shell_command, runner, reporter)
 
               gracefully_abort_on_sigint(minimizer)
               minimizer.find_minimal_repro

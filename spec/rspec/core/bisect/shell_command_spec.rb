@@ -1,39 +1,17 @@
-require 'rspec/core/bisect/runner'
+require 'rspec/core/bisect/shell_command'
 require 'rspec/core/formatters/bisect_formatter'
 
 module RSpec::Core
-  RSpec.describe Bisect::Runner do
+  RSpec.describe Bisect::ShellCommand do
     let(:server) { instance_double("RSpec::Core::Bisect::Server", :drb_port => 1234) }
-    let(:runner) { described_class.new(server, original_cli_args) }
-
-    describe "#run" do
-      let(:original_cli_args) { %w[ spec/1_spec.rb ] }
-      let(:target_specs) { %w[ spec/1_spec.rb[1:1] spec/1_spec.rb[1:2] ] }
-
-      it "passes the failed examples from the original run as the expected failures so the runs can abort early" do
-        original_results = Formatters::BisectFormatter::RunResults.new(
-          [], %w[ spec/failure_spec.rb[1:1] spec/failure_spec.rb[1:2] ]
-        )
-
-        expect(server).to receive(:capture_run_results).
-          with(original_cli_args).
-          ordered.
-          and_return(original_results)
-
-        expect(server).to receive(:capture_run_results).
-          with(target_specs, original_results.failed_example_ids).
-          ordered
-
-        runner.run(target_specs)
-      end
-    end
+    let(:shell_command) { described_class.new(original_cli_args) }
 
     describe "#command_for" do
       def command_for(locations, options={})
         load_path = options.fetch(:load_path) { [] }
         orig_load_path = $LOAD_PATH.dup
         $LOAD_PATH.replace(load_path)
-        runner.command_for(locations)
+        shell_command.command_for(locations, server)
       ensure
         $LOAD_PATH.replace(orig_load_path)
       end
@@ -163,7 +141,7 @@ module RSpec::Core
       let(:original_cli_args) { %w[ spec/unit --seed 1234 ] }
 
       def repro_command_from(ids)
-        runner.repro_command_from(ids)
+        shell_command.repro_command_from(ids)
       end
 
       it 'starts with `rspec #{example_ids}`' do
@@ -185,7 +163,7 @@ module RSpec::Core
 
       it 'includes original options that `command_for` excludes' do
         original_cli_args << "--format" << "progress"
-        expect(runner.command_for(%w[ ./foo.rb[1:1] ])).to exclude("--format progress")
+        expect(shell_command.command_for(%w[ ./foo.rb[1:1] ], server)).to exclude("--format progress")
         expect(repro_command_from(%w[ ./foo.rb[1:1] ])).to include("--format progress")
       end
 
@@ -223,89 +201,47 @@ module RSpec::Core
       end
     end
 
-    describe "#original_results" do
-      let(:original_cli_args) { %w[spec/unit --seed 1234] }
+    describe "#original_locations" do
+      let(:original_cli_args) { %w[ spec/unit spec/integration/foo_spec.rb --order defined ] }
 
-      open3_method = Open3.respond_to?(:capture2e) ? :capture2e : :popen3
-      open3_method = :popen3 if RSpec::Support::Ruby.jruby?
-
-      def called_environment
-        @called_environment
+      it "returns the original files or directories to run" do
+        expect(shell_command.original_locations).to eq %w[spec/unit spec/integration/foo_spec.rb]
       end
+    end
 
-      if open3_method == :capture2e
-        RSpec::Matchers.define :invoke_command_with_env do |command, environment|
-          match do |block|
-            block.call
+    describe "#bisect_environment_hash" do
+      let(:original_cli_args) { %w[] }
 
-            expect(Open3).to have_received(open3_method).with(environment, command)
+      context 'when `SPEC_OPTS` has been set' do
+        it 'returns a hash with `SPEC_OPTS` set to the opts without --bisect' do
+          with_env_vars 'SPEC_OPTS' => '--order defined --bisect' do
+            expect(shell_command.bisect_environment_hash).to eq('SPEC_OPTS' => '--order defined')
           end
-
-          supports_block_expectations
         end
-      elsif open3_method == :popen3
-        RSpec::Matchers.define :invoke_command_with_env do |command, environment|
-          match do |block|
-            block.call
+      end
 
-            expect(Open3).to have_received(open3_method).with(command)
-            expect(called_environment).to include(environment)
+      context 'when `SPEC_OPTS` has not been set' do
+        it 'returns a blank hash' do
+          expect(shell_command.bisect_environment_hash).to eq({})
+        end
+      end
+    end
+
+    describe "#spec_opts_without_bisect" do
+      let(:original_cli_args) { %w[ ] }
+
+      context 'when `SPEC_OPTS` has been set' do
+        it 'returns the spec opts without --bisect' do
+          with_env_vars 'SPEC_OPTS' => '--order defined --bisect' do
+            expect(shell_command.spec_opts_without_bisect).to eq('--order defined')
           end
-
-          supports_block_expectations
         end
       end
 
-      before do
-        allow(Open3).to receive(open3_method) do
-          @called_environment = ENV.to_hash.dup
-          [double("Exit Status"), double("Stdout/err")]
+      context 'when `SPEC_OPTS` has not been set' do
+        it 'returns a blank string' do
+          expect(shell_command.spec_opts_without_bisect).to eq('')
         end
-
-        allow(server).to receive(:capture_run_results) do |&block|
-          block.call
-          "the results"
-        end
-      end
-
-      it "runs the suite with the original CLI options" do
-        expect {
-          runner.original_results
-        }.to invoke_command_with_env(a_string_including("--seed 1234"), {})
-      end
-
-      context 'when --bisect is present in SPEC_OPTS' do
-        it "runs the suite with --bisect removed from the environment" do
-          expect {
-            with_env_vars 'SPEC_OPTS' => '--bisect --fail-fast' do
-              runner.original_results
-            end
-          }.to invoke_command_with_env(
-            a_string_including("--seed 1234"),
-            { 'SPEC_OPTS' => '--fail-fast' }
-          )
-        end
-      end
-
-      context 'when --bisect=verbose is present in SPEC_OPTS' do
-        it "runs the suite with --bisect removed from the environment" do
-          expect {
-            with_env_vars 'SPEC_OPTS' => '--bisect=verbose --fail-fast' do
-              runner.original_results
-            end
-          }.to invoke_command_with_env(
-            a_string_including("--seed 1234"),
-            { 'SPEC_OPTS' => '--fail-fast' }
-          )
-        end
-      end
-
-      it 'returns the run results' do
-        expect(runner.original_results).to eq("the results")
-      end
-
-      it 'memoizes, since it is expensive to re-run the suite' do
-        expect(runner.original_results).to be(runner.original_results)
       end
     end
 

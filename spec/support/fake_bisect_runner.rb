@@ -1,8 +1,4 @@
 FakeBisectRunner = Struct.new(:all_ids, :always_failures, :dependent_failures) do
-  def original_cli_args
-    []
-  end
-
   def original_results
     failures = always_failures | dependent_failures.keys
     RSpec::Core::Formatters::BisectFormatter::RunResults.new(all_ids, failures.sort)
@@ -17,9 +13,7 @@ FakeBisectRunner = Struct.new(:all_ids, :always_failures, :dependent_failures) d
     RSpec::Core::Formatters::BisectFormatter::RunResults.new(ids.sort, failures.sort)
   end
 
-  def repro_command_from(locations)
-    "rspec #{locations.sort.join(' ')}"
-  end
+private
 
   def dependency_satisfied?(depends_upon, ids)
     depends_upon.all? { |d| ids.include?(d) }
