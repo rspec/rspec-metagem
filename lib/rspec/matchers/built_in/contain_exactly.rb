@@ -176,6 +176,7 @@ module RSpec
         #
         # @private
         class PairingsMaximizer
+          # @private
           Solution = Struct.new(:unmatched_expected_indexes,     :unmatched_actual_indexes,
                                 :indeterminate_expected_indexes, :indeterminate_actual_indexes) do
             def worse_than?(other)

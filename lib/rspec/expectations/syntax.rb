@@ -106,7 +106,7 @@ if defined?(BasicObject)
   # that this syntax does not always play nice with delegate/proxy objects.
   # We recommend you use the non-monkeypatching `:expect` syntax instead.
   class BasicObject
-    # @method should
+    # @method should(matcher, message)
     # Passes if `matcher` returns true.  Available on every `Object`.
     # @example
     #   actual.should eq expected
@@ -118,7 +118,7 @@ if defined?(BasicObject)
     # @note This is only available when you have enabled the `:should` syntax.
     # @see RSpec::Matchers
 
-    # @method should_not
+    # @method should_not(matcher, message)
     # Passes if `matcher` returns false.  Available on every `Object`.
     # @example
     #   actual.should_not eq expected
