@@ -10,7 +10,7 @@ module RSpec
       # Sets of specs are run by shelling out.
       # @private
       class ShellRunner
-        def self.start(shell_command)
+        def self.start(shell_command, _spec_runner=nil)
           Server.run do |server|
             yield new(server, shell_command)
           end

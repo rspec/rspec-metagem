@@ -27,6 +27,32 @@ module RSpec
           @formatter.__send__(event, notification)
         end
       end
+
+      # Wraps a pipe to support sending objects between a child and
+      # parent process.
+      # @private
+      class Channel
+        def initialize
+          @read_io, @write_io = IO.pipe
+        end
+
+        def send(message)
+          packet = Marshal.dump(message)
+          @write_io.write("#{packet.bytesize}\n#{packet}")
+        end
+
+        # rubocop:disable Security/MarshalLoad
+        def receive
+          packet_size = Integer(@read_io.gets)
+          Marshal.load(@read_io.read(packet_size))
+        end
+        # rubocop:enable Security/MarshalLoad
+
+        def close
+          @read_io.close
+          @write_io.close
+        end
+      end
     end
   end
 end
