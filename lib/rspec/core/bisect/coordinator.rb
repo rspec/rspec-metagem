@@ -1,6 +1,7 @@
 RSpec::Support.require_rspec_core "bisect/shell_command"
 RSpec::Support.require_rspec_core "bisect/shell_runner"
 RSpec::Support.require_rspec_core "bisect/example_minimizer"
+RSpec::Support.require_rspec_core "bisect/utilities"
 RSpec::Support.require_rspec_core "formatters/bisect_progress_formatter"
 
 module RSpec

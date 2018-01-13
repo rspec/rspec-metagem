@@ -1,3 +1,5 @@
+RSpec::Support.require_rspec_core "bisect/utilities"
+
 module RSpec
   module Core
     module Bisect

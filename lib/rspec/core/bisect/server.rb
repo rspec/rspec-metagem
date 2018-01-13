@@ -7,9 +7,6 @@ module RSpec
     # @private
     module Bisect
       # @private
-      BisectFailedError = Class.new(StandardError)
-
-      # @private
       # A DRb server that receives run results from a separate RSpec process
       # started by the bisect process.
       class Server
@@ -28,7 +25,7 @@ module RSpec
           run_output = yield
 
           if latest_run_results.nil? || latest_run_results.all_example_ids.empty?
-            raise_bisect_failed(run_output)
+            raise BisectFailedError.for_failed_spec_run(run_output)
           end
 
           latest_run_results
@@ -58,13 +55,6 @@ module RSpec
 
         # Fetched via DRb to tell clients which files to run
         attr_accessor :files_or_directories_to_run
-
-      private
-
-        def raise_bisect_failed(run_output)
-          raise BisectFailedError, "Failed to get results from the spec " \
-                "run. Spec run output:\n\n#{run_output}"
-        end
       end
     end
   end
