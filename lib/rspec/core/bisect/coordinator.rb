@@ -1,4 +1,3 @@
-RSpec::Support.require_rspec_core "bisect/server"
 RSpec::Support.require_rspec_core "bisect/shell_command"
 RSpec::Support.require_rspec_core "bisect/shell_runner"
 RSpec::Support.require_rspec_core "bisect/example_minimizer"
@@ -9,9 +8,8 @@ module RSpec
     module Bisect
       # @private
       # The main entry point into the bisect logic. Coordinates among:
-      #   - Bisect::Server: Receives suite results.
-      #   - Bisect::ShellRunner: Runs a set of examples and directs the results
-      #     to the server.
+      #   - Bisect::ShellCommand: Generates shell commands to run spec subsets
+      #   - Bisect::ShellRunner: Runs a set of examples and returns the results.
       #   - Bisect::ExampleMinimizer: Contains the core bisect logic.
       #   - Formatters::BisectProgressFormatter: provides progress updates
       #     to the user.
@@ -30,8 +28,7 @@ module RSpec
           @configuration.add_formatter @formatter
 
           reporter.close_after do
-            repro = Server.run do |server|
-              runner    = ShellRunner.new(server, @shell_command)
+            repro = ShellRunner.start(@shell_command) do |runner|
               minimizer = ExampleMinimizer.new(@shell_command, runner, reporter)
 
               gracefully_abort_on_sigint(minimizer)

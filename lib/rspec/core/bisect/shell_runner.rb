@@ -1,4 +1,5 @@
 require 'open3'
+RSpec::Support.require_rspec_core "bisect/server"
 
 module RSpec
   module Core
@@ -9,6 +10,12 @@ module RSpec
       # Sets of specs are run by shelling out.
       # @private
       class ShellRunner
+        def self.start(shell_command)
+          Server.run do |server|
+            yield new(server, shell_command)
+          end
+        end
+
         def initialize(server, shell_command)
           @server        = server
           @shell_command = shell_command
