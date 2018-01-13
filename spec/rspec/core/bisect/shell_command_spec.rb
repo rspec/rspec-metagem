@@ -1,5 +1,5 @@
 require 'rspec/core/bisect/shell_command'
-require 'rspec/core/formatters/bisect_formatter'
+require 'rspec/core/formatters/bisect_drb_formatter'
 
 module RSpec::Core
   RSpec.describe Bisect::ShellCommand do

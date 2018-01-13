@@ -1,5 +1,6 @@
 require 'drb/drb'
 require 'drb/acl'
+RSpec::Support.require_rspec_core "bisect/utilities"
 
 module RSpec
   module Core
@@ -49,10 +50,10 @@ module RSpec
           @drb_port ||= Integer(@drb.uri[/\d+$/])
         end
 
-        # Fetched via DRb by the BisectFormatter to determine when to abort.
+        # Fetched via DRb by the BisectDRbFormatter to determine when to abort.
         attr_accessor :expected_failures
 
-        # Set via DRb by the BisectFormatter with the results of the run.
+        # Set via DRb by the BisectDRbFormatter with the results of the run.
         attr_accessor :latest_run_results
 
         # Fetched via DRb to tell clients which files to run

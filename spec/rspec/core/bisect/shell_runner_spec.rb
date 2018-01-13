@@ -1,6 +1,6 @@
-require 'rspec/core/bisect/shell_runner'
 require 'rspec/core/bisect/shell_command'
-require 'rspec/core/formatters/bisect_formatter'
+require 'rspec/core/bisect/shell_runner'
+require 'rspec/core/bisect/utilities'
 
 module RSpec::Core
   RSpec.describe Bisect::ShellRunner do
@@ -13,7 +13,7 @@ module RSpec::Core
       let(:target_specs) { %w[ spec/1_spec.rb[1:1] spec/1_spec.rb[1:2] ] }
 
       it "passes the failed examples from the original run as the expected failures so the runs can abort early" do
-        original_results = Formatters::BisectFormatter::RunResults.new(
+        original_results = Bisect::ExampleSetDescriptor.new(
           [], %w[ spec/failure_spec.rb[1:1] spec/failure_spec.rb[1:2] ]
         )
 

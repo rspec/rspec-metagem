@@ -20,7 +20,7 @@ module RSpec
           parts << RUBY << load_path
           parts << open3_safe_escape(RSpec::Core.path_to_executable)
 
-          parts << "--format"   << "bisect"
+          parts << "--format"   << "bisect-drb"
           parts << "--drb-port" << server.drb_port
 
           parts.concat(reusable_cli_options)

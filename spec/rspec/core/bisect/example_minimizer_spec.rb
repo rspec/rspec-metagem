@@ -1,5 +1,4 @@
 require 'rspec/core/bisect/example_minimizer'
-require 'rspec/core/formatters/bisect_formatter'
 require 'rspec/core/bisect/server'
 require 'rspec/core/bisect/shell_command'
 require 'support/fake_bisect_runner'
