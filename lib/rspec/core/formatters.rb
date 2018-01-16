@@ -140,6 +140,13 @@ module RSpec::Core::Formatters
 
     # @private
     def add(formatter_to_use, *paths)
+      # If a formatter instance was passed, we can register it directly,
+      # with no need for any of the further processing that happens below.
+      if Loader.formatters.key?(formatter_to_use.class)
+        register formatter_to_use, notifications_for(formatter_to_use.class)
+        return
+      end
+
       formatter_class = find_formatter(formatter_to_use)
 
       args = paths.map { |p| p.respond_to?(:puts) ? p : open_stream(p) }
