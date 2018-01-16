@@ -12,38 +12,30 @@ module RSpec
       # after each example.
       # @private
       class BisectFormatter
-        Formatters.register self, :start, :start_dump, :example_started,
-                            :example_failed, :example_passed, :example_pending
+        Formatters.register self, :start_dump, :example_failed, :example_finished
 
         def initialize(_output)
-          port = RSpec.configuration.drb_port
-          drb_uri = "druby://localhost:#{port}"
+          drb_uri = "druby://localhost:#{RSpec.configuration.drb_port}"
+          @bisect_server = DRbObject.new_with_uri(drb_uri)
+          RSpec.configuration.files_or_directories_to_run = @bisect_server.files_or_directories_to_run
+
           @all_example_ids = []
           @failed_example_ids = []
-          @bisect_server = DRbObject.new_with_uri(drb_uri)
-          @remaining_failures = []
-          RSpec.configuration.files_or_directories_to_run = @bisect_server.files_or_directories_to_run
-        end
-
-        def start(_notification)
           @remaining_failures = Set.new(@bisect_server.expected_failures)
-        end
-
-        def example_started(notification)
-          @all_example_ids << notification.example.id
         end
 
         def example_failed(notification)
           @failed_example_ids << notification.example.id
-          example_finished(notification, :failed)
         end
 
-        def example_passed(notification)
-          example_finished(notification, :passed)
-        end
+        def example_finished(notification)
+          @all_example_ids << notification.example.id
+          return unless @remaining_failures.include?(notification.example.id)
+          @remaining_failures.delete(notification.example.id)
 
-        def example_pending(notification)
-          example_finished(notification, :pending)
+          status = notification.example.execution_result.status
+          return if status == :failed && !@remaining_failures.empty?
+          RSpec.world.wants_to_quit = true
         end
 
         def start_dump(_notification)
@@ -53,16 +45,6 @@ module RSpec
         end
 
         RunResults = Struct.new(:all_example_ids, :failed_example_ids)
-
-      private
-
-        def example_finished(notification, status)
-          return unless @remaining_failures.include?(notification.example.id)
-          @remaining_failures.delete(notification.example.id)
-
-          return if status == :failed && !@remaining_failures.empty?
-          RSpec.world.wants_to_quit = true
-        end
       end
     end
   end
