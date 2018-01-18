@@ -5,6 +5,8 @@ Enhancements:
 
 * Improve shell escaping used by `RSpec::Core::RakeTask` and `--bisect` so
   that it works on `Pathname` objects. (Andrew Vit, #2479)
+* Nicely format errors encountered while loading files specified
+  by `--require` option.  (Myron Marston, #2504)
 
 ### 3.7.1 / 2018-01-02
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.7.0...v3.7.1)
