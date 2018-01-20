@@ -1467,7 +1467,7 @@ module RSpec
       def requires=(paths)
         directories = ['lib', default_path].select { |p| File.directory? p }
         RSpec::Core::RubyProject.add_to_load_path(*directories)
-        paths.each { |path| require path }
+        paths.each { |path| load_file_handling_errors(:require, path) }
         @requires += paths
       end
 
@@ -1508,7 +1508,7 @@ module RSpec
 
         files_to_run.uniq.each do |f|
           file = File.expand_path(f)
-          load_spec_file_handling_errors(file)
+          load_file_handling_errors(:load, file)
           loaded_spec_files << file
         end
 
@@ -1964,8 +1964,8 @@ module RSpec
 
     private
 
-      def load_spec_file_handling_errors(file)
-        load file
+      def load_file_handling_errors(method, file)
+        __send__(method, file)
       rescue Support::AllExceptionsExceptOnesWeMustNotRescue => ex
         relative_file = Metadata.relative_path(file)
         reporter.notify_non_example_exception(ex, "An error occurred while loading #{relative_file}.")
