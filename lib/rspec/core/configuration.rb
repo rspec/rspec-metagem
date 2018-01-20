@@ -100,6 +100,7 @@ module RSpec
       #
       # @note Other scripts invoking `rspec` indirectly will ignore this
       #   setting.
+      # @return [String]
       add_read_only_setting :default_path
       def default_path=(path)
         project_source_dirs << path
@@ -109,6 +110,7 @@ module RSpec
       # @macro add_setting
       # Run examples over DRb (default: `false`). RSpec doesn't supply the DRb
       # server, but you can use tools like spork.
+      # @return [Boolean]
       add_setting :drb
 
       # @macro add_setting
@@ -121,6 +123,7 @@ module RSpec
 
       # Indicates if the DSL has been exposed off of modules and `main`.
       # Default: true
+      # @return [Boolean]
       def expose_dsl_globally?
         Core::DSL.exposed_globally?
       end
@@ -197,24 +200,29 @@ module RSpec
 
       # @macro add_setting
       # The exit code to return if there are any failures (default: 1).
+      # @return [Integer]
       add_setting :failure_exit_code
 
       # @macro add_setting
       # Whether or not to fail when there are no RSpec examples (default: false).
+      # @return [Boolean]
       add_setting :fail_if_no_examples
 
       # @macro define_reader
       # Indicates files configured to be required.
+      # @return [Array<String>]
       define_reader :requires
 
       # @macro define_reader
       # Returns dirs that have been prepended to the load path by the `-I`
       # command line option.
+      # @return [Array<String>]
       define_reader :libs
 
       # @macro add_setting
       # Determines where RSpec will send its output.
       # Default: `$stdout`.
+      # @return [IO, String]
       define_reader :output_stream
 
       # Set the output stream for reporter.
@@ -233,6 +241,7 @@ module RSpec
 
       # @macro define_reader
       # Load files matching this pattern (default: `'**{,/*/**}/*_spec.rb'`).
+      # @return [String]
       define_reader :pattern
 
       # Set pattern to match files to load.
@@ -243,6 +252,7 @@ module RSpec
 
       # @macro define_reader
       # Exclude files matching this pattern.
+      # @return [String]
       define_reader :exclude_pattern
 
       # Set pattern to match files to exclude.
@@ -264,6 +274,7 @@ module RSpec
       # @macro add_setting
       # Report the times for the slowest examples (default: `false`).
       # Use this to specify the number of examples to include in the profile.
+      # @return [Boolean]
       add_setting :profile_examples
 
       # @macro add_setting
@@ -318,6 +329,7 @@ module RSpec
       # @macro add_setting
       # Don't print filter info i.e. "Run options: include {:focus=>true}"
       # (default `false`).
+      # return [Boolean]
       add_setting :silence_filter_announcements
 
       # @deprecated This config option was added in RSpec 2 to pave the way
@@ -386,16 +398,19 @@ module RSpec
       end
 
       # Record the start time of the spec suite to measure load time.
+      # return [Time]
       add_setting :start_time
 
       # @macro add_setting
       # Use threadsafe options where available.
       # Currently this will place a mutex around memoized values such as let blocks.
+      # return [Boolean]
       add_setting :threadsafe
 
       # @macro add_setting
       # Maximum count of failed source lines to display in the failure reports.
       # (default `10`).
+      # return [Integer]
       add_setting :max_displayed_failure_line_count
 
       # @private
@@ -410,8 +425,7 @@ module RSpec
       # @private
       attr_reader :backtrace_formatter, :ordering_manager, :loaded_spec_files
 
-      # rubocop:disable Metrics/AbcSize
-      # rubocop:disable Metrics/MethodLength
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
 
       # Build an object to store runtime configuration options and set defaults
       def initialize
@@ -466,8 +480,7 @@ module RSpec
 
         define_built_in_hooks
       end
-      # rubocop:enable Metrics/MethodLength
-      # rubocop:enable Metrics/AbcSize
+      # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
       # @private
       #
@@ -548,6 +561,7 @@ module RSpec
       end
 
       # Returns the configured mock framework adapter module.
+      # @return [Symbol]
       def mock_framework
         if @mock_framework.nil?
           begin
@@ -575,12 +589,13 @@ module RSpec
       # To override this behaviour and display a full backtrace, use
       # `--backtrace` on the command line, in a `.rspec` file, or in the
       # `rspec_options` attribute of RSpec's rake task.
+      # @return [Array<Regexp>]
       def backtrace_exclusion_patterns
         @backtrace_formatter.exclusion_patterns
       end
 
       # Set regular expressions used to exclude lines in backtrace.
-      # @param patterns [Regexp] set the backtrace exlusion pattern
+      # @param patterns [Array<Regexp>] set backtrace_formatter exlusion_patterns
       def backtrace_exclusion_patterns=(patterns)
         @backtrace_formatter.exclusion_patterns = patterns
       end
@@ -593,12 +608,13 @@ module RSpec
       # will be included.
       #
       # You can modify the list via the getter, or replace it with the setter.
+      # @return [Array<Regexp>]
       def backtrace_inclusion_patterns
         @backtrace_formatter.inclusion_patterns
       end
 
       # Set regular expressions used to include lines in backtrace.
-      # @attr patterns [Regexp] set backtrace_formatter inclusion_patterns
+      # @attr patterns [Array<Regexp>] set backtrace_formatter inclusion_patterns
       def backtrace_inclusion_patterns=(patterns)
         @backtrace_formatter.inclusion_patterns = patterns
       end
