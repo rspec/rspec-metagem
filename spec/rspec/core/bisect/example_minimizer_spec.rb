@@ -1,52 +1,57 @@
 require 'rspec/core/bisect/example_minimizer'
-require 'rspec/core/formatters/bisect_formatter'
 require 'rspec/core/bisect/server'
+require 'rspec/core/bisect/shell_command'
 require 'support/fake_bisect_runner'
 
 module RSpec::Core
   RSpec.describe Bisect::ExampleMinimizer do
+    around do |ex|
+      # so example ids do not have to be escaped
+      with_env_vars('SHELL' => 'bash', &ex)
+    end
+
     let(:fake_runner) do
       FakeBisectRunner.new(
-        %w[ ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ex_7 ex_8 ],
-        %w[ ex_2 ],
-        { "ex_5" => %w[ ex_4 ] }
+        %w[ 1.rb[1] 2.rb[1] 3.rb[1] 4.rb[1] 5.rb[1] 6.rb[1] 7.rb[1] 8.rb[1] ],
+        %w[ 2.rb[1] ],
+        { "5.rb[1]" => %w[ 4.rb[1] ] }
       )
     end
 
     it 'repeatedly runs various subsets of the suite, removing examples that have no effect on the failing examples' do
-      minimizer = Bisect::ExampleMinimizer.new(fake_runner, RSpec::Core::NullReporter)
+      minimizer = new_minimizer(fake_runner)
       minimizer.find_minimal_repro
-      expect(minimizer.repro_command_for_currently_needed_ids).to eq("rspec ex_2 ex_4 ex_5")
+      expect(minimizer.repro_command_for_currently_needed_ids).to eq("rspec 2.rb[1] 4.rb[1] 5.rb[1]")
     end
 
     it 'reduces a failure where none of the passing examples are implicated' do
       no_dependents_runner = FakeBisectRunner.new(
-        %w[ ex_1 ex_2 ],
-        %w[ ex_2 ],
+        %w[ 1.rb[1] 2.rb[1] ],
+        %w[ 2.rb[1] ],
         {}
       )
-      minimizer = Bisect::ExampleMinimizer.new(no_dependents_runner, RSpec::Core::NullReporter)
+      minimizer = new_minimizer(no_dependents_runner)
       minimizer.find_minimal_repro
-      expect(minimizer.repro_command_for_currently_needed_ids).to eq("rspec ex_2")
+      expect(minimizer.repro_command_for_currently_needed_ids).to eq("rspec 2.rb[1]")
     end
 
     it 'reduces a failure when more than 50% of examples are implicated' do
       fake_runner.always_failures = []
-      fake_runner.dependent_failures = { "ex_8" => %w[ ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ] }
-      minimizer = Bisect::ExampleMinimizer.new(fake_runner, RSpec::Core::NullReporter)
+      fake_runner.dependent_failures = { "8.rb[1]" => %w[ 1.rb[1] 2.rb[1] 3.rb[1] 4.rb[1] 5.rb[1] 6.rb[1] ] }
+      minimizer = new_minimizer(fake_runner)
       minimizer.find_minimal_repro
       expect(minimizer.repro_command_for_currently_needed_ids).to eq(
-        "rspec ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ex_8"
+        "rspec 1.rb[1] 2.rb[1] 3.rb[1] 4.rb[1] 5.rb[1] 6.rb[1] 8.rb[1]"
       )
     end
 
     it 'reduces a failure with multiple dependencies' do
       fake_runner.always_failures = []
-      fake_runner.dependent_failures = { "ex_8" => %w[ ex_1 ex_3 ex_5 ex_7 ] }
-      minimizer = Bisect::ExampleMinimizer.new(fake_runner, RSpec::Core::NullReporter)
+      fake_runner.dependent_failures = { "8.rb[1]" => %w[ 1.rb[1] 3.rb[1] 5.rb[1] 7.rb[1] ] }
+      minimizer = new_minimizer(fake_runner)
       minimizer.find_minimal_repro
       expect(minimizer.repro_command_for_currently_needed_ids).to eq(
-        "rspec ex_1 ex_3 ex_5 ex_7 ex_8"
+        "rspec 1.rb[1] 3.rb[1] 5.rb[1] 7.rb[1] 8.rb[1]"
       )
     end
 
@@ -70,20 +75,20 @@ module RSpec::Core
       let(:counting_reporter) { RunCountingReporter.new }
       let(:fake_runner) do
         FakeBisectRunner.new(
-          %w[ ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ex_7 ex_8 ex_9 ],
+          %w[ 1.rb[1] 2.rb[1] 3.rb[1] 4.rb[1] 5.rb[1] 6.rb[1] 7.rb[1] 8.rb[1] 9.rb[1] ],
           [],
-          "ex_9" => %w[ ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ex_7 ex_8 ]
+          "9.rb[1]" => %w[ 1.rb[1] 2.rb[1] 3.rb[1] 4.rb[1] 5.rb[1] 6.rb[1] 7.rb[1] 8.rb[1] ]
         )
       end
       let(:counting_minimizer) do
-        Bisect::ExampleMinimizer.new(fake_runner, counting_reporter)
+        new_minimizer(fake_runner, counting_reporter)
       end
 
       it 'returns the full command if the failure can not be reduced' do
         counting_minimizer.find_minimal_repro
 
         expect(counting_minimizer.repro_command_for_currently_needed_ids).to eq(
-          "rspec ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ex_7 ex_8 ex_9"
+          "rspec 1.rb[1] 2.rb[1] 3.rb[1] 4.rb[1] 5.rb[1] 6.rb[1] 7.rb[1] 8.rb[1] 9.rb[1]"
         )
       end
 
@@ -107,20 +112,20 @@ module RSpec::Core
         super.tap do |results|
           @run_count ||= 0
           if (@run_count += 1) > 1
-            results.failed_example_ids << "ex_8"
+            results.failed_example_ids << "8.rb[1]"
           end
         end
       end
 
-      minimizer = Bisect::ExampleMinimizer.new(fake_runner, RSpec::Core::NullReporter)
+      minimizer = new_minimizer(fake_runner)
       minimizer.find_minimal_repro
-      expect(minimizer.repro_command_for_currently_needed_ids).to eq("rspec ex_2 ex_4 ex_5")
+      expect(minimizer.repro_command_for_currently_needed_ids).to eq("rspec 2.rb[1] 4.rb[1] 5.rb[1]")
     end
 
     it 'aborts early when no examples fail' do
-      minimizer = Bisect::ExampleMinimizer.new(FakeBisectRunner.new(
-        %w[ ex_1 ex_2 ], [],  {}
-      ), RSpec::Core::NullReporter)
+      minimizer = new_minimizer(FakeBisectRunner.new(
+        %w[ 1.rb[1] 2.rb[1] ], [],  {}
+      ))
 
       expect {
         minimizer.find_minimal_repro
@@ -129,9 +134,14 @@ module RSpec::Core
 
     context "when the `repro_command_for_currently_needed_ids` is queried before it has sufficient information" do
       it 'returns an explanation that will be printed when the bisect run is aborted immediately' do
-        minimizer = Bisect::ExampleMinimizer.new(FakeBisectRunner.new([], [], {}), RSpec::Core::NullReporter)
+        minimizer = new_minimizer(FakeBisectRunner.new([], [], {}))
         expect(minimizer.repro_command_for_currently_needed_ids).to include("Not yet enough information")
       end
+    end
+
+    def new_minimizer(runner, reporter=RSpec::Core::NullReporter)
+      shell_command = Bisect::ShellCommand.new([])
+      Bisect::ExampleMinimizer.new(shell_command, runner, reporter)
     end
   end
 end

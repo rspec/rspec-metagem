@@ -72,7 +72,7 @@ module RSpec::Core::Formatters
   autoload :ProgressFormatter,        'rspec/core/formatters/progress_formatter'
   autoload :ProfileFormatter,         'rspec/core/formatters/profile_formatter'
   autoload :JsonFormatter,            'rspec/core/formatters/json_formatter'
-  autoload :BisectFormatter,          'rspec/core/formatters/bisect_formatter'
+  autoload :BisectDRbFormatter,       'rspec/core/formatters/bisect_drb_formatter'
   autoload :ExceptionPresenter,       'rspec/core/formatters/exception_presenter'
 
   # Register the formatter class
@@ -140,6 +140,13 @@ module RSpec::Core::Formatters
 
     # @private
     def add(formatter_to_use, *paths)
+      # If a formatter instance was passed, we can register it directly,
+      # with no need for any of the further processing that happens below.
+      if Loader.formatters.key?(formatter_to_use.class)
+        register formatter_to_use, notifications_for(formatter_to_use.class)
+        return
+      end
+
       formatter_class = find_formatter(formatter_to_use)
 
       args = paths.map { |p| p.respond_to?(:puts) ? p : open_stream(p) }
@@ -203,8 +210,8 @@ module RSpec::Core::Formatters
         ProgressFormatter
       when 'j', 'json'
         JsonFormatter
-      when 'bisect'
-        BisectFormatter
+      when 'bisect-drb'
+        BisectDRbFormatter
       end
     end
 

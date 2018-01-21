@@ -41,7 +41,7 @@ module RSpec::Core
       end
     end
 
-    context "when used in combination with the BisectFormatter", :slow do
+    context "when used in combination with the BisectDRbFormatter", :slow do
       include FormatterSupport
 
       attr_reader :server
@@ -55,7 +55,7 @@ module RSpec::Core
 
       def run_formatter_specs
         RSpec.configuration.drb_port = server.drb_port
-        run_rspec_with_formatter("bisect")
+        run_rspec_with_formatter("bisect-drb")
       end
 
       it 'receives suite results' do

@@ -1,3 +1,5 @@
+RSpec::Support.require_rspec_core "bisect/utilities"
+
 module RSpec
   module Core
     module Bisect
@@ -5,12 +7,13 @@ module RSpec
       # Contains the core bisect logic. Searches for examples we can ignore by
       # repeatedly running different subsets of the suite.
       class ExampleMinimizer
-        attr_reader :runner, :reporter, :all_example_ids, :failed_example_ids
+        attr_reader :shell_command, :runner, :reporter, :all_example_ids, :failed_example_ids
         attr_accessor :remaining_ids
 
-        def initialize(runner, reporter)
-          @runner   = runner
-          @reporter = reporter
+        def initialize(shell_command, runner, reporter)
+          @shell_command = shell_command
+          @runner        = runner
+          @reporter      = reporter
         end
 
         def find_minimal_repro
@@ -82,7 +85,7 @@ module RSpec
         end
 
         def repro_command_for_currently_needed_ids
-          return runner.repro_command_from(currently_needed_ids) if remaining_ids
+          return shell_command.repro_command_from(currently_needed_ids) if remaining_ids
           "(Not yet enough information to provide any repro command)"
         end
 
@@ -108,7 +111,7 @@ module RSpec
         end
 
         def prep
-          notify(:bisect_starting, :original_cli_args => runner.original_cli_args)
+          notify(:bisect_starting, :original_cli_args => shell_command.original_cli_args)
 
           _, duration = track_duration do
             original_results    = runner.original_results
@@ -135,7 +138,7 @@ module RSpec
           ids_to_run = ids + failed_example_ids
           notify(
             :bisect_individual_run_start,
-            :command => runner.repro_command_from(ids_to_run),
+            :command => shell_command.repro_command_from(ids_to_run),
             :ids_to_run => ids_to_run
           )
 

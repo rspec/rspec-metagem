@@ -877,11 +877,11 @@ module RSpec
       # @overload add_formatter(formatter)
       # @overload add_formatter(formatter, output)
       #
-      # @param formatter [Class, String] formatter to use. Can be any of the
+      # @param formatter [Class, String, Object] formatter to use. Can be any of the
       #   string values supported from the CLI (`p`/`progress`,
-      #   `d`/`doc`/`documentation`, `h`/`html`, or `j`/`json`) or any
+      #   `d`/`doc`/`documentation`, `h`/`html`, or `j`/`json`), any
       #   class that implements the formatter protocol and has registered
-      #   itself with RSpec as a formatter.
+      #   itself with RSpec as a formatter, or a formatter instance.
       # @param output [String, IO] where the formatter will write its output.
       #   Can be an IO object or a string path to a file. If not provided,
       #   the configured `output_stream` (`$stdout`, by default) will be used.
