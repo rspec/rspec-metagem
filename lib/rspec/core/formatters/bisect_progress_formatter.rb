@@ -6,15 +6,6 @@ module RSpec
       # @private
       # Produces progress output while bisecting.
       class BisectProgressFormatter < BaseTextFormatter
-        # We've named all events with a `bisect_` prefix to prevent naming collisions.
-        Formatters.register self, :bisect_starting, :bisect_original_run_complete,
-                            :bisect_round_started, :bisect_individual_run_complete,
-                            :bisect_complete, :bisect_repro_command,
-                            :bisect_failed, :bisect_aborted,
-                            :bisect_round_ignoring_ids, :bisect_round_detected_multiple_culprits,
-                            :bisect_dependency_check_started, :bisect_dependency_check_passed,
-                            :bisect_dependency_check_failed
-
         def bisect_starting(notification)
           @round_count = 0
           options = notification.original_cli_args.join(' ')
@@ -88,13 +79,10 @@ module RSpec
       end
 
       # @private
-      # Produces detailed debug output while bisecting. Used when
-      # bisect is performed while the `DEBUG_RSPEC_BISECT` ENV var is used.
-      # Designed to provide details for us when we need to troubleshoot bisect bugs.
+      # Produces detailed debug output while bisecting. Used when bisect is
+      # performed with `--bisect=verbose`. Designed to provide details for
+      # us when we need to troubleshoot bisect bugs.
       class BisectDebugFormatter < BisectProgressFormatter
-        Formatters.register self, :bisect_original_run_complete, :bisect_individual_run_start,
-                            :bisect_individual_run_complete, :bisect_round_ignoring_ids
-
         def bisect_original_run_complete(notification)
           output.puts " (#{Helpers.format_duration(notification.duration)})"
 

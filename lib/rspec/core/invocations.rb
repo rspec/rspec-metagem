@@ -31,7 +31,6 @@ module RSpec
 
           success = RSpec::Core::Bisect::Coordinator.bisect_with(
             options.args,
-            RSpec.configuration,
             bisect_formatter_for(options.options[:bisect])
           )
 
@@ -41,8 +40,13 @@ module RSpec
         private
 
         def bisect_formatter_for(argument)
-          return Formatters::BisectDebugFormatter if argument == "verbose"
-          Formatters::BisectProgressFormatter
+          klass = if argument == "verbose"
+                    Formatters::BisectDebugFormatter
+                  else
+                    Formatters::BisectProgressFormatter
+                  end
+
+          klass.new(RSpec.configuration.output_stream)
         end
       end
 

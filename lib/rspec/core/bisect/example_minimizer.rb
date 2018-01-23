@@ -7,13 +7,13 @@ module RSpec
       # Contains the core bisect logic. Searches for examples we can ignore by
       # repeatedly running different subsets of the suite.
       class ExampleMinimizer
-        attr_reader :shell_command, :runner, :reporter, :all_example_ids, :failed_example_ids
+        attr_reader :shell_command, :runner, :all_example_ids, :failed_example_ids
         attr_accessor :remaining_ids
 
-        def initialize(shell_command, runner, reporter)
+        def initialize(shell_command, runner, notifier)
           @shell_command = shell_command
           @runner        = runner
-          @reporter      = reporter
+          @notifier      = notifier
         end
 
         def find_minimal_repro
@@ -164,7 +164,7 @@ module RSpec
         end
 
         def notify(*args)
-          reporter.publish(*args)
+          @notifier.publish(*args)
         end
       end
     end

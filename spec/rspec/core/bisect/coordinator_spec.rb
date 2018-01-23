@@ -18,8 +18,7 @@ module RSpec::Core
       allow(Bisect::Server).to receive(:run).and_yield(instance_double(Bisect::Server))
       allow(Bisect::ShellRunner).to receive(:new).and_return(fake_runner)
 
-      RSpec.configuration.output_stream = output
-      Bisect::Coordinator.bisect_with([], RSpec.configuration, formatter)
+      Bisect::Coordinator.bisect_with([], formatter.new(output))
     ensure
       RSpec.reset # so that RSpec.configuration.output_stream isn't closed
     end
