@@ -92,8 +92,7 @@ module RSpec::Core
 
         expect(RSpec::Core::Bisect::Coordinator).to have_received(:bisect_with).with(
           args,
-          RSpec.configuration,
-          Formatters::BisectProgressFormatter
+          an_instance_of(Formatters::BisectProgressFormatter)
         )
       end
 
@@ -123,8 +122,7 @@ module RSpec::Core
 
           expect(RSpec::Core::Bisect::Coordinator).to have_received(:bisect_with).with(
             args,
-            RSpec.configuration,
-            Formatters::BisectDebugFormatter
+            an_instance_of(Formatters::BisectDebugFormatter)
           )
         end
       end

@@ -15,47 +15,40 @@ module RSpec
       #   - Formatters::BisectProgressFormatter: provides progress updates
       #     to the user.
       class Coordinator
-        def self.bisect_with(original_cli_args, configuration, formatter)
-          new(original_cli_args, configuration, formatter).bisect
+        def self.bisect_with(original_cli_args, formatter)
+          new(original_cli_args, formatter).bisect
         end
 
-        def initialize(original_cli_args, configuration, formatter)
+        def initialize(original_cli_args, formatter)
           @shell_command = ShellCommand.new(original_cli_args)
-          @configuration = configuration
-          @formatter     = formatter
+          @notifier      = Bisect::Notifier.new(formatter)
         end
 
         def bisect
-          @configuration.add_formatter @formatter
+          repro = ShellRunner.start(@shell_command) do |runner|
+            minimizer = ExampleMinimizer.new(@shell_command, runner, @notifier)
 
-          reporter.close_after do
-            repro = ShellRunner.start(@shell_command) do |runner|
-              minimizer = ExampleMinimizer.new(@shell_command, runner, reporter)
-
-              gracefully_abort_on_sigint(minimizer)
-              minimizer.find_minimal_repro
-              minimizer.repro_command_for_currently_needed_ids
-            end
-
-            reporter.publish(:bisect_repro_command, :repro => repro)
+            gracefully_abort_on_sigint(minimizer)
+            minimizer.find_minimal_repro
+            minimizer.repro_command_for_currently_needed_ids
           end
+
+          @notifier.publish(:bisect_repro_command, :repro => repro)
 
           true
         rescue BisectFailedError => e
-          reporter.publish(:bisect_failed, :failure_explanation => e.message)
+          @notifier.publish(:bisect_failed, :failure_explanation => e.message)
           false
+        ensure
+          @notifier.publish(:close)
         end
 
       private
 
-        def reporter
-          @configuration.reporter
-        end
-
         def gracefully_abort_on_sigint(minimizer)
           trap('INT') do
             repro = minimizer.repro_command_for_currently_needed_ids
-            reporter.publish(:bisect_aborted, :repro => repro)
+            @notifier.publish(:bisect_aborted, :repro => repro)
             exit(1)
           end
         end

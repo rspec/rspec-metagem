@@ -11,6 +11,22 @@ module RSpec
               spec_output)
         end
       end
+
+      # Wraps a `formatter` providing a simple means to notify it in place
+      # of an `RSpec::Core::Reporter`, without involving configuration in
+      # any way.
+      # @private
+      class Notifier
+        def initialize(formatter)
+          @formatter = formatter
+        end
+
+        def publish(event, *args)
+          return unless @formatter.respond_to?(event)
+          notification = Notifications::CustomNotification.for(*args)
+          @formatter.__send__(event, notification)
+        end
+      end
     end
   end
 end
