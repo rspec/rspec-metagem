@@ -180,9 +180,14 @@ Then(/^bisect should (succeed|fail) with output like:$/) do |succeed, expected_o
     "Output:\n\n#{last_process.stdout}"
 
   expected = normalize_durations(expected_output)
-  actual   = normalize_durations(last_process.stdout)
+  actual   = normalize_durations(last_process.stdout).sub(/\n+\Z/, '')
 
-  expect(actual.sub(/\n+\Z/, '')).to eq(expected)
+  if expected.include?("# ...")
+    expected_start, expected_end = expected.split("# ...")
+    expect(actual).to start_with(expected_start).and end_with(expected_end)
+  else
+    expect(actual).to eq(expected)
+  end
 end
 
 When(/^I run `([^`]+)` and abort in the middle with ctrl\-c$/) do |cmd|

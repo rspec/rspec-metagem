@@ -1,6 +1,10 @@
 require 'rspec/core/bisect/utilities'
 
 FakeBisectRunner = Struct.new(:all_ids, :always_failures, :dependent_failures) do
+  def start(_shell_command, _spec_runner)
+    yield self
+  end
+
   def original_results
     failures = always_failures | dependent_failures.keys
     RSpec::Core::Bisect::ExampleSetDescriptor.new(all_ids, failures.sort)

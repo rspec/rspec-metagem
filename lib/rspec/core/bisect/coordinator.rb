@@ -1,5 +1,4 @@
 RSpec::Support.require_rspec_core "bisect/shell_command"
-RSpec::Support.require_rspec_core "bisect/shell_runner"
 RSpec::Support.require_rspec_core "bisect/example_minimizer"
 RSpec::Support.require_rspec_core "bisect/utilities"
 RSpec::Support.require_rspec_core "formatters/bisect_progress_formatter"
@@ -7,25 +6,25 @@ RSpec::Support.require_rspec_core "formatters/bisect_progress_formatter"
 module RSpec
   module Core
     module Bisect
-      # @private
       # The main entry point into the bisect logic. Coordinates among:
       #   - Bisect::ShellCommand: Generates shell commands to run spec subsets
-      #   - Bisect::ShellRunner: Runs a set of examples and returns the results.
       #   - Bisect::ExampleMinimizer: Contains the core bisect logic.
-      #   - Formatters::BisectProgressFormatter: provides progress updates
-      #     to the user.
+      #   - A bisect runner: runs a set of examples and returns the results.
+      #   - A bisect formatter: provides progress updates to the user.
+      # @private
       class Coordinator
-        def self.bisect_with(original_cli_args, formatter)
-          new(original_cli_args, formatter).bisect
+        def self.bisect_with(spec_runner, original_cli_args, formatter)
+          new(spec_runner, original_cli_args, formatter).bisect
         end
 
-        def initialize(original_cli_args, formatter)
+        def initialize(spec_runner, original_cli_args, formatter)
+          @spec_runner   = spec_runner
           @shell_command = ShellCommand.new(original_cli_args)
           @notifier      = Bisect::Notifier.new(formatter)
         end
 
         def bisect
-          repro = ShellRunner.start(@shell_command) do |runner|
+          repro = start_bisect_runner do |runner|
             minimizer = ExampleMinimizer.new(@shell_command, runner, @notifier)
 
             gracefully_abort_on_sigint(minimizer)
@@ -44,6 +43,11 @@ module RSpec
         end
 
       private
+
+        def start_bisect_runner(&block)
+          klass = @spec_runner.configuration.bisect_runner_class
+          klass.start(@shell_command, @spec_runner, &block)
+        end
 
         def gracefully_abort_on_sigint(minimizer)
           trap('INT') do
