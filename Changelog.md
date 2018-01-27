@@ -7,6 +7,14 @@ Enhancements:
   that it works on `Pathname` objects. (Andrew Vit, #2479)
 * Nicely format errors encountered while loading files specified
   by `--require` option.  (Myron Marston, #2504)
+* Significantly improve the performance of `--bisect` on platforms that
+  support forking by replacing the shell-based runner with one that uses
+  forking so that RSpec and the application environment can be booted only
+  once, instead of once per spec run. (Myron Marston, #2511)
+* Provide a configuration API to pick which bisect runner is used for
+  `--bisect`. Pick a runner via `config.bisect_runner = :shell` or
+  `config.bisect_runner = :fork` in a file loaded by a `--require`
+  option passed at the command line or set in `.rspec`. (Myron Marston, #2511)
 
 ### 3.7.1 / 2018-01-02
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.7.0...v3.7.1)
