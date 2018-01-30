@@ -322,7 +322,7 @@ module RSpec
       #     end
       #
       # The yielded example aliases `run` with `call`, which lets you treat it
-      # like a `Proc`. This is especially handy when working with libaries
+      # like a `Proc`. This is especially handy when working with libraries
       # that manage their own setup and teardown using a block or proc syntax,
       # e.g.
       #
