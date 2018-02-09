@@ -413,7 +413,6 @@ module RSpec
       # return [Integer]
       add_setting :max_displayed_failure_line_count
 
-      # @macro add_setting
       # Determines which bisect runner implementation gets used to run subsets
       # of the suite during a bisection. Your choices are:
       #
@@ -433,7 +432,18 @@ module RSpec
       #   loaded via `--require`.
       #
       # @return [Symbol]
-      add_setting :bisect_runner
+      attr_reader :bisect_runner
+      def bisect_runner=(value)
+        if @bisect_runner_class && value != @bisect_runner
+          raise "`config.bisect_runner = #{value.inspect}` can no longer take " \
+            "effect as the #{@bisect_runner.inspect} bisect runnner is already " \
+            "in use. This config setting must be set in a file loaded by a " \
+            "`--require` option (passed at the CLI or in a `.rspec` file) for " \
+            "it to have any effect."
+        end
+
+        @bisect_runner = value
+      end
 
       # @private
       # @deprecated Use {#color_mode} = :on, instead of {#color} with {#tty}
@@ -460,6 +470,7 @@ module RSpec
         @prepend_modules = FilterableItemRepository::QueryOptimized.new(:any?)
 
         @bisect_runner = RSpec::Support::RubyFeatures.fork_supported? ? :fork : :shell
+        @bisect_runner_class = nil
 
         @before_suite_hooks = []
         @after_suite_hooks  = []
@@ -1988,16 +1999,18 @@ module RSpec
 
       # @private
       def bisect_runner_class
-        case bisect_runner
-        when :fork
-          RSpec::Support.require_rspec_core 'bisect/fork_runner'
-          Bisect::ForkRunner
-        when :shell
-          RSpec::Support.require_rspec_core 'bisect/shell_runner'
-          Bisect::ShellRunner
-        else
-          raise "Unsupported value for `bisect_runner` (#{bisect_runner.inspect}). " \
-                "Only `:fork` and `:shell` are supported."
+        @bisect_runner_class ||= begin
+          case bisect_runner
+          when :fork
+            RSpec::Support.require_rspec_core 'bisect/fork_runner'
+            Bisect::ForkRunner
+          when :shell
+            RSpec::Support.require_rspec_core 'bisect/shell_runner'
+            Bisect::ShellRunner
+          else
+            raise "Unsupported value for `bisect_runner` (#{bisect_runner.inspect}). " \
+                  "Only `:fork` and `:shell` are supported."
+          end
         end
       end
 

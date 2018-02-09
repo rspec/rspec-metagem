@@ -1470,6 +1470,22 @@ module RSpec::Core
           config.bisect_runner_class
         }.to raise_error(/Unsupported value for `bisect_runner`/)
       end
+
+      it 'cannot be changed after the runner is in use' do
+        config.bisect_runner = :fork
+        config.bisect_runner_class
+
+        expect {
+          config.bisect_runner = :shell
+        }.to raise_error(/config.bisect_runner = :shell/)
+      end
+
+      it 'can be set to the same value after the runner is in use' do
+        config.bisect_runner = :shell
+        config.bisect_runner_class
+
+        expect { config.bisect_runner = :shell }.not_to raise_error
+      end
     end
 
     %w[formatter= add_formatter].each do |config_method|
