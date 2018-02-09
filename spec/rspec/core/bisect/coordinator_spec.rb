@@ -49,7 +49,7 @@ module RSpec::Core
       output = normalize_durations(output.string)
 
       expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
-        |Bisect started using options: "" and bisect runner: FakeBisectRunner
+        |Bisect started using options: "" and bisect runner: "FakeBisectRunner"
         |Running suite to find failures... (n.nnnn seconds)
         | - Failing examples (2):
         |    - 2.rb[1:1]
@@ -150,7 +150,7 @@ module RSpec::Core
         output = normalize_durations(output.string)
 
         expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
-          |Bisect started using options: "" and bisect runner: FakeBisectRunner
+          |Bisect started using options: "" and bisect runner: "FakeBisectRunner"
           |Running suite to find failures... (n.nnnn seconds)
           | - Failing examples (1):
           |    - 2.rb[1:1]

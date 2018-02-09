@@ -94,7 +94,7 @@ Feature: Bisect
     When I run `rspec --seed 1234 --bisect=verbose`
     Then bisect should succeed with output like:
       """
-      Bisect started using options: "--seed 1234" and bisect runner: RSpec::Core::Bisect::ForkRunner
+      Bisect started using options: "--seed 1234" and bisect runner: :fork
       Running suite to find failures... (0.16528 seconds)
        - Failing examples (1):
           - ./spec/calculator_1_spec.rb[1:1]
@@ -171,7 +171,7 @@ Feature: Bisect
     When I run `rspec --seed 1234 --bisect=verbose`
     Then bisect should succeed with output like:
       """
-      Bisect started using options: "--seed 1234" and bisect runner: RSpec::Core::Bisect::ShellRunner
+      Bisect started using options: "--seed 1234" and bisect runner: :shell
       # ...
       The minimal reproduction command is:
         rspec ./spec/calculator_10_spec.rb[1:1] ./spec/calculator_1_spec.rb[1:1] --seed 1234

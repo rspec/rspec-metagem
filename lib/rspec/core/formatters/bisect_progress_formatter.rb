@@ -149,7 +149,7 @@ module RSpec
         end
 
         def bisect_started_message(notification)
-          "#{super} and bisect runner: #{notification.bisect_runner}"
+          "#{super} and bisect runner: #{notification.bisect_runner.inspect}"
         end
       end
     end

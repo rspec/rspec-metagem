@@ -112,7 +112,7 @@ module RSpec
 
         def prep
           notify(:bisect_starting, :original_cli_args => shell_command.original_cli_args,
-                                   :bisect_runner => runner.class)
+                                   :bisect_runner => runner.class.name)
 
           _, duration = track_duration do
             original_results    = runner.original_results

@@ -16,6 +16,10 @@ module RSpec
           end
         end
 
+        def self.name
+          :shell
+        end
+
         def initialize(server, shell_command)
           @server        = server
           @shell_command = shell_command

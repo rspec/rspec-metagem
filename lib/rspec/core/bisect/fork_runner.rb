@@ -40,6 +40,10 @@ module RSpec
           instance.shutdown
         end
 
+        def self.name
+          :fork
+        end
+
         def initialize(shell_command, spec_runner)
           @shell_command = shell_command
           @channel = Channel.new
