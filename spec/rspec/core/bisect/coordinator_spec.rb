@@ -16,8 +16,8 @@ module RSpec::Core
       )
     end
 
-    def find_minimal_repro(output, formatter=Formatters::BisectProgressFormatter)
-      Bisect::Coordinator.bisect_with(spec_runner, [], formatter.new(output))
+    def find_minimal_repro(output, formatter=Formatters::BisectProgressFormatter, bisect_runner = :fork)
+      Bisect::Coordinator.bisect_with(spec_runner, [], formatter.new(output, bisect_runner))
     end
 
     it 'notifies the bisect progress formatter of progress and closes the output' do
@@ -99,7 +99,7 @@ module RSpec::Core
       it "detects the independent case and prints the minimal reproduction" do
         fake_bisect_runner.dependent_failures = {}
         output = StringIO.new
-        find_minimal_repro(output)
+        find_minimal_repro(output, Formatters::BisectProgressFormatter, :shell)
         output = normalize_durations(output.string)
 
         expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
@@ -107,6 +107,33 @@ module RSpec::Core
           |Running suite to find failures... (n.nnnn seconds)
           |Starting bisect with 1 failing example and 7 non-failing examples.
           |Checking that failure(s) are order-dependent... failure(s) do not require any non-failures to run first
+          |
+          |Bisect complete! Reduced necessary non-failing examples from 7 to 0 in n.nnnn seconds.
+          |
+          |The minimal reproduction command is:
+          |  rspec 2.rb[1:1]
+
+        EOS
+      end
+
+      it "also indicates that the :fork runner may be at fault when that was used" do
+        fake_bisect_runner.dependent_failures = {}
+        output = StringIO.new
+        find_minimal_repro(output, Formatters::BisectProgressFormatter, :fork)
+        output = normalize_durations(output.string)
+
+        expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
+          |Bisect started using options: ""
+          |Running suite to find failures... (n.nnnn seconds)
+          |Starting bisect with 1 failing example and 7 non-failing examples.
+          |Checking that failure(s) are order-dependent... failure(s) do not require any non-failures to run first
+          |
+          |================================================================================
+          |NOTE: this bisect run used `config.bisect_runner = :fork`, which generally
+          |provides significantly faster bisection runs than the old shell-based runner,
+          |but may inaccurately report that no non-failures are required. If this result
+          |is unexpected, consider setting `config.bisect_runner = :shell` and trying again.
+          |================================================================================
           |
           |Bisect complete! Reduced necessary non-failing examples from 7 to 0 in n.nnnn seconds.
           |
