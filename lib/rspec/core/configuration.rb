@@ -413,6 +413,38 @@ module RSpec
       # return [Integer]
       add_setting :max_displayed_failure_line_count
 
+      # Determines which bisect runner implementation gets used to run subsets
+      # of the suite during a bisection. Your choices are:
+      #
+      #   - `:shell`: Performs a spec run by shelling out, booting RSpec and your
+      #     application environment each time. This runner is the most widely
+      #     compatible runner, but is not as fast. On platforms that do not
+      #     support forking, this is the default.
+      #   - `:fork`: Pre-boots RSpec and your application environment in a parent
+      #     process, and then forks a child process for each spec run. This runner
+      #     tends to be significantly faster than the `:shell` runner but cannot
+      #     be used in some situations. On platforms that support forking, this
+      #     is the default. If you use this runner, you should ensure that all
+      #     of your one-time setup logic goes in a `before(:suite)` hook instead
+      #     of getting run at the top-level of a file loaded by `--require`.
+      #
+      # @note This option will only be used by `--bisect` if you set it in a file
+      #   loaded via `--require`.
+      #
+      # @return [Symbol]
+      attr_reader :bisect_runner
+      def bisect_runner=(value)
+        if @bisect_runner_class && value != @bisect_runner
+          raise "`config.bisect_runner = #{value.inspect}` can no longer take " \
+            "effect as the #{@bisect_runner.inspect} bisect runnner is already " \
+            "in use. This config setting must be set in a file loaded by a " \
+            "`--require` option (passed at the CLI or in a `.rspec` file) for " \
+            "it to have any effect."
+        end
+
+        @bisect_runner = value
+      end
+
       # @private
       # @deprecated Use {#color_mode} = :on, instead of {#color} with {#tty}
       add_setting :tty
@@ -436,6 +468,9 @@ module RSpec
         @include_modules = FilterableItemRepository::QueryOptimized.new(:any?)
         @extend_modules  = FilterableItemRepository::QueryOptimized.new(:any?)
         @prepend_modules = FilterableItemRepository::QueryOptimized.new(:any?)
+
+        @bisect_runner = RSpec::Support::RubyFeatures.fork_supported? ? :fork : :shell
+        @bisect_runner_class = nil
 
         @before_suite_hooks = []
         @after_suite_hooks  = []
@@ -1960,6 +1995,23 @@ module RSpec
       # Returns an array of blocks to call before defining an example group
       def on_example_group_definition_callbacks
         @on_example_group_definition_callbacks ||= []
+      end
+
+      # @private
+      def bisect_runner_class
+        @bisect_runner_class ||= begin
+          case bisect_runner
+          when :fork
+            RSpec::Support.require_rspec_core 'bisect/fork_runner'
+            Bisect::ForkRunner
+          when :shell
+            RSpec::Support.require_rspec_core 'bisect/shell_runner'
+            Bisect::ShellRunner
+          else
+            raise "Unsupported value for `bisect_runner` (#{bisect_runner.inspect}). " \
+                  "Only `:fork` and `:shell` are supported."
+          end
+        end
       end
 
     private

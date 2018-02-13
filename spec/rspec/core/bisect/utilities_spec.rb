@@ -23,4 +23,18 @@ module RSpec::Core
       }.not_to raise_error
     end
   end
+
+  RSpec.describe Bisect::Channel do
+    include RSpec::Support::InSubProcess
+
+    it "supports sending objects from a child process back to the parent" do
+      channel = Bisect::Channel.new
+
+      in_sub_process do
+        channel.send(:value_from_child)
+      end
+
+      expect(channel.receive).to eq :value_from_child
+    end
+  end
 end

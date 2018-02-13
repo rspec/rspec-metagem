@@ -26,27 +26,25 @@ module RSpec
 
       # @private
       class Bisect
-        def call(options, _err, _out)
+        def call(options, err, out)
           RSpec::Support.require_rspec_core "bisect/coordinator"
+          runner = Runner.new(options).tap { |r| r.configure(err, out) }
+          formatter = bisect_formatter_klass_for(options.options[:bisect]).new(
+            out, runner.configuration.bisect_runner
+          )
 
           success = RSpec::Core::Bisect::Coordinator.bisect_with(
-            options.args,
-            bisect_formatter_for(options.options[:bisect])
+            runner, options.args, formatter
           )
 
           success ? 0 : 1
         end
 
-        private
+      private
 
-        def bisect_formatter_for(argument)
-          klass = if argument == "verbose"
-                    Formatters::BisectDebugFormatter
-                  else
-                    Formatters::BisectProgressFormatter
-                  end
-
-          klass.new(RSpec.configuration.output_stream)
+        def bisect_formatter_klass_for(argument)
+          return Formatters::BisectDebugFormatter if argument == "verbose"
+          Formatters::BisectProgressFormatter
         end
       end
 

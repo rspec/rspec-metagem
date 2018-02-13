@@ -1443,6 +1443,51 @@ module RSpec::Core
       end
     end
 
+    describe "#bisect_runner_class" do
+      if RSpec::Support::RubyFeatures.fork_supported?
+        it 'defaults to the faster `Bisect::ForkRunner` since fork is supported on this platform' do
+          expect(config.bisect_runner_class).to be Bisect::ForkRunner
+        end
+      else
+        it 'defaults to the slower `Bisect::ShellRunner` since fork is not supported on this platform' do
+          expect(config.bisect_runner_class).to be Bisect::ShellRunner
+        end
+      end
+
+      it "returns `Bisect::ForkRunner` when `bisect_runner == :fork" do
+        config.bisect_runner = :fork
+        expect(config.bisect_runner_class).to be Bisect::ForkRunner
+      end
+
+      it "returns `Bisect::ShellRunner` when `bisect_runner == :shell" do
+        config.bisect_runner = :shell
+        expect(config.bisect_runner_class).to be Bisect::ShellRunner
+      end
+
+      it "raises a clear error when `bisect_runner` is configured to an unrecognized value" do
+        config.bisect_runner = :unknown
+        expect {
+          config.bisect_runner_class
+        }.to raise_error(/Unsupported value for `bisect_runner`/)
+      end
+
+      it 'cannot be changed after the runner is in use' do
+        config.bisect_runner = :fork
+        config.bisect_runner_class
+
+        expect {
+          config.bisect_runner = :shell
+        }.to raise_error(/config.bisect_runner = :shell/)
+      end
+
+      it 'can be set to the same value after the runner is in use' do
+        config.bisect_runner = :shell
+        config.bisect_runner_class
+
+        expect { config.bisect_runner = :shell }.not_to raise_error
+      end
+    end
+
     %w[formatter= add_formatter].each do |config_method|
       describe "##{config_method}" do
         it "delegates to formatters#add" do

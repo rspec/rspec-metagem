@@ -94,9 +94,7 @@ module RSpec
       # @param err [IO] error stream
       # @param out [IO] output stream
       def setup(err, out)
-        @configuration.error_stream = err
-        @configuration.output_stream = out if @configuration.output_stream == $stdout
-        @options.configure(@configuration)
+        configure(err, out)
         @configuration.load_spec_files
         @world.announce_filters
       end
@@ -120,6 +118,13 @@ module RSpec
         end && !@world.non_example_failure
 
         success ? 0 : @configuration.failure_exit_code
+      end
+
+      # @private
+      def configure(err, out)
+        @configuration.error_stream = err
+        @configuration.output_stream = out if @configuration.output_stream == $stdout
+        @options.configure(@configuration)
       end
 
       # @private

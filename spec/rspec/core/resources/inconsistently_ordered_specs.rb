@@ -1,12 +1,12 @@
 # Deliberately named _specs.rb to avoid being loaded except when specified
 
 RSpec.configure do |c|
-  c.register_ordering(:global, &:shuffle)
+  c.register_ordering(:shuffled, &:shuffle)
 end
 
-10.times do |i|
-  RSpec.describe "Group #{i}" do
-    it("passes") {      }
-    it("fails")  { fail }
+RSpec.describe "Group", :order => :shuffled do
+  10.times do |i|
+    it("passes #{i}") {      }
+    it("fails #{i}")  { fail }
   end
 end

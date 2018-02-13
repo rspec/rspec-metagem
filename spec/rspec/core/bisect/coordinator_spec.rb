@@ -6,7 +6,9 @@ module RSpec::Core
   RSpec.describe Bisect::Coordinator, :simulate_shell_allowing_unquoted_ids do
     include FormatterSupport
 
-    let(:fake_runner) do
+    let(:config) { instance_double(Configuration, :bisect_runner_class => fake_bisect_runner) }
+    let(:spec_runner) { instance_double(RSpec::Core::Runner, :configuration => config) }
+    let(:fake_bisect_runner) do
       FakeBisectRunner.new(
         1.upto(8).map { |i| "#{i}.rb[1:1]" },
         %w[ 2.rb[1:1] ],
@@ -14,13 +16,8 @@ module RSpec::Core
       )
     end
 
-    def find_minimal_repro(output, formatter=Formatters::BisectProgressFormatter)
-      allow(Bisect::Server).to receive(:run).and_yield(instance_double(Bisect::Server))
-      allow(Bisect::ShellRunner).to receive(:new).and_return(fake_runner)
-
-      Bisect::Coordinator.bisect_with([], formatter.new(output))
-    ensure
-      RSpec.reset # so that RSpec.configuration.output_stream isn't closed
+    def find_minimal_repro(output, formatter=Formatters::BisectProgressFormatter, bisect_runner = :fork)
+      Bisect::Coordinator.bisect_with(spec_runner, [], formatter.new(output, bisect_runner))
     end
 
     it 'notifies the bisect progress formatter of progress and closes the output' do
@@ -52,7 +49,7 @@ module RSpec::Core
       output = normalize_durations(output.string)
 
       expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
-        |Bisect started using options: ""
+        |Bisect started using options: "" and bisect runner: "FakeBisectRunner"
         |Running suite to find failures... (n.nnnn seconds)
         | - Failing examples (2):
         |    - 2.rb[1:1]
@@ -100,9 +97,9 @@ module RSpec::Core
 
     context "with an order-independent failure" do
       it "detects the independent case and prints the minimal reproduction" do
-        fake_runner.dependent_failures = {}
+        fake_bisect_runner.dependent_failures = {}
         output = StringIO.new
-        find_minimal_repro(output)
+        find_minimal_repro(output, Formatters::BisectProgressFormatter, :shell)
         output = normalize_durations(output.string)
 
         expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
@@ -119,14 +116,41 @@ module RSpec::Core
         EOS
       end
 
+      it "also indicates that the :fork runner may be at fault when that was used" do
+        fake_bisect_runner.dependent_failures = {}
+        output = StringIO.new
+        find_minimal_repro(output, Formatters::BisectProgressFormatter, :fork)
+        output = normalize_durations(output.string)
+
+        expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
+          |Bisect started using options: ""
+          |Running suite to find failures... (n.nnnn seconds)
+          |Starting bisect with 1 failing example and 7 non-failing examples.
+          |Checking that failure(s) are order-dependent... failure(s) do not require any non-failures to run first
+          |
+          |================================================================================
+          |NOTE: this bisect run used `config.bisect_runner = :fork`, which generally
+          |provides significantly faster bisection runs than the old shell-based runner,
+          |but may inaccurately report that no non-failures are required. If this result
+          |is unexpected, consider setting `config.bisect_runner = :shell` and trying again.
+          |================================================================================
+          |
+          |Bisect complete! Reduced necessary non-failing examples from 7 to 0 in n.nnnn seconds.
+          |
+          |The minimal reproduction command is:
+          |  rspec 2.rb[1:1]
+
+        EOS
+      end
+
       it "can use the debug formatter for detailed output" do
-        fake_runner.dependent_failures = {}
+        fake_bisect_runner.dependent_failures = {}
         output = StringIO.new
         find_minimal_repro(output, Formatters::BisectDebugFormatter)
         output = normalize_durations(output.string)
 
         expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
-          |Bisect started using options: ""
+          |Bisect started using options: "" and bisect runner: "FakeBisectRunner"
           |Running suite to find failures... (n.nnnn seconds)
           | - Failing examples (1):
           |    - 2.rb[1:1]

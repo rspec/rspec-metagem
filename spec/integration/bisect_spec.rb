@@ -9,10 +9,10 @@ module RSpec::Core
     end if ENV['APPVEYOR'] && RUBY_VERSION.to_f > 2.0
 
     def bisect(cli_args, expected_status=nil)
-      RSpec.configuration.output_stream = formatter_output
+      options = ConfigurationOptions.new(cli_args)
 
       expect {
-        status = RSpec::Core::Runner.run(cli_args + ["--bisect"])
+        status = Invocations::Bisect.new.call(options, formatter_output, formatter_output)
         expect(status).to eq(expected_status) if expected_status
       }.to avoid_outputting.to_stdout_from_any_process.and avoid_outputting.to_stderr_from_any_process
 

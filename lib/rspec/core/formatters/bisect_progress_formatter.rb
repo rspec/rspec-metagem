@@ -6,10 +6,14 @@ module RSpec
       # @private
       # Produces progress output while bisecting.
       class BisectProgressFormatter < BaseTextFormatter
+        def initialize(output, bisect_runner)
+          super(output)
+          @bisect_runner = bisect_runner
+        end
+
         def bisect_starting(notification)
           @round_count = 0
-          options = notification.original_cli_args.join(' ')
-          output.puts "Bisect started using options: #{options.inspect}"
+          output.puts bisect_started_message(notification)
           output.print "Running suite to find failures..."
         end
 
@@ -31,6 +35,16 @@ module RSpec
 
         def bisect_dependency_check_failed(_notification)
           output.puts " failure(s) do not require any non-failures to run first"
+
+          if @bisect_runner == :fork
+            output.puts
+            output.puts "=" * 80
+            output.puts "NOTE: this bisect run used `config.bisect_runner = :fork`, which generally"
+            output.puts "provides significantly faster bisection runs than the old shell-based runner,"
+            output.puts "but may inaccurately report that no non-failures are required. If this result"
+            output.puts "is unexpected, consider setting `config.bisect_runner = :shell` and trying again."
+            output.puts "=" * 80
+          end
         end
 
         def bisect_round_started(notification, include_trailing_space=true)
@@ -75,6 +89,13 @@ module RSpec
         def bisect_aborted(notification)
           output.puts "\n\nBisect aborted!"
           output.puts "\nThe most minimal reproduction command discovered so far is:\n  #{notification.repro}"
+        end
+
+      private
+
+        def bisect_started_message(notification)
+          options = notification.original_cli_args.join(' ')
+          "Bisect started using options: #{options.inspect}"
         end
       end
 
@@ -125,6 +146,10 @@ module RSpec
           organized_ids = Formatters::Helpers.organize_ids(ids)
           formatted_ids = organized_ids.map { |id| "    - #{id}" }.join("\n")
           "#{description} (#{ids.size}):\n#{formatted_ids}"
+        end
+
+        def bisect_started_message(notification)
+          "#{super} and bisect runner: #{notification.bisect_runner.inspect}"
         end
       end
     end
