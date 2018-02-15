@@ -1,6 +1,6 @@
 ## Set up the dev environment
 
-    git clone git://github.com/rspec/rspec-expectations.git
+    git clone https://github.com/rspec/rspec-expectations.git
     cd rspec-expectations
     gem install bundler
     bundle install
