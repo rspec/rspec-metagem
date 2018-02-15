@@ -1,6 +1,6 @@
 ## Set up the dev environment
 
-    git clone git://github.com/rspec/rspec-core.git
+    git clone https://github.com/rspec/rspec-core.git
     cd rspec-core
     gem install bundler
     bundle install
