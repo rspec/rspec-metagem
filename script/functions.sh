@@ -1,4 +1,4 @@
-# This file was generated on 2018-02-27T14:33:33+01:00 from the rspec-dev repo.
+# This file was generated on 2018-01-02T08:14:15-08:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -180,7 +180,7 @@ function check_documentation_coverage {
 
 function check_style_and_lint {
   echo "bin/rubocop lib"
-  bin/rubocop lib
+  eval "(unset RUBYOPT; exec bin/rubocop lib)"
 }
 
 function run_all_spec_suites {
