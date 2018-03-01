@@ -168,8 +168,6 @@ module RSpec
       end
 
       def options_file_as_erb_string(path)
-        # FIXME: Consider removing the following conditional branch after Ruby 2.6 is released.
-        #        https://github.com/ruby/ruby/commit/cc777d09f44fa909a336ba14f3aa802ffe16e010
         if RUBY_VERSION >= '2.6'
           ERB.new(File.read(path), :trim_mode => '-').result(binding)
         else
