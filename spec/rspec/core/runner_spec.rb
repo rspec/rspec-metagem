@@ -407,7 +407,7 @@ module RSpec::Core
           end
 
           context "when `example_status_persistence_file_path` is not configured" do
-            it 'persists the status of all loaded examples' do
+            it "doesn't persist example status" do
               config.example_status_persistence_file_path = nil
               run
               expect(ExampleStatusPersister).not_to have_received(:persist)
