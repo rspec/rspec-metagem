@@ -406,6 +406,15 @@ module RSpec::Core
             end
           end
 
+          context "with --dry-run" do
+            it "doesn't persist example status" do
+              config.example_status_persistence_file_path = "examples.txt"
+              config.dry_run = true
+              run
+              expect(ExampleStatusPersister).not_to have_received(:persist)
+            end
+          end
+
           context "when `example_status_persistence_file_path` is not configured" do
             it 'persists the status of all loaded examples' do
               config.example_status_persistence_file_path = nil

@@ -184,6 +184,7 @@ module RSpec
     private
 
       def persist_example_statuses
+        return if @configuration.dry_run
         return unless (path = @configuration.example_status_persistence_file_path)
 
         ExampleStatusPersister.persist(@world.all_examples, path)
