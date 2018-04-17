@@ -1,5 +1,5 @@
 <!---
-This file was generated on 2016-09-28T20:00:38+10:00 from the rspec-dev repo.
+This file was generated on 2018-04-17T19:41:56+02:00 from the rspec-dev repo.
 DO NOT modify it by hand as your changes will get lost the next time it is generated.
 -->
 
@@ -11,7 +11,7 @@ We welcome contributions from *everyone*. While contributing, please follow the 
 If you'd like to help make RSpec better, here are some ways you can contribute:
 
   - by running RSpec HEAD to help us catch bugs before new releases
-  - by [reporting bugs you encounter](https://github.com/rspec/rspec-core/issues/new)
+  - by [reporting bugs you encounter](https://github.com/rspec/rspec-core/issues/new) with [report template](#report-template)
   - by [suggesting new features](https://github.com/rspec/rspec-core/issues/new)
   - by improving RSpec's [Relish](https://relishapp.com/rspec) or [API](http://rspec.info/documentation/) documentation
   - by improving [RSpec's website](http://rspec.info/) ([source](https://github.com/rspec/rspec.github.io))
@@ -29,6 +29,13 @@ Thanks for helping us make RSpec better!
 These issue are ones that we be believe are best suited for new contributors to
 get started with. They represent a meaningful contribution to the project that
 should not be too hard to pull off.
+
+## Report template
+
+Having a way to reproduce your issue will be very helpful for others to help confirm,
+investigate and ultimately fix your issue. You can do this by providing an executable
+test case. To make this process easier, we have prepared one basic
+[bug report templates](REPORT_TEMPLATE.md) for you to use as a starting point.
 
 ## Maintenance branches
 
