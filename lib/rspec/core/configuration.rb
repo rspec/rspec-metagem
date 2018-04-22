@@ -9,10 +9,11 @@ module RSpec
 
     # Stores runtime configuration information.
     #
-    # Configuration options are loaded from `~/.rspec`, `.rspec`,
-    # `.rspec-local`, command line switches, and the `SPEC_OPTS` environment
-    # variable (listed in lowest to highest precedence; for example, an option
-    # in `~/.rspec` can be overridden by an option in `.rspec-local`).
+    # Configuration options are loaded from `$XDG_CONFIG_HOME/rspec/options`,
+    # `~/.rspec`, `.rspec`, `.rspec-local`, command line switches, and the
+    # `SPEC_OPTS` environment variable (listed in lowest to highest precedence;
+    # for example, an option in `~/.rspec` can be overridden by an option in
+    # `.rspec-local`).
     #
     # @example Standard settings
     #     RSpec.configure do |c|

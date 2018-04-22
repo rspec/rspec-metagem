@@ -9,12 +9,18 @@ Feature: read command line configuration options from files
     * Project:  `./.rspec` (i.e. in the project's root directory, usually
       checked into the project)
 
-    * Global: `~/.rspec` (i.e. in the user's home directory)
+    * Global (HOME): `~/.rspec` (i.e. in the user's home directory)
 
-  Configuration options are loaded from `~/.rspec`, `.rspec`, `.rspec-local`,
-  command line switches, and the `SPEC_OPTS` environment variable (listed in
-  lowest to highest precedence; for example, an option in `~/.rspec` can be
-  overridden by an option in `.rspec-local`).
+    * Global (XDG): `$XDG_CONFIG_HOME/rspec/options` (i.e. in the user's
+      [the XDG Base Directory
+      Specification](https://specifications.freedesktop.org/basedir-spec/latest/)
+      config directory)
+
+  Configuration options are loaded from `$XDG_CONFIG_HOME/rspec/options`,
+  `~/.rspec`, `.rspec`, `.rspec-local`, command line switches, and the
+  `SPEC_OPTS` environment variable (listed in lowest to highest precedence; for
+  example, an option in `~/.rspec` can be overridden by an option in
+  `.rspec-local`).
 
   Scenario: Color set in `.rspec`
     Given a file named ".rspec" with:
