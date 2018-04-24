@@ -654,6 +654,15 @@ module RSpec::Core
 
       expect(truncated).to be child
     end
+
+    it 'returns the original exception object when parent and child have the same files' do
+      parent = exception_with %w[ bar.rb:1 ]
+      child  = exception_with %w[ bar.rb:1 ]
+
+      truncated = truncate(parent, child)
+
+      expect(truncated).to be child
+    end
   end
 
   RSpec.shared_examples_for "a class satisfying the common multiple exception error interface" do

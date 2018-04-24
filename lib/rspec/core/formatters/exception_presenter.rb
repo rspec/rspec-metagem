@@ -379,6 +379,7 @@ module RSpec
                 parent_bt[index] != child_bt[index]
               end
 
+              return child if index_before_first_common_frame.nil?
               return child if index_before_first_common_frame == -1
 
               child = child.dup
