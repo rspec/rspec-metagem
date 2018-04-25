@@ -58,7 +58,7 @@ module RSpec
 
       # Configures the maximum character length that RSpec will print while
       # formatting an object
-      # @param [Fixnum] the length to format to
+      # @param [Fixnum] length the number of characters to limit the formatted output to
       # @example
       #   RSpec.configure do |rspec|
       #     rspec.expect_with :rspec do |c|
