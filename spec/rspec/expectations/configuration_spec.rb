@@ -87,6 +87,28 @@ module RSpec
         end
       end
 
+      describe "#max_formatted_output_length=" do
+        before do
+          @orig_max_formatted_output_length = RSpec::Support::ObjectFormatter.default_instance.max_formatted_output_length
+        end
+
+        after do
+          config.max_formatted_output_length = @orig_max_formatted_output_length
+        end
+
+        let(:object_with_large_inspect_string) { Struct.new(:value).new("a"*300) }
+
+        it "sets the maximum object formatter length" do
+          config.max_formatted_output_length = 10
+          expect(RSpec::Support::ObjectFormatter.format(object_with_large_inspect_string)).to eq("#<stru...aaa\">")
+        end
+
+        it "formats the entire object when set to nil" do
+          config.max_formatted_output_length = nil
+          expect(RSpec::Support::ObjectFormatter.format(object_with_large_inspect_string)).to eq(object_with_large_inspect_string.inspect)
+        end
+      end
+
       describe "#warn_about_potential_false_positives?" do
         it "is true by default" do
           expect(config.warn_about_potential_false_positives?).to be true
