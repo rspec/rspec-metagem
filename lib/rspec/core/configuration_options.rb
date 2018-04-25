@@ -206,11 +206,18 @@ module RSpec
       end
 
       def global_xdg_options_file
-        xdg_config_home = ENV.fetch("XDG_CONFIG_HOME", "~/.config")
-        File.join(File.expand_path(xdg_config_home), "rspec", "options")
+        xdg_config_home = resolve_xdg_config_home
+        if xdg_config_home
+          File.join(xdg_config_home, "rspec", "options")
+        end
+      end
+
+      def resolve_xdg_config_home
+        File.expand_path(ENV.fetch("XDG_CONFIG_HOME", "~/.config"))
       rescue ArgumentError
         # :nocov:
-        RSpec.warning "Unable to find $XDG_CONFIG_HOME/rspec/options because the HOME environment variable is not set"
+        # On Ruby 2.4, `File.expand("~")` works even if `ENV['HOME']` is not set.
+        # But on earlier versions, it fails.
         nil
         # :nocov:
       end
