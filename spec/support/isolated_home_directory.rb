@@ -21,7 +21,8 @@ module HomeFixtureHelpers
     path = Pathname.new(file_name).expand_path
     if !path.exist?
       path.dirname.mkpath
-      path.write(contents)
+      # Pathname#write does not exist in all supported Ruby versions
+      File.open(path.to_s, 'w') { |file| file << contents }
     else
       # Abort just in case we're about to destroy something important.
       raise "File at #{path} already exists!"
