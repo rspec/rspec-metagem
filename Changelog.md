@@ -16,6 +16,11 @@ Enhancements:
   `config.bisect_runner = :fork` in a file loaded by a `--require`
   option passed at the command line or set in `.rspec`. (Myron Marston, #2511)
 
+Bug Fixes:
+
+* Prevent an `ArgumentError` when truncating backtraces with two identical
+  backtraces. (Systho, #2515, Benoit Tigeot, #2539)
+
 ### 3.7.1 / 2018-01-02
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.7.0...v3.7.1)
 
