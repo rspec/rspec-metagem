@@ -13,6 +13,9 @@ Enhancements:
 * Improve `include` matcher so that pseudo-hash objects (e.g. objects
   that decorate a hash using a `SimpleDelegator` or similar) are treated
   as a hash, as long as they implement `to_hash`. (Pablo Brasero, #1012)
+* Add `max_formatted_output_length=` to configuration, allowing changing
+  the length at which we truncate large output strings.
+  (Sam Phippen #951, Benoit Tigeot #1056)
 
 ### 3.7.0 / 2017-10-17
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.6.0...v3.7.0)
