@@ -88,6 +88,14 @@ module RSpec
       end
 
       describe "#max_formatted_output_length=" do
+        before do
+          @orig_max_formatted_output_length = RSpec::Support::ObjectFormatter.default_instance.max_formatted_output_length
+        end
+
+        after do
+          config.max_formatted_output_length = @orig_max_formatted_output_length
+        end
+
         let(:object_with_large_inspect_string) { Struct.new(:value).new("a"*300) }
 
         it "sets the maximum object formatter length" do
