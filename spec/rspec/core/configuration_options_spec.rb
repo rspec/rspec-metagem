@@ -456,13 +456,34 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
       create_fixture_file("~/.config/rspec/options", "--order defined")
       with_env_vars 'SPEC_OPTS' => "--example 'foo bar'" do
         options = parse_options("--drb")
-        expect(options[:color_mode]).to eq(:on)
+        # $XDG_CONFIG_HOME/rspec/options file ("order") is read, but ~/.rspec
+        # file ("color") is not read because ~/.rspec has lower priority over
+        # the file in the XDG config directory.
+        expect(options[:order]).to eq("defined")
+        expect(options[:color_mode]).to be_nil
+
         expect(options[:requires]).to eq(["some_file"])
         expect(options[:full_description]).to eq([/foo\ bar/])
         expect(options[:drb]).to be_truthy
         expect(options[:formatters]).to eq([['global']])
-        expect(options[:order]).to eq("defined")
       end
+    end
+
+    it "reads ~/.rspec if $XDG_CONFIG_HOME/rspec/options is not found" do
+      create_fixture_file("~/.rspec", "--force-color")
+
+      options = parse_options()
+      expect(options[:color_mode]).to eq(:on)
+      expect(options[:order]).to be_nil
+    end
+
+    it "does not read ~/.rspec if $XDG_CONFIG_HOME/rspec/options is present" do
+      create_fixture_file("~/.rspec", "--force-color")
+      create_fixture_file("~/.config/rspec/options", "--order defined")
+
+      options = parse_options()
+      expect(options[:color_mode]).to be_nil
+      expect(options[:order]).to eq("defined")
     end
 
     it "uses $XDG_CONFIG_HOME environment variable when set to find XDG global options" do

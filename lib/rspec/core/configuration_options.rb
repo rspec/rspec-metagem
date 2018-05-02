@@ -122,7 +122,7 @@ module RSpec
         if custom_options_file
           [custom_options]
         else
-          [global_xdg_options, global_options, project_options, local_options]
+          [global_options, project_options, local_options]
         end
       end
 
@@ -153,10 +153,6 @@ module RSpec
 
       def global_options
         @global_options ||= options_from(global_options_file)
-      end
-
-      def global_xdg_options
-        @global_xdg_options ||= options_from(global_xdg_options_file)
       end
 
       def options_from(path)
@@ -197,6 +193,17 @@ module RSpec
       end
 
       def global_options_file
+        xdg_options_file_if_exists || home_options_file_path
+      end
+
+      def xdg_options_file_if_exists
+        path = xdg_options_file_path
+        if path && File.exist?(path)
+          path
+        end
+      end
+
+      def home_options_file_path
         File.join(File.expand_path("~"), ".rspec")
       rescue ArgumentError
         # :nocov:
@@ -205,7 +212,7 @@ module RSpec
         # :nocov:
       end
 
-      def global_xdg_options_file
+      def xdg_options_file_path
         xdg_config_home = resolve_xdg_config_home
         if xdg_config_home
           File.join(xdg_config_home, "rspec", "options")

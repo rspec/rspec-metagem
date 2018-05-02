@@ -1,26 +1,32 @@
 Feature: read command line configuration options from files
 
-  RSpec reads command line configuration options from files in three different
-  locations:
+  RSpec reads command line configuration options from several different files,
+  all conforming to a specific level of specificity. Options from a higher
+  specificity will override conflicting options from lower specificity files.
 
-    * Local: `./.rspec-local` (i.e. in the project's root directory, can be
-      gitignored)
+  The locations are:
 
-    * Project:  `./.rspec` (i.e. in the project's root directory, usually
+    * **Global options:** First file from the following list (i.e. the user's
+      personal global options)
+
+      * `$XDG_CONFIG_HOME/rspec/options` ([XDG Base Directory
+        Specification](https://specifications.freedesktop.org/basedir-spec/latest/)
+        config)
+      * `~/.rspec`
+
+    * **Project options:**  `./.rspec` (i.e. in the project's root directory, usually
       checked into the project)
 
-    * Global (HOME): `~/.rspec` (i.e. in the user's home directory)
+    * **Local:** `./.rspec-local` (i.e. in the project's root directory, can be
+      gitignored)
 
-    * Global (XDG): `$XDG_CONFIG_HOME/rspec/options` (i.e. in the user's
-      [the XDG Base Directory
-      Specification](https://specifications.freedesktop.org/basedir-spec/latest/)
-      config directory)
+  Options specified at the command-line has even higher specificity, as does
+  the `SPEC_OPTS` environment variable. That means that a command-line option
+  would overwrite a project-specific option, which overrides the global value
+  of that option.
 
-  Configuration options are loaded from `$XDG_CONFIG_HOME/rspec/options`,
-  `~/.rspec`, `.rspec`, `.rspec-local`, command line switches, and the
-  `SPEC_OPTS` environment variable (listed in lowest to highest precedence; for
-  example, an option in `~/.rspec` can be overridden by an option in
-  `.rspec-local`).
+  The default options files can all be ignored using the `--options`
+  command-line argument, which selects a custom file to load options from.
 
   Scenario: Color set in `.rspec`
     Given a file named ".rspec" with:
