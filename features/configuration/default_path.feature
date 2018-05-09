@@ -5,7 +5,7 @@ Feature: Setting the default spec path
   This is supported by a `--default-path` option, which is set to `spec` by
   default. If you prefer to keep your specs in a different directory, or assign
   an individual file to `--default-path`, you can do so on the command line or
-  in a configuration file (`.rspec`, `~/.rspec`, or a custom file).
+  in a configuration file (for example `.rspec`).
 
   **NOTE:** this option is not supported on `RSpec.configuration`, as it needs to be
   set before spec files are loaded.
