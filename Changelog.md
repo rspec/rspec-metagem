@@ -18,7 +18,7 @@ Enhancements:
 * Support the [XDG Base Directory
   Specification](https://specifications.freedesktop.org/basedir-spec/latest/)
   for the global options file. `~/.rspec` is still supported when no
-  options file is found in `$XDG_CONFIG_HOME/rspec/options` (Magnus Bergmar, #2538)
+  options file is found in `$XDG_CONFIG_HOME/rspec/options` (Magnus Bergmark, #2538)
 
 Bug Fixes:
 
