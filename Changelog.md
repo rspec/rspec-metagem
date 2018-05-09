@@ -15,6 +15,10 @@ Enhancements:
   `--bisect`. Pick a runner via `config.bisect_runner = :shell` or
   `config.bisect_runner = :fork` in a file loaded by a `--require`
   option passed at the command line or set in `.rspec`. (Myron Marston, #2511)
+* Support the [XDG Base Directory
+  Specification](https://specifications.freedesktop.org/basedir-spec/latest/)
+  for the global options file. `~/.rspec` is still supported when no
+  options file is found in `$XDG_CONFIG_HOME/rspec/options` (Magnus Bergmar, #2538)
 
 Bug Fixes:
 
