@@ -43,6 +43,14 @@ describe User do
 end
 ```
 
+It can also be expressed with the `is_expected` syntax:
+
+```ruby
+describe User do
+  it { is_expected.to validate_presence_of :email }
+end
+```
+
 ### Using either `expect` or `should` or both
 
 By default, both `expect` and `should` syntaxes are available. In the future,
