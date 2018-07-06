@@ -84,7 +84,7 @@ module RSpec
         end
 
         context 'when passed a value matcher' do
-          not_a_block_matcher_error = /You must pass an argument rather than a block to use the provided matcher/
+          not_a_block_matcher_error = /You must pass an argument rather than a block to `expect` to use the provided matcher/
 
           it 'raises an error that directs the user to pass an arg rather than a block' do
             expect {

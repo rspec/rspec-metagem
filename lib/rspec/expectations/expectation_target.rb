@@ -112,7 +112,7 @@ module RSpec
       def enforce_block_expectation(matcher)
         return if supports_block_expectations?(matcher)
 
-        raise ExpectationNotMetError, "You must pass an argument rather than a block to use the provided " \
+        raise ExpectationNotMetError, "You must pass an argument rather than a block to `expect` to use the provided " \
           "matcher (#{RSpec::Support::ObjectFormatter.format(matcher)}), or the matcher must implement " \
           "`supports_block_expectations?`."
       end
