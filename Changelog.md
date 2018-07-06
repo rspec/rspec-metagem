@@ -16,6 +16,8 @@ Enhancements:
 * Add `max_formatted_output_length=` to configuration, allowing changing
   the length at which we truncate large output strings.
   (Sam Phippen #951, Benoit Tigeot #1056)
+* Improve error message when passing a matcher that doesn't support block
+  expectations to a block based `expect`. (@nicktime, #1066)
 
 ### 3.7.0 / 2017-10-17
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.6.0...v3.7.0)
