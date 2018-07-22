@@ -26,10 +26,11 @@ module RSpec
 
       # @api public
       #
-      # Creates the list of filtered examples given current configuration.
+      # Prepares filters so that they apply to example groups when they run.
       #
       # This is a separate method so that filters can be modified/replaced and
-      # examples refiltered during a process's lifetime.
+      # examples refiltered during a process's lifetime, which can be useful for
+      # a custom runner.
       def prepare_example_filtering
         @filtered_examples = Hash.new do |hash, group|
           hash[group] = filter_manager.prune(group.examples)

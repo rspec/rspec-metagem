@@ -19,6 +19,8 @@ Enhancements:
   Specification](https://specifications.freedesktop.org/basedir-spec/latest/)
   for the global options file. `~/.rspec` is still supported when no
   options file is found in `$XDG_CONFIG_HOME/rspec/options` (Magnus Bergmark, #2538)
+* Extract `RSpec.world.prepare_example_filtering` that sets up the
+  example filtering for custom RSpec runners. (Oleg Pudeyev, #2552)
 
 Bug Fixes:
 
