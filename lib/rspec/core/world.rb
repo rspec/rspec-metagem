@@ -21,6 +21,16 @@ module RSpec
         configuration.world = self
         @example_groups = []
         @example_group_counts_by_spec_file = Hash.new(0)
+        prepare_example_filtering
+      end
+
+      # @api public
+      #
+      # Creates the list of filtered examples given current configuration.
+      #
+      # This is a separate method so that filters can be modified/replaced and
+      # examples refiltered during a process's lifetime.
+      def prepare_example_filtering
         @filtered_examples = Hash.new do |hash, group|
           hash[group] = filter_manager.prune(group.examples)
         end
