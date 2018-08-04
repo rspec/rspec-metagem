@@ -1,5 +1,5 @@
-### Development
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.7.1...master)
+### 3.8.0 / 2018-08-04
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.7.1...v3.8.0)
 
 Enhancements:
 
