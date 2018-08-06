@@ -15,14 +15,14 @@ module RSpec
         # @api private
         # @return [Boolean]
         def matches?(actual)
-          actual = actual.to_hash if actual.respond_to?(:to_hash)
+          actual = actual.to_hash if convert_to_hash?(actual)
           perform_match(actual) { |v| v }
         end
 
         # @api private
         # @return [Boolean]
         def does_not_match?(actual)
-          actual = actual.to_hash if actual.respond_to?(:to_hash)
+          actual = actual.to_hash if convert_to_hash?(actual)
           perform_match(actual) { |v| !v }
         end
 
@@ -138,6 +138,10 @@ module RSpec
           expected.any? do |str|
             actual.include?(str) && lines.none? { |line| line == str }
           end
+        end
+
+        def convert_to_hash?(obj)
+          !(::Hash === obj) && obj.respond_to?(:to_hash)
         end
       end
     end

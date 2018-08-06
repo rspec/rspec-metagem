@@ -1,3 +1,38 @@
+# This class fakes some behavior of
+# ActiveSupport::HashWithIndifferentAccess.
+# It dosen't convert recursively.
+class FakeHashWithIndifferentAccess < Hash
+  class << self
+    def from_hash(hsh)
+      new_hsh = new
+      hsh.each do |key, value|
+        new_hsh[key] = value
+      end
+      new_hsh
+    end
+  end
+
+  def [](key)
+    super(key.to_s)
+  end
+
+  def []=(key, value)
+    super(key.to_s, value)
+  end
+
+  def key?(key)
+    super(key.to_s)
+  end
+
+  def to_hash
+    new_hsh = ::Hash.new
+    each do |key, value|
+      new_hsh[key] = value
+    end
+    new_hsh
+  end
+end
+
 RSpec.describe "#include matcher" do
   it "is diffable" do
     expect(include("a")).to be_diffable
@@ -8,14 +43,23 @@ RSpec.describe "#include matcher" do
       hsh
     end
 
+    def use_string_keys_in_failure_message?
+      false
+    end
+
+    def convert_key(key)
+      use_string_keys_in_failure_message? ? "\"#{key}\"" : ":#{key}"
+    end
+
     it 'passes if target has the expected as a key' do
       expect(build_target(:key => 'value')).to include(:key)
     end
 
     it "fails if target does not include expected" do
+      failure_string = %Q|expected {#{convert_key(:key)} => "value"} to include :other|
       expect {
         expect(build_target(:key => 'value')).to include(:other)
-      }.to fail_matching(%Q|expected {:key => "value"} to include :other|)
+      }.to fail_matching(failure_string)
     end
 
     it "fails if target doesn't have a key and we expect nil" do
@@ -33,15 +77,28 @@ RSpec.describe "#include matcher" do
     it 'provides a valid diff' do
       allow(RSpec::Matchers.configuration).to receive(:color?).and_return(false)
 
+      failure_string = if use_string_keys_in_failure_message?
+                         dedent(<<-END)
+                           |Diff:
+                           |@@ -1,3 +1,3 @@
+                           |-:bar => 3,
+                           |-:foo => 1,
+                           |+"bar" => 2,
+                           |+"foo" => 1,
+                         END
+                       else
+                         dedent(<<-END)
+                           |Diff:
+                           |@@ -1,3 +1,3 @@
+                           |-:bar => 3,
+                           |+:bar => 2,
+                           | :foo => 1,
+                         END
+                       end
+
       expect {
         expect(build_target(:foo => 1, :bar => 2)).to include(:foo => 1, :bar => 3)
-      }.to fail_including(dedent(<<-END))
-        |Diff:
-        |@@ -1,3 +1,3 @@
-        |-:bar => 3,
-        |+:bar => 2,
-        | :foo => 1,
-      END
+      }.to fail_including(failure_string)
     end
   end
 
@@ -129,6 +186,20 @@ RSpec.describe "#include matcher" do
 
     context "for a hash target" do
       it_behaves_like "a Hash target"
+    end
+
+    context "for a target that subclasses Hash to treat string/symbol keys interchangeably, but returns a raw hash from #to_hash" do
+      it_behaves_like "a Hash target" do
+        undef :build_target # to prevent "method redefined" warning
+        def build_target(hsh)
+          FakeHashWithIndifferentAccess.from_hash(hsh)
+        end
+
+        undef :use_string_keys_in_failure_message? # to prevent "method redefined" warning
+        def use_string_keys_in_failure_message?
+          true
+        end
+      end
     end
 
     context "for a target that can pass for a hash" do
