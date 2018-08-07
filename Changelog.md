@@ -1,3 +1,15 @@
+### Development
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.8.1...master)
+
+### 3.8.1 / 2018-08-06
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.8.0...v3.8.1)
+
+Bug Fixes:
+
+* Fix regression in `include` matcher so stopped
+  `expect(hash.with_indifferent_access).to include(:symbol_key)`
+  from working. (Eito Katagiri, #1069)
+
 ### 3.8.0 / 2018-08-04
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.7.0...v3.8.0)
 
