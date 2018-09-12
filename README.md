@@ -67,7 +67,7 @@ context of an _instance_ of that class.
 
 ## Nested Groups
 
-You can also declare nested nested groups using the `describe` or `context`
+You can also declare nested groups using the `describe` or `context`
 methods:
 
 ```ruby
