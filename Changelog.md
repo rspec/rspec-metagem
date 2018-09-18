@@ -1,6 +1,11 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.8.1...master)
 
+Enhancements:
+
+* The `respond_to` matcher now uses the signature from `initialize` to validate checks
+  for `new` (unless `new` is non standard). (Jon Rowe, #1072)
+
 ### 3.8.1 / 2018-08-06
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.8.0...v3.8.1)
 
