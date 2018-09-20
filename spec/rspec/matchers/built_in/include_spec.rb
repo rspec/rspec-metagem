@@ -128,6 +128,14 @@ RSpec.describe "#include matcher" do
       end
     end
 
+    context "for an arbitrary object that responds to `include?` and `to_hash`" do
+      it "delegates to `include?`" do
+        container = double("Container", :include? => true, :to_hash => {"foo" => "bar"})
+        expect(container).to receive(:include?).with("foo").and_return(true)
+        expect(container).to include("foo")
+      end
+    end
+
     context "for a string target" do
       it "passes if target includes expected" do
         expect("abc").to include("a")

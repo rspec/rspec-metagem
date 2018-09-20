@@ -141,7 +141,7 @@ module RSpec
         end
 
         def convert_to_hash?(obj)
-          !(::Hash === obj) && obj.respond_to?(:to_hash)
+          !obj.respond_to?(:include?) && obj.respond_to?(:to_hash)
         end
       end
     end
