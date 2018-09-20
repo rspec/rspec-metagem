@@ -154,7 +154,12 @@ module RSpec
           end
 
           def matcher_matches?(matcher)
-            @match_results.fetch(matcher)
+            @match_results.fetch(matcher) do
+              raise ArgumentError, "Your #{matcher.description} has no match " \
+               "results, this can occur when an unexpected call stack or " \
+               "local jump occurs. Prehaps one of your matchers needs to " \
+               "declare `expects_call_stack_jump?` as `true`?"
+            end
           end
 
         private

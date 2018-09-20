@@ -95,6 +95,28 @@ module RSpec
           expect(with_matchers_cloned([stdout]).first).to equal(stdout)
         end
       end
+
+      describe "when an unexpected call stack jump occurs" do
+        RSpec::Matchers.define :cause_call_stack_jump do
+          supports_block_expectations
+
+          match do |block|
+            begin
+              block.call
+              false
+            rescue Exception
+              true
+            end
+          end
+        end
+
+        it "issue a warning suggesting `expects_call_stack_jump?` has been improperly declared" do
+          expect {
+            x = 0
+            expect { x += 1; exit }.to change { x }.and cause_call_stack_jump
+          }.to raise_error(/no match results, [\.\w\s]+ declare `expects_call_stack_jump\?`/)
+        end
+      end
     end
   end
 end
