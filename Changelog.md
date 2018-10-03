@@ -3,7 +3,8 @@
 
 Enhancements:
 * Improve the handling of errors during loading support files, if a file
-  errors before loading specs, don't load the specs. (David Rodríguez, #2568)
+  errors before loading specs, RSpec will now skip loading the specs.
+  (David Rodríguez, #2568)
 
 ### 3.8.0 / 2018-08-04
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.7.1...v3.8.0)
