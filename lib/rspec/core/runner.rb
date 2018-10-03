@@ -84,6 +84,8 @@ module RSpec
       # @param out [IO] output stream
       def run(err, out)
         setup(err, out)
+        return @configuration.reporter.exit_early(@configuration.failure_exit_code) if RSpec.world.wants_to_quit
+
         run_specs(@world.ordered_example_groups).tap do
           persist_example_statuses
         end
@@ -95,7 +97,10 @@ module RSpec
       # @param out [IO] output stream
       def setup(err, out)
         configure(err, out)
+        return if RSpec.world.wants_to_quit
+
         @configuration.load_spec_files
+      ensure
         @world.announce_filters
       end
 

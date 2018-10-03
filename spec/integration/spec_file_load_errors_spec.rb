@@ -54,6 +54,35 @@ RSpec.describe 'Spec file load errors' do
     EOS
   end
 
+  it 'prints a single error when it happens on --require files' do
+    write_file_formatted "helper_with_error.rb", "raise 'boom'"
+
+    write_file_formatted "1_spec.rb", "
+      RSpec.describe 'A broken spec file that will raise when loaded' do
+        raise 'kaboom'
+      end
+    "
+
+    run_command "--require ./helper_with_error 1_spec.rb"
+    expect(last_cmd_exit_status).to eq(failure_exit_code)
+    output = normalize_durations(last_cmd_stdout)
+    expect(output).to eq unindent(<<-EOS)
+
+      An error occurred while loading ./helper_with_error.
+      Failure/Error: raise 'boom'
+
+      RuntimeError:
+        boom
+      # ./helper_with_error.rb:1#{spec_line_suffix}
+      No examples found.
+
+
+      Finished in n.nnnn seconds (files took n.nnnn seconds to load)
+      0 examples, 0 failures, 1 error occurred outside of examples
+
+    EOS
+  end
+
   it 'nicely handles load-time errors in user spec files' do
     write_file_formatted "1_spec.rb", "
       boom

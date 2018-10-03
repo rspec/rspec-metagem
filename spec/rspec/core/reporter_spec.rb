@@ -160,6 +160,21 @@ module RSpec::Core
       end
     end
 
+    describe "#exit_early" do
+      it "returns the passed exit code" do
+        expect(reporter.exit_early(42)).to eq(42)
+      end
+
+      it "sends a complete cycle of notifications" do
+        formatter = double("formatter")
+        %w[seed start start_dump dump_pending dump_failures dump_summary seed close].map(&:to_sym).each do |message|
+          reporter.register_listener formatter, message
+          expect(formatter).to receive(message).ordered
+        end
+        reporter.exit_early(42)
+      end
+    end
+
     describe "#report" do
       it "supports one arg (count)" do
         reporter.report(1) {}

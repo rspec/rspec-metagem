@@ -77,6 +77,14 @@ module RSpec::Core
       end
     end
 
+    # @param exit_code [Integer] the exit_code to be return by the reporter
+    #
+    # Reports a run that exited early without having run any examples.
+    #
+    def exit_early(exit_code)
+      report(0) { exit_code }
+    end
+
     # @private
     def start(expected_example_count, time=RSpec::Core::Time.now)
       @start = time
