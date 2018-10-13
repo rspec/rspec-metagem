@@ -76,7 +76,7 @@ module RSpec
       #     end
       #   end
       #
-      #   describe Account do
+      #   RSpec.describe Account do
       #     it_behaves_like "auditable" do
       #       let(:auditable) { Account.new }
       #     end

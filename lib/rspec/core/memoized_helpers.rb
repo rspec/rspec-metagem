@@ -10,7 +10,7 @@ module RSpec
       # @note `subject` was contributed by Joe Ferris to support the one-liner
       #   syntax embraced by shoulda matchers:
       #
-      #       describe Widget do
+      #       RSpec.describe Widget do
       #         it { is_expected.to validate_presence_of(:name) }
       #         # or
       #         it { should validate_presence_of(:name) }
@@ -23,7 +23,7 @@ module RSpec
       # @example
       #
       #   # Explicit declaration of subject.
-      #   describe Person do
+      #   RSpec.describe Person do
       #     subject { Person.new(:birthdate => 19.years.ago) }
       #     it "should be eligible to vote" do
       #       subject.should be_eligible_to_vote
@@ -32,7 +32,7 @@ module RSpec
       #   end
       #
       #   # Implicit subject => { Person.new }.
-      #   describe Person do
+      #   RSpec.describe Person do
       #     it "should be eligible to vote" do
       #       subject.should be_eligible_to_vote
       #       # ^ ^ explicit reference to subject not recommended
@@ -40,7 +40,7 @@ module RSpec
       #   end
       #
       #   # One-liner syntax - expectation is set on the subject.
-      #   describe Person do
+      #   RSpec.describe Person do
       #     it { is_expected.to be_eligible_to_vote }
       #     # or
       #     it { should be_eligible_to_vote }
@@ -67,7 +67,7 @@ module RSpec
       #
       # @example
       #
-      #   describe Person do
+      #   RSpec.describe Person do
       #     it { should be_eligible_to_vote }
       #   end
       #
@@ -86,7 +86,7 @@ module RSpec
       #
       # @example
       #
-      #   describe Person do
+      #   RSpec.describe Person do
       #     it { should_not be_eligible_to_vote }
       #   end
       #
@@ -270,7 +270,7 @@ EOS
         #
         # @example
         #
-        #   describe Thing do
+        #   RSpec.describe Thing do
         #     let(:thing) { Thing.new }
         #
         #     it "does something" do
@@ -323,7 +323,7 @@ EOS
         #     end
         #   end
         #
-        #   describe Thing do
+        #   RSpec.describe Thing do
         #     after(:example) { Thing.reset_count }
         #
         #     context "using let" do
@@ -379,13 +379,13 @@ EOS
         #
         # @example
         #
-        #   describe CheckingAccount, "with $50" do
+        #   RSpec.describe CheckingAccount, "with $50" do
         #     subject { CheckingAccount.new(Money.new(50, :USD)) }
         #     it { is_expected.to have_a_balance_of(Money.new(50, :USD)) }
         #     it { is_expected.not_to be_overdrawn }
         #   end
         #
-        #   describe CheckingAccount, "with a non-zero starting balance" do
+        #   RSpec.describe CheckingAccount, "with a non-zero starting balance" do
         #     subject(:account) { CheckingAccount.new(Money.new(50, :USD)) }
         #     it { is_expected.not_to be_overdrawn }
         #     it "has a balance equal to the starting balance" do
@@ -433,7 +433,7 @@ EOS
         #     end
         #   end
         #
-        #   describe Thing do
+        #   RSpec.describe Thing do
         #     after(:example) { Thing.reset_count }
         #
         #     context "using subject" do

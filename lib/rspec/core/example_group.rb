@@ -7,7 +7,7 @@ module RSpec
     # ExampleGroup and {Example} are the main structural elements of
     # rspec-core. Consider this example:
     #
-    #     describe Thing do
+    #     RSpec.describe Thing do
     #       it "does something" do
     #       end
     #     end
@@ -90,7 +90,7 @@ module RSpec
       # Returns the class or module passed to the `describe` method (or alias).
       # Returns nil if the subject is not a class or module.
       # @example
-      #     describe Thing do
+      #     RSpec.describe Thing do
       #       it "does something" do
       #         described_class == Thing
       #       end

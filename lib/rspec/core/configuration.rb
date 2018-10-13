@@ -1106,7 +1106,7 @@ module RSpec
       #
       #   # This lets you do this:
       #
-      #   describe Thing do
+      #   RSpec.describe Thing do
       #     pending "does something" do
       #       thing = Thing.new
       #     end
@@ -1114,7 +1114,7 @@ module RSpec
       #
       #   # ... which is the equivalent of
       #
-      #   describe Thing do
+      #   RSpec.describe Thing do
       #     it "does something", :pending => true do
       #       thing = Thing.new
       #     end
@@ -1167,7 +1167,7 @@ module RSpec
       #
       #   # allows the user to include a shared example group like:
       #
-      #   describe Entity do
+      #   RSpec.describe Entity do
       #     it_has_behavior 'sortability' do
       #       let(:sortable) { Entity.new }
       #     end
@@ -1718,7 +1718,7 @@ module RSpec
       #     rspec.expose_current_running_example_as :example
       #   end
       #
-      #   describe MyClass do
+      #   RSpec.describe MyClass do
       #     before do
       #       # `example` can be used here because of the above config.
       #       do_something if example.metadata[:type] == "foo"

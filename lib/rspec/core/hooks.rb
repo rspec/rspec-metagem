@@ -74,11 +74,11 @@ module RSpec
       #       end
       #     end
       #
-      #     describe Something, :authorized => true do
+      #     RSpec.describe Something, :authorized => true do
       #       # The before hook will run in before each example in this group.
       #     end
       #
-      #     describe SomethingElse do
+      #     RSpec.describe SomethingElse do
       #       it "does something", :authorized => true do
       #         # The before hook will run before this example.
       #       end
@@ -159,7 +159,7 @@ module RSpec
       #
       # @example before(:example) declared in an {ExampleGroup}
       #
-      #     describe Thing do
+      #     RSpec.describe Thing do
       #       before(:example) do
       #         @thing = Thing.new
       #       end
@@ -171,7 +171,7 @@ module RSpec
       #
       # @example before(:context) declared in an {ExampleGroup}
       #
-      #     describe Parser do
+      #     RSpec.describe Parser do
       #       before(:context) do
       #         File.open(file_to_parse, 'w') do |f|
       #           f.write <<-CONTENT

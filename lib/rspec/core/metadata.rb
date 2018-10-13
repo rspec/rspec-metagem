@@ -7,7 +7,7 @@ module RSpec
     # In addition to metadata that is used internally, this also stores
     # user-supplied metadata, e.g.
     #
-    #     describe Something, :type => :ui do
+    #     RSpec.describe Something, :type => :ui do
     #       it "does something", :slow => true do
     #         # ...
     #       end
