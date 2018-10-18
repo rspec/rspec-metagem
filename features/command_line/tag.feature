@@ -17,7 +17,8 @@ Feature: `--tag` option
   `:name => 'bar'`.
 
   To be compatible with the Cucumber syntax, tags can optionally start with an
-  `@` symbol, which will be ignored.
+  `@` symbol, which will be ignored as part of the tag, e.g. `--tag @focus` is
+  treated the same as `--tag focus` and is expanded to `:focus => true`.
 
   Background:
     Given a file named "tagged_spec.rb" with:
