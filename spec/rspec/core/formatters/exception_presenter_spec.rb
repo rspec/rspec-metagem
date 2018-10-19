@@ -94,6 +94,23 @@ module RSpec::Core
         EOS
       end
 
+      if String.method_defined?(:encoding)
+        it 'allows the caller to add encoded description' do
+          the_presenter = Formatters::ExceptionPresenter.new(exception, example,
+                                                             :description => "ジ".encode("CP932"))
+
+          expect(the_presenter.fully_formatted(1)).to eq(<<-EOS.gsub(/^ +\|/, ''))
+          |
+          |  1) ジ
+          |     Failure/Error: # The failure happened here!#{ encoding_check }
+          |
+          |       Boom
+          |       Bam
+          |     # ./spec/rspec/core/formatters/exception_presenter_spec.rb:#{line_num}
+          EOS
+        end
+      end
+
       it 'allows the caller to omit the description' do
         the_presenter = Formatters::ExceptionPresenter.new(exception, example,
                                                        :detail_formatter => Proc.new { "Detail!" },

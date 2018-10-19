@@ -81,7 +81,7 @@ module RSpec
 
         def fully_formatted_lines(failure_number, colorizer)
           lines = [
-            description,
+            encoded_description(description),
             detail_formatter.call(example, colorizer),
             formatted_message_and_backtrace(colorizer),
             extra_detail_formatter.call(failure_number, colorizer),
@@ -241,6 +241,16 @@ module RSpec
           encoding = encoding_of("")
           lines.map do |line|
             RSpec::Support::EncodedString.new(line, encoding)
+          end
+        end
+
+        def encoded_description(description)
+          return if description.nil?
+
+          if String.method_defined?(:encoding)
+            encoded_string(description)
+          else # for 1.8.7
+            description
           end
         end
 
