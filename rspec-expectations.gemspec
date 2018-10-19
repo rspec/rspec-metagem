@@ -13,6 +13,14 @@ Gem::Specification.new do |s|
   s.summary     = "rspec-expectations-#{RSpec::Expectations::Version::STRING}"
   s.description = "rspec-expectations provides a simple, readable API to express expected outcomes of a code example."
 
+  s.metadata = {
+    'bug_tracker_uri'   => 'https://github.com/rspec/rspec-expectations/issues',
+    'changelog_uri'     => "https://github.com/rspec/rspec-expectations/blob/v#{s.version}/Changelog.md",
+    'documentation_uri' => 'https://rspec.info/documentation/',
+    'mailing_list_uri'  => 'https://groups.google.com/forum/#!forum/rspec',
+    'source_code_uri'   => 'https://github.com/rspec/rspec-expectations',
+  }
+
   s.files            = `git ls-files -- lib/*`.split("\n")
   s.files           += %w[README.md LICENSE.md Changelog.md .yardopts .document]
   s.test_files       = []
