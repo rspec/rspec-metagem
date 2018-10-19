@@ -13,6 +13,14 @@ Gem::Specification.new do |s|
   s.summary     = "rspec-core-#{RSpec::Core::Version::STRING}"
   s.description = "BDD for Ruby. RSpec runner and example groups."
 
+  s.metadata = {
+    'bug_tracker_uri'   => 'https://github.com/rspec/rspec-core/issues',
+    'changelog_uri'     => "https://github.com/rspec/rspec-core/blob/v#{s.version}/Changelog.md",
+    'documentation_uri' => 'https://rspec.info/documentation/',
+    'mailing_list_uri'  => 'https://groups.google.com/forum/#!forum/rspec',
+    'source_code_uri'   => 'https://github.com/rspec/rspec-core',
+  }
+
   s.files            = `git ls-files -- lib/*`.split("\n")
   s.files           += %w[README.md LICENSE.md Changelog.md .yardopts .document]
   s.test_files       = []
