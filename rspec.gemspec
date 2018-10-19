@@ -14,6 +14,13 @@ Gem::Specification.new do |s|
   s.summary     = "rspec-#{RSpec::Version::STRING}"
   s.description = "BDD for Ruby"
 
+  s.metadata = {
+    'bug_tracker_uri'   => 'https://github.com/rspec/rspec/issues',
+    'documentation_uri' => 'https://rspec.info/documentation/',
+    'mailing_list_uri'  => 'https://groups.google.com/forum/#!forum/rspec',
+    'source_code_uri'   => 'https://github.com/rspec/rspec',
+  }
+
   s.files            = `git ls-files -- lib/*`.split("\n")
   s.files           += ["LICENSE.md"]
   s.test_files       = `git ls-files -- {spec,features}/*`.split("\n")
