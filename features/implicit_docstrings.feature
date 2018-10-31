@@ -23,9 +23,9 @@ Feature: implicit docstrings
 
     When I run `rspec ./implicit_docstrings_spec.rb -fdoc`
 
-    Then the output should contain "should be < 5"
-    And the output should contain "should include 2"
-    And the output should contain "should respond to #size"
+    Then the output should contain "is expected to be < 5"
+    And the output should contain "is expected to include 2"
+    And the output should contain "is expected to respond to #size"
 
   Scenario: run failing examples
     Given a file named "failing_implicit_docstrings_spec.rb" with:
@@ -45,7 +45,7 @@ Feature: implicit docstrings
 
     When I run `rspec ./failing_implicit_docstrings_spec.rb -fdoc`
 
-    Then the output should contain "should equal 2"
-    And the output should contain "should be > 5"
-    And the output should contain "should include 4"
-    And the output should contain "should not respond to #size"
+    Then the output should contain "is expected to equal 2"
+    And the output should contain "is expected to be > 5"
+    And the output should contain "is expected to include 4"
+    And the output should contain "is expected not to respond to #size"

@@ -68,7 +68,7 @@ Feature: define a matcher supporting block expectations
       """
       Failures:
 
-        1) a custom block matcher should support blocks with errors
+        1) a custom block matcher is expected to support blocks with errors
            Failure/Error: expect(true).to eq false
 
              expected: false

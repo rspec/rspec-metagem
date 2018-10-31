@@ -36,8 +36,8 @@ Feature: Define a custom matcher
     When I run `rspec ./matcher_with_default_message_spec.rb --format documentation`
     Then the exit status should not be 0
 
-    And the output should contain "should be a multiple of 3"
-    And the output should contain "should not be a multiple of 4"
+    And the output should contain "is expected to be a multiple of 3"
+    And the output should contain "is expected not to be a multiple of 4"
     And the output should contain "Failure/Error: it { is_expected.to be_a_multiple_of(4) }"
     And the output should contain "Failure/Error: it { is_expected.not_to be_a_multiple_of(3) }"
 
@@ -118,8 +118,8 @@ Feature: Define a custom matcher
     When I run `rspec ./matcher_overriding_description_spec.rb --format documentation`
     Then the exit status should be 0
     And the stdout should contain "2 examples, 0 failures"
-    And the stdout should contain "should be multiple of 3"
-    And the stdout should contain "should not be multiple of 4"
+    And the stdout should contain "is expected to be multiple of 3"
+    And the stdout should contain "is expected not to be multiple of 4"
 
   Scenario: With no args
     Given a file named "matcher_with_no_args_spec.rb" with:
@@ -143,7 +143,7 @@ Feature: Define a custom matcher
     When I run `rspec ./matcher_with_no_args_spec.rb --format documentation`
     Then the exit status should be 0
     And the stdout should contain "1 example, 0 failures"
-    And the stdout should contain "should have 7 fingers"
+    And the stdout should contain "is expected to have 7 fingers"
 
   Scenario: With multiple args
     Given a file named "matcher_with_multiple_args_spec.rb" with:
@@ -163,7 +163,7 @@ Feature: Define a custom matcher
     When I run `rspec ./matcher_with_multiple_args_spec.rb --format documentation`
     Then the exit status should be 0
     And the stdout should contain "1 example, 0 failures"
-    And the stdout should contain "should be the sum of 1, 2, 3, and 4"
+    And the stdout should contain "is expected to be the sum of 1, 2, 3, and 4"
 
   Scenario: With a block arg
     Given a file named "matcher_with_block_arg_spec.rb" with:
@@ -185,7 +185,7 @@ Feature: Define a custom matcher
     When I run `rspec ./matcher_with_block_arg_spec.rb --format documentation`
     Then the exit status should be 0
     And the stdout should contain "1 example, 0 failures"
-    And the stdout should contain "should be lazily equal to 10"
+    And the stdout should contain "is expected to be lazily equal to 10"
 
   Scenario: With helper methods
     Given a file named "matcher_with_internal_helper_spec.rb" with:

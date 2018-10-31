@@ -52,7 +52,7 @@ module RSpec
       end
 
       def self.verb
-        "should"
+        'is expected to'
       end
 
       def self.should_method
@@ -82,7 +82,7 @@ module RSpec
       end
 
       def self.verb
-        "should not"
+        'is expected not to'
       end
 
       def self.should_method

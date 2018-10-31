@@ -21,7 +21,7 @@ Feature: define matcher with fluent interface
       """
     When I run `rspec between_spec.rb --format documentation`
     Then the output should contain "1 example, 0 failures"
-    And  the output should contain "should be bigger than 4"
+    And  the output should contain "is expected to be bigger than 4"
 
   Scenario: chained setter
     Given a file named "between_spec.rb" with:
@@ -40,7 +40,7 @@ Feature: define matcher with fluent interface
       """
     When I run `rspec between_spec.rb --format documentation`
     Then the output should contain "1 example, 0 failures"
-    And  the output should contain "should be bigger than 4"
+    And  the output should contain "is expected to be bigger than 4"
 
     Scenario: include_chain_clauses_in_custom_matcher_descriptions configured to true, and chained method with argument
       Given a file named "between_spec.rb" with:
@@ -67,4 +67,4 @@ Feature: define matcher with fluent interface
         """
       When I run `rspec between_spec.rb --format documentation`
       Then the output should contain "1 example, 0 failures"
-      And  the output should contain "should be bigger than 4 and smaller than 6"
+      And  the output should contain "is expected to be bigger than 4 and smaller than 6"
