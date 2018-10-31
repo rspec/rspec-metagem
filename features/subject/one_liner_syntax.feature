@@ -46,8 +46,8 @@ Feature: One-liner syntax
        """
        Array
          when first created
-           should be empty
-           should be empty
+           is expected to be empty
+           is expected to be empty
        """
 
   Scenario: Explicit subject
@@ -68,6 +68,6 @@ Feature: One-liner syntax
        """
        Array
          with 3 items
-           should not be empty
-           should not be empty
+           is expected not to be empty
+           is expected not to be empty
        """

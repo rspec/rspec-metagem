@@ -150,7 +150,7 @@ RSpec.describe "an example" do
           end
         end.run
 
-        expect(ex.description).to eq('should eq "gnirts"')
+        expect(ex.description).to eq('is expected to eq "gnirts"')
       end
     end
 

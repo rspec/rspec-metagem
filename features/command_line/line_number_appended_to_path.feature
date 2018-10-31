@@ -155,5 +155,5 @@ Feature: line number appended to file path
   Scenario: Matching one-liners
     When I run `rspec one_liner_spec.rb:3 --format doc`
     Then the examples should all pass
-    Then the output should contain "should be > 8"
-    But the output should not contain "should be < 10"
+    Then the output should contain "is expected to be > 8"
+    But the output should not contain "is expected to be < 10"
