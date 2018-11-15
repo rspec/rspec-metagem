@@ -133,7 +133,7 @@ Feature: shared context
           expect(shared_method).to eq("it works")
         end
 
-        it "inherits metadata form the included context due to the matching metadata", :include_shared => true do |ex|
+        it "inherits metadata from the included context due to the matching metadata", :include_shared => true do |ex|
           expect(ex.metadata).to include(:shared_context => :metadata)
         end
       end
