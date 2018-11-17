@@ -244,12 +244,13 @@ module RSpec
           end
         end
 
-        def encoded_description(description)
-          return if description.nil?
-
-          if String.method_defined?(:encoding)
+        if  String.method_defined?(:encoding)
+          def encoded_description(description)
+            return if description.nil?
             encoded_string(description)
-          else # for 1.8.7
+          end
+        else # for 1.8.7
+          def encoded_description(description)
             description
           end
         end
