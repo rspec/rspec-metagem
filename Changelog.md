@@ -7,7 +7,7 @@ Enhancements:
   for `new` (unless `new` is non standard). (Jon Rowe, #1072)
 * Generated descriptions for matchers now use `is expected to` rather than `should` in
   line with our preferred DSL. (Pete Johns, #1080, rspec/rspec-core#2572)
-  
+
 Bug Fixes:
 
 * Prevent composed `all` matchers from leaking into their siblings leading to duplicate
