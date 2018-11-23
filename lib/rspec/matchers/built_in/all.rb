@@ -73,6 +73,7 @@ module RSpec
 
         def initialize_copy(other)
           @matcher = @matcher.clone
+          @failed_objects = @failed_objects.clone
           super
         end
 

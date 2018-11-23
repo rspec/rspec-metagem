@@ -143,6 +143,23 @@ module RSpec::Matchers::BuiltIn
       end
     end
 
+    context 'when composed in another matcher' do
+      it 'returns the indexes of the failed objects only' do
+        expect {
+          expect([[false], [true]]).to all( all( be(true) ) )
+        }.to fail_with(dedent <<-EOS)
+          |expected [[false], [true]] to all all equal true
+          |
+          |   object at index 0 failed to match:
+          |      expected [false] to all equal true
+          |
+          |         object at index 0 failed to match:
+          |            expected true
+          |                 got false
+          EOS
+      end
+    end
+
     shared_examples "making a copy" do |copy_method|
       context "when making a copy via `#{copy_method}`" do
 
