@@ -29,7 +29,7 @@ before_test:
   - bundle --version
 
 test_script:
-  - bundle exec rspec --backtrace
+  - chcp 65001 && bundle exec rspec --backtrace
 
 environment:
   matrix:
