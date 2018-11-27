@@ -6,6 +6,11 @@ Enhancements:
   errors before loading specs, RSpec will now skip loading the specs.
   (David Rodríguez, #2568)
 
+Bug Fixes:
+
+  * Handle RSpec description with japanese char in CP932 encoded files
+  (Benoit Tigeot, #2575)
+
 ### 3.8.0 / 2018-08-04
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.7.1...v3.8.0)
 
