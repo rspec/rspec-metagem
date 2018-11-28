@@ -26,6 +26,7 @@ Feature: `raise_error` matcher
     expect { raise "oops" }.to raise_error(/op/)
     expect { raise "oops" }.to raise_error(RuntimeError, "oops")
     expect { raise "oops" }.to raise_error(RuntimeError, /op/)
+    expect { raise "oops" }.to raise_error(an_instance_of(RuntimeError).and having_attributes(message: "oops"))
     ```
 
   Scenario: expect any error
@@ -125,6 +126,19 @@ Feature: `raise_error` matcher
           expect { Object.new.foo }.to raise_error { |error|
             expect(error).to be_a(NameError)
           }
+        end
+      end
+      """
+      When I run `rspec example_spec`
+      Then the example should pass
+
+  Scenario: set expectations on error object with chained matchers
+    Given a file named "example_spec" with:
+      """
+      RSpec.describe "composing matchers" do
+        it "raises StandardError" do
+          expect { raise StandardError, "my message" }.
+            to raise_error(an_instance_of(StandardError).and having_attributes({"message" => "my message"}))
         end
       end
       """
