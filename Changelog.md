@@ -5,6 +5,7 @@ Enhancements:
 * Improve the handling of errors during loading support files, if a file
   errors before loading specs, RSpec will now skip loading the specs.
   (David Rodríguez, #2568)
+* Prevent warning on Ruby 2.6.0-rc1 (Keiji Yoshimi, #2582)
 
 Bug Fixes:
 
