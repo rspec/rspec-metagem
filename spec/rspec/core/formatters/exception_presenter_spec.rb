@@ -94,7 +94,7 @@ module RSpec::Core
         EOS
       end
 
-      if String.method_defined?(:encoding)
+      if String.method_defined?(:encoding) && !RSpec::Support::OS.windows?
         it 'allows the caller to add encoded description' do
           the_presenter = Formatters::ExceptionPresenter.new(exception, example,
                                                              :description => "ジ".encode("CP932"))
