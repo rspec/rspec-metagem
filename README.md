@@ -175,30 +175,45 @@ expect(1..10).to cover(3)
 ### Collection membership
 
 ```ruby
-expect(actual).to include(expected)
+# exact order, entire collection
+expect(actual).to eq(expected)
+
+# exact order, partial collection (based on an exact position)
 expect(actual).to start_with(expected)
 expect(actual).to end_with(expected)
 
-expect(actual).to contain_exactly(individual, items)
-# ...which is the same as:
-expect(actual).to match_array(expected_array)
+# any order, entire collection
+expect(actual).to match_array(expected)
+
+# You can also express this by passing the expected elements
+# as individual arguments
+expect(actual).to contain_exactly(expected_element1, expected_element2)
+
+ # any order, partial collection
+expect(actual).to include(expected)
 ```
 
 #### Examples
 
 ```ruby
-expect([1, 2, 3]).to include(1)
-expect([1, 2, 3]).to include(1, 2)
-expect([1, 2, 3]).to start_with(1)
-expect([1, 2, 3]).to start_with(1, 2)
-expect([1, 2, 3]).to end_with(3)
-expect([1, 2, 3]).to end_with(2, 3)
-expect({:a => 'b'}).to include(:a => 'b')
-expect("this string").to include("is str")
-expect("this string").to start_with("this")
-expect("this string").to end_with("ring")
-expect([1, 2, 3]).to contain_exactly(2, 3, 1)
-expect([1, 2, 3]).to match_array([3, 2, 1])
+expect([1, 2, 3]).to eq([1, 2, 3])            # Order dependent equality check
+expect([1, 2, 3]).to include(1)               # Exact ordering, partial collection matches
+expect([1, 2, 3]).to include(2, 3)            #
+expect([1, 2, 3]).to start_with(1)            # As above, but from the start of the collection
+expect([1, 2, 3]).to start_with(1, 2)         #
+expect([1, 2, 3]).to end_with(3)              # As above but from the end of the collection
+expect([1, 2, 3]).to end_with(2, 3)           #
+expect({:a => 'b'}).to include(:a => 'b')     # Matching within hashes
+expect("this string").to include("is str")    # Matching within strings
+expect("this string").to start_with("this")   #
+expect("this string").to end_with("ring")     #
+expect([1, 2, 3]).to contain_exactly(2, 3, 1) # Order independent matches
+expect([1, 2, 3]).to match_array([3, 2, 1])   #
+
+# Order dependent compound matchers
+expect(
+  [{:a => 'hash'},{:a => 'another'}]
+).to match([a_hash_including(:a => 'hash'), a_hash_including(:a => 'another')])
 ```
 
 ## `should` syntax
