@@ -1,4 +1,4 @@
-# This file was generated on 2018-12-30T16:45:57+00:00 from the rspec-dev repo.
+# This file was generated on 2019-01-03T20:34:23+00:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 language: ruby
@@ -8,9 +8,7 @@ cache:
   directories:
     - ../bundle
 before_install:
-  # We need to ensure the latest version of Rubygems, unless we're on an old Ruby.
-  - gem update --system $(ruby -e "puts '2.7.8' if ENV['RUBY_VERSION'] >= '2.3.0'")
-  - gem install bundler
+  - "script/update_rubygems_and_install_bundler"
   - unset _JAVA_OPTIONS
   - "script/clone_all_rspec_repos"
 bundler_args: "--binstubs --standalone --without documentation --path ../bundle"
