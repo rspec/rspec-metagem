@@ -1,4 +1,4 @@
-# This file was generated on 2019-01-03T20:34:23+00:00 from the rspec-dev repo.
+# This file was generated on 2019-01-08T11:28:05+00:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 language: ruby
@@ -40,7 +40,6 @@ matrix:
     - rvm: jruby-head
     - rvm: ruby-head
     - rvm: rbx-3
-    - rvm: ruby-2.6.0-preview1
   fast_finish: true
 branches:
   only:
