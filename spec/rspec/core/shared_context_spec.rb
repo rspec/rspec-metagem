@@ -66,6 +66,19 @@ RSpec.describe RSpec::SharedContext do
     expect(group.new.foo).to eq('foo')
   end
 
+  it 'supports overriding let without warnings' do
+    shared = Module.new do
+      extend RSpec::SharedContext
+      let(:foo) { 'foo' }
+    end
+    group = RSpec.describe do
+      include shared
+      let(:foo) { 'bar' }
+    end
+
+    expect(group.new.foo).to eq('bar')
+  end
+
   it "supports let when applied to an individual example via metadata" do
     shared = Module.new do
       extend RSpec::SharedContext

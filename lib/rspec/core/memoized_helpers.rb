@@ -288,7 +288,26 @@ EOS
           raise(
             "#let or #subject called with a reserved name #initialize"
           ) if :initialize == name
-          MemoizedHelpers.module_for(self).__send__(:define_method, name, &block)
+          our_module = MemoizedHelpers.module_for(self)
+
+          # If we have a module clash in our helper module
+          # then we need to remove it to prevent a warning.
+          #
+          # Note we do not check ancestor modules (see: `instance_methods(false)`)
+          # as we can override them.
+          if our_module.instance_methods(false).include?(name)
+            our_module.__send__(:remove_method, name)
+          end
+          our_module.__send__(:define_method, name, &block)
+
+          # If we have a module clash in the example module
+          # then we need to remove it to prevent a warning.
+          #
+          # Note we do not check ancestor modules (see: `instance_methods(false)`)
+          # as we can override them.
+          if instance_methods(false).include?(name)
+            remove_method(name)
+          end
 
           # Apply the memoization. The method has been defined in an ancestor
           # module so we can use `super` here to get the value.
