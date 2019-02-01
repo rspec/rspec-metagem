@@ -9,8 +9,10 @@ Enhancements:
 
 Bug Fixes:
 
-  * Handle RSpec description with japanese char in CP932 encoded files
+* Handle RSpec description(s) with japanese chars in CP932 encoded files.
   (Benoit Tigeot, #2575)
+* When defining `let` methods that overwrite an existing method, prevent
+  a warning being issued by removing the old definition. (Jon Rowe, #2593)
 
 ### 3.8.0 / 2018-08-04
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.7.1...v3.8.0)
