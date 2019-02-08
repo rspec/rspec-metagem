@@ -373,6 +373,7 @@ module RSpec
           event_proc.call
 
           @actual_after = evaluate_value_proc
+          @actual_hash = @actual_after.hash
           true
         end
 
@@ -387,8 +388,9 @@ module RSpec
           #
           # Note that it is not sufficient to only check the hashes; it is
           # possible for two values to be unequal (and of different classes)
-          # but to return the same hash value.
-          @actual_before != @actual_after || @before_hash != @actual_after.hash
+          # but to return the same hash value. Also, some objects may change
+          # their hash after being compared with `==`/`!=`.
+          @actual_before != @actual_after || @before_hash != @actual_hash
         end
 
         def actual_delta

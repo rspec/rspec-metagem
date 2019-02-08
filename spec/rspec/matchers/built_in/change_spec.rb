@@ -101,6 +101,20 @@ RSpec.describe "expect { ... }.to change ..." do
     }.to change { obj.x }
   end
 
+  it 'does not detect changes in an object that updates its hash upon comparison' do
+    obj = Class.new do
+      def ==(another)
+        @hash = rand # (^ °=°)^ #
+        self.object_id == another.object_id
+      end
+      def hash
+        @hash ||= super
+      end
+    end.new
+
+    expect { }.not_to change { obj }
+  end
+
   context "with nil value" do
     before(:example) do
       @instance = SomethingExpected.new
