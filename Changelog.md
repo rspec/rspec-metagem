@@ -12,6 +12,8 @@ Bug Fixes:
 
 * Prevent composed `all` matchers from leaking into their siblings leading to duplicate
   failures. (Jamie English, #1086)
+* Prevent objects which change their hash on comparison from failing change checks.
+  (Phil Pirozhkov, #1110)
 
 ### 3.8.2 / 2018-10-09
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.8.1...v3.8.2)
