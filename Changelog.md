@@ -6,6 +6,8 @@ Enhancements:
   errors before loading specs, RSpec will now skip loading the specs.
   (David Rodríguez, #2568)
 * Prevent warning on Ruby 2.6.0-rc1 (Keiji Yoshimi, #2582)
+* Add support for --example-matches to run examples by regular expression.
+  (Sam Joseph, Matt Rider, @okothkongo1, #2586)
 
 Bug Fixes:
 
