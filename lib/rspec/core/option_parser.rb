@@ -37,6 +37,7 @@ module RSpec::Core
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable CyclomaticComplexity
     # rubocop:disable PerceivedComplexity
+    # rubocop:disable Metrics/BlockLength
     def parser(options)
       OptionParser.new do |parser|
         parser.summary_width = 34
@@ -226,6 +227,11 @@ FILTERING
           (options[:full_description] ||= []) << Regexp.compile(Regexp.escape(o))
         end
 
+        parser.on('-E', '--example-matches REGEX', "Run examples whose full nested names match REGEX (may be",
+                  "  used more than once)") do |o|
+          (options[:full_description] ||= []) << Regexp.compile(o)
+        end
+
         parser.on('-t', '--tag TAG[:VALUE]',
                   'Run examples with the specified tag, or exclude examples',
                   'by adding ~ before the tag.',
@@ -288,6 +294,7 @@ FILTERING
         end
       end
     end
+    # rubocop:enable Metrics/BlockLength
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable MethodLength
     # rubocop:enable CyclomaticComplexity

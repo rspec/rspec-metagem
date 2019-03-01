@@ -216,6 +216,16 @@ module RSpec::Core
       end
     end
 
+    %w[--example-matches -E].each do |option|
+      describe option do
+        it "does not escape the arg" do
+          options = Parser.parse([option, 'this (and that)\b'])
+          expect(options[:full_description].length).to eq(1)
+          expect(/this (and that)\b/).to eq(options[:full_description].first)
+        end
+      end
+    end
+
     %w[--pattern -P].each do |option|
       describe option do
         it "sets the filename pattern" do
