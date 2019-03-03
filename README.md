@@ -19,20 +19,6 @@ RSpec repos as well. Add the following to your `Gemfile`:
 end
 ```
 
-## Contributing
-
-Once you've set up the environment, you'll need to cd into the working
-directory of whichever repo you want to work in. From there you can run the
-specs and cucumber features, and make patches.
-
-NOTE: You do not need to use rspec-dev to work on a specific RSpec repo. You
-can treat each RSpec repo as an independent project.
-
-* [Build details](BUILD_DETAIL.md)
-* [Code of Conduct](CODE_OF_CONDUCT.md)
-* [Detailed contributing guide](CONTRIBUTING.md)
-* [Development setup guide](DEVELOPMENT.md)
-
 ## Basic Structure
 
 RSpec uses the words "describe" and "it" so we can express concepts like a conversation:
@@ -375,6 +361,20 @@ Calculator
 Finished in 0.000379 seconds
 1 example, 0 failures
 ```
+
+## Contributing
+
+Once you've set up the environment, you'll need to cd into the working
+directory of whichever repo you want to work in. From there you can run the
+specs and cucumber features, and make patches.
+
+NOTE: You do not need to use rspec-dev to work on a specific RSpec repo. You
+can treat each RSpec repo as an independent project.
+
+* [Build details](BUILD_DETAIL.md)
+* [Code of Conduct](CODE_OF_CONDUCT.md)
+* [Detailed contributing guide](CONTRIBUTING.md)
+* [Development setup guide](DEVELOPMENT.md)
 
 ## Also see
 
