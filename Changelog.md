@@ -5,7 +5,6 @@ Enhancements:
 * Improve the handling of errors during loading support files, if a file
   errors before loading specs, RSpec will now skip loading the specs.
   (David Rodríguez, #2568)
-* Prevent warning on Ruby 2.6.0-rc1 (Keiji Yoshimi, #2582)
 * Add support for --example-matches to run examples by regular expression.
   (Sam Joseph, Matt Rider, @okothkongo1, #2586)
 
@@ -15,6 +14,7 @@ Bug Fixes:
   (Benoit Tigeot, #2575)
 * When defining `let` methods that overwrite an existing method, prevent
   a warning being issued by removing the old definition. (Jon Rowe, #2593)
+* Prevent warning on Ruby 2.6.0-rc1 (Keiji Yoshimi, #2582)
 
 ### 3.8.0 / 2018-08-04
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.7.1...v3.8.0)
