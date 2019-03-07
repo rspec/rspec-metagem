@@ -7,6 +7,8 @@ Enhancements:
   (David Rodríguez, #2568)
 * Add support for --example-matches to run examples by regular expression.
   (Sam Joseph, Matt Rider, @okothkongo1, #2586)
+* Add `did_you_mean` suggestions for file names encountering a `LoadError`
+  outside of examples. (@obromios, #2601)
 
 Bug Fixes:
 
