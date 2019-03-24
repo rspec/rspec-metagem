@@ -47,7 +47,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "cucumber", "~> 1.3"
   s.add_development_dependency "minitest", "~> 5.3"
-  s.add_development_dependency "aruba",    "~> 0.6.2" # 0.7 is broken on ruby 1.8.7
+  s.add_development_dependency "aruba",    "~> 0.14.9"
 
   s.add_development_dependency "coderay",  "~> 1.1.1"
 

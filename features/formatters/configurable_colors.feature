@@ -12,7 +12,7 @@ Feature: Configurable colors
   Colors are specified as symbols. Options are `:black`, `:red`, `:green`,
   `:yellow`, `:blue`, `:magenta`, `:cyan`, and `:white`.
 
-  @ansi
+  @keep-ansi-escape-sequences
   Scenario: Customizing the failure color
     Given a file named "custom_failure_color_spec.rb" with:
       """ruby

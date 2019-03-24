@@ -1,11 +1,11 @@
 if defined?(Cucumber)
   require 'shellwords'
   Before('~@allow-should-syntax', '~@with-clean-spec-opts') do
-    set_env('SPEC_OPTS', "-r#{Shellwords.escape(__FILE__)}")
+    set_environment_variable('SPEC_OPTS', "-r#{Shellwords.escape(__FILE__)}")
   end
 
   Before('@oneliner-should') do
-    set_env('ALLOW_ONELINER_SHOULD', 'true')
+    set_environment_variable('ALLOW_ONELINER_SHOULD', 'true')
   end
 else
   if ENV['REMOVE_OTHER_RSPEC_LIBS_FROM_LOAD_PATH']

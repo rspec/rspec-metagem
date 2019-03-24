@@ -131,7 +131,7 @@ RSpec.describe 'command line', :ui do
   end
 
   describe '--order defined on CLI with --order rand in .rspec' do
-    after { remove_file '.rspec' }
+    after { remove '.rspec' }
 
     it "overrides --order rand with --order defined" do
       write_file '.rspec', '--order rand'
@@ -147,7 +147,7 @@ RSpec.describe 'command line', :ui do
   end
 
   context 'when a custom order is configured' do
-    after { remove_file 'spec/custom_order_spec.rb' }
+    after { remove 'spec/custom_order_spec.rb' }
 
     before do
       write_file 'spec/custom_order_spec.rb', "

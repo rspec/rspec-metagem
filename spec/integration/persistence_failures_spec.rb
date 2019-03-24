@@ -2,7 +2,7 @@ require 'support/aruba_support'
 
 RSpec.describe 'Persistence failures' do
   include_context "aruba support"
-  before { clean_current_dir }
+  before { setup_aruba }
 
   context "when `config.example_status_persistence_file_path` is configured" do
     context "to an invalid file path (e.g. spec/spec_helper.rb/examples.txt)" do
@@ -38,7 +38,7 @@ RSpec.describe 'Persistence failures' do
         "
 
         write_file_formatted "spec/examples.txt", ""
-        in_current_dir do
+        cd '.' do
           FileUtils.chmod 0000, "spec/examples.txt"
         end
       end

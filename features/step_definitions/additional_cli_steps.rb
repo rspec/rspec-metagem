@@ -4,7 +4,7 @@ require './spec/support/formatter_support'
 
 Then /^the output should contain all of these:$/ do |table|
   table.raw.flatten.each do |string|
-    assert_partial_output(string, all_output)
+    expect(all_output).to include(string)
   end
 end
 
@@ -25,11 +25,6 @@ end
 Then /^the example(?:s)? should(?: all)? pass$/ do
   step %q{the output should contain "0 failures"}
   step %q{the output should not contain "0 examples"}
-  step %q{the exit status should be 0}
-end
-
-Then /^it should pass with "(.*?)"$/ do |string|
-  step %Q{the output should contain "#{string}"}
   step %q{the exit status should be 0}
 end
 
@@ -98,24 +93,23 @@ Then /^the output from `([^`]+)` should not contain "(.*?)"$/  do |cmd, expected
 end
 
 Given /^I have a brand new project with no files$/ do
-  in_current_dir do
+  cd('.') do
     expect(Dir["**/*"]).to eq([])
   end
 end
 
 Given /^I have run `([^`]*)`$/ do |cmd|
-  fail_on_error = true
-  run_simple(unescape(cmd), fail_on_error)
+  run_command_and_stop(sanitize_text(cmd), :fail_on_error => true)
 end
 
 Given(/^a vendored gem named "(.*?)" containing a file named "(.*?)" with:$/) do |gem_name, file_name, file_contents|
   gem_dir = "vendor/#{gem_name}-1.2.3"
   step %Q{a file named "#{gem_dir}/#{file_name}" with:}, file_contents
-  set_env('RUBYOPT', ENV['RUBYOPT'] + " -I#{gem_dir}/lib")
+  set_environment_variable('RUBYOPT', ENV['RUBYOPT'] + " -I#{gem_dir}/lib")
 end
 
 When "I accept the recommended settings by removing `=begin` and `=end` from `spec/spec_helper.rb`" do
-  in_current_dir do
+  cd('.') do
     spec_helper = File.read("spec/spec_helper.rb")
     expect(spec_helper).to include("=begin", "=end")
 
@@ -138,7 +132,7 @@ Given(/^I have run `([^`]*)` once, resulting in "([^"]*)"$/) do |command, output
 end
 
 When(/^I fix "(.*?)" by replacing "(.*?)" with "(.*?)"$/) do |file_name, original, replacement|
-  in_current_dir do
+  cd('.') do
     contents = File.read(file_name)
     expect(contents).to include(original)
     fixed = contents.sub(original, replacement)
@@ -146,12 +140,8 @@ When(/^I fix "(.*?)" by replacing "(.*?)" with "(.*?)"$/) do |file_name, origina
   end
 end
 
-Then(/^it should fail with "(.*?)"$/) do |snippet|
-  assert_failing_with(snippet)
-end
-
 Given(/^I have not configured `example_status_persistence_file_path`$/) do
-  in_current_dir do
+  cd('.') do
     return unless File.exist?("spec/spec_helper.rb")
     return unless File.read("spec/spec_helper.rb").include?("example_status_persistence_file_path")
     File.open("spec/spec_helper.rb", "w") { |f| f.write("") }
@@ -173,10 +163,10 @@ Given(/^files "(.*?)" through "(.*?)" with an unrelated passing spec in each fil
 end
 
 Then(/^bisect should (succeed|fail) with output like:$/) do |succeed, expected_output|
-  last_process = only_processes.last
+  last_process = all_commands.last
   expected_status = succeed == "succeed" ? 0 : 1
-  expect(last_exit_status).to eq(expected_status),
-    "Expected exit status of #{expected_status} but got #{last_exit_status} \n\n" \
+  expect(last_process.exit_status).to eq(expected_status),
+    "Expected exit status of #{expected_status} but got #{last_process.exit_status} \n\n" \
     "Output:\n\n#{last_process.stdout}"
 
   expected = normalize_durations(expected_output)
@@ -191,7 +181,7 @@ Then(/^bisect should (succeed|fail) with output like:$/) do |succeed, expected_o
 end
 
 When(/^I run `([^`]+)` and abort in the middle with ctrl\-c$/) do |cmd|
-  set_env('RUBYOPT', ENV['RUBYOPT'] + " -r#{File.expand_path("../../support/send_sigint_during_bisect.rb", __FILE__)}")
+  set_environment_variable('RUBYOPT', ENV['RUBYOPT'] + " -r#{File.expand_path("../../support/send_sigint_during_bisect.rb", __FILE__)}")
   step "I run `#{cmd}`"
 end
 
@@ -218,19 +208,21 @@ Then(/^the output should report "slow before context hook" as the slowest exampl
   # - "Nested" group listed (it should be the outer group)
   # - The example group class name is listed (it should be the location)
 
-  expect(all_output).not_to match(/nested/i)
-  expect(all_output).not_to match(/inf/i)
-  expect(all_output).not_to match(/\b0 examples/i)
+  output = all_output
+
+  expect(output).not_to match(/nested/i)
+  expect(output).not_to match(/inf/i)
+  expect(output).not_to match(/\b0 examples/i)
 
   seconds = '\d+(?:\.\d+)? seconds'
 
-  expect(all_output).to match(
+  expect(output).to match(
     %r{Top 1 slowest example groups?:\n\s+slow before context hook\n\s+#{seconds} average \(#{seconds} / 1 example\) \./spec/example_spec\.rb:1}
   )
 end
 
 Given(/^I have changed `([^`]+)` to `([^`]+)` in "(.*?)"$/) do |old_code, new_code, file_name|
-  in_current_dir do
+  cd('.') do
     file_content = File.read(file_name)
     expect(file_content).to include(old_code)
     new_file_content = file_content.sub(old_code, new_code)

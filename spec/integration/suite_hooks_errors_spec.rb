@@ -18,14 +18,10 @@ RSpec.describe 'Suite hook errors' do
   end
 
   before do
-    # get out of `aruba` sub-dir so that `filter_gems_from_backtrace 'aruba'`
-    # below does not filter out our spec file.
-    expect(dirs.pop).to eq "aruba"
-
-    clean_current_dir
+    setup_aruba
 
     RSpec.configure do |c|
-      c.filter_gems_from_backtrace "aruba"
+      c.filter_gems_from_backtrace "gems/aruba"
       c.backtrace_exclusion_patterns << %r{/rspec-core/spec/} << %r{rspec_with_simplecov}
       c.failure_exit_code = failure_exit_code
     end

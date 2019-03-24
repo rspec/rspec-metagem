@@ -6,13 +6,13 @@ require 'rspec/core/bisect/fork_runner'
 module RSpec::Core
   RSpec.shared_examples_for "a bisect runner" do
     include_context "aruba support"
-    before { clean_current_dir }
+    before { setup_aruba }
 
     let(:shell_command) { Bisect::ShellCommand.new([]) }
 
     def with_runner(&block)
       handle_current_dir_change do
-        in_current_dir do
+        cd '.' do
           options = ConfigurationOptions.new(shell_command.original_cli_args)
           runner = Runner.new(options)
           output = StringIO.new
@@ -124,7 +124,7 @@ module RSpec::Core
           runner.run(%w[ ./spec/a_spec.rb[1:1] ])
         end
 
-        in_current_dir do
+        cd '.' do
           expect(File.read('spec_helper_loads')).to eq(".")
         end
       end

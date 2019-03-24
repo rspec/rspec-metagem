@@ -2,7 +2,7 @@ require 'support/aruba_support'
 
 RSpec.describe 'Fail if no examples' do
   include_context "aruba support"
-  before { clean_current_dir }
+  before { setup_aruba }
 
   context 'when 1 passing example' do
     def passing_example(fail_if_no_examples)
