@@ -1,8 +1,7 @@
-# This file was generated on 2019-01-08T11:28:05+00:00 from the rspec-dev repo.
+# This file was generated on 2019-04-01T20:23:57+02:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 language: ruby
-sudo: false
 email: false
 cache:
   directories:
@@ -21,9 +20,9 @@ rvm:
   - 2.1
   - 2.2.10
   - 2.3.8
-  - 2.4.5
-  - 2.5.3
-  - 2.6.0
+  - 2.4.6
+  - 2.5.5
+  - 2.6.2
   - ruby-head
   - ree
   - rbx-3
