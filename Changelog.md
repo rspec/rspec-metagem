@@ -14,6 +14,9 @@ Bug Fixes:
   failures. (Jamie English, #1086)
 * Prevent objects which change their hash on comparison from failing change checks.
   (Phil Pirozhkov, #1110)
+* Issue an `ArgumentError` rather than a `NoMethodError` when `be_an_instance_of` and
+  `be_kind_of` matchers encounter objects not supporting those methods.
+  (Taichi Ishitani, #1107)
 
 ### 3.8.2 / 2018-10-09
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.8.1...v3.8.2)
