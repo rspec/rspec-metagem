@@ -53,7 +53,7 @@ module RSpec
           it "raises ArgumentError" do
             message = "The be_an_instance_of matcher requires that "\
                       "the actual object responds to #instance_of? method " \
-                      "but it does not respond to the method."
+                      "but a `NoMethodError` was encountered instead."
             expect {
               expect(actual_object).to send(method, klass)
             }.to raise_error ::ArgumentError, message
@@ -76,7 +76,7 @@ module RSpec
           it "raises ArgumentError" do
             message = "The be_an_instance_of matcher requires that "\
                       "the actual object responds to #instance_of? method " \
-                      "but it does not respond to the method."
+                      "but a `NoMethodError` was encountered instead."
             expect {
               expect(actual_object).not_to send(method, klass)
             }.to raise_error ::ArgumentError, message

@@ -26,37 +26,15 @@ module RSpec
           expect(matcher.description).to eq "be a kind of String"
         end
 
-        context "when the actual object does not respond to #kind_of? mehtod" do
+        context "when the actual object does not respond to #kind_of? method" do
           let(:actual_object) do
             Class.new { undef_method :kind_of? }.new
           end
 
-          it "provides correct result" do
-            expect(actual_object).to send(method, actual_object.class)
-            expect(actual_object).to send(method, Object)
-          end
-        end
-
-        context "when the actual object does not respond to #is_a? mehtod" do
-          let(:actual_object) do
-            Class.new { undef_method :is_a? }.new
-          end
-
-          it "provides correct result" do
-            expect(actual_object).to send(method, actual_object.class)
-            expect(actual_object).to send(method, Object)
-          end
-        end
-
-        context "when the actual object responds to neigher #kind_of? nor #is_a? methods" do
-          let(:actual_object) do
-            Class.new { undef_method :kind_of?, :is_a? }.new
-          end
-
           it "raises ArgumentError" do
-            message = "The be_a_kind_of matcher requires that the actual object " \
-                      "responds to either #kind_of? or #is_a? methods but " \
-                      "it responds to neigher of two methods."
+            message = "The be_a_kind_of matcher requires that " \
+                      "the actual object responds to #kind_of? method " \
+                      "but a `NoMethodError` was encountered instead."
 
             expect {
               expect(actual_object).to send(method, actual_object.class)
@@ -65,6 +43,17 @@ module RSpec
             expect {
               expect(actual_object).to send(method, Object)
             }.to raise_error ::ArgumentError, message
+          end
+        end
+
+        context "when the actual object does not respond to #is_a? method" do
+          let(:actual_object) do
+            Class.new { undef_method :is_a? }.new
+          end
+
+          it "provides correct result" do
+            expect(actual_object).to send(method, actual_object.class)
+            expect(actual_object).to send(method, Object)
           end
         end
       end
@@ -76,38 +65,29 @@ module RSpec
           }.to fail_with(%Q{expected "foo" not to be a kind of String})
         end
 
-        context "when the actual object does not respond to #kind_of? mehtod" do
+        context "when the actual object does not respond to #kind_of? method" do
           let(:actual_object) do
             Class.new { undef_method :kind_of? }.new
           end
 
-          it "provides correct result" do
-            expect(actual_object).not_to send(method, String)
+          it "raises ArgumentError" do
+            message = "The be_a_kind_of matcher requires that " \
+                      "the actual object responds to #kind_of? method " \
+                      "but a `NoMethodError` was encountered instead."
+
+            expect {
+              expect(actual_object).not_to send(method, String)
+            }.to raise_error ArgumentError, message
           end
         end
 
-        context "when the actual object does not respond to #is_a? mehtod" do
+        context "when the actual object does not respond to #is_a? method" do
           let(:actual_object) do
             Class.new { undef_method :is_a? }.new
           end
 
           it "provides correct result" do
             expect(actual_object).not_to send(method, String)
-          end
-        end
-
-        context "when the actual object responds to neigher #kind_of? nor #is_a? methods" do
-          let(:actual_object) do
-            Class.new { undef_method :kind_of?, :is_a? }.new
-          end
-
-          it "raises ArgumentError" do
-            message = "The be_a_kind_of matcher requires that the actual object " \
-                      "responds to either #kind_of? or #is_a? methods but " \
-                      "it responds to neigher of two methods."
-            expect {
-              expect(actual_object).not_to send(method, String)
-            }.to raise_error ArgumentError, message
           end
         end
       end
