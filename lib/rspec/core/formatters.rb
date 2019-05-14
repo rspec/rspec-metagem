@@ -74,6 +74,7 @@ module RSpec::Core::Formatters
   autoload :JsonFormatter,            'rspec/core/formatters/json_formatter'
   autoload :BisectDRbFormatter,       'rspec/core/formatters/bisect_drb_formatter'
   autoload :ExceptionPresenter,       'rspec/core/formatters/exception_presenter'
+  autoload :MinimalFormatter,         'rspec/core/formatters/minimal_formatter'
 
   # Register the formatter class
   # @param formatter_class [Class] formatter class to register
@@ -212,6 +213,8 @@ module RSpec::Core::Formatters
         JsonFormatter
       when 'bisect-drb'
         BisectDRbFormatter
+      when 'm', 'minimal'
+        MinimalFormatter
       end
     end
 
