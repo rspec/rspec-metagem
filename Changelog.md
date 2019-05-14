@@ -9,6 +9,8 @@ Enhancements:
   (Sam Joseph, Matt Rider, @okothkongo1, #2586)
 * Add `did_you_mean` suggestions for file names encountering a `LoadError`
   outside of examples. (@obromios, #2601)
+* Add a minimalist quick fix style formatter, only outputs failures as
+  `file:line:message`. (Romain Tartière, #2164)
 
 Bug Fixes:
 
