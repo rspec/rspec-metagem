@@ -5,7 +5,7 @@ module RSpec::Core::Formatters
     include FormatterSupport
 
     it 'produces the expected full output' do
-      output = run_example_specs_with_formatter('failure_list')
+      output = run_example_specs_with_formatter('failures')
       expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
         |./spec/rspec/core/resources/formatter_specs.rb:4:is marked as pending but passes
         |./spec/rspec/core/resources/formatter_specs.rb:36:fails

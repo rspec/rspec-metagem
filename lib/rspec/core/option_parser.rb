@@ -112,7 +112,7 @@ module RSpec::Core
                   '  [d]ocumentation (group and example names)',
                   '  [h]tml',
                   '  [j]son',
-                  '  [f]ailure list (suitable for editors integration)',
+                  '  [f]ailures ("file:line:reason", suitable for editors integration)',
                   '  custom formatter class name') do |o|
           options[:formatters] ||= []
           options[:formatters] << [o]
