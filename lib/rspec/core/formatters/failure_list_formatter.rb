@@ -4,7 +4,7 @@ module RSpec
   module Core
     module Formatters
       # @private
-      class MinimalFormatter < BaseFormatter
+      class FailureListFormatter < BaseFormatter
         Formatters.register self, :example_failed, :dump_profile, :message
 
         def example_failed(failure)
@@ -13,8 +13,8 @@ module RSpec
 
         # Discard profile and messages
         #
-        # These outputs are not really relevant in the context of this minimal
-        # formatter.
+        # These outputs are not really relevant in the context of this failure
+        # list formatter.
         def dump_profile(_profile); end
         def message(_message); end
       end
