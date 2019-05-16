@@ -213,7 +213,7 @@ module RSpec::Core::Formatters
         JsonFormatter
       when 'bisect-drb'
         BisectDRbFormatter
-      when 'f', 'failure_list'
+      when 'f', 'failures'
         FailureListFormatter
       end
     end
