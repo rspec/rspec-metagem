@@ -32,6 +32,8 @@ if RUBY_VERSION < '2.2.0' && !!(RbConfig::CONFIG['host_os'] =~ /cygwin|mswin|min
   gem 'ffi', '< 1.10'
 elsif RUBY_VERSION < '1.9'
   gem 'ffi', '< 1.9.19' # ffi dropped Ruby 1.8 support in 1.9.19
+elsif RUBY_VERSION < '2.0'
+  gem 'ffi', '< 1.11.0' # ffi dropped Ruby 1.9 support in 1.11.0
 else
   gem 'ffi', '> 1.9.24' # prevent Github security vulnerability warning
 end
