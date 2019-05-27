@@ -1,7 +1,8 @@
 Feature: implicitly defined subject
 
-  If the first argument to the outermost example group is a class, an instance
-  of that class is exposed to each example via the `subject` method.
+  If the first argument to an example group is a class, an instance of that
+  class is exposed to each example in that example group via the `subject`
+  method.
 
   While the examples below demonstrate how `subject` can be used as a
   user-facing concept, we recommend that you reserve it for support of custom
