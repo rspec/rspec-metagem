@@ -149,7 +149,7 @@ module RSpec::Core
     end
 
     context "with_clean_environment is set" do
-      it "removes the environment variables" do
+      it "removes the environment variables", :if => RUBY_VERSION >= '1.9.0', :unless => RSpec::Support::Ruby.jruby? do
         with_env_vars 'MY_ENV' => 'ABC' do
           expect {
             task.with_clean_environment = true
