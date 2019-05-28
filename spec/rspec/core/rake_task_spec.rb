@@ -148,6 +148,20 @@ module RSpec::Core
       end
     end
 
+    context "with_clean_environment is set" do
+      it "removes the environment variables" do
+        with_env_vars 'MY_ENV' => 'ABC' do
+          expect {
+            task.with_clean_environment = true
+            task.ruby_opts = '-e "puts \"Environment: #{ENV.keys}\""'
+            task.run_task false
+          }.to avoid_outputting.to_stderr.and output(
+            /\["PWD"(?:, "SHLVL")?(?:, "_")?(?:, "__CF_USER_TEXT_ENCODING")?\]/
+          ).to_stdout_from_any_process
+        end
+      end
+    end
+
     def loaded_files
       args = Shellwords.split(spec_command)
       args -= [task.class::RUBY, "-S", task.rspec_path]

@@ -11,6 +11,8 @@ Enhancements:
   outside of examples. (@obromios, #2601)
 * Add a minimalist quick fix style formatter, only outputs failures as
   `file:line:message`. (Romain Tartière, #2614)
+* Add support for running the Rake task in a clean environment.
+  (Jon Rowe, #2632)
 
 Bug Fixes:
 
