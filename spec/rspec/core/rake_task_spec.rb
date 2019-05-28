@@ -151,13 +151,17 @@ module RSpec::Core
     context "with_clean_environment is set" do
       it "removes the environment variables", :if => RUBY_VERSION >= '1.9.0', :unless => RSpec::Support::Ruby.jruby? do
         with_env_vars 'MY_ENV' => 'ABC' do
+          if RSpec::Support::OS.windows?
+            essential_shell_variables = /\["ANSICON", "ANSICON_DEF", "HOME", "TMPDIR", "USER"\]/
+          else
+            essential_shell_variables = /\["PWD"(?:, "SHLVL")?(?:, "_")?(?:, "__CF_USER_TEXT_ENCODING")?\]/
+          end
+
           expect {
             task.with_clean_environment = true
             task.ruby_opts = '-e "puts \"Environment: #{ENV.keys}\""'
             task.run_task false
-          }.to avoid_outputting.to_stderr.and output(
-            /\["PWD"(?:, "SHLVL")?(?:, "_")?(?:, "__CF_USER_TEXT_ENCODING")?\]/
-          ).to_stdout_from_any_process
+          }.to avoid_outputting.to_stderr.and output(essential_shell_variables).to_stdout_from_any_process
         end
       end
     end
