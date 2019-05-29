@@ -1819,6 +1819,42 @@ module RSpec::Core
         expect(group.metadata).to include(:b1_desc => "bar (block 1)", :b2_desc => "bar (block 1) (block 2)")
       end
 
+      it 'supports cascades of derived metadata, but avoids re-running derived metadata blocks that have already been applied' do
+        RSpec.configure do |c|
+          c.define_derived_metadata(:foo1) { |m| m[:foo2] = (m[:foo2] || 0) + 1 }
+          c.define_derived_metadata(:foo2) { |m| m[:foo3] = (m[:foo3] || 0) + 1 }
+          c.define_derived_metadata(:foo3) { |m| m[:foo1] += 1 }
+        end
+
+        group = RSpec.describe("bar", :foo1 => 0)
+        expect(group.metadata).to include(:foo1 => 1, :foo2 => 1, :foo3 => 1)
+
+        ex = RSpec.describe("My group").example("foo", :foo1 => 0)
+        expect(ex.metadata).to include(:foo1 => 1, :foo2 => 1, :foo3 => 1)
+      end
+
+      it 'does not allow a derived metadata cascade to recurse infinitely' do
+        RSpec.configure do |c|
+          counter = 1
+          derive_next_metadata = lambda do |outer_meta|
+            tag = :"foo#{counter += 1}"
+            outer_meta[tag] = true
+
+            c.define_derived_metadata(tag) do |inner_meta|
+              derive_next_metadata.call(inner_meta)
+            end
+          end
+
+          c.define_derived_metadata(:foo1) do |meta|
+            derive_next_metadata.call(meta)
+          end
+        end
+
+        expect {
+          RSpec.describe("group", :foo1)
+        }.to raise_error(SystemStackError)
+      end
+
       it "derives metadata before the group or example blocks are eval'd so their logic can depend on the derived metadata" do
         RSpec.configure do |c|
           c.define_derived_metadata(:foo) do |metadata|

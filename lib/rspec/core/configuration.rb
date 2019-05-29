@@ -1855,9 +1855,28 @@ module RSpec
 
       # @private
       def apply_derived_metadata_to(metadata)
-        @derived_metadata_blocks.items_for(metadata).each do |block|
-          block.call(metadata)
+        already_run_blocks = Set.new
+
+        # We loop and attempt to re-apply metadata blocks to support cascades
+        # (e.g. where a derived bit of metadata triggers the application of
+        # another piece of derived metadata, etc)
+        #
+        # We limit our looping to 200 times as a way to detect infinitely recursing derived metadata blocks.
+        # It's hard to imagine a valid use case for a derived metadata cascade greater than 200 iterations.
+        200.times do
+          return if @derived_metadata_blocks.items_for(metadata).all? do |block|
+            already_run_blocks.include?(block).tap do |skip_block|
+              block.call(metadata) unless skip_block
+              already_run_blocks << block
+            end
+          end
         end
+
+        # If we got here, then `@derived_metadata_blocks.items_for(metadata).all?` never returned
+        # `true` above and we treat this as an attempt to recurse infinitely. It's better to fail
+        # with a clear # error than hang indefinitely, which is what would happen if we didn't limit
+        # the looping above.
+        raise SystemStackError, "Attempted to recursively derive metadata indefinitely."
       end
 
       # Defines a `before` hook. See {Hooks#before} for full docs.
