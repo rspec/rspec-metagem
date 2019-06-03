@@ -202,10 +202,33 @@ module RSpec
         only_failures? && !example_status_persistence_file_path
       end
 
-      # @macro add_setting
+      # @macro define_reader
       # If specified, indicates the number of failures required before cleaning
-      # up and exit (default: `nil`).
-      add_setting :fail_fast
+      # up and exit (default: `nil`). Can also be `true` to fail and exit on first
+      # failure
+      define_reader :fail_fast
+
+      # @see fail_fast
+      def fail_fast=(value)
+        case value
+        when true, 'true'
+          @fail_fast = true
+        when false, 'false', 0
+          @fail_fast = false
+        when nil
+          @fail_fast = nil
+        else
+          @fail_fast = value.to_i
+
+          if value.to_i == 0
+            # TODO: in RSpec 4, consider raising an error here.
+            RSpec.warning "Cannot set `RSpec.configuration.fail_fast`" \
+              " to `#{value.inspect}`. Only `true`, `false`, `nil` and integers" \
+              " are valid values."
+            @fail_fast = true
+          end
+        end
+      end
 
       # @macro add_setting
       # Prints the formatter output of your suite without running any
