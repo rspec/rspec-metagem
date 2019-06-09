@@ -11,6 +11,10 @@ Enhancements:
   outside of examples. (@obromios, #2601)
 * Add a minimalist quick fix style formatter, only outputs failures as
   `file:line:message`. (Romain Tartière, #2614)
+* Convert string number values to integer when used for `RSpec::Configuration#fail_fast`
+  (Viktor Fonic, #2634)
+* Issue warning when invalid values are used for `RSpec::Configuration#fail_fast`
+  (Viktor Fonic, #2634)
 
 Bug Fixes:
 
