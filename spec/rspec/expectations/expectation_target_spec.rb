@@ -13,7 +13,7 @@ module RSpec
 
         it 'raises an ArgumentError when given an argument and a block' do
           expect {
-            expect(7) { }
+            expect(7) {}
           }.to raise_error(ArgumentError)
         end
 
@@ -80,7 +80,7 @@ module RSpec
 
       context "when passed a block" do
         it 'can be used with a block matcher' do
-          expect { }.not_to raise_error
+          expect {}.not_to raise_error
         end
 
         context 'when passed a value matcher' do
@@ -88,21 +88,21 @@ module RSpec
 
           it 'raises an error that directs the user to pass an arg rather than a block' do
             expect {
-              expect { }.to be_an(Object)
+              expect {}.to be_an(Object)
             }.to fail_with(not_a_block_matcher_error)
 
             expect {
-              expect { }.not_to be_nil
+              expect {}.not_to be_nil
             }.to fail_with(not_a_block_matcher_error)
 
             expect {
-              expect { }.to_not be_nil
+              expect {}.to_not be_nil
             }.to fail_with(not_a_block_matcher_error)
           end
 
           it 'assumes a custom matcher that does not define `supports_block_expectations?` is not a block matcher (since it is relatively rare)' do
             custom_matcher = Module.new do
-              def self.matches?(value); true; end
+              def self.matches?(_value); true; end
               def self.description; "foo"; end
             end
 
@@ -128,7 +128,7 @@ module RSpec
             end
 
             expect {
-              expect { }.to custom_matcher
+              expect {}.to custom_matcher
             }.to fail_with(/\(matcher-description\)/)
           end
 
@@ -140,7 +140,7 @@ module RSpec
               end
 
               expect {
-                expect { }.to custom_matcher
+                expect {}.to custom_matcher
               }.to fail_with(/\(matcher-inspect\)/)
             end
           end
@@ -149,4 +149,3 @@ module RSpec
     end
   end
 end
-

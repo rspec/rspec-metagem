@@ -101,7 +101,7 @@ module RSpec::Expectations
 
       context 'with `target_method { |arg1, arg2| body }`' do
         let(:expression) do
-          target_method { |arg1, arg2| 1.positive? }
+          target_method { |_arg1, _arg2| 1.positive? }
         end
 
         it 'returns the body content lines' do
@@ -121,7 +121,7 @@ module RSpec::Expectations
 
       context 'with `target_method(:arg1,:arg2){|arg1,arg2|body}`' do
         let(:expression) do
-          target_method(:arg1,:arg2){|arg1,arg2|1.positive?}
+          target_method(:arg1, :arg2) { |_arg1, _arg2|1.positive? }
         end
 
         it 'returns the body content lines' do

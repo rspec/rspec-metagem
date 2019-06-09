@@ -197,7 +197,7 @@ module RSpec
           it "warns when the should syntax is called by default" do
             expected_arguments = [
               /Using.*without explicitly enabling/,
-              {:replacement=>"the new `:expect` syntax or explicitly enable `:should` with `config.expect_with(:rspec) { |c| c.syntax = :should }`"}
+              { :replacement => "the new `:expect` syntax or explicitly enable `:should` with `config.expect_with(:rspec) { |c| c.syntax = :should }`" }
             ]
 
             expect(RSpec).to receive(:deprecate).with(*expected_arguments)
@@ -269,7 +269,6 @@ module RSpec
             end
           end
 
-
           def configured_syntax
             RSpec.configure do |rspec|
               rspec.expect_with :rspec do |c|
@@ -286,7 +285,7 @@ module RSpec
         # config setting, which makes it hard to get at the original
         # default value. in spec_helper.rb we store the default value
         # in $default_expectation_syntax so we can use it here.
-        expect($default_expectation_syntax).to contain_exactly(:expect, :should)
+        expect($default_expectation_syntax).to contain_exactly(:expect, :should) # rubocop:disable Style/GlobalVars
       end
     end
   end

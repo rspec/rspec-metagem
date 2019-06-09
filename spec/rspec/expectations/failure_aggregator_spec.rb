@@ -88,7 +88,7 @@ module RSpec::Expectations
           notify_error_with(backtrace)
         end
       }.to raise_error do |error|
-        expect(error.failures.map(&:backtrace)).to eq([ backtrace, backtrace ])
+        expect(error.failures.map(&:backtrace)).to eq([backtrace, backtrace])
       end
     end
 
@@ -187,7 +187,7 @@ module RSpec::Expectations
           aggregate_failures do
             raise error
 
-            later_expectation_executed = true
+            later_expectation_executed = true # rubocop:disable Lint/UnreachableCode
             expect(1).to eq(1)
           end
         }.to raise_error(error)

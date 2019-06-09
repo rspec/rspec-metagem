@@ -86,12 +86,12 @@ module RSpec::Matchers::BuiltIn
           end
 
           example "with the block matcher first" do
-            compound = combine(change { }.to(2), non_block_matcher)
+            compound = combine(change {}.to(2), non_block_matcher)
             expect(compound.supports_block_expectations?).to be false
           end
 
           example "with the block matcher last" do
-            compound = combine(non_block_matcher, change { }.to(2))
+            compound = combine(non_block_matcher, change {}.to(2))
             expect(compound.supports_block_expectations?).to be false
           end
         end
@@ -137,8 +137,7 @@ module RSpec::Matchers::BuiltIn
         context "when used with `raise_error` (which cannot match against a wrapped block)" do
           it 'does not work when combined with `throw_symbol` (which also cannot match against a wrapped block)' do
             expect {
-              expect {
-              }.to combine(raise_error("boom"), throw_symbol(:foo))
+              expect {}.to combine(raise_error("boom"), throw_symbol(:foo))
             }.to raise_error(/cannot be combined/)
           end
 
@@ -224,7 +223,7 @@ module RSpec::Matchers::BuiltIn
 
       context "when given a proc and non block matchers" do
         it 'does not treat it as a block expectation expression' do
-          p = lambda { }
+          p = lambda {}
           expect(p).to combine(be_a(Proc), be(p))
 
           expect {

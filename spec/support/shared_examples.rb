@@ -108,4 +108,3 @@ RSpec.shared_examples "an RSpec matcher" do |options|
     expect(message).to include("detailed inspect")
   end unless options[:failure_message_uses_no_inspect]
 end
-

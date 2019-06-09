@@ -105,7 +105,6 @@ module RSpec
   end
 end
 
-
 array_sizes = [10, 50, 100, 500]
 
 # *maniacal laugh*

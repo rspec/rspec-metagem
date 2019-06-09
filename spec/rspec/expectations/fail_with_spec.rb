@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 RSpec.describe RSpec::Expectations, "#fail_with" do
   let(:differ) { double("differ") }
 

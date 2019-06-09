@@ -13,11 +13,11 @@ module RSpec
       end
 
       failure_message do |aliased_matcher|
-        "expected #{aliased_matcher} to be aliased to #{old_matcher} with " +
+        "expected #{aliased_matcher} to be aliased to #{old_matcher} with " \
         "description: #{@expected_desc.inspect}, but got #{@actual_desc.inspect}"
       end
 
-      description do |aliased_matcher|
+      description do |_aliased_matcher|
         "have an alias for #{old_matcher.description.inspect} with description: #{@expected_desc.inspect}"
       end
     end
@@ -342,17 +342,17 @@ module RSpec
 
     specify do
       expect(
-        an_object_satisfying { }
+        an_object_satisfying {}
       ).to be_aliased_to(
-        satisfy { }
+        satisfy {}
       ).with_description("an object satisfying block")
     end
 
     specify do
       expect(
-        satisfying { }
+        satisfying {}
       ).to be_aliased_to(
-        satisfy { }
+        satisfy {}
       ).with_description("satisfying block")
     end
 

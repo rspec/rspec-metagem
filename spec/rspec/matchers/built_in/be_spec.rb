@@ -631,7 +631,7 @@ RSpec.describe "expect(...).to be =~" do
   it "fails when =~ operator returns false" do
     expect {
       expect("a string").to be =~ /blah/
-    }.to fail_with(%Q|expected: =~ /blah/\n     got:    "a string"|)
+    }.to fail_with(%(expected: =~ /blah/\n     got:    "a string"))
   end
 end
 
@@ -643,19 +643,19 @@ RSpec.describe "should be =~", :uses_should do
   it "fails when =~ operator returns false" do
     expect {
       "a string".should be =~ /blah/
-    }.to fail_with(%Q|expected: =~ /blah/\n     got:    "a string"|)
+    }.to fail_with(%(expected: =~ /blah/\n     got:    "a string"))
   end
 end
 
 RSpec.describe "expect(...).to be ===" do
   it "passes when === operator returns true" do
-    expect(Hash).to be === Hash.new
+    expect(Hash).to be === {}
   end
 
   it "fails when === operator returns false" do
     expect {
       expect(Hash).to be === "not a hash"
-    }.to fail_with(%[expected: === "not a hash"\n     got:     Hash])
+    }.to fail_with(%(expected: === "not a hash"\n     got:     Hash))
   end
 end
 
@@ -758,7 +758,6 @@ RSpec.describe "'expect(...).to be' with operator" do
   end
 end
 
-
 RSpec.describe "arbitrary predicate with DelegateClass" do
   it "accesses methods defined in the delegating class (LH[#48])" do
     in_sub_process_if_possible do
@@ -774,7 +773,7 @@ RSpec.describe "arbitrary predicate with DelegateClass" do
         end
       end
 
-      delegate = ArrayDelegate.new([1,2,3,4,5,6])
+      delegate = ArrayDelegate.new([1, 2, 3, 4, 5, 6])
       expect(delegate).to be_large
     end
   end
@@ -783,12 +782,12 @@ end
 RSpec.describe "be_a, be_an" do
   it "passes when class matches" do
     expect("foobar").to be_a(String)
-    expect([1,2,3]).to be_an(Array)
+    expect([1, 2, 3]).to be_an(Array)
   end
 
   it "fails when class does not match" do
     expect("foobar").not_to be_a(Hash)
-    expect([1,2,3]).not_to be_an(Integer)
+    expect([1, 2, 3]).not_to be_an(Integer)
   end
 end
 

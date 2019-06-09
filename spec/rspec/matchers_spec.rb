@@ -63,9 +63,9 @@ RSpec.describe RSpec::Matchers do
     end
 
     it "supports the optional `include_private` arg" do
-      expect(self.respond_to?(:puts, true)).to eq true
-      expect(self.respond_to?(:puts, false)).to eq false
-      expect(self.respond_to?(:puts)).to eq false
+      expect(respond_to?(:puts, true)).to eq true
+      expect(respond_to?(:puts, false)).to eq false
+      expect(respond_to?(:puts)).to eq false
     end
 
     it "allows `method` to get dynamic matcher methods", :if => RUBY_VERSION.to_f >= 1.9 do
@@ -155,4 +155,3 @@ module RSpec
     end
   end
 end
-

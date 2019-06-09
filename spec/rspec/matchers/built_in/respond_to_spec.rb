@@ -10,7 +10,7 @@ RSpec.describe "expect(...).to respond_to(:sym)" do
   it "fails if target does not respond to :sym" do
     expect {
       expect("this string").to respond_to(:some_method)
-    }.to fail_with(%q|expected "this string" to respond to :some_method|)
+    }.to fail_with('expected "this string" to respond to :some_method')
   end
 end
 
@@ -236,7 +236,7 @@ RSpec.describe "expect(...).to respond_to(:sym).with(1..2).arguments" do
   end
 
   it "passes if target is new and initialize reponds to arguments" do
-    klass = Class.new { def initialize(arg, arg2 = nil, arg3 = nil); end }
+    klass = Class.new { def initialize(arg, arg2=nil, arg3=nil); end }
     expect(klass).to respond_to(:new).with(1..2).arguments
   end
 

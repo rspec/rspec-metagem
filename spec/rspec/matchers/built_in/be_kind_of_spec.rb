@@ -17,7 +17,7 @@ module RSpec
         it "fails with failure message for should unless actual is kind of expected class" do
           expect {
             expect("foo").to send(method, Array)
-          }.to fail_with(%Q{expected "foo" to be a kind of Array})
+          }.to fail_with('expected "foo" to be a kind of Array')
         end
 
         it "provides a description" do
@@ -62,7 +62,7 @@ module RSpec
         it "fails with failure message for should_not if actual is kind of expected class" do
           expect {
             expect("foo").not_to send(method, String)
-          }.to fail_with(%Q{expected "foo" not to be a kind of String})
+          }.to fail_with('expected "foo" not to be a kind of String')
         end
 
         context "when the actual object does not respond to #kind_of? method" do

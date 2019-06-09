@@ -6,7 +6,7 @@ RSpec::Support::Spec.setup_simplecov do
 end
 
 Dir['./spec/support/**/*'].each do |f|
-  require f.sub(%r{\./spec/}, '')
+  require f.sub(%r|\./spec/|, '')
 end
 
 module CommonHelperMethods
@@ -31,7 +31,7 @@ module CommonHelperMethods
   # put a literal string for what we expect because it varies.
   if RUBY_VERSION.to_f == 1.8
     def hash_inspect(hash)
-      "\\{(#{hash.map { |key,value| "#{key.inspect} => #{value.inspect}.*" }.join "|"}){#{hash.size}}\\}"
+      "\\{(#{hash.map { |key, value| "#{key.inspect} => #{value.inspect}.*" }.join "|"}){#{hash.size}}\\}"
     end
   else
     def hash_inspect(hash)
@@ -41,7 +41,7 @@ module CommonHelperMethods
   end
 end
 
-RSpec::configure do |config|
+RSpec.configure do |config|
   config.color = true
   config.order = :random
 
@@ -49,7 +49,7 @@ RSpec::configure do |config|
   config.include RSpec::Support::InSubProcess
 
   config.expect_with :rspec do |expectations|
-    $default_expectation_syntax = expectations.syntax
+    $default_expectation_syntax = expectations.syntax # rubocop:disable Style/GlobalVars
     expectations.syntax = :expect
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end

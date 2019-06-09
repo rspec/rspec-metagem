@@ -124,6 +124,14 @@ function check_binstubs {
     fi
   fi
 
+  if style_and_lint_enforced; then
+    if [ ! -x ./bin/rubocop ]; then
+      binstubs="$binstubs bin/rubocop"
+      gems="$gems rubocop"
+      success=1
+    fi
+  fi
+
   if [ $success -eq 1 ]; then
     echo
     echo "Missing binstubs:$binstubs"
@@ -179,8 +187,8 @@ function check_documentation_coverage {
 }
 
 function check_style_and_lint {
-  echo "bin/rubocop lib"
-  eval "(unset RUBYOPT; exec bin/rubocop lib)"
+  echo "bin/rubocop"
+  eval "(unset RUBYOPT; exec bin/rubocop)"
 }
 
 function run_all_spec_suites {

@@ -20,7 +20,7 @@ module RSpec
       it "compares by sending == to actual (not expected)" do
         called = false
         actual = Class.new do
-          define_method :== do |other|
+          define_method :== do |_other|
             called = true
           end
         end.new
@@ -55,8 +55,8 @@ module RSpec
           end
         end
 
-        let(:time1) { Time.utc(1969, 12, 31, 19, 01, 40, 101) }
-        let(:time2) { Time.utc(1969, 12, 31, 19, 01, 40, 102) }
+        let(:time1) { Time.utc(1969, 12, 31, 19, 10, 40, 101) }
+        let(:time2) { Time.utc(1969, 12, 31, 19, 10, 40, 102) }
 
         it "provides additional precision on #failure_message" do
           expect {
@@ -91,7 +91,7 @@ module RSpec
             ['foo', 'eq "foo"'],
             [/regex/, 'eq /regex/'],
             [['foo'], 'eq ["foo"]'],
-            [{:foo => :bar}, 'eq {:foo=>:bar}'],
+            [{ :foo => :bar }, 'eq {:foo=>:bar}'],
             [Class, 'eq Class'],
             [RSpec, 'eq RSpec'],
             [Time.utc(2014, 1, 1), "eq 2014-01-01 00:00:00.#{expected_seconds} +0000"],

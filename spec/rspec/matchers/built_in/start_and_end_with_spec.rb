@@ -97,7 +97,7 @@ RSpec.describe "expect(...).to start_with" do
 
       expect {
         expect([s1, 10]).to start_with(s2)
-      }.to fail_including(%Q{expected [#{s1.inspect}, 10] to start with #{s2.inspect}})
+      }.to fail_including("expected [#{s1.inspect}, 10] to start with #{s2.inspect}")
     end
   end
 
@@ -114,7 +114,7 @@ RSpec.describe "expect(...).to start_with" do
     it "fails with a useful error if trying to match more than one element" do
       actual   = { :a => 'b', :b => 'b', :c => 'c' }
       expected = { :a => 'b', :b => 'b' }
-      expect{
+      expect {
         expect(actual).to start_with(expected)
       }.to fail_with(/\Aexpected #{hash_inspect(actual).gsub(" => ", "=>")} to start with #{hash_inspect(expected).gsub(" => ", "=>")}, but it does not have ordered elements\z/)
     end
@@ -305,7 +305,7 @@ RSpec.describe "expect(...).to end_with" do
 
       expect {
         expect([10, s1]).to end_with(s2)
-      }.to fail_including(%Q{expected [10, #{s1.inspect}] to end with #{s2.inspect}})
+      }.to fail_including("expected [10, #{s1.inspect}] to end with #{s2.inspect}")
     end
   end
 
@@ -322,7 +322,7 @@ RSpec.describe "expect(...).to end_with" do
     it "raises an ArgumentError if trying to match more than one element" do
       actual   = { :a => 'b', :b => 'b', :c => 'c' }
       expected = { :a => 'b', :b => 'b' }
-      expect{
+      expect {
         expect(actual).to end_with(expected)
       }.to fail_with(/\Aexpected #{hash_inspect(actual).gsub(" => ", "=>")} to end with #{hash_inspect(expected).gsub(" => ", "=>")}, but it does not have ordered elements\z/)
     end

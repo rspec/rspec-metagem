@@ -35,7 +35,7 @@ module RSpec
         let(:strange_string) do
           string = "foo".dup
 
-          def string.equal?(other)
+          def string.equal?(_other)
             true
           end
 

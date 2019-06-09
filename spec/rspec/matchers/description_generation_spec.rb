@@ -57,7 +57,7 @@ RSpec.describe 'a matcher is expected to be able to have its description generat
     class Parent; end
     class Child < Parent
       def child_of?(*parents)
-        parents.all? { |parent| self.is_a?(parent) }
+        parents.all? { |parent| is_a?(parent) }
       end
     end
     expect(Child.new).to be_a_child_of(Parent, Object)
@@ -86,7 +86,7 @@ RSpec.describe 'a matcher is expected to be able to have its description generat
   end
 
   example "expect(...).to have_key" do
-    expect({:a => "a"}).to have_key(:a)
+    expect({ :a => "a" }).to have_key(:a)
     expect(RSpec::Matchers.generated_description).to eq "is expected to have key :a"
   end
 
@@ -100,14 +100,14 @@ RSpec.describe 'a matcher is expected to be able to have its description generat
 
   example "expect(...).to have_some_method(args*)" do
     object = Object.new
-    def object.has_taste_for?(*args); true; end
+    def object.has_taste_for?(*_args); true; end
 
     expect(object).to have_taste_for("wine", "cheese")
     expect(RSpec::Matchers.generated_description).to eq 'is expected to have taste for "wine", "cheese"'
   end
 
   example "expect(...).to include(x)" do
-    expect([1,2,3]).to include(3)
+    expect([1, 2, 3]).to include(3)
     expect(RSpec::Matchers.generated_description).to eq "is expected to include 3"
   end
 
@@ -126,7 +126,7 @@ RSpec.describe 'a matcher is expected to be able to have its description generat
   end
 
   example "expect(array).to contain_exactly(1, 2, 3)" do
-    expect([1,2,3]).to contain_exactly(1, 2, 3)
+    expect([1, 2, 3]).to contain_exactly(1, 2, 3)
     expect(RSpec::Matchers.generated_description).to eq "is expected to contain exactly 1, 2, and 3"
   end
 
@@ -184,7 +184,7 @@ end
 RSpec.describe "a Matcher with no description" do
   it "provides a helpful message when used in a string-less example block" do
     matcher = Class.new do
-      def matches?(ignore); true; end
+      def matches?(_ignore); true; end
       def failure_message; ""; end
     end.new
 

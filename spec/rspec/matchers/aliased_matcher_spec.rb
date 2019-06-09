@@ -51,7 +51,7 @@ module RSpec
 
       it 'can get a method object for delegated methods', :if => (RUBY_VERSION.to_f > 1.8) do
         matcher = my_base_matcher
-        decorated = AliasedMatcher.new(matcher, Proc.new { })
+        decorated = AliasedMatcher.new(matcher, Proc.new {})
 
         expect(decorated.method(:foo).call).to eq(13)
       end
@@ -80,7 +80,7 @@ module RSpec
       end
 
       it 'works properly with a chained method off a negated matcher' do
-        expect { }.to avoid_outputting.to_stdout
+        expect {}.to avoid_outputting.to_stdout
 
         expect {
           expect { $stdout.puts "a" }.to avoid_outputting.to_stdout
@@ -108,4 +108,3 @@ module RSpec
     end
   end
 end
-

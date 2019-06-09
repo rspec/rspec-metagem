@@ -5,7 +5,6 @@ n = 10_000
 class  Foo; end
 module Bar; end
 
-
 Benchmark.benchmark do |bm|
   puts "Class.new(Foo)"
 

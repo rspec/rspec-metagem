@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 require "rspec/expectations/version"
 
@@ -27,7 +26,7 @@ Gem::Specification.new do |s|
   s.rdoc_options     = ["--charset=UTF-8"]
   s.require_path     = "lib"
 
-  s.required_ruby_version = '>= 1.8.7'
+  s.required_ruby_version = '>= 1.8.7' # rubocop:disable Gemspec/RequiredRubyVersion
 
   private_key = File.expand_path('~/.gem/rspec-gem-private_key.pem')
   if File.exist?(private_key)
@@ -45,8 +44,8 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency "diff-lcs", ">= 1.2.0", "< 2.0"
 
-  s.add_development_dependency 'rake',     '~> 10.0.0'
-  s.add_development_dependency 'cucumber', '~> 1.3'
   s.add_development_dependency "aruba",    "~> 0.6.2" # 0.7 is broken on ruby 1.8.7
+  s.add_development_dependency 'cucumber', '~> 1.3'
   s.add_development_dependency 'minitest', '~> 5.2'
+  s.add_development_dependency 'rake',     '~> 10.0.0'
 end

@@ -15,7 +15,7 @@ Benchmark.benchmark do |bm|
     bm.report do
       n.times do |j|
         RSpec::Matchers.define :"define_matcher_#{i}_#{j}" do
-          match { }
+          match {}
         end
       end
     end
@@ -250,4 +250,3 @@ Using a previously gotten custom matcher instance -- negative match
    0.350000   0.010000   0.360000 (  0.256000)
 
 =end
-

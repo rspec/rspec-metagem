@@ -4,7 +4,7 @@ Benchmark.ips do |x|
   y = '1_2_3_4_5_6_7_8_9_10'
 
   x.report('gsub') do |_times|
-    y.gsub('_', ' ')
+    y.tr('_', ' ')
   end
 
   x.report('tr') do |_times|

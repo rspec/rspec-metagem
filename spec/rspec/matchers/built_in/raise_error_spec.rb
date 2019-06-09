@@ -1,6 +1,6 @@
 RSpec.describe "expect { ... }.to raise_error" do
   it_behaves_like("an RSpec matcher", :valid_value => lambda { raise "boom" },
-                                      :invalid_value => lambda { }) do
+                                      :invalid_value => lambda {}) do
     let(:matcher) { raise_error Exception }
   end
 
@@ -15,7 +15,7 @@ RSpec.describe "expect { ... }.to raise_error" do
 
   it 'issues a warning that includes the current error when used without an error class or message' do
     expect_warning_with_call_site __FILE__, __LINE__+1, /Actual error raised was #<StandardError: boom>/
-    expect { raise StandardError.new, 'boom'}.to raise_error
+    expect { raise StandardError.new, 'boom' }.to raise_error
   end
 
   it "issues a warning that does not include current error when it's not present" do
@@ -25,7 +25,7 @@ RSpec.describe "expect { ... }.to raise_error" do
     end
 
     expect {
-      expect{ '' }.to(raise_error)
+      expect { '' }.to(raise_error)
     }.to fail_with("expected Exception but nothing was raised")
   end
 
@@ -68,7 +68,7 @@ RSpec.describe "expect { ... }.to raise_error" do
 
   it "passes if an error instance is expected" do
     s = StandardError.new
-    expect {raise s}.to raise_error(s)
+    expect { raise s }.to raise_error(s)
   end
 
   it 'passes if an error instance with a non string message is raised' do
@@ -94,7 +94,7 @@ RSpec.describe "expect { ... }.to raise_error" do
     s = StandardError.new("Error 1")
     to_raise = StandardError.new("Error 2")
     expect do
-      expect {raise to_raise}.to raise_error(s)
+      expect { raise to_raise }.to raise_error(s)
     end.to fail_with(Regexp.new("expected #{s.inspect}, got #{to_raise.inspect} with backtrace"))
   end
 
@@ -106,7 +106,7 @@ RSpec.describe "expect { ... }.to raise_error" do
 
   it "fails if nothing is raised" do
     expect {
-      expect { }.to raise_error Exception
+      expect {}.to raise_error Exception
     }.to fail_with("expected Exception but nothing was raised")
   end
 end
@@ -120,7 +120,7 @@ end
 RSpec.describe "expect { ... }.to raise_error {|err| ... }" do
   it "passes if there is an error" do
     ran = false
-    expect { non_existent_method }.to raise_error {|e|
+    expect { non_existent_method }.to raise_error { |_e|
       ran = true
     }
     expect(ran).to be_truthy
@@ -128,7 +128,7 @@ RSpec.describe "expect { ... }.to raise_error {|err| ... }" do
 
   it "passes the error to the block" do
     error = nil
-    expect { non_existent_method }.to raise_error {|e|
+    expect { non_existent_method }.to raise_error { |e|
       error = e
     }
     expect(error).to be_kind_of(NameError)
@@ -159,18 +159,19 @@ RSpec.describe "expect { ... }.to(raise_error { |err| ... }) do |err| ... end" d
   end
 end
 
+# rubocop:disable Style/RedundantException
 RSpec.describe "expect { ... }.not_to raise_error" do
 
   context "with a specific error class" do
     it "issues a warning" do
       expect_warning_with_call_site __FILE__, __LINE__+1, /risks false positives/
-      expect {"bees"}.not_to raise_error(RuntimeError)
+      expect { "bees" }.not_to raise_error(RuntimeError)
     end
 
     it "can supresses the warning when configured to do so", :warn_about_potential_false_positives do
       RSpec::Expectations.configuration.warn_about_potential_false_positives = false
       expect_no_warnings
-      expect {"bees"}.not_to raise_error(RuntimeError)
+      expect { "bees" }.not_to raise_error(RuntimeError)
     end
   end
 
@@ -210,26 +211,26 @@ end
 
 RSpec.describe "expect { ... }.to raise_error(message)" do
   it "passes if RuntimeError is raised with the right message" do
-    expect {raise 'blah'}.to raise_error('blah')
+    expect { raise 'blah' }.to raise_error('blah')
   end
 
   it "passes if RuntimeError is raised with a matching message" do
-    expect {raise 'blah'}.to raise_error(/blah/)
+    expect { raise 'blah' }.to raise_error(/blah/)
   end
 
   it "passes if any other error is raised with the right message" do
-    expect {raise NameError.new('blah')}.to raise_error('blah')
+    expect { raise NameError.new('blah') }.to raise_error('blah')
   end
 
   it "fails if RuntimeError error is raised with the wrong message" do
     expect do
-      expect {raise 'blarg'}.to raise_error('blah')
+      expect { raise 'blarg' }.to raise_error('blah')
     end.to fail_with(/expected Exception with \"blah\", got #<RuntimeError: blarg>/)
   end
 
   it "fails if any other error is raised with the wrong message" do
     expect do
-      expect {raise NameError.new('blarg')}.to raise_error('blah')
+      expect { raise NameError.new('blarg') }.to raise_error('blah')
     end.to fail_with(/expected Exception with \"blah\", got #<NameError: blarg>/)
   end
 
@@ -246,31 +247,31 @@ end
 RSpec.describe "expect { ... }.to raise_error.with_message(message)" do
   it "raises an argument error if raise_error itself expects a message" do
     expect {
-      expect { }.to raise_error("bees").with_message("sup")
+      expect {}.to raise_error("bees").with_message("sup")
     }.to raise_error.with_message(/`expect \{ \}\.to raise_error\(message\)\.with_message\(message\)` is not valid/)
   end
 
   it "passes if RuntimeError is raised with the right message" do
-    expect {raise 'blah'}.to raise_error.with_message('blah')
+    expect { raise 'blah' }.to raise_error.with_message('blah')
   end
 
   it "passes if RuntimeError is raised with a matching message" do
-    expect {raise 'blah'}.to raise_error.with_message(/blah/)
+    expect { raise 'blah' }.to raise_error.with_message(/blah/)
   end
 
   it "passes if any other error is raised with the right message" do
-    expect {raise NameError.new('blah')}.to raise_error.with_message('blah')
+    expect { raise NameError.new('blah') }.to raise_error.with_message('blah')
   end
 
   it "fails if RuntimeError error is raised with the wrong message" do
     expect do
-      expect {raise 'blarg'}.to raise_error.with_message('blah')
+      expect { raise 'blarg' }.to raise_error.with_message('blah')
     end.to fail_with(/expected Exception with \"blah\", got #<RuntimeError: blarg>/)
   end
 
   it "fails if any other error is raised with the wrong message" do
     expect do
-      expect {raise NameError.new('blarg')}.to raise_error.with_message('blah')
+      expect { raise NameError.new('blarg') }.to raise_error.with_message('blah')
     end.to fail_with(/expected Exception with \"blah\", got #<NameError: blarg>/)
   end
 end
@@ -278,13 +279,13 @@ end
 RSpec.describe "expect { ... }.not_to raise_error(message)" do
   it "issues a warning" do
     expect_warning_with_call_site __FILE__, __LINE__+1, /risks false positives/
-    expect {raise 'blarg'}.not_to raise_error(/blah/)
+    expect { raise 'blarg' }.not_to raise_error(/blah/)
   end
 
   it "can supresses the warning when configured to do so", :warn_about_potential_false_positives do
     RSpec::Expectations.configuration.warn_about_potential_false_positives = false
     expect_no_warnings
-    expect {raise 'blarg'}.not_to raise_error(/blah/)
+    expect { raise 'blarg' }.not_to raise_error(/blah/)
   end
 end
 
@@ -295,7 +296,7 @@ RSpec.describe "expect { ... }.to raise_error(NamedError)" do
 
   it "fails if nothing is raised" do
     expect {
-      expect { }.to raise_error(NameError)
+      expect {}.to raise_error(NameError)
     }.to fail_with(/expected NameError but nothing was raised/)
   end
 
@@ -315,13 +316,13 @@ end
 RSpec.describe "expect { ... }.not_to raise_error(NamedError)" do
   it "issues a warning" do
     expect_warning_with_call_site __FILE__, __LINE__+1, /risks false positives/
-    expect { }.not_to raise_error(NameError)
+    expect {}.not_to raise_error(NameError)
   end
 
   it "can supresses the warning when configured to do so", :warn_about_potential_false_positives do
     RSpec::Expectations.configuration.warn_about_potential_false_positives = false
     expect_no_warnings
-    expect { }.not_to raise_error(NameError)
+    expect {}.not_to raise_error(NameError)
   end
 end
 
@@ -385,6 +386,7 @@ RSpec.describe "expect { ... }.to raise_error(NamedError, error_message) with Re
     }.to fail_with(/expected RuntimeError with message matching \/less than ample mess\/, got #<RuntimeError: not the example message>/)
   end
 end
+# rubocop:enable Style/RedundantException
 
 RSpec.describe "expect { ... }.not_to raise_error(NamedError, error_message) with Regexp" do
   it "issues a warning" do
@@ -420,7 +422,7 @@ RSpec.describe "expect { ... }.to raise_error(NamedError, error_message) { |err|
     expect {
       expect {
         raise "example message"
-      }.to raise_error(RuntimeError, "example message") { |err|
+      }.to raise_error(RuntimeError, "example message") { |_err|
         ran = true
         expect(5).to eq 4
         passed = true
@@ -435,7 +437,7 @@ RSpec.describe "expect { ... }.to raise_error(NamedError, error_message) { |err|
     ran = false
 
     expect {
-      expect {}.to raise_error(RuntimeError, "example message") { |err|
+      expect {}.to raise_error(RuntimeError, "example message") { |_err|
         ran = true
       }
     }.to fail_with(/expected RuntimeError with \"example message\" but nothing was raised/)
@@ -449,7 +451,7 @@ RSpec.describe "expect { ... }.to raise_error(NamedError, error_message) { |err|
     expect {
       expect {
         raise "example message"
-      }.to raise_error(SyntaxError, "example message") { |err|
+      }.to raise_error(SyntaxError, "example message") { |_err|
         ran = true
       }
     }.to fail_with(/expected SyntaxError with \"example message\", got #<RuntimeError: example message>/)
@@ -463,7 +465,7 @@ RSpec.describe "expect { ... }.to raise_error(NamedError, error_message) { |err|
     expect {
       expect {
         raise "example message"
-      }.to raise_error(RuntimeError, "different message") { |err|
+      }.to raise_error(RuntimeError, "different message") { |_err|
         ran = true
       }
     }.to fail_with(/expected RuntimeError with \"different message\", got #<RuntimeError: example message>/)

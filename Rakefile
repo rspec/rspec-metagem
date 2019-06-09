@@ -9,6 +9,11 @@ require 'rspec/expectations/version'
 require 'cucumber/rake/task'
 Cucumber::Rake::Task.new(:cucumber)
 
+if RUBY_VERSION >= '2.4' && RUBY_ENGINE == 'ruby'
+  require 'rubocop/rake_task'
+  RuboCop::RakeTask.new(:rubocop)
+end
+
 desc "Run all examples"
 RSpec::Core::RakeTask.new(:spec) do |t|
   t.ruby_opts = %w[-w]
@@ -24,7 +29,7 @@ with_changelog_in_features = lambda do |&block|
 end
 
 desc "Push docs/cukes to relishapp using the relish-client-gem"
-task :relish, :version do |t, args|
+task :relish, :version do |_task, args|
   raise "rake relish[VERSION]" unless args[:version]
 
   with_changelog_in_features.call do
@@ -47,7 +52,7 @@ end
 namespace :clobber do
   desc "delete generated .rbc files"
   task :rbc do
-    sh %q{find . -name "*.rbc" | xargs rm}
+    sh 'find . -name "*.rbc" | xargs rm'
   end
 end
 
@@ -60,7 +65,11 @@ task :clobber => ["clobber:rbc"] do
   rm_rf 'coverage'
 end
 
-task :default => [:spec, :cucumber]
+if RUBY_VERSION >= '2.4' && RUBY_ENGINE == 'ruby'
+  task :default => [:spec, :cucumber, :rubocop]
+else
+  task :default => [:spec, :cucumber]
+end
 
 task :verify_private_key_present do
   private_key = File.expand_path('~/.gem/rspec-gem-private_key.pem')

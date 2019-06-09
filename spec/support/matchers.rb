@@ -19,7 +19,7 @@ RSpec::Matchers.define :be_a_clone_of do |expected|
 
   def state_of(object)
     ivar_names = object.instance_variables
-    Hash[ ivar_names.map { |n| [n, object.instance_variable_get(n)] } ]
+    Hash[ivar_names.map { |n| [n, object.instance_variable_get(n)] }]
   end
 end
 
@@ -33,7 +33,6 @@ RSpec::Matchers.define :have_string_length do |expected|
     @string_length ||= @actual.length
   end
 end
-
 
 RSpec.configure do |config|
   config.include RSpec::Matchers::FailMatchers

@@ -5,12 +5,12 @@ RSpec.describe "expect(...).to have_sym(*args)" do
   end
 
   it "passes if #has_sym?(*args) returns true" do
-    expect({:a => "A"}).to have_key(:a)
+    expect({ :a => "A" }).to have_key(:a)
   end
 
   it "fails if #has_sym?(*args) returns false" do
     expect {
-      expect({:b => "B"}).to have_key(:a)
+      expect({ :b => "B" }).to have_key(:a)
     }.to fail_with("expected #has_key?(:a) to return true, got false")
   end
 
@@ -86,7 +86,7 @@ RSpec.describe "expect(...).to have_sym(*args)" do
 
   it "reraises an exception thrown in #has_sym?(*args)" do
     o = Object.new
-    def o.has_sym?(*args)
+    def o.has_sym?(*_args)
       raise "Funky exception"
     end
     expect {
@@ -118,7 +118,7 @@ end
 
 RSpec.describe "expect(...).not_to have_sym(*args)" do
   it "passes if #has_sym?(*args) returns false" do
-    expect({:a => "A"}).not_to have_key(:b)
+    expect({ :a => "A" }).not_to have_key(:b)
   end
 
   it "passes if #has_sym?(*args) returns nil" do
@@ -131,7 +131,7 @@ RSpec.describe "expect(...).not_to have_sym(*args)" do
 
   it "fails if #has_sym?(*args) returns true" do
     expect {
-      expect({:a => "A"}).not_to have_key(:a)
+      expect({ :a => "A" }).not_to have_key(:a)
     }.to fail_with("expected #has_key?(:a) to return false, got true")
   end
 
@@ -143,7 +143,7 @@ RSpec.describe "expect(...).not_to have_sym(*args)" do
 
   it "reraises an exception thrown in #has_sym?(*args)" do
     o = Object.new
-    def o.has_sym?(*args)
+    def o.has_sym?(*_args)
       raise "Funky exception"
     end
     expect {
@@ -170,8 +170,8 @@ end
 
 RSpec.describe "has" do
   it "works when the target implements #send" do
-    o = {:a => "A"}
-    def o.send(*args); raise "DOH! Library developers shouldn't use #send!" end
+    o = { :a => "A" }
+    def o.send(*_args); raise "DOH! Library developers shouldn't use #send!" end
     expect {
       expect(o).to have_key(:a)
     }.not_to raise_error

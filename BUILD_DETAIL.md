@@ -97,22 +97,23 @@ $ bundle exec yard doc --no-cache
 $ bin/yard doc --no-cache
 ```
 
-## Rubocop
+## RuboCop
 
-We use [Rubocop](https://github.com/bbatsov/rubocop) to enforce style conventions on the project so
-that the code has stylistic consistency throughout. Run with:
+We use [RuboCop](https://github.com/rubocop-hq/rubocop) to enforce style
+conventions on the project so that the code has stylistic consistency
+throughout. Run with:
 
 ```
-$ bundle exec rubocop lib
+$ bundle exec rubocop
 
 # or, if you installed your bundle with `--standalone --binstubs`:
 
-$ bin/rubocop lib
+$ bin/rubocop
 ```
 
-Our Rubocop configuration is a work-in-progress, so if you get a failure
-due to a Rubocop default, feel free to ask about changing the
-configuration. Otherwise, you'll need to address the Rubocop failure,
+Our RuboCop configuration is a work-in-progress, so if you get a failure
+due to a RuboCop default, feel free to ask about changing the
+configuration. Otherwise, you'll need to address the RuboCop failure,
 or, as a measure of last resort, by wrapping the offending code in
 comments like `# rubocop:disable SomeCheck` and `# rubocop:enable SomeCheck`.
 

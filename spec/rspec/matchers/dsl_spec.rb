@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 RSpec.describe "a matcher defined using the matcher DSL" do
   def question?
     :answer
@@ -11,38 +9,37 @@ RSpec.describe "a matcher defined using the matcher DSL" do
 
   it "supports calling custom matchers from within other custom matchers" do
     RSpec::Matchers.define :be_ok do
-      match { |actual_value| actual_value == ok }
+      match { |actual| actual == ok }
     end
 
     RSpec::Matchers.define :be_well do
-      match { |actual_value| expect(actual_value).to be_ok }
+      match { |actual| expect(actual).to be_ok }
     end
 
     expect(ok).to be_well
   end
 
   it "has access to methods available in the scope of the example" do
-    RSpec::Matchers::define(:matcher_a) {}
+    RSpec::Matchers.define(:matcher_a) {}
     expect(matcher_a.question?).to eq(:answer)
   end
 
   it "raises when method is missing from local scope as well as matcher" do
-    RSpec::Matchers::define(:matcher_b) {}
+    RSpec::Matchers.define(:matcher_b) {}
     expect { matcher_b.i_dont_exist }.to raise_error(NameError)
   end
 
   it "clears user instance variables between invocations" do
-    RSpec::Matchers::define(:be_just_like) do |expected|
-      match do |actual_value|
+    RSpec::Matchers.define(:be_just_like) do |expected|
+      match do |actual|
         @foo ||= expected
-        @foo == actual_value
+        @foo == actual
       end
     end
 
     expect(3).to be_just_like(3)
     expect(4).to be_just_like(4)
   end
-
 
   describe '#block_arg' do
     before(:context) do
@@ -74,12 +71,12 @@ RSpec.describe "a matcher defined using the matcher DSL" do
 
   describe "#respond_to?" do
     it "returns true for methods in example scope" do
-      RSpec::Matchers::define(:matcher_c) {}
+      RSpec::Matchers.define(:matcher_c) {}
       expect(matcher_c).to respond_to(:question?)
     end
 
     it "returns false for methods not defined in matcher or example scope" do
-      RSpec::Matchers::define(:matcher_d) {}
+      RSpec::Matchers.define(:matcher_d) {}
       expect(matcher_d).not_to respond_to(:i_dont_exist)
     end
   end
@@ -276,7 +273,8 @@ module RSpec::Matchers::DSL
 
       it 'allows multiple modules to be included at once' do
         m = new_matcher(:multiple_modules) do
-          include Enumerable, Comparable
+          include Enumerable
+          include Comparable
         end
         expect(m).to be_a(Enumerable)
         expect(m).to be_a(Comparable)
@@ -449,7 +447,7 @@ module RSpec::Matchers::DSL
     end
 
     it "is not diffable by default" do
-      matcher = new_matcher(:name) { }
+      matcher = new_matcher(:name) {}
       expect(matcher).not_to be_diffable
     end
 
@@ -472,7 +470,7 @@ module RSpec::Matchers::DSL
         allow(RSpec::Matchers.configuration).to receive(:color?).and_return(false)
         expect(actual).to matcher
       rescue RSpec::Expectations::ExpectationNotMetError => e
-        diff = e.message.sub(/\A.*Diff:/m, "Diff:").gsub(/^\s*/,'')
+        diff = e.message.sub(/\A.*Diff:/m, "Diff:").gsub(/^\s*/, '')
       end
 
       expect(diff).to eq "Diff:\n@@ -1,3 +1,3 @@\n-line1\n+LINE1\nline2\n"
@@ -484,7 +482,7 @@ module RSpec::Matchers::DSL
       # which had the side effect of causing all custom matchers
       # to share that state
       m1 = new_matcher(:m1) { diffable }
-      m2 = new_matcher(:m2) { }
+      m2 = new_matcher(:m2) {}
       m3 = new_matcher(:m3) { diffable }
 
       expect(m1).to be_diffable
@@ -493,27 +491,27 @@ module RSpec::Matchers::DSL
     end
 
     it "provides expected" do
-      matcher = new_matcher(:name, "expected string") { }
+      matcher = new_matcher(:name, "expected string") {}
       expect(matcher.expected).to eq 'expected string'
     end
 
     it "provides expected when there is more than one argument" do
-      matcher = new_matcher(:name, "expected string", "another arg") { }
+      matcher = new_matcher(:name, "expected string", "another arg") {}
       expect(matcher.expected).to eq ['expected string', "another arg"]
     end
 
     it "provides expected_as_array which returns an array regardless of expected" do
-      matcher = new_matcher(:name, "expected string") { }
+      matcher = new_matcher(:name, "expected string") {}
       expect(matcher.expected_as_array).to eq ['expected string']
-      matcher = new_matcher(:name, "expected\nstring") { }
+      matcher = new_matcher(:name, "expected\nstring") {}
       expect(matcher.expected_as_array).to eq ["expected\nstring"]
-      matcher = new_matcher(:name, "expected string", "another arg") { }
+      matcher = new_matcher(:name, "expected string", "another arg") {}
       expect(matcher.expected_as_array).to eq ['expected string', "another arg"]
     end
 
     it "provides actual when `match` is used" do
       matcher = new_matcher(:name, 'expected string') do
-        match {|actual|}
+        match { |actual| }
       end
 
       matcher.matches?('actual string')
@@ -541,7 +539,7 @@ module RSpec::Matchers::DSL
 
     it 'provides actual when `match_unless_raises` is used' do
       matcher = new_matcher(:name, 'expected string') do
-        match_unless_raises(SyntaxError) {|actual|}
+        match_unless_raises(SyntaxError) { |actual| }
       end
 
       matcher.matches?('actual string')
@@ -565,7 +563,7 @@ module RSpec::Matchers::DSL
 
     it 'provides actual when `match_when_negated` is used' do
       matcher = new_matcher(:name, 'expected string') do
-        match_when_negated {|actual|}
+        match_when_negated { |actual| }
       end
 
       matcher.does_not_match?('actual string')
@@ -593,11 +591,11 @@ module RSpec::Matchers::DSL
         end
 
         specify "`match?` returns true if the wrapped expectation passes" do
-          expect(self.matcher.matches?('value')).to be_truthy
+          expect(matcher.matches?('value')).to be_truthy
         end
 
         specify "`match?` returns false if the wrapped expectation fails" do
-          expect(self.matcher.matches?('other value')).to be_falsey
+          expect(matcher.matches?('other value')).to be_falsey
         end
       end
 
@@ -611,11 +609,11 @@ module RSpec::Matchers::DSL
         end
 
         specify "`match?` returns true if the wrapped expectation passes" do
-          expect(self.matcher.matches?('purposely_different')).to be_truthy
+          expect(matcher.matches?('purposely_different')).to be_truthy
         end
 
         specify "`match?` returns false if the wrapped expectation fails" do
-          expect(self.matcher.matches?('purposely_the_same')).to be_falsey
+          expect(matcher.matches?('purposely_the_same')).to be_falsey
         end
       end
 
@@ -715,7 +713,7 @@ module RSpec::Matchers::DSL
             aggregate_failures do
               expect(1).to rescue_failure
             end
-          rescue RSpec::Expectations::ExpectationNotMetError
+          rescue RSpec::Expectations::ExpectationNotMetError # rubocop:disable Lint/HandleExceptions
           end
 
           expect(error_rescued).to be true
@@ -734,11 +732,11 @@ module RSpec::Matchers::DSL
         end
 
         specify "`does_not_match?` returns true if the wrapped expectation passes" do
-          expect(self.matcher.does_not_match?('purposely_the_same')).to be_truthy
+          expect(matcher.does_not_match?('purposely_the_same')).to be_truthy
         end
 
         specify "`does_not_match?` returns false if the wrapped expectation fails" do
-          expect(self.matcher.does_not_match?('purposely_different')).to be_falsey
+          expect(matcher.does_not_match?('purposely_different')).to be_falsey
         end
       end
 
@@ -752,11 +750,11 @@ module RSpec::Matchers::DSL
         end
 
         specify "`does_not_match?` returns true if the wrapped expectation passes" do
-          expect(self.matcher.does_not_match?('other value')).to be_truthy
+          expect(matcher.does_not_match?('other value')).to be_truthy
         end
 
         specify "`does_not_match?` returns false if the wrapped expectation fails" do
-          expect(self.matcher.does_not_match?('value')).to be_falsey
+          expect(matcher.does_not_match?('value')).to be_falsey
         end
       end
     end
@@ -780,26 +778,26 @@ module RSpec::Matchers::DSL
       end
 
       it "does not hide result of match block when true" do
-        expect(self.matcher.matches?(true)).to be_truthy
+        expect(matcher.matches?(true)).to be_truthy
       end
 
       it "does not hide result of match block when false" do
-        expect(self.matcher.matches?(false)).to be_falsey
+        expect(matcher.matches?(false)).to be_falsey
       end
 
       it "overrides the description (which yields `actual`)" do
-        self.matcher.matches?(true)
-        expect(self.matcher.description).to eq "be the boolean true (actual was true)"
+        matcher.matches?(true)
+        expect(matcher.description).to eq "be the boolean true (actual was true)"
       end
 
       it "overrides the failure message for positive expectations" do
-        self.matcher.matches?(false)
-        expect(self.matcher.failure_message).to eq "expected false to be the boolean true"
+        matcher.matches?(false)
+        expect(matcher.failure_message).to eq "expected false to be the boolean true"
       end
 
       it "overrides the failure message for negative expectations" do
-        self.matcher.matches?(true)
-        expect(self.matcher.failure_message_when_negated).to eq "expected true not to be the boolean true"
+        matcher.matches?(true)
+        expect(matcher.failure_message_when_negated).to eq "expected true not to be the boolean true"
       end
 
       it 'can access helper methods from `description`' do
@@ -859,7 +857,7 @@ module RSpec::Matchers::DSL
         let(:matcher) do
           new_matcher(:be_even) do
             match do |to_match|
-              (to_match % 2 == 0) && (to_match % @divisible_by == 0)
+              to_match.even? && (to_match % @divisible_by == 0)
             end
 
             chain :and_divisible_by do |divisible_by|
@@ -875,13 +873,13 @@ module RSpec::Matchers::DSL
           before { RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions = false }
 
           it "provides a default description that does not include any of the chained matchers' descriptions" do
-            expect(self.matcher.and_divisible_by(10).description).to eq 'be even and divisible by 10'
+            expect(matcher.and_divisible_by(10).description).to eq 'be even and divisible by 10'
           end
         end
 
         context "with include_chain_clauses_in_custom_matcher_descriptions configured to true" do
           it "provides a default description that does includes the chained matchers' descriptions" do
-            expect(self.matcher.and_divisible_by(10).description).to eq 'be even and divisible by 10 and divisible by 10'
+            expect(matcher.and_divisible_by(10).description).to eq 'be even and divisible by 10 and divisible by 10'
           end
         end
       end
@@ -952,11 +950,11 @@ module RSpec::Matchers::DSL
       end
 
       it "matches" do
-        expect(self.matcher.matches?(5)).to be_truthy
+        expect(matcher.matches?(5)).to be_truthy
       end
 
       it "describes" do
-        expect(self.matcher.description).to eq "matcher name"
+        expect(matcher.description).to eq "matcher name"
       end
     end
 
@@ -970,11 +968,11 @@ module RSpec::Matchers::DSL
       end
 
       it "matches" do
-        expect(self.matcher.matches?(5)).to be_truthy
+        expect(matcher.matches?(5)).to be_truthy
       end
 
       it "describes" do
-        expect(self.matcher.description).to eq "matcher name 1"
+        expect(matcher.description).to eq "matcher name 1"
       end
     end
 
@@ -988,11 +986,11 @@ module RSpec::Matchers::DSL
       end
 
       it "matches" do
-        expect(self.matcher.matches?(10)).to be_truthy
+        expect(matcher.matches?(10)).to be_truthy
       end
 
       it "describes" do
-        expect(self.matcher.description).to eq "matcher name 1, 2, 3, and 4"
+        expect(matcher.description).to eq "matcher name 1, 2, 3, and 4"
       end
     end
 
@@ -1007,7 +1005,7 @@ module RSpec::Matchers::DSL
         end
       end
 
-      expect(matcher.matches?([2,3,1])).to be_truthy
+      expect(matcher.matches?([2, 3, 1])).to be_truthy
     end
 
     it "supports fluent interface" do
@@ -1021,7 +1019,7 @@ module RSpec::Matchers::DSL
     end
 
     it "treats method missing normally for undeclared methods" do
-      matcher = new_matcher(:ignore) { }
+      matcher = new_matcher(:ignore) {}
       expect { matcher.non_existent_method }.to raise_error(NoMethodError)
     end
 
@@ -1077,7 +1075,7 @@ module RSpec::Matchers::DSL
     describe "#match_unless_raises" do
       context "with an assertion" do
         mod = Module.new do
-          def assert_equal(a,b)
+          def assert_equal(a, b)
             raise UnexpectedError.new("#{b} does not equal #{a}") unless a == b
           end
         end
@@ -1086,33 +1084,33 @@ module RSpec::Matchers::DSL
           new_matcher(:equal, 4) do |expected|
             include mod
             match_unless_raises UnexpectedError do
-              assert_equal expected, self.actual
+              assert_equal expected, actual
             end
           end
         end
 
         context "with passing assertion" do
           it "passes" do
-            expect(self.matcher.matches?(4)).to be_truthy
+            expect(matcher.matches?(4)).to be_truthy
           end
         end
 
         context "with failing assertion" do
           it "fails" do
-            expect(self.matcher.matches?(5)).to be_falsey
+            expect(matcher.matches?(5)).to be_falsey
           end
 
           it "provides the raised exception" do
-            self.matcher.matches?(5)
-            expect(self.matcher.rescued_exception.message).to eq("5 does not equal 4")
+            matcher.matches?(5)
+            expect(matcher.rescued_exception.message).to eq("5 does not equal 4")
           end
         end
       end
 
       context "with an unexpected error" do
         it "raises the error" do
-          matcher = new_matcher(:foo, :bar) do |expected|
-            match_unless_raises SyntaxError do |actual|
+          matcher = new_matcher(:foo, :bar) do |_expected|
+            match_unless_raises SyntaxError do |_actual|
               raise "unexpected exception"
             end
           end
@@ -1133,11 +1131,11 @@ module RSpec::Matchers::DSL
         end
 
         it 'passes if no error is raised' do
-          expect(self.matcher.matches?(5)).to be true
+          expect(matcher.matches?(5)).to be true
         end
 
         it 'fails if an exception is raised' do
-          expect(self.matcher.matches?(4)).to be false
+          expect(matcher.matches?(4)).to be false
         end
       end
 
@@ -1158,7 +1156,7 @@ module RSpec::Matchers::DSL
     it "can define chainable setters" do
       matcher = new_matcher(:name) do
         chain(:expecting, :expected_value)
-        match { |actual| actual == expected_value() }
+        match { |actual| actual == expected_value }
       end
 
       expect(matcher.expecting('value').matches?('value')).to be_truthy
@@ -1168,7 +1166,7 @@ module RSpec::Matchers::DSL
     it "can define chainable setters for several attributes" do
       matcher = new_matcher(:name) do
         chain(:expecting, :expected_value, :min_value, :max_value)
-        match { |actual| actual == expected_value() && actual >= min_value && actual <= max_value }
+        match { |actual| actual == expected_value && actual >= min_value && actual <= max_value }
       end
 
       expect(matcher.expecting('value', 'apple', 'zebra').matches?('value')).to be_truthy
@@ -1232,7 +1230,7 @@ module RSpec::Matchers::DSL
 
       it "can access methods in the running example" do |example|
         RSpec::Matchers.define(:__access_running_example) do
-          match do |actual|
+          match do |_actual|
             a_method_in_the_example == "method defined in the example"
           end
         end
@@ -1240,21 +1238,21 @@ module RSpec::Matchers::DSL
       end
 
       it 'can get a method object for methods in the running example', :if => (RUBY_VERSION.to_f > 1.8) do
-        matcher = new_matcher(:get_method_object) { }
+        matcher = new_matcher(:get_method_object) {}
         method  = matcher.method(:a_method_in_the_example)
         expect(method.call).to eq("method defined in the example")
       end
 
       it 'indicates that it responds to a method from the running example' do
-        matcher = new_matcher(:respond_to) { }
+        matcher = new_matcher(:respond_to) {}
         expect(matcher).to respond_to(:a_method_in_the_example)
         expect(matcher).not_to respond_to(:a_method_not_in_the_example)
       end
 
       it "raises NoMethodError for methods not in the running_example" do |example|
         RSpec::Matchers.define(:__raise_no_method_error) do
-          match do |actual|
-            self.a_method_not_in_the_example == "method defined in the example"
+          match do |_actual|
+            self.a_method_not_in_the_example == "method defined in the example" # rubocop:disable Style/RedundantSelf RuboCop bug, should disappear on version update
           end
         end
 

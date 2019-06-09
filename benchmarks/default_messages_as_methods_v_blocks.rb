@@ -10,7 +10,7 @@ RSpec::Matchers.define :eq_using_dsl do |expected|
   end
 end
 
-n = 10000
+n = 10_000
 
 Benchmark.benchmark do |bm|
   3.times do

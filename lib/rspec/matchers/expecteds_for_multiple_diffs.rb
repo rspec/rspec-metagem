@@ -52,13 +52,17 @@ module RSpec
 
     private
 
-      def self.diff_label_for(matcher)
-        "Diff for (#{truncated(RSpec::Support::ObjectFormatter.format(matcher))}):"
-      end
+      class << self
+        private
 
-      def self.truncated(description)
-        return description if description.length <= DESCRIPTION_MAX_LENGTH
-        description[0...DESCRIPTION_MAX_LENGTH - 3] << "..."
+        def diff_label_for(matcher)
+          "Diff for (#{truncated(RSpec::Support::ObjectFormatter.format(matcher))}):"
+        end
+
+        def truncated(description)
+          return description if description.length <= DESCRIPTION_MAX_LENGTH
+          description[0...DESCRIPTION_MAX_LENGTH - 3] << "..."
+        end
       end
 
       def diffs(differ, actual)

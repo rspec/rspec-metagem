@@ -26,14 +26,14 @@ RSpec.shared_examples "output_to_stream" do |stream_name, matcher_method, helper
 
     it "fails if the block does not output to #{stream_name}" do
       expect {
-        expect { }.to matcher
+        expect {}.to matcher
       }.to fail_with("expected block to output to #{stream_name}, but did not")
     end
   end
 
   context "expect { ... }.not_to output.#{matcher_method}" do
     it "passes if the block does not output to #{stream_name}" do
-      expect { }.not_to matcher
+      expect {}.not_to matcher
     end
 
     it "fails if the block outputs to #{stream_name}" do
@@ -50,7 +50,7 @@ RSpec.shared_examples "output_to_stream" do |stream_name, matcher_method, helper
 
     it "fails if the block does not output to #{stream_name}" do
       expect {
-        expect { }.to matcher('foo')
+        expect {}.to matcher('foo')
       }.to fail_with("expected block to output \"foo\" to #{stream_name}, but output nothing")
     end
 
@@ -67,7 +67,7 @@ RSpec.shared_examples "output_to_stream" do |stream_name, matcher_method, helper
     end
 
     it "passes if the block does not output to #{stream_name}" do
-      expect { }.to_not matcher('foo')
+      expect {}.to_not matcher('foo')
     end
 
     it "fails if the block outputs the same string to #{stream_name}" do
@@ -84,7 +84,7 @@ RSpec.shared_examples "output_to_stream" do |stream_name, matcher_method, helper
 
     it "fails if the block does not output to #{stream_name}" do
       expect {
-        expect { }.to matcher(/foo/)
+        expect {}.to matcher(/foo/)
       }.to fail_including("expected block to output /foo/ to #{stream_name}, but output nothing\nDiff")
     end
 
@@ -101,7 +101,7 @@ RSpec.shared_examples "output_to_stream" do |stream_name, matcher_method, helper
     end
 
     it "passes if the block does not output to #{stream_name}" do
-      expect { }.to_not matcher(/foo/)
+      expect {}.to_not matcher(/foo/)
     end
 
     it "fails if the block outputs a string to #{stream_name} that matches the regex" do

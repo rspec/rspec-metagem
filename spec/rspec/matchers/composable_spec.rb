@@ -104,7 +104,7 @@ module RSpec
             begin
               block.call
               false
-            rescue Exception
+            rescue Exception # rubocop:disable Lint/RescueException
               true
             end
           end

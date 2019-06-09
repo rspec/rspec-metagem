@@ -17,7 +17,7 @@ Benchmark.benchmark do |bm|
     actual    = Array.new(size) { rand(size / 2) }
     expecteds = Array.new(3) do
       array = actual.shuffle
-      array[rand(array.length)] = 9999999
+      array[rand(array.length)] = 9_999_999
       array
     end
 

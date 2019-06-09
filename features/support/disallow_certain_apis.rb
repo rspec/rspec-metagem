@@ -31,4 +31,3 @@ else
     rspec.include DisallowOneLinerShould
   end
 end
-

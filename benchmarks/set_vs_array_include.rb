@@ -1,7 +1,7 @@
 require 'benchmark'
 require 'set'
 
-n = 10000000
+n = 10_000_000
 
 array = [
   :@name, :@declarations, :@diffable, :@messages,
@@ -60,9 +60,7 @@ end
 # array.include?(item 6)     3.800000   0.010000   3.810000 (  3.810014)
 # ================================================================================
 
-
 # Negative examples:
 #            user     system      total        real
 # set    1.940000   0.000000   1.940000 (  1.941780)
 # array  4.240000   0.010000   4.250000 (  4.238137)
-

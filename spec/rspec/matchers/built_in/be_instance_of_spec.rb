@@ -13,13 +13,13 @@ module RSpec
         it "fails if actual is instance of subclass of expected class" do
           expect {
             expect(5).to send(method, Numeric)
-          }.to fail_with(%Q{expected 5 to be an instance of Numeric})
+          }.to fail_with("expected 5 to be an instance of Numeric")
         end
 
         it "fails with failure message for should unless actual is instance of expected class" do
           expect {
             expect("foo").to send(method, Array)
-          }.to fail_with(%Q{expected "foo" to be an instance of Array})
+          }.to fail_with('expected "foo" to be an instance of Array')
         end
 
         it "provides a description" do
@@ -65,7 +65,7 @@ module RSpec
         it "fails with failure message for should_not if actual is instance of expected class" do
           expect {
             expect("foo").not_to send(method, String)
-          }.to fail_with(%Q{expected "foo" not to be an instance of String})
+          }.to fail_with('expected "foo" not to be an instance of String')
         end
 
         context "when the actual object does not respond to #instance_of? method" do

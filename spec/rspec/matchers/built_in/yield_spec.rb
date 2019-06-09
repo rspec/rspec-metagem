@@ -14,7 +14,6 @@ module YieldHelpers
 end
 
 class InstanceEvaler
-
   def yield_with_no_args(&block)
     instance_exec(&block)
   end
@@ -183,7 +182,7 @@ RSpec.describe "yield_control matcher" do
 
     it 'fails if the expect block does not accept an argument', :if => (RUBY_VERSION.to_f > 1.8) do
       expect {
-        expect { }.not_to yield_control
+        expect {}.not_to yield_control
       }.to raise_error(/expect block must accept an argument/)
     end
 
@@ -270,7 +269,7 @@ RSpec.describe "yield_with_no_args matcher" do
 
     it 'fails if the expect block does not accept an argument', :if => (RUBY_VERSION.to_f > 1.8) do
       expect {
-        expect { }.not_to yield_with_no_args
+        expect {}.not_to yield_with_no_args
       }.to raise_error(/expect block must accept an argument/)
     end
 
@@ -389,7 +388,7 @@ RSpec.describe "yield_with_args matcher" do
 
     it 'fails if the expect block does not accept an argument', :if => (RUBY_VERSION.to_f > 1.8) do
       expect {
-        expect { }.not_to yield_with_args
+        expect {}.not_to yield_with_args
       }.to raise_error(/expect block must accept an argument/)
     end
 
@@ -589,12 +588,12 @@ RSpec.describe "yield_successive_args matcher" do
 
   describe "expect {...}.to yield_successive_args([:a, 1], [:b, 2])" do
     it 'passes when the block successively yields the given args' do
-      expect { |b| [ [:a, 1], [:b, 2] ].each(&b) }.to yield_successive_args([:a, 1], [:b, 2])
+      expect { |b| [[:a, 1], [:b, 2]].each(&b) }.to yield_successive_args([:a, 1], [:b, 2])
     end
 
     it 'passes if matched at yield time only' do
       expect { |b|
-        [ [:a, 1], [:b, 2] ].each do |val|
+        [[:a, 1], [:b, 2]].each do |val|
           _yield_with_args(val, &b)
           val.clear
         end
@@ -609,14 +608,14 @@ RSpec.describe "yield_successive_args matcher" do
 
     it 'fails when the block yields the right number of times but with different arguments' do
       expect {
-        expect { |b| [ [:a, 1], [:b, 3] ].each(&b) }.to yield_successive_args([:a, 1], [:b, 2])
+        expect { |b| [[:a, 1], [:b, 3]].each(&b) }.to yield_successive_args([:a, 1], [:b, 2])
       }.to fail_with(/but yielded with unexpected arguments/)
     end
 
     it 'fails if matched at return time only' do
       expect {
         expect { |b|
-          [ [:a, 1], [:b, 2] ].each do |eventual|
+          [[:a, 1], [:b, 2]].each do |eventual|
             initial = []
             _yield_with_args(initial, &b)
             initial.concat(eventual)
@@ -692,7 +691,7 @@ RSpec.describe "yield_successive_args matcher" do
 
     it 'fails if the expect block does not accept an argument', :if => (RUBY_VERSION.to_f > 1.8) do
       expect {
-        expect { }.not_to yield_successive_args(1, 2, 3)
+        expect {}.not_to yield_successive_args(1, 2, 3)
       }.to raise_error(/expect block must accept an argument/)
     end
 
@@ -713,7 +712,7 @@ RSpec.describe "yield_successive_args matcher" do
     it 'passes when the successively yielded args do not match the matchers (at yield time only)' do
       expect { |b|
         %w[ food barn ].each do |eventual|
-          initial = String.new
+          initial = ''
           _yield_with_args(initial, &b)
           initial << eventual
         end
@@ -765,4 +764,3 @@ RSpec.describe "yield_successive_args matcher" do
     end
   end
 end
-

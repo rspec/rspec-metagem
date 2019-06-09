@@ -12,7 +12,7 @@ RSpec.describe "expect { ... }.to change ..." do
     end
 
     it "passes when actual is modified by the block" do
-      expect {@instance.some_value = 6.0}.to change(@instance, :some_value)
+      expect { @instance.some_value = 6.0 }.to change(@instance, :some_value)
     end
 
     it "fails when actual is not modified by the block" do
@@ -47,7 +47,7 @@ RSpec.describe "expect { ... }.to change ..." do
     end
 
     it "passes when actual is modified by the block" do
-      expect {@instance.some_value = false}.to change(@instance, :some_value)
+      expect { @instance.some_value = false }.to change(@instance, :some_value)
     end
 
     it "fails when actual is not modified by the block" do
@@ -87,7 +87,7 @@ RSpec.describe "expect { ... }.to change ..." do
     it "fails when the stream does not change" do
       expect {
         k = STDOUT
-        expect { }.to change { k }
+        expect {}.to change { k }
       }.to fail_with(/expected #{value_pattern} to have changed/)
     end
   end
@@ -104,15 +104,15 @@ RSpec.describe "expect { ... }.to change ..." do
   it 'does not detect changes in an object that updates its hash upon comparison' do
     obj = Class.new do
       def ==(another)
-        @hash = rand # (^ °=°)^ #
-        self.object_id == another.object_id
+        @hash = rand # (^ '=')^ #
+        object_id == another.object_id
       end
       def hash
         @hash ||= super
       end
     end.new
 
-    expect { }.not_to change { obj }
+    expect {}.not_to change { obj }
   end
 
   context "with nil value" do
@@ -122,7 +122,7 @@ RSpec.describe "expect { ... }.to change ..." do
     end
 
     it "passes when actual is modified by the block" do
-      expect {@instance.some_value = false}.to change(@instance, :some_value)
+      expect { @instance.some_value = false }.to change(@instance, :some_value)
     end
 
     it "fails when actual is not modified by the block" do
@@ -191,18 +191,18 @@ RSpec.describe "expect { ... }.to change ..." do
     end
 
     it "passes when actual is modified by the block" do
-      expect {@instance.some_value << 1}.to change(@instance, :some_value)
+      expect { @instance.some_value << 1 }.to change(@instance, :some_value)
     end
 
     it "fails when a predicate on the actual fails" do
       expect do
-        expect {@instance.some_value << 1}.to change { @instance.some_value }.to be_empty
+        expect { @instance.some_value << 1 }.to change { @instance.some_value }.to be_empty
       end.to fail_with(/#{value_pattern} to have changed to/)
     end
 
     it "passes when a predicate on the actual passes" do
       @instance.some_value = [1]
-      expect {@instance.some_value.pop}.to change { @instance.some_value }.to be_empty
+      expect { @instance.some_value.pop }.to change { @instance.some_value }.to be_empty
     end
 
     it "fails when actual is not modified by the block" do
@@ -215,11 +215,11 @@ RSpec.describe "expect { ... }.to change ..." do
   context "with a hash" do
     before(:example) do
       @instance = SomethingExpected.new
-      @instance.some_value = {:a => 'a'}
+      @instance.some_value = { :a => 'a' }
     end
 
     it "passes when actual is modified by the block" do
-      expect {@instance.some_value[:a] = 'A'}.to change(@instance, :some_value)
+      expect { @instance.some_value[:a] = 'A' }.to change(@instance, :some_value)
     end
 
     it "fails when actual is not modified by the block" do
@@ -238,7 +238,7 @@ RSpec.describe "expect { ... }.to change ..." do
     it 'fails when actual is not modified by the block' do
       string = "ab"
       expect {
-        expect { }.to change { string }
+        expect {}.to change { string }
       }.to fail_with(/to have changed/)
     end
   end
@@ -246,6 +246,7 @@ RSpec.describe "expect { ... }.to change ..." do
   context "with an arbitrary enumerable" do
     before(:example) do
       @instance = SomethingExpected.new
+      # rubocop:disable Layout/EmptyLinesAroundArguments This is a RuboCop bug, and it's fixed in 0.65.0
       @instance.some_value = Class.new do
         include Enumerable
 
@@ -271,10 +272,11 @@ RSpec.describe "expect { ... }.to change ..." do
           elements.hash
         end
       end.new
+      # rubocop:enable Layout/EmptyLinesAroundArguments
     end
 
     it "passes when actual is modified by the block" do
-      expect {@instance.some_value << 1}.to change(@instance, :some_value)
+      expect { @instance.some_value << 1 }.to change(@instance, :some_value)
     end
 
     it "fails when actual is not modified by the block" do
@@ -346,12 +348,12 @@ RSpec.describe "expect { ... }.not_to change(actual, message)" do
   end
 
   it "passes when actual is not modified by the block" do
-    expect { }.not_to change(@instance, :some_value)
+    expect {}.not_to change(@instance, :some_value)
   end
 
   it "fails when actual is not modified by the block" do
     expect do
-      expect {@instance.some_value = 6}.not_to change(@instance, :some_value)
+      expect { @instance.some_value = 6 }.not_to change(@instance, :some_value)
     end.to fail_with("expected `SomethingExpected#some_value` not to have changed, but did change from 5 to 6")
   end
 end
@@ -363,12 +365,12 @@ RSpec.describe "expect { ... }.to change { block }" do
   end
 
   it "passes when actual is modified by the block" do
-    expect {@instance.some_value = 6}.to change { @instance.some_value }
+    expect { @instance.some_value = 6 }.to change { @instance.some_value }
   end
 
   it "fails when actual is not modified by the block" do
     expect do
-      expect {}.to change{ @instance.some_value }
+      expect {}.to change { @instance.some_value }
     end.to fail_with(/expected #{value_pattern} to have changed, but is still 5/)
   end
 
@@ -426,12 +428,12 @@ RSpec.describe "expect { ... }.not_to change { block }" do
   end
 
   it "passes when actual is modified by the block" do
-    expect {}.not_to change{ @instance.some_value }
+    expect {}.not_to change { @instance.some_value }
   end
 
   it "fails when actual is not modified by the block" do
     expect do
-      expect {@instance.some_value = 6}.not_to change { @instance.some_value }
+      expect { @instance.some_value = 6 }.not_to change { @instance.some_value }
     end.to fail_with(/expected #{value_pattern} not to have changed, but did change from 5 to 6/)
   end
 
@@ -444,7 +446,7 @@ RSpec.describe "expect { ... }.not_to change { block }" do
   context "with an IO stream" do
     it "passes when the stream does not change" do
       k = STDOUT
-      expect { }.not_to change { k }
+      expect {}.not_to change { k }
     end
   end
 
@@ -456,7 +458,7 @@ RSpec.describe "expect { ... }.not_to change { block }" do
 
     it 'fails when part of it is changed' do
       data = [{ :a => [1, 2] }]
-      failure_msg = /expected #{value_pattern} not to have changed, but did change from #{regexp_inspect data} to #{regexp_inspect [{:a=>[1, 2, 3]}]}/
+      failure_msg = /expected #{value_pattern} not to have changed, but did change from #{regexp_inspect data} to #{regexp_inspect [{ :a=>[1, 2, 3] }]}/
 
       expect {
         expect { data[0][:a] << 3 }.not_to change { data }
@@ -481,7 +483,7 @@ RSpec.describe "expect { ... }.not_to change { }.from" do
   context 'when the value starts at the from value' do
     it 'passes when the value does not change' do
       k = 5
-      expect { }.not_to change { k }.from(5)
+      expect {}.not_to change { k }.from(5)
     end
 
     it 'fails when the value does change' do
@@ -496,7 +498,7 @@ RSpec.describe "expect { ... }.not_to change { }.from" do
     it 'fails when the value does not change' do
       expect {
         k = 6
-        expect { }.not_to change { k }.from(5)
+        expect {}.not_to change { k }.from(5)
       }.to fail_with(/expected #{value_pattern} to have initially been 5/)
     end
 
@@ -512,13 +514,13 @@ end
 RSpec.describe "expect { ... }.not_to change { }.to" do
   it 'is not supported' do
     expect {
-      expect { }.not_to change { }.to(3)
+      expect {}.not_to change {}.to(3)
     }.to raise_error(NotImplementedError)
   end
 
   it 'is not supported when it comes after `from`' do
     expect {
-      expect { }.not_to change { }.from(nil).to(3)
+      expect {}.not_to change {}.from(nil).to(3)
     }.to raise_error(NotImplementedError)
   end
 end
@@ -526,7 +528,7 @@ end
 RSpec.describe "expect { ... }.not_to change { }.by" do
   it 'is not supported' do
     expect {
-      expect { }.not_to change { }.by(3)
+      expect {}.not_to change {}.by(3)
     }.to raise_error(NotImplementedError)
   end
 end
@@ -534,7 +536,7 @@ end
 RSpec.describe "expect { ... }.not_to change { }.by_at_least" do
   it 'is not supported' do
     expect {
-      expect { }.not_to change { }.by_at_least(3)
+      expect {}.not_to change {}.by_at_least(3)
     }.to raise_error(NotImplementedError)
   end
 end
@@ -542,7 +544,7 @@ end
 RSpec.describe "expect { ... }.not_to change { }.by_at_most" do
   it 'is not supported' do
     expect {
-      expect { }.not_to change { }.by_at_most(3)
+      expect {}.not_to change {}.by_at_most(3)
     }.to raise_error(NotImplementedError)
   end
 end
@@ -585,18 +587,18 @@ RSpec.describe "expect { ... }.to change { block }.by(expected)" do
   end
 
   it "passes when attribute is changed by expected amount" do
-    expect { @instance.some_value += 1 }.to change{@instance.some_value}.by(1)
+    expect { @instance.some_value += 1 }.to change { @instance.some_value }.by(1)
   end
 
   it "fails when the attribute is changed by unexpected amount" do
     expect do
-      expect { @instance.some_value += 2 }.to change{@instance.some_value}.by(1)
+      expect { @instance.some_value += 2 }.to change { @instance.some_value }.by(1)
     end.to fail_with(/expected #{value_pattern} to have changed by 1, but was changed by 2/)
   end
 
   it "fails when the attribute is changed by unexpected amount in the opposite direction" do
     expect do
-      expect { @instance.some_value -= 1 }.to change{@instance.some_value}.by(1)
+      expect { @instance.some_value -= 1 }.to change { @instance.some_value }.by(1)
     end.to fail_with(/expected #{value_pattern} to have changed by 1, but was changed by -1/)
   end
 
@@ -645,16 +647,16 @@ RSpec.describe "expect { ... }.to change { block }.by_at_least(expected)" do
   end
 
   it "passes when attribute is changed by greater than expected amount" do
-    expect { @instance.some_value += 2 }.to change{@instance.some_value}.by_at_least(1)
+    expect { @instance.some_value += 2 }.to change { @instance.some_value }.by_at_least(1)
   end
 
   it "passes when attribute is changed by the expected amount" do
-    expect { @instance.some_value += 2 }.to change{@instance.some_value}.by_at_least(2)
+    expect { @instance.some_value += 2 }.to change { @instance.some_value }.by_at_least(2)
   end
 
   it "fails when the attribute is changed by less than the unexpected amount" do
     expect do
-      expect { @instance.some_value += 1 }.to change{@instance.some_value}.by_at_least(2)
+      expect { @instance.some_value += 1 }.to change { @instance.some_value }.by_at_least(2)
     end.to fail_with(/expected #{value_pattern} to have changed by at least 2, but was changed by 1/)
   end
 
@@ -703,16 +705,16 @@ RSpec.describe "expect { ... }.to change { block }.by_at_most(expected)" do
   end
 
   it "passes when attribute is changed by less than expected amount" do
-    expect { @instance.some_value += 2 }.to change{@instance.some_value}.by_at_most(3)
+    expect { @instance.some_value += 2 }.to change { @instance.some_value }.by_at_most(3)
   end
 
   it "passes when attribute is changed by the expected amount" do
-    expect { @instance.some_value += 2 }.to change{@instance.some_value}.by_at_most(2)
+    expect { @instance.some_value += 2 }.to change { @instance.some_value }.by_at_most(2)
   end
 
   it "fails when the attribute is changed by greater than the unexpected amount" do
     expect do
-      expect { @instance.some_value += 2 }.to change{@instance.some_value}.by_at_most(1)
+      expect { @instance.some_value += 2 }.to change { @instance.some_value }.by_at_most(1)
     end.to fail_with(/expected #{value_pattern} to have changed by at most 1, but was changed by 2/)
   end
 
@@ -776,18 +778,18 @@ RSpec.describe "expect { ... }.to change { block }.from(old)" do
   end
 
   it "passes when attribute matches expected value before executing block" do
-    expect { @instance.some_value = "astring" }.to change{@instance.some_value}.from("string")
+    expect { @instance.some_value = "astring" }.to change { @instance.some_value }.from("string")
   end
 
   it "fails when attribute does not match expected value before executing block" do
     expect do
-      expect { @instance.some_value = "knot" }.to change{@instance.some_value}.from("cat")
+      expect { @instance.some_value = "knot" }.to change { @instance.some_value }.from("cat")
     end.to fail_with(/expected #{value_pattern} to have initially been "cat", but was "string"/)
   end
 
   it "fails when attribute does not change" do
     expect do
-      expect { }.to change { @instance.some_value }.from("string")
+      expect {}.to change { @instance.some_value }.from("string")
     end.to fail_with(/expected #{value_pattern} to have changed from "string", but did not change/)
   end
 
@@ -804,7 +806,7 @@ RSpec.describe "expect { ... }.to change { block }.from(old)" do
   end
 
   it "provides a #description" do
-    expect(change { }.from(3).description).to eq "change result from 3"
+    expect(change {}.from(3).description).to eq "change result from 3"
   end
 end
 
@@ -844,7 +846,7 @@ RSpec.describe "expect { ... }.to change(actual, message).to(new)" do
 
     it "fails with a clear message when it ends with the right value but did not change" do
       expect {
-        expect { }.to change(@instance, :some_value).to("string")
+        expect {}.to change(@instance, :some_value).to("string")
       }.to fail_with('expected `SomethingExpected#some_value` to have changed to "string", but did not change')
     end
   end
@@ -857,17 +859,17 @@ RSpec.describe "expect { ... }.to change { block }.to(new)" do
   end
 
   it "passes when attribute matches expected value after executing block" do
-    expect { @instance.some_value = "cat" }.to change{@instance.some_value}.to("cat")
+    expect { @instance.some_value = "cat" }.to change { @instance.some_value }.to("cat")
   end
 
   it "fails when attribute does not match expected value after executing block" do
     expect do
-      expect { @instance.some_value = "cat" }.to change{@instance.some_value}.from("string").to("dog")
+      expect { @instance.some_value = "cat" }.to change { @instance.some_value }.from("string").to("dog")
     end.to fail_with(/expected #{value_pattern} to have changed to "dog", but is now "cat"/)
   end
 
   it "provides a #description" do
-    expect(change { }.to(3).description).to eq "change result to 3"
+    expect(change {}.to(3).description).to eq "change result to 3"
   end
 end
 
@@ -906,21 +908,21 @@ RSpec.describe "expect { ... }.to change { block }.from(old).to(new)" do
 
   context "when #to comes before #from" do
     it "passes" do
-      expect { @instance.some_value = "cat" }.to change{@instance.some_value}.to("cat").from("string")
+      expect { @instance.some_value = "cat" }.to change { @instance.some_value }.to("cat").from("string")
     end
 
     it "provides a #description" do
-      expect(change { }.to(1).from(3).description).to eq "change result to 1 from 3"
+      expect(change {}.to(1).from(3).description).to eq "change result to 1 from 3"
     end
   end
 
   context "when #from comes before #to" do
     it "passes" do
-      expect { @instance.some_value = "cat" }.to change{@instance.some_value}.from("string").to("cat")
+      expect { @instance.some_value = "cat" }.to change { @instance.some_value }.from("string").to("cat")
     end
 
     it "provides a #description" do
-      expect(change { }.from(1).to(3).description).to eq "change result from 1 to 3"
+      expect(change {}.from(1).to(3).description).to eq "change result from 1 to 3"
     end
   end
 end
@@ -1019,13 +1021,13 @@ RSpec.describe "Composing a matcher with `change`" do
   describe "expect { ... }.not_to change { ... }.from(matcher).to(matcher)" do
     it 'passes when the matcher matches the `from` value and it does not change' do
       k = 0.51
-      expect { }.not_to change { k }.from( a_value_within(0.1).of(0.5) )
+      expect {}.not_to change { k }.from( a_value_within(0.1).of(0.5) )
     end
 
     it 'fails with a clear message when the `from` matcher does not match' do
       expect {
         k = 0.51
-        expect { }.not_to change { k }.from( a_value_within(0.1).of(1.5) )
+        expect {}.not_to change { k }.from( a_value_within(0.1).of(1.5) )
       }.to fail_with(/expected #{value_pattern} to have initially been a value within 0.1 of 1.5, but was 0.51/)
     end
   end
@@ -1035,7 +1037,7 @@ RSpec.describe RSpec::Matchers::BuiltIn::Change do
   it "works when the receiver has implemented #send" do
     @instance = SomethingExpected.new
     @instance.some_value = "string"
-    def @instance.send(*args); raise "DOH! Library developers shouldn't use #send!" end
+    def @instance.send(*_args); raise "DOH! Library developers shouldn't use #send!" end
 
     expect {
       expect { @instance.some_value = "cat" }.to change(@instance, :some_value)
@@ -1045,7 +1047,7 @@ RSpec.describe RSpec::Matchers::BuiltIn::Change do
   k = 1
   before { k = 1 }
   it_behaves_like "an RSpec matcher", :valid_value => lambda { k += 1 },
-                                      :invalid_value => lambda { } do
+                                      :invalid_value => lambda {} do
     let(:matcher) { change { k } }
   end
 end
@@ -1064,7 +1066,7 @@ RSpec.describe RSpec::Matchers::BuiltIn::ChangeFromValue do
   k = 0
   before { k = 0 }
   it_behaves_like "an RSpec matcher", :valid_value => lambda { k += 1 },
-                                      :invalid_value => lambda { } do
+                                      :invalid_value => lambda {} do
     let(:matcher) { change { k }.from(0) }
   end
 end
