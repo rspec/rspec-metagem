@@ -18,7 +18,6 @@ Enhancements:
 * Add support for running the Rake task in a clean environment.
   (Jon Rowe, #2632)
 
-
 Bug Fixes:
 
 * Handle RSpec description(s) with japanese chars in CP932 encoded files.
