@@ -41,6 +41,87 @@ module RSpec::Core
       end
     end
 
+    describe "#fail_fast=" do
+      context 'when true' do
+        it 'is set to true' do
+          config.fail_fast = true
+          expect(config.fail_fast).to eq true
+        end
+      end
+
+      context "when 'true'" do
+        it 'is set to true' do
+          config.fail_fast = 'true'
+          expect(config.fail_fast).to eq true
+        end
+      end
+
+      context "when false" do
+        it 'is set to false' do
+          config.fail_fast = false
+          expect(config.fail_fast).to eq false
+        end
+      end
+
+      context "when 'false'" do
+        it 'is set to false' do
+          config.fail_fast = 'false'
+          expect(config.fail_fast).to eq false
+        end
+      end
+
+      context "when 0" do
+        it 'is set to false' do
+          config.fail_fast = 0
+          expect(config.fail_fast).to eq false
+        end
+      end
+
+      context "when integer number" do
+        it 'is set to number' do
+          config.fail_fast = 5
+          expect(config.fail_fast).to eq 5
+        end
+      end
+
+      context "when floating point number" do
+        it 'is set to integer number' do
+          config.fail_fast = 5.9
+          expect(config.fail_fast).to eq 5
+        end
+      end
+
+      context "when string represeting an integer number" do
+        it 'is set to number' do
+          config.fail_fast = '5'
+          expect(config.fail_fast).to eq 5
+        end
+      end
+
+      context "when nil" do
+        it 'is nil' do
+          config.fail_fast = nil
+          expect(config.fail_fast).to eq nil
+        end
+      end
+
+      context "when unrecognized value" do
+        before do
+          allow(RSpec).to receive(:warning)
+        end
+
+        it 'prints warning' do
+          config.fail_fast = 'yes'
+          expect(RSpec).to have_received(:warning).with(/Cannot set `RSpec.configuration.fail_fast`/i)
+        end
+
+        it 'is set to true' do
+          config.fail_fast = 'yes'
+          expect(config.fail_fast).to eq true
+        end
+      end
+    end
+
     describe 'fail_if_no_examples' do
       it 'defaults to false' do
         expect(RSpec::Core::Configuration.new.fail_if_no_examples).to be(false)
@@ -1817,6 +1898,42 @@ module RSpec::Core
 
         group = RSpec.describe("bar")
         expect(group.metadata).to include(:b1_desc => "bar (block 1)", :b2_desc => "bar (block 1) (block 2)")
+      end
+
+      it 'supports cascades of derived metadata, but avoids re-running derived metadata blocks that have already been applied' do
+        RSpec.configure do |c|
+          c.define_derived_metadata(:foo1) { |m| m[:foo2] = (m[:foo2] || 0) + 1 }
+          c.define_derived_metadata(:foo2) { |m| m[:foo3] = (m[:foo3] || 0) + 1 }
+          c.define_derived_metadata(:foo3) { |m| m[:foo1] += 1 }
+        end
+
+        group = RSpec.describe("bar", :foo1 => 0)
+        expect(group.metadata).to include(:foo1 => 1, :foo2 => 1, :foo3 => 1)
+
+        ex = RSpec.describe("My group").example("foo", :foo1 => 0)
+        expect(ex.metadata).to include(:foo1 => 1, :foo2 => 1, :foo3 => 1)
+      end
+
+      it 'does not allow a derived metadata cascade to recurse infinitely' do
+        RSpec.configure do |c|
+          counter = 1
+          derive_next_metadata = lambda do |outer_meta|
+            tag = :"foo#{counter += 1}"
+            outer_meta[tag] = true
+
+            c.define_derived_metadata(tag) do |inner_meta|
+              derive_next_metadata.call(inner_meta)
+            end
+          end
+
+          c.define_derived_metadata(:foo1) do |meta|
+            derive_next_metadata.call(meta)
+          end
+        end
+
+        expect {
+          RSpec.describe("group", :foo1)
+        }.to raise_error(SystemStackError)
       end
 
       it "derives metadata before the group or example blocks are eval'd so their logic can depend on the derived metadata" do

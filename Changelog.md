@@ -11,8 +11,13 @@ Enhancements:
   outside of examples. (@obromios, #2601)
 * Add a minimalist quick fix style formatter, only outputs failures as
   `file:line:message`. (Romain Tartière, #2614)
+* Convert string number values to integer when used for `RSpec::Configuration#fail_fast`
+  (Viktor Fonic, #2634)
+* Issue warning when invalid values are used for `RSpec::Configuration#fail_fast`
+  (Viktor Fonic, #2634)
 * Add support for running the Rake task in a clean environment.
   (Jon Rowe, #2632)
+
 
 Bug Fixes:
 
@@ -21,6 +26,8 @@ Bug Fixes:
 * When defining `let` methods that overwrite an existing method, prevent
   a warning being issued by removing the old definition. (Jon Rowe, #2593)
 * Prevent warning on Ruby 2.6.0-rc1 (Keiji Yoshimi, #2582)
+* Fix `config.define_derived_metadata` so that it supports cascades.
+  (Myron Marston, #2630).
 
 ### 3.8.0 / 2018-08-04
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.7.1...v3.8.0)

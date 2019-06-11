@@ -202,10 +202,33 @@ module RSpec
         only_failures? && !example_status_persistence_file_path
       end
 
-      # @macro add_setting
+      # @macro define_reader
       # If specified, indicates the number of failures required before cleaning
-      # up and exit (default: `nil`).
-      add_setting :fail_fast
+      # up and exit (default: `nil`). Can also be `true` to fail and exit on first
+      # failure
+      define_reader :fail_fast
+
+      # @see fail_fast
+      def fail_fast=(value)
+        case value
+        when true, 'true'
+          @fail_fast = true
+        when false, 'false', 0
+          @fail_fast = false
+        when nil
+          @fail_fast = nil
+        else
+          @fail_fast = value.to_i
+
+          if value.to_i == 0
+            # TODO: in RSpec 4, consider raising an error here.
+            RSpec.warning "Cannot set `RSpec.configuration.fail_fast`" \
+              " to `#{value.inspect}`. Only `true`, `false`, `nil` and integers" \
+              " are valid values."
+            @fail_fast = true
+          end
+        end
+      end
 
       # @macro add_setting
       # Prints the formatter output of your suite without running any
@@ -1855,9 +1878,28 @@ module RSpec
 
       # @private
       def apply_derived_metadata_to(metadata)
-        @derived_metadata_blocks.items_for(metadata).each do |block|
-          block.call(metadata)
+        already_run_blocks = Set.new
+
+        # We loop and attempt to re-apply metadata blocks to support cascades
+        # (e.g. where a derived bit of metadata triggers the application of
+        # another piece of derived metadata, etc)
+        #
+        # We limit our looping to 200 times as a way to detect infinitely recursing derived metadata blocks.
+        # It's hard to imagine a valid use case for a derived metadata cascade greater than 200 iterations.
+        200.times do
+          return if @derived_metadata_blocks.items_for(metadata).all? do |block|
+            already_run_blocks.include?(block).tap do |skip_block|
+              block.call(metadata) unless skip_block
+              already_run_blocks << block
+            end
+          end
         end
+
+        # If we got here, then `@derived_metadata_blocks.items_for(metadata).all?` never returned
+        # `true` above and we treat this as an attempt to recurse infinitely. It's better to fail
+        # with a clear # error than hang indefinitely, which is what would happen if we didn't limit
+        # the looping above.
+        raise SystemStackError, "Attempted to recursively derive metadata indefinitely."
       end
 
       # Defines a `before` hook. See {Hooks#before} for full docs.
