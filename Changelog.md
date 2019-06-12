@@ -15,6 +15,8 @@ Enhancements:
   (Viktor Fonic, #2634)
 * Issue warning when invalid values are used for `RSpec::Configuration#fail_fast`
   (Viktor Fonic, #2634)
+* Add support for running the Rake task in a clean environment.
+  (Jon Rowe, #2632)
 
 Bug Fixes:
 

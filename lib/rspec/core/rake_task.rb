@@ -45,6 +45,21 @@ module RSpec
       # A message to print to stderr when there are failures.
       attr_accessor :failure_message
 
+      if RUBY_VERSION < "1.9.0" || Support::Ruby.jruby?
+        # Run RSpec with a clean (empty) environment is not supported
+        def with_clean_environment=(_value)
+          raise ArgumentError, "Running in a clean environment is not supported on Ruby versions before 1.9.0"
+        end
+
+        # Run RSpec with a clean (empty) environment is not supported
+        def with_clean_environment
+          false
+        end
+      else
+        # Run RSpec with a clean (empty) environment.
+        attr_accessor :with_clean_environment
+      end
+
       # Use verbose output. If this is set to true, the task will print the
       # executed spec command to stdout. Defaults to `true`.
       attr_accessor :verbose
@@ -76,7 +91,12 @@ module RSpec
         command = spec_command
         puts command if verbose
 
-        return if system(command)
+        if with_clean_environment
+          return if system({}, command, :unsetenv_others => true)
+        else
+          return if system(command)
+        end
+
         puts failure_message if failure_message
 
         return unless fail_on_error
