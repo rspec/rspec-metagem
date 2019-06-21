@@ -136,7 +136,6 @@ module RSpec
 
           populate_location_attributes
           metadata.update(user_metadata)
-          RSpec.configuration.apply_derived_metadata_to(metadata)
         end
 
       private

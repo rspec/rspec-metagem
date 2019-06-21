@@ -203,10 +203,13 @@ module RSpec
           description, example_block
         )
 
+        config = RSpec.configuration
+        config.apply_derived_metadata_to(@metadata)
+
         # This should perhaps be done in `Metadata::ExampleHash.create`,
         # but the logic there has no knowledge of `RSpec.world` and we
         # want to keep it that way. It's easier to just assign it here.
-        @metadata[:last_run_status] = RSpec.configuration.last_run_statuses[id]
+        @metadata[:last_run_status] = config.last_run_statuses[id]
 
         @example_group_instance = @exception = nil
         @clock = RSpec::Core::Time

@@ -424,11 +424,15 @@ module RSpec
           superclass.method(:next_runnable_index_for),
           description, *args, &example_group_block
         )
+
+        config = RSpec.configuration
+        config.apply_derived_metadata_to(@metadata)
+
         ExampleGroups.assign_const(self)
 
         @currently_executing_a_context_hook = false
 
-        RSpec.configuration.configure_group(self)
+        config.configure_group(self)
       end
 
       # @private

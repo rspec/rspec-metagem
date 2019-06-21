@@ -286,6 +286,21 @@ module RSpec
               expect(host_ex_metadata[:foo]).to eq :host
               expect(shared_ex_metadata[:foo]).to eq :shared
             end
+
+            it "applies metadata from the shared group to the including group, when the shared group itself is loaded and included via metadata" do
+              RSpec.configure do |config|
+                config.when_first_matching_example_defined(:controller) do
+                  define_top_level_shared_group("controller support", :capture_logging) { }
+
+                  config.include_context "controller support", :controller
+                end
+              end
+
+              group = RSpec.describe("group", :controller)
+              ex = group.it
+
+              expect(ex.metadata).to include(:controller => true, :capture_logging => true)
+            end
           end
 
           context "when the group is included via `config.include_context` and matching metadata" do
