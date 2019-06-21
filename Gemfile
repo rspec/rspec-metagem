@@ -42,6 +42,10 @@ if RUBY_VERSION < '2.2.0' && !!(RbConfig::CONFIG['host_os'] =~ /cygwin|mswin|min
   gem "childprocess", "< 1.0.0"
 end
 
+if RUBY_VERSION < '1.9.2'
+  gem 'contracts', '~> 0.15.0' # is a dependency of aruba
+end
+
 platforms :jruby do
   if RUBY_VERSION < '1.9.0'
     # Pin jruby-openssl on older J Ruby

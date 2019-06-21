@@ -10,7 +10,7 @@ Then /^the output should contain all of these:$/ do |table|
     if RUBY_VERSION == '1.8.7' && string =~ /\{.+=>.+\}/
       warn "Skipping checking #{string} on 1.8.7 because hash ordering is not consistent"
     else
-      assert_partial_output(string, all_output)
+      expect(all_output).to include_output_string string
     end
   end
 end
