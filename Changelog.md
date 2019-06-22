@@ -20,9 +20,9 @@ Enhancements:
 
 Bug Fixes:
 
-* Fix `config.define_derived_metadata` so that it supports cascades and
-  is not triggered until metadata has been assigned to the example or
-  example group (Myron Marston, #2630, #2635).
+* Fix `config.define_derived_metadata` so that cascades are not triggered
+  until metadata has been assigned to the example or example group
+  (Myron Marston, #2635).
 
 ### 3.8.1 / 2019-06-13
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.8.0...v3.8.1)
@@ -34,6 +34,8 @@ Bug Fixes:
 * When defining `let` methods that overwrite an existing method, prevent
   a warning being issued by removing the old definition. (Jon Rowe, #2593)
 * Prevent warning on Ruby 2.6.0-rc1 (Keiji Yoshimi, #2582)
+* Fix `config.define_derived_metadata` so that it supports cascades.
+  (Myron Marston, #2630).
 
 ### 3.8.0 / 2018-08-04
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.7.1...v3.8.0)
