@@ -266,9 +266,9 @@ module RSpec
     # @example
     #   expect(actual).to eq(expected)
     #   expect(actual).not_to eq(expected)
-    # @return [ExpectationTarget]
-    # @see ExpectationTarget#to
-    # @see ExpectationTarget#not_to
+    # @return [Expectations::ExpectationTarget]
+    # @see Expectations::ExpectationTarget#to
+    # @see Expectations::ExpectationTarget#not_to
 
     # Allows multiple expectations in the provided block to fail, and then
     # aggregates them into a single exception, rather than aborting on the
