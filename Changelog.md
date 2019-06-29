@@ -1,5 +1,5 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.8.1...master)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.8.2...master)
 
 Enhancements:
 * Improve the handling of errors during loading support files, if a file
@@ -17,6 +17,9 @@ Enhancements:
   (Viktor Fonic, #2634)
 * Add support for running the Rake task in a clean environment.
   (Jon Rowe, #2632)
+
+### 3.8.2 / 2019-06-29
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.8.1...v3.8.2)
 
 Bug Fixes:
 
