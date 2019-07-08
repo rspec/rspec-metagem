@@ -1,4 +1,4 @@
-# This file was generated on 2019-04-18T19:41:53+02:00 from the rspec-dev repo.
+# This file was generated on 2019-07-08T14:21:39+01:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -124,14 +124,6 @@ function check_binstubs {
     fi
   fi
 
-  if style_and_lint_enforced; then
-    if [ ! -x ./bin/rubocop ]; then
-      binstubs="$binstubs bin/rubocop"
-      gems="$gems rubocop"
-      success=1
-    fi
-  fi
-
   if [ $success -eq 1 ]; then
     echo
     echo "Missing binstubs:$binstubs"
@@ -187,8 +179,8 @@ function check_documentation_coverage {
 }
 
 function check_style_and_lint {
-  echo "bin/rubocop"
-  eval "(unset RUBYOPT; exec bin/rubocop)"
+  echo "bin/rubocop lib"
+  eval "(unset RUBYOPT; exec bin/rubocop lib)"
 }
 
 function run_all_spec_suites {
