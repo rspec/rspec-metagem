@@ -38,6 +38,10 @@ module RSpec
           output.puts failure_output(failure.example)
         end
 
+        def message(notification)
+          output.puts "#{current_indentation}#{notification.message}"
+        end
+
       private
 
         def passed_output(example)
