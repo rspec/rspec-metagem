@@ -81,6 +81,19 @@ root
 ")
     end
 
+    it "can output indented messages" do
+      root = RSpec.describe("root")
+      root.example("example") {|example| example.reporter.message("message")}
+
+      root.run(reporter)
+
+      expect(formatter_output.string).to eql("
+root
+  message
+  example
+")
+    end
+
     it "strips whitespace for each row" do
       group = RSpec.describe(" root ")
       context1 = group.describe(" nested ")
