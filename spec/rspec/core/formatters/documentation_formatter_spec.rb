@@ -89,8 +89,8 @@ root
 
       expect(formatter_output.string).to eql("
 root
-  message
   example
+    message
 ")
     end
 
