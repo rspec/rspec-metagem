@@ -29,15 +29,36 @@ class InstanceEvaler
   end
 end
 
+# NOTE: `yield` passes a probe to expect an that probe should be passed
+# to expectation target. This is different from the other block matchers.
+# Due to strict requirement in Ruby 1.8 to call a block with arguments if
+# the block is declared to accept them. To work around this limitation,
+# this example group overrides the default definition of expectations
+# and lambdas that take the expectation target in a way that they accept
+# a probe.
+RSpec.shared_examples "an RSpec probe-yielding block-only matcher" do |*options|
+  include_examples "an RSpec block-only matcher", *options do
+    let(:valid_expectation) { expect { |block| valid_block(&block) } }
+    let(:invalid_expectation) { expect { |block| invalid_block(&block) } }
+
+    let(:valid_block_lambda) { lambda { |block| valid_block(&block) } }
+    let(:invalid_block_lambda) { lambda { |block| invalid_block(&block) } }
+  end
+end
+
 RSpec.describe "yield_control matcher" do
   include YieldHelpers
   extend  YieldHelpers
 
-  it_behaves_like "an RSpec matcher",
-      :valid_value => lambda { |b| _yield_with_no_args(&b) },
-      :invalid_value => lambda { |b| _dont_yield(&b) },
+  it_behaves_like "an RSpec probe-yielding block-only matcher",
       :failure_message_uses_no_inspect => true do
     let(:matcher) { yield_control }
+    def valid_block(&block)
+      _yield_with_no_args(&block)
+    end
+    def invalid_block(&block)
+      _dont_yield(&block)
+    end
   end
 
   it 'has a description' do
@@ -202,10 +223,14 @@ RSpec.describe "yield_with_no_args matcher" do
   include YieldHelpers
   extend  YieldHelpers
 
-  it_behaves_like "an RSpec matcher",
-      :valid_value => lambda { |b| _yield_with_no_args(&b) },
-      :invalid_value => lambda { |b| _yield_with_args(1, &b) } do
+  it_behaves_like "an RSpec probe-yielding block-only matcher" do
     let(:matcher) { yield_with_no_args }
+    def valid_block(&block)
+      _yield_with_no_args(&block)
+    end
+    def invalid_block(&block)
+      _yield_with_args(1, &block)
+    end
   end
 
   it 'has a description' do
@@ -285,10 +310,14 @@ RSpec.describe "yield_with_args matcher" do
   include YieldHelpers
   extend  YieldHelpers
 
-  it_behaves_like "an RSpec matcher",
-      :valid_value => lambda { |b| _yield_with_args(1, &b) },
-      :invalid_value => lambda { |b| _yield_with_args(2, &b) } do
+  it_behaves_like "an RSpec probe-yielding block-only matcher" do
     let(:matcher) { yield_with_args(1) }
+    def valid_block(&block)
+      _yield_with_args(1, &block)
+    end
+    def invalid_block(&block)
+      _yield_with_args(2, &block)
+    end
   end
 
   it 'has a description' do
@@ -545,10 +574,14 @@ RSpec.describe "yield_successive_args matcher" do
   include YieldHelpers
   extend  YieldHelpers
 
-  it_behaves_like "an RSpec matcher",
-      :valid_value => lambda { |b| [1, 2].each(&b) },
-      :invalid_value => lambda { |b| [3, 4].each(&b) } do
+  it_behaves_like "an RSpec probe-yielding block-only matcher" do
     let(:matcher) { yield_successive_args(1, 2) }
+    def valid_block(&block)
+      [1, 2].each(&block)
+    end
+    def invalid_block(&block)
+      [3, 4].each(&block)
+    end
   end
 
   it 'has a description' do

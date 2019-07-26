@@ -33,16 +33,16 @@ module RSpec
       end
 
       # @private
-      def self.for(value, block)
+      def self.for(value, &block)
         if UndefinedValue.equal?(value)
-          unless block
+          unless block_given?
             raise ArgumentError, "You must pass either an argument or a block to `expect`."
           end
           BlockExpectationTarget.new(block)
-        elsif block
+        elsif block_given?
           raise ArgumentError, "You cannot pass both an argument and a block to `expect`."
         else
-          new(value)
+          ValueExpectationTarget.new(value)
         end
       end
 
@@ -95,6 +95,40 @@ module RSpec
     # expectations, in order to avoid user confusion when they
     # use a block thinking the expectation will be on the return
     # value of the block rather than the block itself.
+    class ValueExpectationTarget < ExpectationTarget
+      def to(matcher=nil, message=nil, &block)
+        enforce_value_expectation(matcher)
+        super
+      end
+
+      def not_to(matcher=nil, message=nil, &block)
+        enforce_value_expectation(matcher)
+        super
+      end
+
+    private
+
+      def enforce_value_expectation(matcher)
+        return if supports_value_expectations?(matcher)
+
+        raise ExpectationNotMetError, "You must pass a block rather than an argument to `expect` to use the provided " \
+          "block expectation matcher (#{RSpec::Support::ObjectFormatter.format(matcher)})."
+      end
+
+      def supports_value_expectations?(matcher)
+        if matcher.respond_to?(:supports_value_expectations?)
+          matcher.supports_value_expectations?
+        else
+          true
+        end
+      end
+    end
+
+    # @private
+    # Validates the provided matcher to ensure it supports block
+    # expectations, in order to avoid user confusion when they
+    # use a block thinking the expectation will be on the return
+    # value of the block rather than the block itself.
     class BlockExpectationTarget < ExpectationTarget
       def to(matcher, message=nil, &block)
         enforce_block_expectation(matcher)
@@ -118,9 +152,11 @@ module RSpec
       end
 
       def supports_block_expectations?(matcher)
-        matcher.supports_block_expectations?
-      rescue NoMethodError
-        false
+        if matcher.respond_to?(:supports_block_expectations?)
+          matcher.supports_block_expectations?
+        else
+          false
+        end
       end
     end
   end

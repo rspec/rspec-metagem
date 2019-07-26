@@ -1,7 +1,7 @@
 module RSpec
   module Matchers
     RSpec.describe "equal" do
-      it_behaves_like "an RSpec matcher", :valid_value => :a, :invalid_value => :b do
+      it_behaves_like "an RSpec value matcher", :valid_value => :a, :invalid_value => :b do
         let(:matcher) { equal(:a) }
       end
 

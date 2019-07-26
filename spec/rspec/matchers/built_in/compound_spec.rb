@@ -262,12 +262,12 @@ module RSpec::Matchers::BuiltIn
 
     describe "expect(...).to matcher.and(other_matcher)" do
 
-      it_behaves_like "an RSpec matcher", :valid_value => 3, :invalid_value => 4, :disallows_negation => true do
+      it_behaves_like "an RSpec value matcher", :valid_value => 3, :invalid_value => 4, :disallows_negation => true do
         let(:matcher) { eq(3).and be <= 3 }
       end
 
       context 'when using boolean AND `&` alias' do
-        it_behaves_like "an RSpec matcher", :valid_value => 3, :invalid_value => 4, :disallows_negation => true do
+        it_behaves_like "an RSpec value matcher", :valid_value => 3, :invalid_value => 4, :disallows_negation => true do
           let(:matcher) { eq(3) & be_a(Integer) }
         end
       end
@@ -570,12 +570,12 @@ module RSpec::Matchers::BuiltIn
     end
 
     describe "expect(...).to matcher.or(other_matcher)" do
-      it_behaves_like "an RSpec matcher", :valid_value => 3, :invalid_value => 5, :disallows_negation => true do
+      it_behaves_like "an RSpec value matcher", :valid_value => 3, :invalid_value => 5, :disallows_negation => true do
         let(:matcher) { eq(3).or eq(4) }
       end
 
       context 'when using boolean OR `|` alias' do
-        it_behaves_like "an RSpec matcher", :valid_value => 3, :invalid_value => 5, :disallows_negation => true do
+        it_behaves_like "an RSpec value matcher", :valid_value => 3, :invalid_value => 5, :disallows_negation => true do
           let(:matcher) { eq(3) | eq(4) }
         end
       end

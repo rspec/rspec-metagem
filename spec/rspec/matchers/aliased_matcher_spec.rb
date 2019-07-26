@@ -14,7 +14,7 @@ module RSpec
       end
       RSpec::Matchers.alias_matcher :alias_of_my_base_matcher, :my_base_matcher
 
-      it_behaves_like "an RSpec matcher", :valid_value => 13, :invalid_value => nil do
+      it_behaves_like "an RSpec value matcher", :valid_value => 13, :invalid_value => nil do
         let(:matcher) { alias_of_my_base_matcher }
       end
 

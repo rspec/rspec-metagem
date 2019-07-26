@@ -2,7 +2,7 @@ module RSpec
   module Matchers
     [:be_an_instance_of, :be_instance_of].each do |method|
       RSpec.describe "expect(actual).to #{method}(expected)" do
-        it_behaves_like "an RSpec matcher", :valid_value => "a", :invalid_value => 5 do
+        it_behaves_like "an RSpec value matcher", :valid_value => "a", :invalid_value => 5 do
           let(:matcher) { send(method, String) }
         end
 

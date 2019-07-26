@@ -45,7 +45,7 @@ module RSpec
       include_examples "making a copy", :clone
 
       RSpec::Matchers.define_negated_matcher :an_array_excluding, :include
-      it_behaves_like "an RSpec matcher", :valid_value => [1, 3], :invalid_value => [1, 2] do
+      it_behaves_like "an RSpec value matcher", :valid_value => [1, 3], :invalid_value => [1, 2] do
         let(:matcher) { an_array_excluding(2) }
       end
 

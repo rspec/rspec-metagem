@@ -1,7 +1,7 @@
 module RSpec
   module Matchers
     RSpec.describe "expect(actual).to be_within(delta).of(expected)" do
-      it_behaves_like "an RSpec matcher", :valid_value => 5, :invalid_value => -5 do
+      it_behaves_like "an RSpec value matcher", :valid_value => 5, :invalid_value => -5 do
         let(:matcher) { be_within(2).of(4.0) }
       end
 

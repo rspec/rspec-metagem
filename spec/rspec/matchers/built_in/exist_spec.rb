@@ -1,6 +1,6 @@
 RSpec.describe "exist matcher" do
-  it_behaves_like "an RSpec matcher", :valid_value => Class.new { def exist?; true; end }.new,
-                                      :invalid_value => Class.new { def exist?; false; end }.new do
+  it_behaves_like "an RSpec value matcher", :valid_value => Class.new { def exist?; true; end }.new,
+                                            :invalid_value => Class.new { def exist?; false; end }.new do
     let(:matcher) { exist }
   end
 

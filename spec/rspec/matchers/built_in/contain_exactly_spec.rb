@@ -148,7 +148,7 @@ RSpec.describe "using contain_exactly with expect" do
 end
 
 RSpec.describe "expect(array).to contain_exactly(*other_array)" do
-  it_behaves_like "an RSpec matcher", :valid_value => [1, 2], :invalid_value => [1] do
+  it_behaves_like "an RSpec value matcher", :valid_value => [1, 2], :invalid_value => [1] do
     let(:matcher) { contain_exactly(2, 1) }
   end
 

@@ -60,6 +60,12 @@ module RSpec
       #   @return [Boolean] true if this matcher can be used in block expressions.
       #   @note If not defined, RSpec assumes a value of `false` for this method.
 
+      # @!method supports_value_expectations?
+      #   Indicates that this matcher can be used in a value expectation expression,
+      #   such as `expect(foo).to eq(bar)`.
+      #   @return [Boolean] true if this matcher can be used in value expressions.
+      #   @note If not defined, RSpec assumes a value of `true` for this method.
+
       # @!method expects_call_stack_jump?
       #   Indicates that when this matcher is used in a block expectation
       #   expression, it expects the block to use a ruby construct that causes

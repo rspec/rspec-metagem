@@ -94,6 +94,13 @@ module RSpec
           true
         end
 
+        # @api private
+        # Indicates this matcher matches against a block only.
+        # @return [False]
+        def supports_value_expectations?
+          false
+        end
+
       private
 
         def captured?
@@ -101,13 +108,11 @@ module RSpec
         end
 
         def positive_failure_reason
-          return "was not a block" unless Proc === @block
           return "output #{actual_output_description}" if @expected
           "did not"
         end
 
         def negative_failure_reason
-          return "was not a block" unless Proc === @block
           "output #{actual_output_description}"
         end
 

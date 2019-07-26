@@ -143,7 +143,7 @@ module RSpec::Matchers::DSL
       RSpec::Matchers::DSL::Matcher.new(name, block, self, *expected)
     end
 
-    it_behaves_like "an RSpec matcher", :valid_value => 1, :invalid_value => 2 do
+    it_behaves_like "an RSpec value matcher", :valid_value => 1, :invalid_value => 2 do
       let(:matcher) do
         new_matcher(:equal_to_1) do
           match { |v| v == 1 }
