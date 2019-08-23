@@ -34,10 +34,10 @@ end
 
 if RUBY_VERSION < '2.2.0' && !!(RbConfig::CONFIG['host_os'] =~ /cygwin|mswin|mingw|bccwin|wince|emx/)
   gem 'ffi', '< 1.10'
-elsif RUBY_VERSION < '1.9'
+elsif RUBY_VERSION < '2.0'
   gem 'ffi', '< 1.9.19' # ffi dropped Ruby 1.8 support in 1.9.19
 else
-  gem 'ffi', '~> 1.9.25'
+  gem 'ffi', '~> 1.11.0'
 end
 
 if RUBY_VERSION < '2.2.0' && !!(RbConfig::CONFIG['host_os'] =~ /cygwin|mswin|mingw|bccwin|wince|emx/)
