@@ -50,7 +50,7 @@ module RSpec
           if @messages
             @messages << notification.message
           else
-            output.puts notification.message
+            output.puts "#{current_indentation(1)}#{notification.message}"
           end
         end
 
