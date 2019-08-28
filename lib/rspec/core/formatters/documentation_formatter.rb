@@ -6,18 +6,20 @@ module RSpec
     module Formatters
       # @private
       class DocumentationFormatter < BaseTextFormatter
-        Formatters.register self, :example_group_started, :example_group_finished,
+        Formatters.register self, :example_started, :example_group_started, :example_group_finished,
                             :example_passed, :example_pending, :example_failed
 
         def initialize(output)
           super
           @group_level = 0
+          @messages = nil
+        end
+
+        def example_started(notification)
           @messages = []
         end
 
         def example_group_started(notification)
-          flush_messages
-
           output.puts if @group_level == 0
           output.puts "#{current_indentation}#{notification.group.description.strip}"
 
@@ -26,7 +28,6 @@ module RSpec
 
         def example_group_finished(_notification)
           @group_level -= 1 if @group_level > 0
-          flush_messages
         end
 
         def example_passed(passed)
@@ -46,21 +47,23 @@ module RSpec
         end
 
         def message(notification)
-          if @group_level.zero?
-            output.puts notification.message
-          else
+          if @messages
             @messages << notification.message
+          else
+            output.puts notification.message
           end
         end
 
       private
 
         def flush_messages
-          @messages.each do |message|
-            output.puts "#{current_indentation(1)}#{message}"
-          end
+          if @messages
+            @messages.each do |message|
+              output.puts "#{current_indentation(1)}#{message}"
+            end
 
-          @messages.clear
+            @messages = nil
+          end
         end
 
         def passed_output(example)
