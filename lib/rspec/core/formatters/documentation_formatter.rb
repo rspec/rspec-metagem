@@ -15,7 +15,7 @@ module RSpec
           @messages = nil
         end
 
-        def example_started(notification)
+        def example_started(_notification)
           @messages = []
         end
 
