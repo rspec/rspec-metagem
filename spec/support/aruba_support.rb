@@ -20,7 +20,7 @@ RSpec.shared_context "aruba support" do
 
     # So that `RSpec.warning` will go to temp_stderr.
     allow(::Kernel).to receive(:warn) { |msg| temp_stderr.puts(msg) }
-    cmd_parts = Shellwords.split(cmd)
+    cmd_parts = ["--no-profile"] + Shellwords.split(cmd)
 
     handle_current_dir_change do
       cd '.' do

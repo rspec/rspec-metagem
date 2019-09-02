@@ -25,7 +25,7 @@ module FormatterSupport
     spec_order = options[:seed] ? ["--seed", options[:seed].to_s] : ["--order", "defined"]
 
     options = RSpec::Core::ConfigurationOptions.new([
-      "--format", formatter, *(spec_order + extra_options)
+      "--no-profile", "--format", formatter, *(spec_order + extra_options)
     ])
 
     err, out = StringIO.new, StringIO.new
