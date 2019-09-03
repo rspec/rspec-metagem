@@ -7,6 +7,8 @@ Enhancements:
   for `new` (unless `new` is non standard). (Jon Rowe, #1072)
 * Generated descriptions for matchers now use `is expected to` rather than `should` in
   line with our preferred DSL. (Pete Johns, #1080, rspec/rspec-core#2572)
+* Add the ability to re-raise expectation errors when matching
+  with `match_when_negated` blocks. (Jon Rowe, #1130)
 
 ### 3.8.4 / 2019-06-10
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.8.3...v3.8.4)

@@ -920,6 +920,41 @@ module RSpec::Matchers::DSL
       end
     end
 
+    context "matching blocks when negated" do
+      it 'cannot match blocks by default' do
+        matcher = new_matcher(:foo) { match_when_negated { true } }
+        expect(3).to_not matcher
+
+        expect {
+          expect { 3 }.to_not matcher
+        }.to fail_with(/must pass an argument/)
+      end
+
+      it 'can match blocks if it declares `supports_block_expectations`' do
+        matcher = new_matcher(:foo) do
+          match_when_negated { true }
+          supports_block_expectations
+        end
+
+        expect(3).to_not matcher
+        expect { 3 }.to_not matcher
+      end
+
+      it 'will not swallow expectation errors from blocks when told to' do
+        matcher = new_matcher(:foo) do
+          match_when_negated(:notify_expectation_failures => true) do |actual|
+            actual.call
+            true
+          end
+          supports_block_expectations
+        end
+
+        expect {
+          expect { raise RSpec::Expectations::ExpectationNotMetError.new('original') }.to_not matcher
+        }.to raise_error(RSpec::Expectations::ExpectationNotMetError, /original/)
+      end
+    end
+
     context "#new" do
       it "passes matches? arg to match block" do
         matcher = new_matcher(:ignore) do
