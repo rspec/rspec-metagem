@@ -107,7 +107,7 @@ root
 root
   nested
     example
-  message
+message
 ")
     end
 
