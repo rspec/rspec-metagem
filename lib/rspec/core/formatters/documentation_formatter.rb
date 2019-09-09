@@ -12,11 +12,13 @@ module RSpec
         def initialize(output)
           super
           @group_level = 0
-          @messages = nil
+
+          @example_started = false
+          @messages = []
         end
 
         def example_started(_notification)
-          @messages = []
+          @example_started = true
         end
 
         def example_group_started(notification)
@@ -32,22 +34,28 @@ module RSpec
 
         def example_passed(passed)
           output.puts passed_output(passed.example)
+
           flush_messages
+          @example_started = false
         end
 
         def example_pending(pending)
           output.puts pending_output(pending.example,
                                      pending.example.execution_result.pending_message)
+
           flush_messages
+          @example_started = false
         end
 
         def example_failed(failure)
           output.puts failure_output(failure.example)
+
           flush_messages
+          @example_started = false
         end
 
         def message(notification)
-          if @messages
+          if @example_started
             @messages << notification.message
           else
             output.puts "#{current_indentation}#{notification.message}"
@@ -57,12 +65,12 @@ module RSpec
       private
 
         def flush_messages
-          if @messages
+          if @messages.any?
             @messages.each do |message|
               output.puts "#{current_indentation(1)}#{message}"
             end
 
-            @messages = nil
+            @messages.clear
           end
         end
 
