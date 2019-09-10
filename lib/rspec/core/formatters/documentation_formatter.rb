@@ -65,13 +65,11 @@ module RSpec
       private
 
         def flush_messages
-          if @messages.any?
-            @messages.each do |message|
-              output.puts "#{current_indentation(1)}#{message}"
-            end
-
-            @messages.clear
+          @messages.each do |message|
+            output.puts "#{current_indentation(1)}#{message}"
           end
+
+          @messages.clear
         end
 
         def passed_output(example)
