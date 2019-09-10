@@ -17,6 +17,8 @@ Enhancements:
   (Viktor Fonic, #2634)
 * Add support for running the Rake task in a clean environment.
   (Jon Rowe, #2632)
+* Indent messages by there example group / example in the documentation formatter.
+  (Samuel Williams, #2649)
 
 ### 3.8.2 / 2019-06-29
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.8.1...v3.8.2)
