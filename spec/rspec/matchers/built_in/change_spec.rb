@@ -368,6 +368,10 @@ RSpec.describe "expect { ... }.to change { block }" do
     expect { @instance.some_value = 6 }.to change { @instance.some_value }
   end
 
+  it "passes when actual has a value modified" do
+    expect { @instance.some_value = 6 }.to change { @instance }
+  end
+
   it "fails when actual is not modified by the block" do
     expect do
       expect {}.to change { @instance.some_value }

@@ -367,6 +367,8 @@ module RSpec
         def perform_change(event_proc)
           @actual_before = evaluate_value_proc
           @before_hash = @actual_before.hash
+          @before_attribute_hashes = calculate_attribute_hashes(@actual_before)
+
           yield @actual_before if block_given?
 
           return false unless Proc === event_proc
@@ -374,6 +376,7 @@ module RSpec
 
           @actual_after = evaluate_value_proc
           @actual_hash = @actual_after.hash
+          @after_attribute_hashes = calculate_attribute_hashes(@actual_after)
           true
         end
 
@@ -390,7 +393,9 @@ module RSpec
           # possible for two values to be unequal (and of different classes)
           # but to return the same hash value. Also, some objects may change
           # their hash after being compared with `==`/`!=`.
-          @actual_before != @actual_after || @before_hash != @actual_hash
+          @actual_before != @actual_after ||
+          @before_hash != @actual_hash ||
+          @before_attribute_hashes != @after_attribute_hashes
         end
 
         def actual_delta
@@ -398,6 +403,14 @@ module RSpec
         end
 
       private
+
+        # methods are stashed to ensure we get access to variables on modified classes / BasicObject
+        OBJECT_VARIABLES = Object.instance_method(:instance_variables)
+        OBJECT_VARIABLE_GET = Object.instance_method(:instance_variable_get)
+
+        def calculate_attribute_hashes(object)
+          OBJECT_VARIABLES.bind(object).call.map { |name| OBJECT_VARIABLE_GET.bind(object).call(name).hash }
+        end
 
         def evaluate_value_proc
           @value_proc ? @value_proc.call : @receiver.__send__(@message)
