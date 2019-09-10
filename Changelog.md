@@ -10,6 +10,11 @@ Enhancements:
 * Add the ability to re-raise expectation errors when matching
   with `match_when_negated` blocks. (Jon Rowe, #1130)
 
+Bug Fixes:
+
+* The `change` matcher now recognises an object has changed when its instance attributes
+  have changed. (Jon Rowe, #1132)
+
 ### 3.8.4 / 2019-06-10
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.8.3...v3.8.4)
 
