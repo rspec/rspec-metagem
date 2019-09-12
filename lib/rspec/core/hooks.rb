@@ -60,7 +60,8 @@ module RSpec
       #     before(:example)  # Declared in the current group.
       #
       # If more than one `before` is declared within any one scope, they are run
-      # in the order in which they are declared.
+      # in the order in which they are declared. Any `around` hooks will execute
+      # later than any `before` hook regardless of scope.
       #
       # ### Conditions
       #
@@ -261,7 +262,8 @@ module RSpec
       #
       # This is the reverse of the order in which `before` hooks are run.
       # Similarly, if more than one `after` is declared within any one scope,
-      # they are run in reverse order of that in which they are declared.
+      # they are run in reverse order of that in which they are declared. Also
+      # `around` hooks will all have run before any after hooks are invoked.
       #
       # @note The `:example` and `:context` scopes are also available as
       #       `:each` and `:all`, respectively. Use whichever you prefer.
@@ -329,6 +331,12 @@ module RSpec
       #     around(:example) {|ex| Database.transaction(&ex)}
       #     around(:example) {|ex| FakeFS(&ex)}
       #
+      # ### Order
+      #
+      # All `around` hooks execute immediately surrounding an example, this means
+      # that all `before` hooks will have run and no `after` hooks will have run yet.
+      #
+      # They are not a synonym for `before`/`after`.
       def around(*args, &block)
         hooks.register :prepend, :around, *args, &block
       end
