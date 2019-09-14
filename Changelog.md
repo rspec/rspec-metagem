@@ -15,6 +15,11 @@ Bug Fixes:
 * The `change` matcher now recognises an object has changed when its instance attributes
   have changed. (Jon Rowe, #1132)
 
+Bug Fixes:
+
+* Prevent unsupported implicit block expectation syntax from being used.
+  (Phil Pirozhkov, #1125)
+
 ### 3.8.4 / 2019-06-10
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.8.3...v3.8.4)
 
@@ -31,7 +36,7 @@ Bug Fixes:
 * Prevent composed `all` matchers from leaking into their siblings leading to duplicate
   failures. (Jamie English, #1086)
 * Prevent objects which change their hash on comparison from failing change checks.
-  (Phil Pirozhkov, #1110)
+  (Phil Pirozhkov, #1100)
 * Issue an `ArgumentError` rather than a `NoMethodError` when `be_an_instance_of` and
   `be_kind_of` matchers encounter objects not supporting those methods.
   (Taichi Ishitani, #1107)

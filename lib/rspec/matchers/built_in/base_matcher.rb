@@ -78,6 +78,11 @@ module RSpec
           false
         end
 
+        # @private
+        def supports_value_expectations?
+          true
+        end
+
         # @api private
         def expects_call_stack_jump?
           false

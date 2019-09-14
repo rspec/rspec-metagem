@@ -88,12 +88,16 @@ module RSpec
         end
 
         # @api private
-        # Indicates this matcher matches against a block.
-        # @return [True]
         def supports_block_expectations?
           true
         end
 
+        # @api private
+        def supports_value_expectations?
+          false
+        end
+
+        # @api private
         def expects_call_stack_jump?
           true
         end
@@ -101,7 +105,6 @@ module RSpec
       private
 
         def actual_result
-          return "but was not a block" unless Proc === @block
           "got #{caught}"
         end
 

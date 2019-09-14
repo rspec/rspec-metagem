@@ -26,11 +26,19 @@ module RSpec
           "#{matcher_1.description} #{conjunction} #{matcher_2.description}"
         end
 
+        # @api private
         def supports_block_expectations?
           matcher_supports_block_expectations?(matcher_1) &&
           matcher_supports_block_expectations?(matcher_2)
         end
 
+        # @api private
+        def supports_value_expectations?
+          matcher_supports_value_expectations?(matcher_1) &&
+          matcher_supports_value_expectations?(matcher_2)
+        end
+
+        # @api private
         def expects_call_stack_jump?
           NestedEvaluator.matcher_expects_call_stack_jump?(matcher_1) ||
           NestedEvaluator.matcher_expects_call_stack_jump?(matcher_2)
@@ -100,6 +108,12 @@ module RSpec
           matcher.supports_block_expectations?
         rescue NoMethodError
           false
+        end
+
+        def matcher_supports_value_expectations?(matcher)
+          matcher.supports_value_expectations?
+        rescue NoMethodError
+          true
         end
 
         def matcher_is_diffable?(matcher)

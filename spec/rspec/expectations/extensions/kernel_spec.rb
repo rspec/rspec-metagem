@@ -1,7 +1,7 @@
 RSpec.describe Object, "#should" do
   before(:example) do
     @target = "target"
-    @matcher = double("matcher")
+    @matcher = double("matcher", :supports_value_expectations? => true)
     allow(@matcher).to receive(:matches?).and_return(true)
     allow(@matcher).to receive(:failure_message)
   end
@@ -59,7 +59,7 @@ end
 RSpec.describe Object, "#should_not" do
   before(:example) do
     @target = "target"
-    @matcher = double("matcher")
+    @matcher = double("matcher", :supports_value_expectations? => true)
   end
 
   it "accepts and interacts with a matcher" do

@@ -22,7 +22,7 @@ RSpec.describe "#have_attributes matcher" do
 
   describe "expect(...).to have_attributes(with_one_attribute)" do
 
-    it_behaves_like "an RSpec matcher", :valid_value => Person.new("Correct name", 33), :invalid_value => Person.new("Wrong Name", 11) do
+    it_behaves_like "an RSpec value matcher", :valid_value => Person.new("Correct name", 33), :invalid_value => Person.new("Wrong Name", 11) do
       let(:matcher) { have_attributes(:name => "Correct name") }
     end
 
@@ -132,7 +132,7 @@ RSpec.describe "#have_attributes matcher" do
 
   describe "expect(...).to have_attributes(with_multiple_attributes)" do
 
-    it_behaves_like "an RSpec matcher", :valid_value => Person.new("Correct name", 33), :invalid_value => Person.new("Wrong Name", 11) do
+    it_behaves_like "an RSpec value matcher", :valid_value => Person.new("Correct name", 33), :invalid_value => Person.new("Wrong Name", 11) do
       let(:matcher) { have_attributes(:name => "Correct name", :age => 33) }
     end
 

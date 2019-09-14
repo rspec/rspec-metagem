@@ -103,7 +103,7 @@ RSpec.describe "#include matcher" do
   end
 
   describe "expect(...).to include(with_one_arg)" do
-    it_behaves_like "an RSpec matcher", :valid_value => [1, 2], :invalid_value => [1] do
+    it_behaves_like "an RSpec value matcher", :valid_value => [1, 2], :invalid_value => [1] do
       let(:matcher) { include(2) }
     end
 

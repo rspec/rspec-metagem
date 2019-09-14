@@ -70,7 +70,7 @@ module RSpec
 
         syntax_host.module_exec do
           def expect(value=::RSpec::Expectations::ExpectationTarget::UndefinedValue, &block)
-            ::RSpec::Expectations::ExpectationTarget.for(value, block)
+            ::RSpec::Expectations::ExpectationTarget.for(value, &block)
           end
         end
       end

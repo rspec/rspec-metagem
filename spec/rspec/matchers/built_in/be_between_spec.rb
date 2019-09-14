@@ -80,7 +80,7 @@ module RSpec::Matchers::BuiltIn
       end
     end
 
-    it_behaves_like "an RSpec matcher", :valid_value => (10), :invalid_value => (11) do
+    it_behaves_like "an RSpec value matcher", :valid_value => (10), :invalid_value => (11) do
       let(:matcher) { be_between(1, 10) }
     end
 
