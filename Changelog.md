@@ -14,9 +14,6 @@ Bug Fixes:
 
 * The `change` matcher now recognises an object has changed when its instance attributes
   have changed. (Jon Rowe, #1132)
-
-Bug Fixes:
-
 * Prevent unsupported implicit block expectation syntax from being used.
   (Phil Pirozhkov, #1125)
 
