@@ -9,6 +9,8 @@ Enhancements:
   line with our preferred DSL. (Pete Johns, #1080, rspec/rspec-core#2572)
 * Add the ability to re-raise expectation errors when matching
   with `match_when_negated` blocks. (Jon Rowe, #1130)
+* Add a warning when an empty diff is produce due to identical inspect output.
+  (Benoit Tigeot, #1126)
 
 Bug Fixes:
 
