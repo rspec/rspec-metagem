@@ -46,6 +46,11 @@ if RUBY_VERSION < '1.9.2'
   gem 'contracts', '~> 0.15.0' # is a dependency of aruba
 end
 
+# Version 5.12 of minitest requires Ruby 2.4
+if RUBY_VERSION < '2.4.0'
+  gem 'minitest', '< 5.12.0'
+end
+
 platforms :jruby do
   if RUBY_VERSION < '1.9.0'
     # Pin jruby-openssl on older J Ruby
