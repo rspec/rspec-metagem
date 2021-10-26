@@ -2,7 +2,11 @@
 
 Behaviour Driven Development for Ruby
 
-# Description
+*The rspec metagem repository has been renamed to rspec-metagem, please update
+any rspec/rspec Github references to rspec/rspec-metagem, this is in prepartion
+for a new mono-repo approach to RSpec dev to unify issue tracking and PR management*
+
+## Description
 
 rspec is a meta-gem, which depends on the
 [rspec-core](https://github.com/rspec/rspec-core),
