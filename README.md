@@ -2,9 +2,9 @@
 
 Behaviour Driven Development for Ruby
 
-*The rspec metagem repository has been renamed to rspec-metagem, please update
+**The rspec metagem repository has been renamed to rspec-metagem, please update
 any rspec/rspec Github references to rspec/rspec-metagem, this is in prepartion
-for a new mono-repo approach to RSpec dev to unify issue tracking and PR management*
+for a new mono-repo approach to RSpec dev to unify issue tracking and PR management**
 
 ## Description
 
