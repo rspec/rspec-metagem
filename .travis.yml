@@ -1,0 +1,48 @@
+# This file was generated on 2019-07-24T15:33:48+02:00 from the rspec-dev repo.
+# DO NOT modify it by hand as your changes will get lost the next time it is generated.
+
+# In order to install old Rubies, we need to use old Ubuntu distibution.
+dist: trusty
+language: ruby
+email: false
+cache:
+  directories:
+    - ../bundle
+before_install:
+  - "script/update_rubygems_and_install_bundler"
+  - unset _JAVA_OPTIONS
+  - "script/clone_all_rspec_repos"
+bundler_args: "--binstubs --standalone --without documentation --path ../bundle"
+script: "script/run_build"
+rvm:
+  - 1.8.7
+  - 1.9.2
+  - 1.9.3
+  - 2.0.0
+  - 2.1
+  - 2.2.10
+  - 2.3.8
+  - 2.4.6
+  - 2.5.5
+  - 2.6.2
+  - ruby-head
+  - ree
+  - rbx-3
+  - jruby-9.1.7.0 # pin JRuby to this until travis/rvm can install later versions
+  - jruby-head
+  - jruby-1.7
+env:
+  - JRUBY_OPTS='--dev'
+matrix:
+  include:
+    - rvm: jruby-1.7
+      env: JRUBY_OPTS='--dev --1.8'
+  allow_failures:
+    - rvm: jruby-head
+    - rvm: ruby-head
+    - rvm: rbx-3
+  fast_finish: true
+branches:
+  only:
+    - master
+    - /^\d+-\d+-maintenance$/
